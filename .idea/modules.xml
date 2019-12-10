@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/kunpeng.iml" filepath="$PROJECT_DIR$/kunpeng.iml" />
-      <module fileurl="file://$PROJECT_DIR$/client/kunpeng-client.iml" filepath="$PROJECT_DIR$/client/kunpeng-client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/kunpeng-common.iml" filepath="$PROJECT_DIR$/common/kunpeng-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/core/kunpeng-core.iml" filepath="$PROJECT_DIR$/core/kunpeng-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/infrastructure/kunpeng-infrastructure.iml" filepath="$PROJECT_DIR$/infrastructure/kunpeng-infrastructure.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kunpeng-api.iml" filepath="$PROJECT_DIR$/kunpeng-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/client/kunpeng-api-client.iml" filepath="$PROJECT_DIR$/client/kunpeng-api-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/kunpeng-api-common.iml" filepath="$PROJECT_DIR$/common/kunpeng-api-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/kunpeng-api-core.iml" filepath="$PROJECT_DIR$/core/kunpeng-api-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/infrastructure/kunpeng-api-infrastructure.iml" filepath="$PROJECT_DIR$/infrastructure/kunpeng-api-infrastructure.iml" />
     </modules>
   </component>
 </project>

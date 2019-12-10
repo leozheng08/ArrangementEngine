@@ -6,18 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="kunpeng-client" />
-        <module name="kunpeng-common" />
-        <module name="kunpeng-core" />
-        <module name="kunpeng-infrastructure" />
+        <module name="kunpeng-api-client" />
+        <module name="kunpeng-api-common" />
+        <module name="kunpeng-api-core" />
+        <module name="kunpeng-api-infrastructure" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="kunpeng" target="1.5" />
-      <module name="kunpeng-client" target="1.5" />
-      <module name="kunpeng-common" target="1.5" />
-      <module name="kunpeng-core" target="1.8" />
-      <module name="kunpeng-infrastructure" target="1.5" />
+      <module name="kunpeng-api" target="1.5" />
+      <module name="kunpeng-api-client" target="1.5" />
+      <module name="kunpeng-api-common" target="1.5" />
+      <module name="kunpeng-api-core" target="1.8" />
+      <module name="kunpeng-api-infrastructure" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
