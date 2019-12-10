@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.tongdun</groupId>
-    <artifactId>kunpeng</artifactId>
+    <artifactId>kunpeng-api</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
 
@@ -21,7 +21,7 @@
         <profile>
             <id>pro</id>
             <build>
-                <finalName>kunpeng</finalName>
+                <finalName>kunpeng-api</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
