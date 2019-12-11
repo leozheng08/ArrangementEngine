@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tongdun.kunpeng.api.dao.AdminDictionaryDao">
+	<resultMap id="AdminDictionaryMap" type="AdminDictionaryDO">
+		<result property="id" column="id" />  
+		<result property="uuid" column="uuid" />
+		<result property="key" column="mykey" />
+		<result property="value" column="myvalue" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+		<result property="createdBy" column="created_by" />
+		<result property="updatedBy" column="updated_by" />		
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<sql id="queryColumns">
+		id,uuid,mykey,myvalue,description,gmt_create,gmt_modified,created_by,updated_by
+	</sql>
+
+
+	<select id="queryByParams" resultMap="AdminDictionaryMap" parameterType="Map">
+		select
+		<include refid="queryColumns" />
+		from admin_dictionary 
+         <where>
+			<if test="key != null">
+				AND mykey = #{key}
+			</if>
+			<if test="value != null">
+				AND myvalue = #{value}
+			</if>
+			<if test="createdBy != null">
+				AND created_by = #{createdBy}
+			</if>
+		    <if test="description != null">
+				AND description like #{description}
+			</if>
+			<if test="keylist != null and keylist.size() > 0">
+         		AND mykey in
+			  <foreach index="index" collection="keylist" item="key" open="(" separator="," close=")">
+			     #{key}
+			  </foreach>
+         	</if>
+		</where>
+		order by gmt_create desc
+	</select>
+
+	<select id="queryByKey" resultType="String">
+		SELECT myvalue FROM admin_dictionary WHERE mykey = #{key}
+	</select>
+</mapper>

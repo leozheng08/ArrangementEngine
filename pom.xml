@@ -7,14 +7,110 @@
     <groupId>cn.tongdun</groupId>
     <artifactId>kunpeng-api</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <modules>
         <module>client</module>
         <module>core</module>
         <module>common</module>
         <module>infrastructure</module>
+        <module>web</module>
     </modules>
+
+
+    <properties>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <kunpeng-api.version>1.0.0-SNAPSHOT</kunpeng-api.version>
+
+        <mybatis-starter.version>2.1.1</mybatis-starter.version>
+        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+
+        <mysql-connector.version>5.1.41</mysql-connector.version>
+        <page-helper.version>4.1.6</page-helper.version>
+
+        <tdframework.version>1.0.0-SNAPSHOT</tdframework.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.tongdun</groupId>
+                <artifactId>tdframework-common</artifactId>
+                <version>${tdframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun</groupId>
+                <artifactId>tdframework-core</artifactId>
+                <version>${tdframework.version}</version>
+            </dependency>
+
+
+
+            <!--Spring Boot-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.zaxxer</groupId>
+                        <artifactId>HikariCP</artifactId>
+                    </exclusion>
+                </exclusions>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <!--Spring Boot End-->
+
+            <!--db start-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${page-helper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-jdbc</artifactId>
+                <version>9.0.29</version>
+            </dependency>
+            <!--db end-->
+
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.12.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.4</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 
     <profiles>

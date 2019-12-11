@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/kunpeng-api.iml" filepath="$PROJECT_DIR$/kunpeng-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/client/kunpeng-api-client.iml" filepath="$PROJECT_DIR$/client/kunpeng-api-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/kunpeng-api-common.iml" filepath="$PROJECT_DIR$/common/kunpeng-api-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/kunpeng-api-core.iml" filepath="$PROJECT_DIR$/core/kunpeng-api-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/infrastructure/kunpeng-api-infrastructure.iml" filepath="$PROJECT_DIR$/infrastructure/kunpeng-api-infrastructure.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/kunpeng-api-web.iml" filepath="$PROJECT_DIR$/web/kunpeng-api-web.iml" />
+    </modules>
+  </component>
+</project>
