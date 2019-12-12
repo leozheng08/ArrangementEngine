@@ -1,9 +1,0 @@
-cn/tongdun/kunpeng/AppMain.class
-cn/tongdun/kunpeng/api/load/LoadPipeline.class
-cn/tongdun/kunpeng/api/repository/RuleFieldCacheRepository.class
-cn/tongdun/kunpeng/api/load/ListenerConfig.class
-cn/tongdun/kunpeng/api/load/ILoad.class
-cn/tongdun/kunpeng/api/load/FieldLoadManager.class
-cn/tongdun/kunpeng/api/field/RuleField.class
-cn/tongdun/kunpeng/api/repository/IRuleFieldRepository.class
-cn/tongdun/kunpeng/api/load/LoadProcessor.class

@@ -1,9 +1,0 @@
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/load/LoadProcessor.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/repository/IRuleFieldRepository.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/repository/RuleFieldCacheRepository.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/field/RuleField.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/load/FieldLoadManager.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/load/ListenerConfig.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/load/LoadPipeline.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/AppMain.java
-/Users/liang.chen/IdeaProjects/tongdun/kunpeng-api/core/src/main/java/cn/tongdun/kunpeng/api/load/ILoad.java

@@ -1,9 +1,0 @@
-cn/tongdun/kunpeng/api/dao/RuleFieldDao.class
-cn/tongdun/kunpeng/api/dataobj/RuleFieldDO.class
-cn/tongdun/kunpeng/api/dataobj/AdminDictionaryDO.class
-cn/tongdun/kunpeng/api/dao/DynamicScriptDao.class
-cn/tongdun/kunpeng/api/repository/FieldRepository.class
-cn/tongdun/kunpeng/api/dao/AdminDictionaryDao.class
-cn/tongdun/kunpeng/api/dao/CommonDao.class
-cn/tongdun/kunpeng/api/dataobj/ScriptDO.class
-cn/tongdun/kunpeng/api/dataobj/CommonDO.class
