@@ -1,0 +1,42 @@
+# Log
+*logs/
+*.log
+*keys/
+
+# TestNG
+*test-output/
+
+#OS generated files ignored#
+.DS_Store
+.classpath
+.project
+.settings
+target
+bin
+.myumldata
+*.mymetadata
+*~
+rebel.xml
+.rebel.xml.bak
+.$*
+*.home_IS_UNDEFINED
+*.IS_UNDEFINED
+*output_IS_UNDEFINED
+.idea
+*.iml
+node_modules
+*.ipr
+*.iws
+
+build.sh
+run.sh
+m2.properties
+
+.idea/
+client/target
+core/target
+common/target
+infrastructure/target
+web/target
+output
+${shutter.output}
