@@ -19,7 +19,7 @@
 
 
 	<select id="queryByParams" resultMap="AdminDictionaryMap" parameterType="Map">
-		selecta
+		select
 		<include refid="queryColumns" />
 		from admin_dictionary 
          <where>

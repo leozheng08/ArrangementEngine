@@ -5,6 +5,7 @@ import cn.tongdun.tdframework.core.exception.SysException;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
+
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
