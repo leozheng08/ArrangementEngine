@@ -1,9 +1,9 @@
 package cn.tongdun.kunpeng.api.load;
 
 import cn.tongdun.kunpeng.api.eventtype.EventTypeCacheRepository;
-import cn.tongdun.kunpeng.api.field.RuleField;
-import cn.tongdun.kunpeng.api.field.IRuleFieldRepository;
-import cn.tongdun.kunpeng.api.field.RuleFieldCacheRepository;
+import cn.tongdun.kunpeng.api.engine.RuleField;
+import cn.tongdun.kunpeng.api.engine.IRuleFieldRepository;
+import cn.tongdun.kunpeng.api.engine.RuleFieldCacheRepository;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -18,7 +18,7 @@ import java.util.List;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-@Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_PARTNER)
+@Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_COMM)
 public class FieldLoadManager implements ILoad{
 
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);

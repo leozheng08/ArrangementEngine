@@ -1,14 +1,12 @@
-package cn.tongdun.kunpeng.api.field;
+package cn.tongdun.kunpeng.api.engine;
 
 import cn.tongdun.kunpeng.api.eventtype.EventType;
 import cn.tongdun.kunpeng.api.eventtype.IEventTypeRepository;
-import cn.tongdun.kunpeng.api.field.RuleField;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

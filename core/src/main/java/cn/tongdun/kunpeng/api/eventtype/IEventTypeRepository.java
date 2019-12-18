@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.eventtype;
 
-import cn.tongdun.kunpeng.api.field.RuleField;
-
 import java.util.List;
 
 /**

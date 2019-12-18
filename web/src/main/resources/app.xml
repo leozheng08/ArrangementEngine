@@ -1,45 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:config="http://www.tongdun.cn/schema/config"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:cache="http://www.springframework.org/schema/cache"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.tongdun.cn/schema/config
-       http://www.tongdun.cn/schema/config/config.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
-    <!-- http://wiki.tongdun.me/pages/viewpage.action?pageId=29331586 -->
-    <config:repository accessKey="38X5Z679VAS8upB2" secretKey="9645effa30144e0abbc4730fac6bbc99"/>
 
-    <!-- 应用自己的配置 -->
-    <config:property-placeholder location="classpath*:properties/appdemo.properties" ignore-unresolvable="true"/>
-
-    <!-- 其他应用或者基础redis、mysql等配置 -->
-    <config:property-placeholder location="classpath*:properties/zookeeper.properties" ignore-unresolvable="true"
-                                 application="zookeeper" cluster="DEFAULT_GROUP"/>
-
-    <config:property-placeholder location="classpath*:properties/influxdb.properties" ignore-unresolvable="true"
-                                 application="influxdb" cluster="DEFAULT_GROUP"/>
-
-    <!-- config namespace上并没有做什么魔法, 用法等同于 -->
-
-    <context:property-placeholder properties-ref="f25017f9d0944b3ca38ed86e923cb638" ignore-unresolvable="true"/>
-    <bean id="f25017f9d0944b3ca38ed86e923cb638" class="cn.tongdun.config.spring.ConfigPropertiesFactoryBean">
-        <property name="location" value="classpath*:properties/zookeeper.properties" />
-        <property name="application" value="zookeeper"/>
-        <property name="cluster" value="DEFAULT_GROUP"/>
-    </bean>
-
-    <!-- http://wiki.tongdun.me/pages/viewpage.action?pageId=28647905 -->
-    <config:property-placeholder location="classpath*:properties/cache.appdemo.properties" ignore-unresolvable="true"
-                                 cluster="DEFAULT_GROUP"/>
     <!-- spring cache 注解驱动  -->
     <cache:annotation-driven />
-
-
     <context:component-scan base-package="cn.tongdun.kunpeng.api"/>
     <context:component-scan base-package="cn.tongdun.tdframework"/>
 </beans>

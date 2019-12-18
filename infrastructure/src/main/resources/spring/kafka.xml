@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+       default-autowire="byName">
+
+   <!-- 引用公共zk配置中心,对应shutter文件为zookeeper.properties -->
+    <!-- business.unit 为管理员分配值，请将这个配置放在应用自己的shutter配置文件中 -->
+    <bean id="zkConfigCenter" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">
+        <property name="zkserver" value="${configcenter.endpoint}"/>
+        <property name="businessUnit" value="${business.unit}"/>
+    </bean>
+
+    <!-- business.unit 为管理员分配值，请将这个配置放在应用自己的shutter配置文件中 -->
+    <bean id="coreZkConfigCenter" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">
+        <property name="zkserver" value="${configcenter.endpoint}"/>
+        <property name="businessUnit" value="${business.unit.core}"/>
+    </bean>
+
+
+    <!-- 注意必须保证每个producer实例中配置的topic列表属于同一个kafka集群,否则初始化检查将失败-->
+    <!-- 若当前应用需要发送多个集群的topic请建立多个实例 -->
+    <bean id="activityKafkaProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close">
+        <property name="topics">
+            <list>
+                <value>forseti_api_raw_activity</value>
+                <value>forseti_api_challenge_activity</value>
+                <value>forseti_raw_request_sync</value>
+                <value>forseti_raw_request</value>
+                <value>forseti_risk_service_result</value>
+            </list>
+        </property>
+        <property name="configCenter" ref="zkConfigCenter"/>
+    </bean>
+
+    <!-- 若当前应用需要发送多个集群的topic请建立多个实例 -->
+    <bean id="kafkaProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close">
+        <property name="topics">
+            <list>
+                <value>try_forseti_raw_activity</value>
+                <value>sim_forseti_raw_activity</value>
+                <value>forseti_rule_hit_status</value>
+                <value>watchdog_sync_data</value>
+                <value>creditcloud_raw_activity</value>
+            </list>
+        </property>
+        <property name="configCenter" ref="coreZkConfigCenter"/>
+    </bean>
+
+</beans>

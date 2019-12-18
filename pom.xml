@@ -24,16 +24,17 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
         <kunpeng-api.version>1.0.0-SNAPSHOT</kunpeng-api.version>
 
         <mybatis-starter.version>2.1.1</mybatis-starter.version>
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-
         <mysql-connector.version>5.1.41</mysql-connector.version>
         <page-helper.version>4.1.6</page-helper.version>
 
+        <guava-version>20.0</guava-version>
         <tdframework.version>1.0.0-SNAPSHOT</tdframework.version>
+        <ddd.version>1.0-SNAPSHOT</ddd.version>
+
     </properties>
 
     <dependencyManagement>
@@ -98,7 +99,6 @@
             </dependency>
             <!--db end-->
 
-
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -109,6 +109,43 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.4</version>
             </dependency>
+
+
+            <!-- ddd start -->
+            <dependency>
+                <groupId>cn.tongdun.ddd</groupId>
+                <artifactId>ddd-core</artifactId>
+                <version>${ddd.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng</groupId>
+                <artifactId>kunpeng-share</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <!-- ddd end-->
+
+
+            <!-- json start -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.58</version>
+            </dependency>
+            <!-- json end -->
+
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava-version}</version>
+            </dependency>
+            <!-- module start -->
+
+            <!-- module end -->
+
+
+
         </dependencies>
     </dependencyManagement>
 

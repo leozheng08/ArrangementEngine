@@ -2,13 +2,12 @@ package cn.tongdun.kunpeng.api.repository;
 
 import cn.tongdun.kunpeng.api.dao.RuleFieldDao;
 import cn.tongdun.kunpeng.api.dataobj.RuleFieldDO;
-import cn.tongdun.kunpeng.api.field.IRuleFieldRepository;
-import cn.tongdun.kunpeng.api.field.RuleField;
+import cn.tongdun.kunpeng.api.engine.IRuleFieldRepository;
+import cn.tongdun.kunpeng.api.engine.RuleField;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

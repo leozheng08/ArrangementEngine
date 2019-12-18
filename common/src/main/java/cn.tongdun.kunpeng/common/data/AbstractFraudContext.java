@@ -14,10 +14,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
-public class FraudContext implements Serializable, Cloneable {
+public abstract class AbstractFraudContext implements Serializable, Cloneable{
+
 
     private static final long serialVersionUID = -3320502733559293390L;
-    private static final Field[] fields = FraudContext.class.getDeclaredFields();
+    private static final Field[] fields = AbstractFraudContext.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length / 3);
     private static final String IP_ADDRESS_DOMESTIC = "ipAddress";
     private static final String IP_ADDRESS_OVERSEA = "ipAddr";
@@ -32,6 +33,7 @@ public class FraudContext implements Serializable, Cloneable {
         }
     }
 
+    private String policyUuid;
     /**
      * 服务类型。比如基础版avalon，信贷云creditcloud
      */
@@ -116,6 +118,10 @@ public class FraudContext implements Serializable, Cloneable {
         }
     }
 
+    public void addSubReasonCode(SubReasonCode subReasonCode) {
+        this.subReasonCodes.add(subReasonCode);
+    }
+
 
     /**
      * 查询顺序是：FraudContext里的系统字段Map-》设备指纹Map-》扩展字段-》Map属性字段
@@ -196,15 +202,15 @@ public class FraudContext implements Serializable, Cloneable {
         this.systemFiels.put(key, o);
     }
 
-    public FraudContext shallowCopy() {
+    public AbstractFraudContext shallowCopy() {
         try {
-            return (FraudContext) this.clone();
+            return (AbstractFraudContext) this.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Failed to clone", e);
         }
     }
 
-    public FraudContext deepCopy() {
+    public AbstractFraudContext deepCopy() {
         return SerializationUtils.clone(this);
     }
 
@@ -212,7 +218,6 @@ public class FraudContext implements Serializable, Cloneable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
 
 
 

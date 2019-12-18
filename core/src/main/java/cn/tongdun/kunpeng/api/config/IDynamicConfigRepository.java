@@ -1,0 +1,11 @@
+package cn.tongdun.kunpeng.api.config;
+
+import cn.tongdun.tdframework.core.config.IConfigRepository;
+
+/**
+ * @Author: liang.chen
+ * @Date: 2019/12/12 下午5:34
+ */
+public interface IDynamicConfigRepository extends IConfigRepository{
+
+}

@@ -58,6 +58,12 @@
         </dependency>
 
         <dependency>
+            <groupId>cn.tongdun</groupId>
+            <artifactId>kunpeng-api-common</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -234,6 +240,26 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module-tdrule</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- ddd start -->
+        <dependency>
+            <groupId>cn.tongdun.ddd</groupId>
+            <artifactId>ddd-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng</groupId>
+            <artifactId>kunpeng-share</artifactId>
+        </dependency>
+        <!-- ddd end-->
+
+
         <!-- ================================================= -->
         <!--              测试相关依赖                           -->
         <!-- ================================================= -->
