@@ -131,9 +131,9 @@ public class SubPolicyManager implements IExecutor<String,SubPolicyResponse>{
 
         Collection<DecisionResultType> decisionResultTypeList = subPolicy.getDecisionResultMap().values();
         DecisionResultType decisionResult = subPolicy.getDefaultDecisionResultType();
-        for(DecisionResultType decisionResultType:decisionResultTypeList){
-            if(score >= decisionResultType.getStartThreshold() && score < decisionResultType.getEndThreshold()){
-                decisionResult = decisionResultType;
+        for(DecisionResultType newDecisionResult:decisionResultTypeList){
+            if(score >= newDecisionResult.getStartThreshold() && score < newDecisionResult.getEndThreshold()){
+                decisionResult = newDecisionResult;
             }
         }
         subPolicyResponse.setDecision(decisionResult.getCode());

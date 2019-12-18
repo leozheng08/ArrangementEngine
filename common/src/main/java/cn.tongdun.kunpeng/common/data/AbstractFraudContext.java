@@ -158,7 +158,7 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable{
         if (fieldNames.contains(key)) {
             String methodName = "get" + cn.tongdun.kunpeng.common.util.StringUtils.upperCaseFirstChar(key);
             try {
-                Method method = this.getClass().getDeclaredMethod(methodName);
+                Method method = this.getClass().getMethod(methodName);
                 Object value = method.invoke(this);
                 if (value != null) {
                     return value;
