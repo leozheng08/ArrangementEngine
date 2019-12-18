@@ -28,11 +28,13 @@ public class RiskService {
 
     public RiskResponse riskService(Map<String,String> request) {
         FraudContext context = new FraudContext();
-
+        context.setRequestParamsMap(request);
         //测试
         context.setPolicyUuid("123456789");
+        context.setPartnerCode(request.get("partner_code"));
 
         RiskResponse riskResponse = new RiskResponse();
+
 
 
         Response result = pipelineExecutor.execute(Risk.NAME, RiskStep.class,
