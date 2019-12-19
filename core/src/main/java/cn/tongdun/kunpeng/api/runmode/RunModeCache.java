@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.runmode;
 
-import cn.tongdun.kunpeng.api.rule.Rule;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

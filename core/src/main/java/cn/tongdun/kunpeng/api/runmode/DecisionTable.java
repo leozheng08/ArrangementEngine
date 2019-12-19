@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.runmode;
 
-import cn.tongdun.kunpeng.api.model.AbstractPolicy;
+
 import lombok.Data;
 
 /**

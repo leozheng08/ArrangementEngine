@@ -1,5 +1,6 @@
-package cn.tongdun.kunpeng.api.model;
+package cn.tongdun.kunpeng.api.external;
 
+import cn.tongdun.ddd.domain.Entity;
 import lombok.Data;
 
 /**
@@ -7,7 +8,7 @@ import lombok.Data;
  * @Date: 2019/12/16 下午5:39
  */
 @Data
-public class ExternalService {
+public class ExternalService extends Entity {
 
     private String uuid;
 
