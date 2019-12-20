@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.rule;
 
 import cn.tongdun.ddd.domain.Entity;
-import cn.tongdun.kunpeng.api.function.ArithmeticOperator;
+import cn.tongdun.kunpeng.api.rule.operator.ArithmeticOperator;
 import lombok.Data;
 
 /**

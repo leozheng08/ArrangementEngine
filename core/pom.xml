@@ -109,11 +109,6 @@
             <version>${common-arch-version}</version>
         </dependency>
         <dependency>
-            <groupId>cn.tongdun.client</groupId>
-            <artifactId>kunpeng-client</artifactId>
-            <version>${client-version}</version>
-        </dependency>
-        <dependency>
             <groupId>cn.fraudmetrix.cache</groupId>
             <artifactId>jcache-provider</artifactId>
             <version>1.0.7</version>

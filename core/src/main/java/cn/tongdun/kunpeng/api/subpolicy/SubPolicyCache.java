@@ -1,8 +1,10 @@
 package cn.tongdun.kunpeng.api.subpolicy;
 
-import cn.tongdun.kunpeng.api.rule.Rule;
+import cn.tongdun.kunpeng.api.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.cache.ILocalCache;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,21 +14,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date: 2019/12/16 下午8:01
  */
 @Component
-public class SubPolicyCache {
+public class SubPolicyCache extends AbstractLocalCache<String,SubPolicy> {
 
     //subPolicyUuid -> SubPolicy
     private Map<String,SubPolicy> subPolicyMap = new ConcurrentHashMap<>();
 
+    @PostConstruct
+    public void init(){
+        register(SubPolicy.class);
+    }
 
-    public SubPolicy getSubPolicy(String uuid){
+    @Override
+    public SubPolicy get(String uuid){
         return subPolicyMap.get(uuid);
     }
 
-    public void putSubPolicy(String uuid,SubPolicy subPolicy){
+    @Override
+    public void put(String uuid, SubPolicy subPolicy){
         subPolicyMap.put(uuid,subPolicy);
     }
 
-    public void removeSubPolicy(String uuid){
+    @Override
+    public void remove(String uuid){
         subPolicyMap.remove(uuid);
     }
 }

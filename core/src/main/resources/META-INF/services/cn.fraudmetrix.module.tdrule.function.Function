@@ -47,7 +47,7 @@
 #pattern/matlab=
 #pattern/minmax=
 #pattern/policyResult=
-pattern/regex=cn.tongdun.kunpeng.api.function.LocalRegexFunction
+pattern/regex=cn.tongdun.kunpeng.api.rule.function.LocalRegexFunction
 #pattern/statisticsScope=
 #pattern/sum=
 #pattern/terminated=

@@ -30,7 +30,7 @@ public class EngineExecute implements RiskStep {
     @Override
     public boolean invoke(FraudContext context, RiskResponse response, Map<String, String> request){
 
-        AbstractRunMode AbstractRunMode = runModeCache.getRunMode(context.getPolicyUuid());
+        AbstractRunMode AbstractRunMode = runModeCache.get(context.getPolicyUuid());
         DecisionTool decisionTool = decisionToolFactory.getDecisionTool(AbstractRunMode);
         PolicyResponse policyResponse = decisionTool.execute(AbstractRunMode,context);
 

@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.load;
 
+import cn.tongdun.kunpeng.api.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.convertor.IConvertorFactory;
 import cn.tongdun.kunpeng.api.dataobject.PolicyDO;
@@ -14,7 +15,6 @@ import cn.tongdun.kunpeng.api.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.subpolicy.SubPolicyCache;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
-import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,6 +27,9 @@ public class LoadPolicyTask implements Callable<Boolean> {
     private Logger logger = LoggerFactory.getLogger(LoadPolicyTask.class);
     private PolicyDO policyDO;
     private IConvertorFactory convertorFactory;
+
+    private LocalCacheService localCacheService;
+
     private PolicyCache policyCache;
     private SubPolicyCache subPolicyCache;
     private RuleCache ruleCache;
@@ -60,17 +63,17 @@ public class LoadPolicyTask implements Callable<Boolean> {
                         for (RuleDO ruleDO : subPolicyDO.getRules()) {
                             IConvertor<RuleDO, Rule> ruleConvertor = convertorFactory.getConvertor(RuleDO.class);
                             Rule rule = ruleConvertor.convert(ruleDO);
-                            ruleCache.putRule(rule.getUuid(), rule);
+                            ruleCache.put(rule.getUuid(), rule);
                         }
                     }
 
-                    subPolicyCache.putSubPolicy(subPolicy.getSubPolicyUuid(), subPolicy);
+                    subPolicyCache.put(subPolicy.getSubPolicyUuid(), subPolicy);
                 }
             }
 
-            runModeCache.putRunMode(policy.getPolicyUuId(),policy.getRunMode());
+            runModeCache.put(policy.getPolicyUuId(),policy.getRunMode());
 
-            policyCache.putPolicy(policy.getPolicyUuId(), policy);
+            policyCache.put(policy.getPolicyUuId(), policy);
 
         } catch (Exception e){
             logger.error("LoadPolicyTask error",e);

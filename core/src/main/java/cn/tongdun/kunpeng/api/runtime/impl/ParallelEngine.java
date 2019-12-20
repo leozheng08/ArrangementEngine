@@ -7,7 +7,6 @@ import cn.tongdun.kunpeng.api.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.runmode.AbstractRunMode;
 import cn.tongdun.kunpeng.api.runmode.ParallelSubPolicy;
 import cn.tongdun.kunpeng.api.runmode.RunModeCache;
-import cn.tongdun.kunpeng.api.runtime.IExecutor;
 import cn.tongdun.kunpeng.common.data.PolicyResponse;
 import cn.tongdun.kunpeng.api.subpolicy.SubPolicyManager;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
@@ -105,7 +104,7 @@ public class ParallelEngine extends DecisionTool {
 
         ParallelSubPolicy parallelSubPolicy = (ParallelSubPolicy)abstractRunMode;
         String policyUuid = parallelSubPolicy.getPolicyUuid();
-        Policy policy = policyCache.getPolicy(policyUuid);
+        Policy policy = policyCache.get(policyUuid);
 
         rolicyResponse.setPolicyUuid(policy.getPolicyUuId());
         rolicyResponse.setPolicyName(policy.getName());

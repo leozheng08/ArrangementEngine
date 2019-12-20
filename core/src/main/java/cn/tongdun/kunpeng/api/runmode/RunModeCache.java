@@ -1,8 +1,11 @@
 package cn.tongdun.kunpeng.api.runmode;
 
+import cn.tongdun.kunpeng.api.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.cache.ILocalCache;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,20 +15,27 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date: 2019/12/17 上午11:47
  */
 @Component
-public class RunModeCache {
+public class RunModeCache extends AbstractLocalCache<String,AbstractRunMode>{
     //policyUuid -> AbstractRunMode
     private Map<String,AbstractRunMode> runModeMap = new ConcurrentHashMap<>();
 
+    @PostConstruct
+    public void init(){
+        register(AbstractRunMode.class);
+    }
 
-    public AbstractRunMode getRunMode(String uuid){
+    @Override
+    public AbstractRunMode get(String uuid){
         return runModeMap.get(uuid);
     }
 
-    public void putRunMode(String uuid,AbstractRunMode runMode){
+    @Override
+    public void put(String uuid, AbstractRunMode runMode){
         runModeMap.put(uuid,runMode);
     }
 
-    public void removeRunMode(String uuid){
+    @Override
+    public void remove(String uuid){
         runModeMap.remove(uuid);
     }
 }

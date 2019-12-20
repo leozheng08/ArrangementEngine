@@ -2,10 +2,7 @@ package cn.tongdun.kunpeng.api.convertor.impl;
 
 import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
-import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
-import cn.fraudmetrix.module.tdrule.eval.Evaluable;
 import cn.fraudmetrix.module.tdrule.eval.Index;
-import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.ConditionParam;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
@@ -18,13 +15,12 @@ import cn.tongdun.kunpeng.api.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.api.dataobject.RuleConditionElementDO;
 import cn.tongdun.kunpeng.api.dataobject.RuleDO;
-import cn.tongdun.kunpeng.api.function.*;
 import cn.tongdun.kunpeng.api.rule.Rule;
-import cn.tongdun.kunpeng.api.runtime.IExecutor;
+import cn.tongdun.kunpeng.api.rule.function.arithmetic.*;
+import cn.tongdun.kunpeng.api.rule.operator.ArithmeticOperator;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,7 +140,7 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
         cn.fraudmetrix.module.tdrule.rule.Rule rule = RuleCreateFactory.createRule(rawRule);
         result.setEval(rule);
 
-        ArithmeticOperator weightEval = converWeight(t);
+        ArithmeticOperator weightEval = convertWeight(t);
         result.setWeightEval(weightEval);
 
         return result;
@@ -158,7 +154,10 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
      private Double                       downLimitScore;                          // 权重计算分数右值下限
      private Double                       upLimitScore;                            // 权重计算分数右值上限
      */
-    private ArithmeticOperator converWeight(RuleDO t){
+    private ArithmeticOperator convertWeight(RuleDO t){
+        Addition addition = new Addition();
+        addition.addOperand(new NumberVar(t.getBaseWeight()));
+
         if(t.getWeightIndex() != null ){
             Index index = new Index(t.getWeightIndex(),false);
             NumberVar weightRatio = new NumberVar(t.getWeightRatio());
@@ -167,9 +166,16 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
             multiply.addOperand(weightRatio);
             multiply.addOperand(index);
 
-            return multiply;
+            addition.addOperand(multiply);
         }
-        return null;
+        Min min = new Min();
+        min.addOperand(addition);
+        min.addOperand(new NumberVar(t.getUpLimitScore()));
+
+        Max max = new Max();
+        max.addOperand(min);
+        max.addOperand(new NumberVar(t.getDownLimitScore()));
+        return max;
     }
 
 

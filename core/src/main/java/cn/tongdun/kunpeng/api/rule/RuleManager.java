@@ -26,7 +26,7 @@ public class RuleManager implements IExecutor<String,RuleResponse>{
     public RuleResponse execute(String uuid, FraudContext context){
         RuleResponse ruleResponse = new RuleResponse();
 
-        Rule rule = ruleCache.getRule(uuid);
+        Rule rule = ruleCache.get(uuid);
         if(rule == null || rule.getEval() == null){
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_NOT_FIND.getCode(), ReasonCode.RULE_NOT_FIND.getDescription(), "决策引擎执行"));
         }
@@ -67,7 +67,7 @@ public class RuleManager implements IExecutor<String,RuleResponse>{
             if(NaN.equals(n)){
                 return weight;
             }
-            weight = rule.getWeightEval().eval(context).intValue();
+            weight = n.intValue();
         }
         return weight;
     }

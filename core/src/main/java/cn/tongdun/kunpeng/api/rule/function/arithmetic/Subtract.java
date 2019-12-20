@@ -1,24 +1,24 @@
-package cn.tongdun.kunpeng.api.function;
+package cn.tongdun.kunpeng.api.rule.function.arithmetic;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.Evaluable;
+import cn.tongdun.kunpeng.api.rule.operator.ArithmeticOperator;
 
 /**
  * @Author: liang.chen
- * @Date: 2019/12/19 上午10:15
+ * @Date: 2019/12/20 下午1:47
  */
-public class Min extends ArithmeticOperator{
-
+public class Subtract extends ArithmeticOperator {
 
     @Override
     protected Number doEval(ExecuteContext executeContext){
         Number result = null;
         try{
-            for(Evaluable<Object> operand :operandList){
+            for(Evaluable operand :operandList){
                 if(result == null){
-                    result = (Number)operand.eval(executeContext);
+                    result = toNumber(operand.eval(executeContext));
                 } else {
-                    result = MathUtil.min(result , (Number)operand.eval(executeContext));
+                    result = MathUtil.subtract(result , toNumber(operand.eval(executeContext)));
                 }
             }
         } catch (Exception e) {
@@ -29,10 +29,7 @@ public class Min extends ArithmeticOperator{
 
     @Override
     public String getName(){
-        return "min";
+        return "subtract";
     }
-
-
-
 
 }

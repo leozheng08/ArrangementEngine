@@ -37,7 +37,7 @@ public class SubPolicyManager implements IExecutor<String,SubPolicyResponse>{
     public SubPolicyResponse execute(String uuid, FraudContext context){
         SubPolicyResponse subPolicyResponse = new SubPolicyResponse();
 
-        SubPolicy subPolicy = subPolicyCache.getSubPolicy(uuid);
+        SubPolicy subPolicy = subPolicyCache.get(uuid);
         if(subPolicy == null){
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_FIND.getCode(), ReasonCode.SUB_POLICY_NOT_FIND.getDescription(), "决策引擎执行"));
         }
@@ -146,7 +146,7 @@ public class SubPolicyManager implements IExecutor<String,SubPolicyResponse>{
         Map<String,Boolean> hitMap = new HashMap<>();
         for(String ruleUuid:subPolicy.getRuleUuidList()){
             //子规则在上级规则命中情况下才能运行，
-            Rule rule = ruleCache.getRule(ruleUuid);
+            Rule rule = ruleCache.get(ruleUuid);
             if(rule.getParentUuid() != null){
                 Boolean parentHit = hitMap.get(rule.getParentUuid());
                 if(parentHit == null || !parentHit){

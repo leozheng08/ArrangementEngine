@@ -4,8 +4,6 @@ import cn.tongdun.kunpeng.api.context.FraudContext;
 import cn.tongdun.kunpeng.api.policy.Policy;
 import cn.tongdun.kunpeng.api.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.runmode.AbstractRunMode;
-import cn.tongdun.kunpeng.api.runmode.RunModeCache;
-import cn.tongdun.kunpeng.api.runtime.IExecutor;
 import cn.tongdun.kunpeng.common.data.PolicyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +24,7 @@ public class DecisionTableEngine extends DecisionTool{
         PolicyResponse rolicyResponse = new PolicyResponse();
 
         String policyUuid = abstractRunMode.getPolicyUuid();
-        Policy policy = policyCache.getPolicy(policyUuid);
+        Policy policy = policyCache.get(policyUuid);
 
         rolicyResponse.setPolicyUuid(policy.getPolicyUuId());
         rolicyResponse.setPolicyName(policy.getName());

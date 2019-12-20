@@ -1,27 +1,25 @@
-package cn.tongdun.kunpeng.api.function;
+package cn.tongdun.kunpeng.api.rule.function.arithmetic;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.Evaluable;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import cn.tongdun.kunpeng.api.rule.operator.ArithmeticOperator;
 
 /**
  * @Author: liang.chen
- * @Date: 2019/12/19 上午10:15
+ * @Date: 2019/12/20 下午1:47
  */
-public class Max extends ArithmeticOperator{
+public class Addition extends ArithmeticOperator {
 
 
     @Override
     protected Number doEval(ExecuteContext executeContext){
         Number result = null;
         try{
-            for(Evaluable<Object> operand :operandList){
+            for(Evaluable operand :operandList){
                 if(result == null){
-                    result = (Number)operand.eval(executeContext);
+                    result = toNumber(operand.eval(executeContext));
                 } else {
-                    result = MathUtil.max(result , (Number)operand.eval(executeContext));
+                    result = MathUtil.addition(result , toNumber(operand.eval(executeContext)));
                 }
             }
         } catch (Exception e) {
@@ -32,9 +30,7 @@ public class Max extends ArithmeticOperator{
 
     @Override
     public String getName(){
-        return "max";
+        return "addition";
     }
-
-
 
 }

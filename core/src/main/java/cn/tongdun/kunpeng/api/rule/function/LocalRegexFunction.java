@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.function;
+package cn.tongdun.kunpeng.api.rule.function;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;

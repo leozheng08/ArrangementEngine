@@ -77,7 +77,8 @@ public class PolicyRepository implements IPolicyRepository{
         ruleDO.setRuleCustomId("56935914");
         ruleDO.setDownLimitScore(-30D);
         ruleDO.setUpLimitScore(30D);
-        ruleDO.setWeightRatio(3);
+        ruleDO.setBaseWeight(10);
+        ruleDO.setWeightRatio(5);
         ruleDO.setWeightIndex("123456");
 
         //规则条件
