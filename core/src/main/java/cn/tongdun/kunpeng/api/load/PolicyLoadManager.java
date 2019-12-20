@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.load;
 
+import cn.tongdun.kunpeng.api.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.cluster.ClusterCache;
 import cn.tongdun.kunpeng.api.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.dataobject.PolicyDO;
@@ -48,6 +49,9 @@ public class PolicyLoadManager implements ILoad{
     private DefaultConvertorFactory defaultConvertorFactory;
 
     @Autowired
+    private LocalCacheService localCacheService;
+
+    @Autowired
     private PolicyCache policyCache;
     @Autowired
     private SubPolicyCache subPolicyCache;
@@ -89,7 +93,7 @@ public class PolicyLoadManager implements ILoad{
 
             PolicyDO policyDO = policyRepository.queryByUuid(policyModifiedDO.getPolicyUuid());
 
-            LoadPolicyTask task = new LoadPolicyTask(policyDO,defaultConvertorFactory,policyCache,subPolicyCache,ruleCache,runModeCache);
+            LoadPolicyTask task = new LoadPolicyTask(policyDO,defaultConvertorFactory,localCacheService);
             tasks.add(task);
         }
 

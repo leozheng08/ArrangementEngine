@@ -32,8 +32,8 @@ public class LocalCacheService {
         return cache.get(key);
     }
 
-    public <K,V> void put(Class<V> vClass,K key,V value){
-        ILocalCache<K,V> cache = getLocalCache(vClass);
+    public <V> void put(Class<V> vClass,Object key,V value){
+        ILocalCache<Object,V> cache = getLocalCache(vClass);
         if(cache == null){
             return;
         }

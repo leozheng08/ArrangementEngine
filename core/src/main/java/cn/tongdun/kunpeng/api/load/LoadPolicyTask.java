@@ -7,12 +7,9 @@ import cn.tongdun.kunpeng.api.dataobject.PolicyDO;
 import cn.tongdun.kunpeng.api.dataobject.RuleDO;
 import cn.tongdun.kunpeng.api.dataobject.SubPolicyDO;
 import cn.tongdun.kunpeng.api.policy.Policy;
-import cn.tongdun.kunpeng.api.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.rule.Rule;
-import cn.tongdun.kunpeng.api.rule.RuleCache;
-import cn.tongdun.kunpeng.api.runmode.RunModeCache;
+import cn.tongdun.kunpeng.api.runmode.AbstractRunMode;
 import cn.tongdun.kunpeng.api.subpolicy.SubPolicy;
-import cn.tongdun.kunpeng.api.subpolicy.SubPolicyCache;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
 
@@ -30,22 +27,21 @@ public class LoadPolicyTask implements Callable<Boolean> {
 
     private LocalCacheService localCacheService;
 
-    private PolicyCache policyCache;
-    private SubPolicyCache subPolicyCache;
-    private RuleCache ruleCache;
-    private RunModeCache runModeCache;
 
 
-    public LoadPolicyTask(PolicyDO policyDO,IConvertorFactory convertorFactory,PolicyCache policyCache,
-                          SubPolicyCache subPolicyCache,RuleCache ruleCache,RunModeCache runModeCache){
+    public LoadPolicyTask(PolicyDO policyDO,IConvertorFactory convertorFactory,LocalCacheService localCacheService){
         this.policyDO = policyDO;
         this.convertorFactory = convertorFactory;
-        this.policyCache = policyCache;
-        this.subPolicyCache = subPolicyCache;
-        this.ruleCache = ruleCache;
-        this.runModeCache = runModeCache;
+        this.localCacheService = localCacheService;
     }
 
+    /**
+     * 加载策略到缓存中。
+     * 先通过转换器，将数据库对象转换为可运行实体
+     * 再将各层的运行实体如规则、子策略、运行模式(并行执行、决策流)、策略 ，保存到本次缓存中。
+     * 注意保存实体时，先从最小的对象先保存，最后保存策略缓存。
+     * @return
+     */
     @Override
     public Boolean call(){
 
@@ -63,18 +59,19 @@ public class LoadPolicyTask implements Callable<Boolean> {
                         for (RuleDO ruleDO : subPolicyDO.getRules()) {
                             IConvertor<RuleDO, Rule> ruleConvertor = convertorFactory.getConvertor(RuleDO.class);
                             Rule rule = ruleConvertor.convert(ruleDO);
-                            ruleCache.put(rule.getUuid(), rule);
+                            //缓存规则
+                            localCacheService.put(Rule.class,rule.getUuid(),rule);
                         }
                     }
-
-                    subPolicyCache.put(subPolicy.getSubPolicyUuid(), subPolicy);
+                    //缓存子策略
+                    localCacheService.put(SubPolicy.class,subPolicy.getSubPolicyUuid(),subPolicy);
                 }
             }
 
-            runModeCache.put(policy.getPolicyUuId(),policy.getRunMode());
-
-            policyCache.put(policy.getPolicyUuId(), policy);
-
+            //缓存运行模式
+            localCacheService.put(AbstractRunMode.class,policy.getPolicyUuId(),policy.getRunMode());
+            //缓存策略
+            localCacheService.put(Policy.class,policy.getPolicyUuId(), policy);
         } catch (Exception e){
             logger.error("LoadPolicyTask error",e);
         }
