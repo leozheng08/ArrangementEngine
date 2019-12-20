@@ -29,9 +29,12 @@ public class RiskService {
     public RiskResponse riskService(Map<String,String> request) {
         FraudContext context = new FraudContext();
         context.setRequestParamsMap(request);
+
+
         //测试
         context.setPolicyUuid("123456789");
         context.setPartnerCode(request.get("partner_code"));
+        context.set("accountMobile",request.get("accountMobile"));
 
         RiskResponse riskResponse = new RiskResponse();
 
@@ -40,8 +43,9 @@ public class RiskService {
         Response result = pipelineExecutor.execute(Risk.NAME, RiskStep.class,
                 step -> step.invoke(context,riskResponse,request), (isSuccess, e)->
             {
+
                 //如果调用不成功时退出，不再执行后继步骤
-                return !isSuccess;
+                return isSuccess == null || !isSuccess;
             }
         );
 

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RuleManager implements IExecutor<String,RuleResponse>{
 
+    public final static Number NaN = Double.NaN;
+
     @Autowired
     RuleCache ruleCache;
 
@@ -35,6 +37,7 @@ public class RuleManager implements IExecutor<String,RuleResponse>{
             case True:
                 ruleResponse.setHit(true);
                 ruleResponse.setDecision(rule.getDecision());
+                ruleResponse.setScore(getWeight(rule,context));
                 break;
             case False:
                 ruleResponse.setHit(false);
@@ -55,6 +58,18 @@ public class RuleManager implements IExecutor<String,RuleResponse>{
         ruleResponse.setCostTime(ruleResult.getCost());
 
         return ruleResponse;
+    }
+
+    private Integer getWeight(Rule rule,FraudContext context){
+        Integer weight = 0;
+        if( rule.getWeightEval() != null){
+            Number n = rule.getWeightEval().eval(context);
+            if(NaN.equals(n)){
+                return weight;
+            }
+            weight = rule.getWeightEval().eval(context).intValue();
+        }
+        return weight;
     }
 
     //命中后action操作

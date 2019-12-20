@@ -39,6 +39,7 @@ public class PolicyRepository implements IPolicyRepository{
     @Override
     public PolicyDO queryByUuid(String uuid){
 
+        //策略
         PolicyDO policyDO = new PolicyDO();
         policyDO.setUuid("123456789");
         policyDO.setDefault(true);
@@ -50,6 +51,7 @@ public class PolicyRepository implements IPolicyRepository{
         policyDO.setModifiedVersion(1);
         policyDO.setName("policy name");
 
+        //子策略
         List<SubPolicyDO> subPolicyDOList = new ArrayList<>();
         policyDO.setSubPolicyList(subPolicyDOList);
         SubPolicyDO subPolicyDO = new SubPolicyDO();
@@ -61,7 +63,7 @@ public class PolicyRepository implements IPolicyRepository{
         subPolicyDO.setDenyThreshold(60);
 
 
-
+        //规则
         List<RuleDO> ruleDOList = new ArrayList<>();
         subPolicyDO.setRules(ruleDOList);
         RuleDO ruleDO = new RuleDO();
@@ -71,14 +73,14 @@ public class PolicyRepository implements IPolicyRepository{
         ruleDO.setName("正则匹配");
         ruleDO.setOperateCode("Accept");
         ruleDO.setTemplate("pattern/regex");
-        ruleDO.setTemplate("localRegex");
+//        ruleDO.setTemplate("regex");
         ruleDO.setRuleCustomId("56935914");
         ruleDO.setDownLimitScore(-30D);
         ruleDO.setUpLimitScore(30D);
-        ruleDO.setWeightRatio(0);
-        ruleDO.setWeightIndex("0");
+        ruleDO.setWeightRatio(3);
+        ruleDO.setWeightIndex("123456");
 
-
+        //规则条件
         List<RuleConditionElementDO> ruleConditionElementDOList = new ArrayList<>();
         ruleDO.setRuleConditionElements(ruleConditionElementDOList);
         RuleConditionElementDO ruleConditionElementDO = new RuleConditionElementDO();
@@ -87,8 +89,8 @@ public class PolicyRepository implements IPolicyRepository{
         ruleConditionElementDO.setId(146804004L);
         ruleConditionElementDO.setUuid("b956811644594b3cb7c8fda00fbf0d38");
         ruleConditionElementDO.setLogicOperator("&&");
-//        ruleConditionElementDO.setProperty("pattern/regex");
-        ruleConditionElementDO.setProperty("localRegex");
+        ruleConditionElementDO.setProperty("pattern/regex");
+//        ruleConditionElementDO.setProperty("regex");
         ruleConditionElementDO.setOperator("operator");
         ruleConditionElementDO.setValue("1");
         ruleConditionElementDO.setType("alias");
@@ -96,6 +98,16 @@ public class PolicyRepository implements IPolicyRepository{
         ruleConditionElementDO.setDescripe("正则表达式");
         ruleConditionElementDO.setPropertyUseOriginValue(false);
 
+
+        //action
+        List<RuleActionElementDO> ruleActionElementDOList = new ArrayList<>();
+        ruleDO.setRuleActionElements(ruleActionElementDOList);
+        RuleActionElementDO ruleActionElementDO = new RuleActionElementDO();
+        ruleActionElementDOList.add(ruleActionElementDO);
+        String actions ="[{\"leftProperty\":\"accountLogin\",\"leftPropertyType\":\"\",\"operator\":\"==\",\"rightValue\":\"abc\",\"rightValueType\":\"input\"},{\"leftProperty\":\"ip3\",\"leftPropertyType\":\"\",\"operator\":\"==\",\"rightValue\":\"accountMobile\",\"rightValueType\":\"context\"}]";
+        ruleActionElementDO.setActions(actions);
+        ruleActionElementDO.setFkRuleUuid(ruleDO.getUuid());
+        ruleActionElementDO.setId(234232L);
 
         return policyDO;
     }

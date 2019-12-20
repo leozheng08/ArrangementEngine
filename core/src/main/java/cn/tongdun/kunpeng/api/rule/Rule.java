@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.rule;
 
 import cn.tongdun.ddd.domain.Entity;
+import cn.tongdun.kunpeng.api.function.ArithmeticOperator;
 import lombok.Data;
 
 /**
@@ -25,4 +26,6 @@ public class Rule extends Entity {
     private String template;
 
     private cn.fraudmetrix.module.tdrule.rule.Rule eval;
+
+    private ArithmeticOperator weightEval;
 }

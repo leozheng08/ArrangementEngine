@@ -19,8 +19,14 @@ public class FraudContext extends AbstractFraudContext implements ExecuteContext
     }
 
     @Override
+    public void setField(String var1,Object obj){
+        set(var1,obj);
+    }
+
+    @Override
     public Double getIndex(String var1){
-        return null;
+        //测试代码
+        return 6D;
     }
 
     @Override

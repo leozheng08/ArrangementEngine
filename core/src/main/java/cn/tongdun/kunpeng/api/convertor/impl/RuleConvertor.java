@@ -1,6 +1,11 @@
 package cn.tongdun.kunpeng.api.convertor.impl;
 
+import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
+import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.eval.Evaluable;
+import cn.fraudmetrix.module.tdrule.eval.Index;
+import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.ConditionParam;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
@@ -10,8 +15,10 @@ import cn.fraudmetrix.module.tdrule.util.RuleCreateFactory;
 import cn.tongdun.ddd.common.exception.BizException;
 import cn.tongdun.kunpeng.api.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.convertor.IConvertor;
+import cn.tongdun.kunpeng.api.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.api.dataobject.RuleConditionElementDO;
 import cn.tongdun.kunpeng.api.dataobject.RuleDO;
+import cn.tongdun.kunpeng.api.function.*;
 import cn.tongdun.kunpeng.api.rule.Rule;
 import cn.tongdun.kunpeng.api.runtime.IExecutor;
 import cn.tongdun.tdframework.core.logger.Logger;
@@ -72,6 +79,7 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
     @Override
     public Rule convert(RuleDO t){
         Rule result = new Rule();
+        //规则基本信息
         result.setRuleId(t.getId().toString());
         result.setRuleCustomId(t.getRuleCustomId());
         result.setUuid(t.getUuid());
@@ -82,24 +90,24 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
         result.setTemplate(t.getTemplate());
         result.setDecision(t.getOperateCode());
 
-
+        //生成规则引擎的RawRule对象
         RawRule rawRule = new RawRule();
         rawRule.setId(t.getId().toString());
         rawRule.setName(t.getName());
         rawRule.setType(t.getTemplate());
 
+        //生成条件
         List<RuleConditionElementDO> conditionElements = t.getRuleConditionElements();
         if(conditionElements == null || conditionElements.isEmpty()){
-            logger.error("RuleConvertor error RuleConditionElement is empty:"+t);
+//            logger.error("RuleConvertor error RuleConditionElement is empty:"+t);
             throw new BizException("RuleConvertor error RuleConditionElement is empty");
         }
-
         List<Condition> conditionList = new ArrayList<>();
         List<FunctionDesc> functionDescList = new ArrayList<>();
 
-        //生成逻辑操作表达式
+        //生成条件的逻辑操作表达式
         StringBuilder buffer = new StringBuilder();
-        String logic = null;
+        String logic = null; // 1&2&3  //1|2|3
         int i=0;
         for(RuleConditionElementDO conditionElementDO:conditionElements){
             if(i==0){
@@ -121,12 +129,73 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
         rawRule.setLogic(buffer.toString());
         rawRule.setFunctionDescList(functionDescList);
         rawRule.setConditionList(conditionList);
-        cn.fraudmetrix.module.tdrule.rule.Rule rule = RuleCreateFactory.createRule(rawRule);
 
+        //生成action
+        List<ActionDesc> actionDescList = new ArrayList<>();
+        List<RuleActionElementDO> ruleActionElementDOList= t.getRuleActionElements();
+        if(ruleActionElementDOList != null){
+            for(RuleActionElementDO ruleActionElementDO:ruleActionElementDOList){
+                convertAction(actionDescList,ruleActionElementDO.getActions());
+            }
+        }
+        rawRule.setActionDescList(actionDescList);
+
+        //创建规则引擎的可计算的Rule对象
+        cn.fraudmetrix.module.tdrule.rule.Rule rule = RuleCreateFactory.createRule(rawRule);
         result.setEval(rule);
+
+        ArithmeticOperator weightEval = converWeight(t);
+        result.setWeightEval(weightEval);
+
         return result;
     }
 
+    /**
+     private double                       baseWeight;                              // 风险权重基线
+     private double                       weightRatio;                             // 风险权重比例
+     private String                       weightIndex;                             // 风险权重指标　
+     private String                       indexType;                               // 指标类型    旧的为空,新的GAEA_INDICATRIX　
+     private Double                       downLimitScore;                          // 权重计算分数右值下限
+     private Double                       upLimitScore;                            // 权重计算分数右值上限
+     */
+    private ArithmeticOperator converWeight(RuleDO t){
+        if(t.getWeightIndex() != null ){
+            Index index = new Index(t.getWeightIndex(),false);
+            NumberVar weightRatio = new NumberVar(t.getWeightRatio());
+
+            Multiply multiply = new Multiply();
+            multiply.addOperand(weightRatio);
+            multiply.addOperand(index);
+
+            return multiply;
+        }
+        return null;
+    }
+
+
+    private void convertAction(List<ActionDesc> actionDescList ,String params){
+        if(params == null){
+            return;
+        }
+
+
+        JSONArray array = JSONArray.parseArray(params);
+        if(array.isEmpty()){
+            return;
+        }
+
+        long i = 0;
+        for(Object obj :array){
+            JSONObject actionJson = (JSONObject)obj;
+            ActionDesc actionDesc = new ActionDesc();
+            actionDesc.setId(++i);
+            actionDesc.setType("assignment");
+            actionDesc.setParams(obj.toString());
+            actionDescList.add(actionDesc);
+        }
+
+        return;
+    }
 
 
 
