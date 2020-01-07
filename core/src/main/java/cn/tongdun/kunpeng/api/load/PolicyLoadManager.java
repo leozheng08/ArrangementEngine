@@ -52,15 +52,8 @@ public class PolicyLoadManager implements ILoad{
     private LocalCacheService localCacheService;
 
     @Autowired
-    private PolicyCache policyCache;
-    @Autowired
-    private SubPolicyCache subPolicyCache;
-    @Autowired
-    private RuleCache ruleCache;
-    @Autowired
     ClusterCache clusterCache;
-    @Autowired
-    private RunModeCache runModeCache;
+
 
 
     @PostConstruct
@@ -104,13 +97,7 @@ public class PolicyLoadManager implements ILoad{
             return false;
         }
 
-
         logger.info("PolicyLoadManager load() success");
         return true;
     }
-
-
-
-
-
 }

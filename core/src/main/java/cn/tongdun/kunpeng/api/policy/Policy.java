@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.policy;
 
-import cn.tongdun.ddd.domain.Entity;
+import cn.tongdun.ddd.common.domain.Entity;
 import cn.tongdun.kunpeng.api.runmode.AbstractRunMode;
 import lombok.Data;
 

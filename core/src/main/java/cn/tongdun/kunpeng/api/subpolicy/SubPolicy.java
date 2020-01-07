@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.subpolicy;
 
-import cn.tongdun.ddd.domain.Entity;
+import cn.tongdun.ddd.common.domain.Entity;
 import cn.tongdun.kunpeng.common.data.DecisionResultType;
 import cn.tongdun.kunpeng.common.data.PolicyMode;
 import lombok.Data;

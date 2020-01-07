@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.rule;
 
-import cn.tongdun.ddd.domain.Entity;
+import cn.tongdun.ddd.common.domain.Entity;
 import cn.tongdun.kunpeng.api.rule.operator.ArithmeticOperator;
 import lombok.Data;
 

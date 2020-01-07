@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.cluster;
 
+import cn.tongdun.kunpeng.api.cache.ILocalCache;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

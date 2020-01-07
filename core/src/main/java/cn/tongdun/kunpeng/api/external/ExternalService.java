@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.external;
 
-import cn.tongdun.ddd.domain.Entity;
+import cn.tongdun.ddd.common.domain.Entity;
 import lombok.Data;
 
 /**
