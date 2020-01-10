@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.repository;
 
 import cn.tongdun.kunpeng.api.dataobject.*;
 import cn.tongdun.kunpeng.api.policy.IPolicyRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class PolicyRepository implements IPolicyRepository{
 
 
     @Override
+    @Cacheable("policyDOCache")
     public PolicyDO queryByUuid(String uuid){
 
         //策略

@@ -27,7 +27,7 @@ public class AdminDictionaryRepository  {
     private AdminDictionaryDao adminDictionaryDao;
 
 
-    @Cacheable(value = "",key = "")
+
     public List<AdminDictionaryDO> queryByParams(Map<String, Object> map) {
         return adminDictionaryDao.queryByParams(map);
     }

@@ -51,7 +51,6 @@
             </dependency>
 
 
-
             <!--Spring Boot-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -77,6 +76,18 @@
                 </exclusions>
                 <version>${spring-boot.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
             <!--Spring Boot End-->
 
             <!--db start-->
@@ -140,7 +151,20 @@
                 <artifactId>guava</artifactId>
                 <version>${guava-version}</version>
             </dependency>
+
             <!-- module start -->
+
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>redis-client</artifactId>
+                <version>3.4.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>2.9.0</version>
+            </dependency>
 
             <!-- module end -->
 
