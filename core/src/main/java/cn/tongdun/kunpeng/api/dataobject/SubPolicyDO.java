@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.dataobject;
 
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.Map;
  * @author jian.li
  */
 @Data
-public class SubPolicyDO extends CommonDO {
+public class SubPolicyDO extends CommonDTO {
 
     private static final long            serialVersionUID         = 1L;
     private String                       name;

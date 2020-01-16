@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.rule.function;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
-import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.CalculateResult;
@@ -18,9 +17,7 @@ import java.util.regex.Pattern;
  */
 public class LocalRegexFunction extends AbstractFunction {
 
-    //private String property;
-
-    private Variable property;
+    private String property;
     /**
      * 匹配模式是匹配(true)还是不匹配(false)
      */
@@ -73,8 +70,7 @@ public class LocalRegexFunction extends AbstractFunction {
     public CalculateResult run(ExecuteContext executeContext) {
 
         CalculateResult calculateResult = new CalculateResult();
-        //Object propertyField = executeContext.getField(property);
-        Object propertyField = property.eval(executeContext);
+        Object propertyField = executeContext.getField(property);
         if (propertyField == null) {
             calculateResult.setResult(false);
             return calculateResult;

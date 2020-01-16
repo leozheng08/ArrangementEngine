@@ -58,6 +58,4 @@ public class DynamicConfigRepository extends AbstractConfigRepository implements
             logger.error("拉取配置时出现异常", e);
         }
     }
-
-
 }

@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_POLICY)
-public class PolicyLoadManager implements ILoad{
+public class LoadPolicyManager implements ILoadByPartner{
 
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
@@ -52,7 +52,7 @@ public class PolicyLoadManager implements ILoad{
     private LocalCacheService localCacheService;
 
     @Autowired
-    ClusterCache clusterCache;
+    private ClusterCache clusterCache;
 
 
 
@@ -67,6 +67,10 @@ public class PolicyLoadManager implements ILoad{
                 "loadPolicy");
     }
 
+    /**
+     * 加载当前集群下所有合作方的策略
+     * @return
+     */
     @Override
     public boolean load(){
         logger.info("PolicyLoadManager load()");
@@ -100,4 +104,38 @@ public class PolicyLoadManager implements ILoad{
         logger.info("PolicyLoadManager load() success");
         return true;
     }
+
+
+    /**
+     * 只加载一个合作方的策略
+     * @param partnerCode
+     * @return
+     */
+    @Override
+    public boolean loadByPartner(String partnerCode) {
+
+        //取得策略列表
+        PolicyModifiedDO policyModifiedDO = policyRepository.queryByPartner(partnerCode);
+
+        if(!policyModifiedDO.isStatus()){
+            return true;
+        }
+
+        PolicyDO policyDO = policyRepository.queryByUuid(policyModifiedDO.getPolicyUuid());
+
+        LoadPolicyTask task = new LoadPolicyTask(policyDO,defaultConvertorFactory,localCacheService);
+        List<LoadPolicyTask> tasks = new ArrayList<>();
+        tasks.add(task);
+
+        try {
+            executeThreadPool.invokeAll(tasks);
+        } catch (Exception e) {
+            logger.error("加载策略异常",  e);
+            return false;
+        }
+
+        logger.info("PolicyLoadManager load() success");
+        return true;
+    }
+
 }

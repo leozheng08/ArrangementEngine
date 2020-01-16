@@ -18,5 +18,9 @@ public interface IPolicyRepository {
     List<PolicyModifiedDO> queryByPartners(Set<String> partners);
 
 
+    //取得所有策略清单
+    PolicyModifiedDO queryByPartner(String partner);
+
+
     PolicyDO queryByUuid(String uuid);
 }

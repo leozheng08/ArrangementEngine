@@ -8,7 +8,7 @@ import java.util.List;
  * 
  * @author du 2014年2月15日 下午5:09:28
  */
-public class RuleConditionElementDO extends CommonDO  {
+public class RuleConditionElementDO extends CommonDTO {
 
     private static final long            serialVersionUID   = 7768242359914265183L;
 

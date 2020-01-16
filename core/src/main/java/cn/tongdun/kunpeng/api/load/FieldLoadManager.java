@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.load;
 
-import cn.tongdun.kunpeng.api.eventtype.EventTypeCacheRepository;
+import cn.tongdun.kunpeng.api.eventtype.EventTypeLocalCache;
 import cn.tongdun.kunpeng.api.engine.RuleField;
 import cn.tongdun.kunpeng.api.engine.IRuleFieldRepository;
 import cn.tongdun.kunpeng.api.engine.RuleFieldCacheRepository;
@@ -30,7 +30,7 @@ public class FieldLoadManager implements ILoad{
     RuleFieldCacheRepository ruleFieldCacheRepository;
 
     @Autowired
-    EventTypeCacheRepository eventTypeCacheRepository;
+    EventTypeLocalCache eventTypeCacheRepository;
 
     @Override
     public boolean load(){

@@ -30,7 +30,6 @@ public class RedisConfig{
      */
     @Bean
     public TdRedisCacheManager cacheManager(SimpleRedisClient kunPengRedisClient) {
-
         return TdRedisCacheManager.create(kunPengRedisClient);
     }
 

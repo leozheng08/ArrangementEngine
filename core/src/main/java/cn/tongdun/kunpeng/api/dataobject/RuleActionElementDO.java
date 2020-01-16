@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 /**
  * 规则操作
  */
-public class RuleActionElementDO extends CommonDO {
+public class RuleActionElementDO extends CommonDTO {
 
     private static final long serialVersionUID = 7768242359914265185L;
 

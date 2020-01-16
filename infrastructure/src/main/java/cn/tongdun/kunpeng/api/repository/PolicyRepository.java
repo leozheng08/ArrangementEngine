@@ -37,6 +37,24 @@ public class PolicyRepository implements IPolicyRepository{
     }
 
 
+    //取得所有策略清单
+    @Override
+    public PolicyModifiedDO queryByPartner(String partners){
+
+        //mock
+        PolicyModifiedDO policyModifiedDO = new PolicyModifiedDO();
+        policyModifiedDO.setPolicyUuid("123456789");
+        policyModifiedDO.setDefault(true);
+        policyModifiedDO.setStatus(true);
+        policyModifiedDO.setEventId("eventId");
+        policyModifiedDO.setPartnerCode("demo");
+        policyModifiedDO.setAppName("ios");
+        policyModifiedDO.setModifiedVersion(1);
+        policyModifiedDO.setVersion("v1.0");
+        return policyModifiedDO;
+    }
+
+
     @Override
     @Cacheable("policyDOCache")
     public PolicyDO queryByUuid(String uuid){

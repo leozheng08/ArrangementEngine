@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.dataobject;
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
  * @author du 2014年2月15日 下午5:45:09
  */
 @Data
-public class RuleDO extends CommonDO {
+public class RuleDO extends CommonDTO {
 
     private static final long            serialVersionUID = -2526030344227360438L;
 
