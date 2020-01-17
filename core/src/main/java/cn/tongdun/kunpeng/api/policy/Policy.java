@@ -7,6 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * 策略。将会放到缓存中，属性尽量简化，不要保留跟策略运行无关的属性
  * @Author: liang.chen
  * @Date: 2019/12/16 下午3:21
  */

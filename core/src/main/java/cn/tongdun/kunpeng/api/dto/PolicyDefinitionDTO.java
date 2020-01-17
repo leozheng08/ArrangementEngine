@@ -1,16 +1,16 @@
-package cn.tongdun.kunpeng.api.policy;
+package cn.tongdun.kunpeng.api.dto;
 
-import cn.tongdun.ddd.common.domain.Entity;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
- * 策略定义。将会放到缓存中，属性尽量简化，不要保留跟策略运行无关的属性
+ * 策略定义
  */
 @Data
-public class PolicyDefinition extends Entity {
+public class PolicyDefinitionDTO extends CommonDTO  {
 
     private String name;
 
@@ -28,6 +28,11 @@ public class PolicyDefinition extends Entity {
      * 事件标识
      */
     private String eventId;
+
+    /**
+     * 描述
+     */
+    private String description;
 
     /**
      * 合作方
@@ -84,5 +89,11 @@ public class PolicyDefinition extends Entity {
      * 是否删除
      */
     private boolean deleted;
+
+    /**
+     * 删除时间
+     */
+    private Date gmtDelete;
+
 
 }

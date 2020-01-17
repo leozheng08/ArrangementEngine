@@ -35,7 +35,7 @@ public class RunModeCache extends AbstractLocalCache<String,AbstractRunMode>{
     }
 
     @Override
-    public void remove(String uuid){
-        runModeMap.remove(uuid);
+    public AbstractRunMode remove(String uuid){
+        return runModeMap.remove(uuid);
     }
 }

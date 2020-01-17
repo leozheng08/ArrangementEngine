@@ -3,9 +3,9 @@ package cn.tongdun.kunpeng.api.load;
 import cn.tongdun.kunpeng.api.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.convertor.IConvertorFactory;
-import cn.tongdun.kunpeng.api.dataobject.PolicyDO;
-import cn.tongdun.kunpeng.api.dataobject.RuleDO;
-import cn.tongdun.kunpeng.api.dataobject.SubPolicyDO;
+import cn.tongdun.kunpeng.api.dto.PolicyDTO;
+import cn.tongdun.kunpeng.api.dto.RuleDTO;
+import cn.tongdun.kunpeng.api.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.policy.Policy;
 import cn.tongdun.kunpeng.api.rule.Rule;
 import cn.tongdun.kunpeng.api.runmode.AbstractRunMode;
@@ -22,14 +22,14 @@ import java.util.concurrent.Callable;
  */
 public class LoadPolicyTask implements Callable<Boolean> {
     private Logger logger = LoggerFactory.getLogger(LoadPolicyTask.class);
-    private PolicyDO policyDO;
+    private PolicyDTO policyDO;
     private IConvertorFactory convertorFactory;
 
     private LocalCacheService localCacheService;
 
 
 
-    public LoadPolicyTask(PolicyDO policyDO,IConvertorFactory convertorFactory,LocalCacheService localCacheService){
+    public LoadPolicyTask(PolicyDTO policyDO, IConvertorFactory convertorFactory, LocalCacheService localCacheService){
         this.policyDO = policyDO;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
@@ -46,18 +46,18 @@ public class LoadPolicyTask implements Callable<Boolean> {
     public Boolean call(){
 
         try {
-            List<SubPolicyDO> subPolicyDOList = policyDO.getSubPolicyList();
+            List<SubPolicyDTO> subPolicyDOList = policyDO.getSubPolicyList();
 
-            IConvertor<PolicyDO, Policy> policyConvertor = convertorFactory.getConvertor(PolicyDO.class);
+            IConvertor<PolicyDTO, Policy> policyConvertor = convertorFactory.getConvertor(PolicyDTO.class);
             Policy policy = policyConvertor.convert(policyDO);
 
             if (subPolicyDOList != null) {
-                for (SubPolicyDO subPolicyDO : subPolicyDOList) {
-                    IConvertor<SubPolicyDO, SubPolicy> subPolicyConvertor = convertorFactory.getConvertor(SubPolicyDO.class);
+                for (SubPolicyDTO subPolicyDO : subPolicyDOList) {
+                    IConvertor<SubPolicyDTO, SubPolicy> subPolicyConvertor = convertorFactory.getConvertor(SubPolicyDTO.class);
                     SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDO);
                     if (subPolicyDO.getRules() != null) {
-                        for (RuleDO ruleDO : subPolicyDO.getRules()) {
-                            IConvertor<RuleDO, Rule> ruleConvertor = convertorFactory.getConvertor(RuleDO.class);
+                        for (RuleDTO ruleDO : subPolicyDO.getRules()) {
+                            IConvertor<RuleDTO, Rule> ruleConvertor = convertorFactory.getConvertor(RuleDTO.class);
                             Rule rule = ruleConvertor.convert(ruleDO);
                             //缓存规则
                             localCacheService.put(Rule.class,rule.getUuid(),rule);

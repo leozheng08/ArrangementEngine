@@ -1,9 +1,8 @@
-package cn.tongdun.kunpeng.api.dataobject;
+package cn.tongdun.kunpeng.api.dto;
 
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Data

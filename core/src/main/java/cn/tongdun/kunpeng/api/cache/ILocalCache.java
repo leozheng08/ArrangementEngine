@@ -13,5 +13,5 @@ public interface ILocalCache<K,V> {
 
     void put(K key,V value);
 
-    void remove(K uuid);
+    V remove(K uuid);
 }

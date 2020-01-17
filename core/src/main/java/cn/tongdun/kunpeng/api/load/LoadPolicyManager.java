@@ -3,14 +3,9 @@ package cn.tongdun.kunpeng.api.load;
 import cn.tongdun.kunpeng.api.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.cluster.ClusterCache;
 import cn.tongdun.kunpeng.api.convertor.DefaultConvertorFactory;
-import cn.tongdun.kunpeng.api.dataobject.PolicyDO;
-import cn.tongdun.kunpeng.api.dataobject.PolicyModifiedDO;
-import cn.tongdun.kunpeng.api.engine.RuleField;
+import cn.tongdun.kunpeng.api.dto.PolicyDTO;
+import cn.tongdun.kunpeng.api.dto.PolicyModifiedDTO;
 import cn.tongdun.kunpeng.api.policy.IPolicyRepository;
-import cn.tongdun.kunpeng.api.policy.PolicyCache;
-import cn.tongdun.kunpeng.api.rule.RuleCache;
-import cn.tongdun.kunpeng.api.runmode.RunModeCache;
-import cn.tongdun.kunpeng.api.subpolicy.SubPolicyCache;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
@@ -24,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -79,16 +73,16 @@ public class LoadPolicyManager implements ILoadByPartner{
         Set<String> partners = clusterCache.getPartners();
 
         //取得策略列表
-        List<PolicyModifiedDO> PolicyModifiedDOList = policyRepository.queryByPartners(partners);
+        List<PolicyModifiedDTO> PolicyModifiedDOList = policyRepository.queryByPartners(partners);
 
 
         List<LoadPolicyTask> tasks = new ArrayList<>();
-        for(PolicyModifiedDO policyModifiedDO:PolicyModifiedDOList){
+        for(PolicyModifiedDTO policyModifiedDO:PolicyModifiedDOList){
             if(!policyModifiedDO.isStatus()){
                 continue;
             }
 
-            PolicyDO policyDO = policyRepository.queryByUuid(policyModifiedDO.getPolicyUuid());
+            PolicyDTO policyDO = policyRepository.queryByUuid(policyModifiedDO.getPolicyUuid());
 
             LoadPolicyTask task = new LoadPolicyTask(policyDO,defaultConvertorFactory,localCacheService);
             tasks.add(task);
@@ -115,13 +109,13 @@ public class LoadPolicyManager implements ILoadByPartner{
     public boolean loadByPartner(String partnerCode) {
 
         //取得策略列表
-        PolicyModifiedDO policyModifiedDO = policyRepository.queryByPartner(partnerCode);
+        PolicyModifiedDTO policyModifiedDO = policyRepository.queryByPartner(partnerCode);
 
         if(!policyModifiedDO.isStatus()){
             return true;
         }
 
-        PolicyDO policyDO = policyRepository.queryByUuid(policyModifiedDO.getPolicyUuid());
+        PolicyDTO policyDO = policyRepository.queryByUuid(policyModifiedDO.getPolicyUuid());
 
         LoadPolicyTask task = new LoadPolicyTask(policyDO,defaultConvertorFactory,localCacheService);
         List<LoadPolicyTask> tasks = new ArrayList<>();

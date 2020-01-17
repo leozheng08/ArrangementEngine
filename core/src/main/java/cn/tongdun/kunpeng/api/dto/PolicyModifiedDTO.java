@@ -1,9 +1,9 @@
-package cn.tongdun.kunpeng.api.dataobject;
+package cn.tongdun.kunpeng.api.dto;
 
 import lombok.Data;
 
 @Data
-public class PolicyModifiedDO {
+public class PolicyModifiedDTO {
     private long                    modifiedVersion;
 
     private String                  policyUuid;

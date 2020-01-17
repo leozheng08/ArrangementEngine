@@ -11,6 +11,6 @@ import java.util.List;
  */
 @Component
 @Data
-public class EventTypeLocalCache {
+public class EventTypeCache {
     private List<EventType> eventTypeList;
 }

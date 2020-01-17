@@ -36,7 +36,7 @@ public class RuleCache extends AbstractLocalCache<String,Rule> {
     }
 
     @Override
-    public void remove(String uuid){
-        ruleMap.remove(uuid);
+    public Rule remove(String uuid){
+        return ruleMap.remove(uuid);
     }
 }

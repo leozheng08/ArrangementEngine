@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.repository;
 
-import cn.tongdun.kunpeng.api.dataobject.*;
+import cn.tongdun.kunpeng.api.dto.*;
 import cn.tongdun.kunpeng.api.policy.IPolicyRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -19,11 +19,11 @@ public class PolicyRepository implements IPolicyRepository{
 
     //取得所有策略清单
     @Override
-    public List<PolicyModifiedDO> queryByPartners(Set<String> partners){
+    public List<PolicyModifiedDTO> queryByPartners(Set<String> partners){
 
         //mock
-        List<PolicyModifiedDO> list = new ArrayList();
-        PolicyModifiedDO policyModifiedDO = new PolicyModifiedDO();
+        List<PolicyModifiedDTO> list = new ArrayList();
+        PolicyModifiedDTO policyModifiedDO = new PolicyModifiedDTO();
         policyModifiedDO.setPolicyUuid("123456789");
         policyModifiedDO.setDefault(true);
         policyModifiedDO.setStatus(true);
@@ -39,10 +39,10 @@ public class PolicyRepository implements IPolicyRepository{
 
     //取得所有策略清单
     @Override
-    public PolicyModifiedDO queryByPartner(String partners){
+    public PolicyModifiedDTO queryByPartner(String partners){
 
         //mock
-        PolicyModifiedDO policyModifiedDO = new PolicyModifiedDO();
+        PolicyModifiedDTO policyModifiedDO = new PolicyModifiedDTO();
         policyModifiedDO.setPolicyUuid("123456789");
         policyModifiedDO.setDefault(true);
         policyModifiedDO.setStatus(true);
@@ -56,42 +56,60 @@ public class PolicyRepository implements IPolicyRepository{
 
 
     @Override
-    @Cacheable("policyDOCache")
-    public PolicyDO queryByUuid(String uuid){
+//    @Cacheable("policyDOCache")
+    public PolicyDTO queryByUuid(String uuid){
 
         //策略
-        PolicyDO policyDO = new PolicyDO();
+        PolicyDTO policyDO = new PolicyDTO();
         policyDO.setUuid("123456789");
-        policyDO.setDefault(true);
-        policyDO.setStatus(true);
+        policyDO.setStatus(1);
         policyDO.setEventId("eventId");
         policyDO.setPartnerCode("demo");
         policyDO.setAppName("ios");
         policyDO.setVersion("v1.0");
-        policyDO.setModifiedVersion(1);
         policyDO.setName("policy name");
 
         //子策略
-        List<SubPolicyDO> subPolicyDOList = new ArrayList<>();
+        List<SubPolicyDTO> subPolicyDOList = new ArrayList<>();
         policyDO.setSubPolicyList(subPolicyDOList);
-        SubPolicyDO subPolicyDO = new SubPolicyDO();
+        SubPolicyDTO subPolicyDO = new SubPolicyDTO();
         subPolicyDOList.add(subPolicyDO);
         subPolicyDO.setUuid("2343241342123");
         subPolicyDO.setName("sub policy name");
         subPolicyDO.setMode("Weighted");
-        subPolicyDO.setReviewThreshold(30);
-        subPolicyDO.setDenyThreshold(60);
+
+        String attribute = "{\n" +
+                "\"riskThreshold\":[\n" +
+                "    {\n" +
+                "        \"start\":0,\n" +
+                "        \"end\":30,\n" +
+                "        \"riskDecision\":\"Accept\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"start\":30,\n" +
+                "        \"end\":60,\n" +
+                "        \"riskDecision\":\"Review\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"start\":60,\n" +
+                "        \"end\":100,\n" +
+                "        \"riskDecision\":\"Reject\"\n" +
+                "    }\n" +
+                "]\n" +
+                "}";
+        subPolicyDO.setAttribute(attribute);
 
 
         //规则
-        List<RuleDO> ruleDOList = new ArrayList<>();
+        List<RuleDTO> ruleDOList = new ArrayList<>();
         subPolicyDO.setRules(ruleDOList);
-        RuleDO ruleDO = new RuleDO();
+        RuleDTO ruleDO = new RuleDTO();
         ruleDOList.add(ruleDO);
         ruleDO.setId(56935914L);
         ruleDO.setUuid("b94dbf4dfe6d41b5a62789d0a8400240");
         ruleDO.setName("正则匹配");
-        ruleDO.setOperateCode("Accept");
+        ruleDO.setMode("WorstMatch");
+        ruleDO.setRiskDecision("Accept");
         ruleDO.setTemplate("pattern/regex");
 //        ruleDO.setTemplate("regex");
         ruleDO.setRuleCustomId("56935914");
@@ -102,32 +120,32 @@ public class PolicyRepository implements IPolicyRepository{
         ruleDO.setWeightIndex("123456");
 
         //规则条件
-        List<RuleConditionElementDO> ruleConditionElementDOList = new ArrayList<>();
+        List<RuleConditionElementDTO> ruleConditionElementDOList = new ArrayList<>();
         ruleDO.setRuleConditionElements(ruleConditionElementDOList);
-        RuleConditionElementDO ruleConditionElementDO = new RuleConditionElementDO();
+        RuleConditionElementDTO ruleConditionElementDO = new RuleConditionElementDTO();
         ruleConditionElementDOList.add(ruleConditionElementDO);
 
         ruleConditionElementDO.setId(146804004L);
         ruleConditionElementDO.setUuid("b956811644594b3cb7c8fda00fbf0d38");
         ruleConditionElementDO.setLogicOperator("&&");
-        ruleConditionElementDO.setProperty("pattern/regex");
+        ruleConditionElementDO.setLeftProperty("pattern/regex");
+        ruleConditionElementDO.setLeftPropertyType("alias");
 //        ruleConditionElementDO.setProperty("regex");
-        ruleConditionElementDO.setOperator("operator");
-        ruleConditionElementDO.setValue("1");
-        ruleConditionElementDO.setType("alias");
+        ruleConditionElementDO.setOp("operator");
+        ruleConditionElementDO.setRightValue("1");
         ruleConditionElementDO.setParams("[{\"name\":\"property\",\"type\":\"string\",\"value\":\"partnerCode\"},{\"name\":\"result\",\"type\":\"int\",\"value\":\"1\"},{\"name\":\"ignoreCase\",\"type\":\"\",\"value\":\"1\"},{\"name\":\"regex\",\"type\":\"string\",\"value\":\".*\"},{\"name\":\"iterateType\",\"type\":\"string\",\"value\":\"any\"}]");
-        ruleConditionElementDO.setDescripe("正则表达式");
-        ruleConditionElementDO.setPropertyUseOriginValue(false);
+        ruleConditionElementDO.setDescription("正则表达式");
+        ruleConditionElementDO.setLeftUseOriginValue(false);
 
 
         //action
-        List<RuleActionElementDO> ruleActionElementDOList = new ArrayList<>();
+        List<RuleActionElementDTO> ruleActionElementDOList = new ArrayList<>();
         ruleDO.setRuleActionElements(ruleActionElementDOList);
-        RuleActionElementDO ruleActionElementDO = new RuleActionElementDO();
+        RuleActionElementDTO ruleActionElementDO = new RuleActionElementDTO();
         ruleActionElementDOList.add(ruleActionElementDO);
         String actions ="[{\"leftProperty\":\"accountLogin\",\"leftPropertyType\":\"\",\"operator\":\"==\",\"rightValue\":\"abc\",\"rightValueType\":\"input\"},{\"leftProperty\":\"ip3\",\"leftPropertyType\":\"\",\"operator\":\"==\",\"rightValue\":\"accountMobile\",\"rightValueType\":\"context\"}]";
         ruleActionElementDO.setActions(actions);
-        ruleActionElementDO.setFkRuleUuid(ruleDO.getUuid());
+        ruleActionElementDO.setRuleUuid(ruleDO.getUuid());
         ruleActionElementDO.setId(234232L);
 
         return policyDO;

@@ -5,16 +5,13 @@ import cn.fraudmetrix.module.tdrule.model.ConditionParam;
 import cn.fraudmetrix.module.tdrule.rule.Condition;
 import cn.tongdun.kunpeng.api.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.convertor.IConvertor;
-import cn.tongdun.kunpeng.api.dataobject.RuleConditionElementDO;
-import cn.tongdun.kunpeng.api.dataobject.SubPolicyDO;
+import cn.tongdun.kunpeng.api.dto.RuleConditionElementDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +20,7 @@ import java.util.Map;
  */
 @Component
 @DependsOn(value = "defaultConvertorFactory")
-public class RuleConditionElementConvertor implements IConvertor<RuleConditionElementDO,Condition> {
+public class RuleConditionElementConvertor implements IConvertor<RuleConditionElementDTO,Condition> {
 
 
     private Map<String,String> operatorMap = new HashMap<>();
@@ -49,24 +46,24 @@ public class RuleConditionElementConvertor implements IConvertor<RuleConditionEl
         operatorMap.put("exclude","notContainString");//待确认
         operatorMap.put("prefix","待实现");
         operatorMap.put("suffix","待实现");
-        convertorFactory.register(RuleConditionElementDO.class,this);
+        convertorFactory.register(RuleConditionElementDTO.class,this);
     }
 
     @Override
-    public Condition convert(RuleConditionElementDO t){
+    public Condition convert(RuleConditionElementDTO t){
 
 
         Condition condition = new Condition();
 
         condition.setId(t.getId().intValue());
-        condition.setOp(convertOperator(t.getOperator()));
+        condition.setOp(convertOperator(t.getOp()));
 
         ConditionParam leftParam = new ConditionParam();
         leftParam.setConditionId(condition.getId());
-        FieldTypeEnum fieldType = convertFieldType(t.getType(),t.getPropertyDataType());
+        FieldTypeEnum fieldType = convertFieldType(t.getLeftPropertyType(),t.getLeftPropertyDataType());
         leftParam.setFieldType(fieldType);
-        leftParam.setDataType(convertDataType(t.getPropertyDataType()));
-        leftParam.setName(t.getProperty());
+        leftParam.setDataType(convertDataType(t.getLeftPropertyDataType()));
+        leftParam.setName(t.getLeftProperty());
 
 
 

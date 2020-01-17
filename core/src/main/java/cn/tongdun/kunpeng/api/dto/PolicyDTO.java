@@ -1,23 +1,27 @@
-package cn.tongdun.kunpeng.api.dataobject;
+package cn.tongdun.kunpeng.api.dto;
 
 
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 
 @Data
-public class PolicyDO extends CommonDTO {
+public class PolicyDTO extends CommonDTO {
 
     private static final long serialVersionUID = 1456486484654131346L;
 
-    private String                  partnerCode;
-    private String                  appName;
-    private String                  eventId;
-    private String                  version;
-    private List<SubPolicyDO>       subPolicyList;
+
+    private String appName;
+    private String eventId;
+
+    private String eventType;
+    private String appType;
+    private String name;
+
+    private PolicyDefinitionDTO policyDefinition;
+    private List<SubPolicyDTO>  subPolicyList;
 
     /**
      * 合作方

@@ -35,7 +35,7 @@ public class SubPolicyCache extends AbstractLocalCache<String,SubPolicy> {
     }
 
     @Override
-    public void remove(String uuid){
-        subPolicyMap.remove(uuid);
+    public SubPolicy remove(String uuid){
+        return subPolicyMap.remove(uuid);
     }
 }

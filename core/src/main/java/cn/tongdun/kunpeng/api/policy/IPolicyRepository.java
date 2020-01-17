@@ -1,8 +1,7 @@
 package cn.tongdun.kunpeng.api.policy;
 
-import cn.tongdun.kunpeng.api.dataobject.PolicyDO;
-import cn.tongdun.kunpeng.api.dataobject.PolicyModifiedDO;
-import cn.tongdun.kunpeng.api.eventtype.EventType;
+import cn.tongdun.kunpeng.api.dto.PolicyDTO;
+import cn.tongdun.kunpeng.api.dto.PolicyModifiedDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -15,12 +14,12 @@ public interface IPolicyRepository {
 
 
     //取得所有策略清单
-    List<PolicyModifiedDO> queryByPartners(Set<String> partners);
+    List<PolicyModifiedDTO> queryByPartners(Set<String> partners);
 
 
     //取得所有策略清单
-    PolicyModifiedDO queryByPartner(String partner);
+    PolicyModifiedDTO queryByPartner(String partner);
 
 
-    PolicyDO queryByUuid(String uuid);
+    PolicyDTO queryByUuid(String uuid);
 }

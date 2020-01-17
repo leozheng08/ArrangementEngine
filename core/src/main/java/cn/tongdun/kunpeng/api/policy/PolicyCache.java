@@ -44,13 +44,14 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
     }
 
     @Override
-    public void remove(String uuid){
+    public Policy remove(String uuid){
         Policy policy = policyMap.remove(uuid);
         if(policy == null){
-            return;
+            return null;
         }
 
         policyUuidMap.remove(buildKey(policy));
+        return policy;
     }
 
 
@@ -77,8 +78,7 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
      * Build key:partnerCode^^appName^^eventId^^version
      */
     private static String buildKey(String partner, String appname, String eventId,String version) {
-        String key = StringUtils.join(partner, SPLIT_CHAR, appname,
+        return StringUtils.join(partner, SPLIT_CHAR, appname,
                 SPLIT_CHAR, eventId, SPLIT_CHAR, version);
-        return key;
     }
 }

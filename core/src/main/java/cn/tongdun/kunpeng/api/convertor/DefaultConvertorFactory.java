@@ -1,16 +1,5 @@
 package cn.tongdun.kunpeng.api.convertor;
 
-import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
-import cn.fraudmetrix.module.tdrule.parser.conditionbuilder.*;
-import cn.tongdun.kunpeng.api.convertor.impl.PolicyConvertor;
-import cn.tongdun.kunpeng.api.convertor.impl.RuleConvertor;
-import cn.tongdun.kunpeng.api.convertor.impl.SubPolicyConvertor;
-import cn.tongdun.kunpeng.api.dataobject.PolicyDO;
-import cn.tongdun.kunpeng.api.dataobject.RuleDO;
-import cn.tongdun.kunpeng.api.dataobject.SubPolicyDO;
-import cn.tongdun.kunpeng.api.subpolicy.SubPolicy;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

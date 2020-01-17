@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.load;
 
 import cn.tongdun.kunpeng.api.eventtype.EventType;
-import cn.tongdun.kunpeng.api.eventtype.EventTypeLocalCache;
+import cn.tongdun.kunpeng.api.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.RuleField;
 import cn.tongdun.tdframework.core.logger.Logger;
@@ -27,7 +27,7 @@ public class EventTypeLoadManager implements ILoad{
     IEventTypeRepository eventTypeRepository;
 
     @Autowired
-    EventTypeLocalCache eventTypeLocalCache;
+    EventTypeCache eventTypeLocalCache;
 
     @Override
     public boolean load(){

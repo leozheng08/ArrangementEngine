@@ -12,9 +12,9 @@ import cn.fraudmetrix.module.tdrule.util.RuleCreateFactory;
 import cn.tongdun.ddd.common.exception.BizException;
 import cn.tongdun.kunpeng.api.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.convertor.IConvertor;
-import cn.tongdun.kunpeng.api.dataobject.RuleActionElementDO;
-import cn.tongdun.kunpeng.api.dataobject.RuleConditionElementDO;
-import cn.tongdun.kunpeng.api.dataobject.RuleDO;
+import cn.tongdun.kunpeng.api.dto.RuleActionElementDTO;
+import cn.tongdun.kunpeng.api.dto.RuleConditionElementDTO;
+import cn.tongdun.kunpeng.api.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.rule.Rule;
 import cn.tongdun.kunpeng.api.rule.function.arithmetic.*;
 import cn.tongdun.kunpeng.api.rule.operator.ArithmeticOperator;
@@ -39,7 +39,7 @@ import java.util.Map;
  */
 @Component
 @DependsOn(value = "defaultConvertorFactory")
-public class RuleConvertor implements IConvertor<RuleDO,Rule> {
+public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
 
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
@@ -68,23 +68,23 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
         operatorMap.put("prefix","待实现");
         operatorMap.put("suffix","待实现");
 
-        convertorFactory.register(RuleDO.class,this);
+        convertorFactory.register(RuleDTO.class,this);
     }
 
 
     @Override
-    public Rule convert(RuleDO t){
+    public Rule convert(RuleDTO t){
         Rule result = new Rule();
         //规则基本信息
         result.setRuleId(t.getId().toString());
         result.setRuleCustomId(t.getRuleCustomId());
         result.setUuid(t.getUuid());
-        result.setDisplayOrder(t.getDisplayOrder());
+        result.setDisplayOrder(t.getPriority());
         result.setName(t.getName());
         result.setParentUuid(t.getParentUuid());
-        result.setSubPolicyUuid(t.getFkPolicyUuid());
+        result.setSubPolicyUuid(t.getPolicyUuid());
         result.setTemplate(t.getTemplate());
-        result.setDecision(t.getOperateCode());
+        result.setDecision(t.getRiskDecision());
 
         //生成规则引擎的RawRule对象
         RawRule rawRule = new RawRule();
@@ -93,7 +93,7 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
         rawRule.setType(t.getTemplate());
 
         //生成条件
-        List<RuleConditionElementDO> conditionElements = t.getRuleConditionElements();
+        List<RuleConditionElementDTO> conditionElements = t.getRuleConditionElements();
         if(conditionElements == null || conditionElements.isEmpty()){
 //            logger.error("RuleConvertor error RuleConditionElement is empty:"+t);
             throw new BizException("RuleConvertor error RuleConditionElement is empty");
@@ -105,7 +105,7 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
         StringBuilder buffer = new StringBuilder();
         String logic = null; // 1&2&3  //1|2|3
         int i=0;
-        for(RuleConditionElementDO conditionElementDO:conditionElements){
+        for(RuleConditionElementDTO conditionElementDO:conditionElements){
             if(i==0){
                 logic =  convertlogic(conditionElementDO.getLogicOperator());
             } else {
@@ -128,9 +128,9 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
 
         //生成action
         List<ActionDesc> actionDescList = new ArrayList<>();
-        List<RuleActionElementDO> ruleActionElementDOList= t.getRuleActionElements();
+        List<RuleActionElementDTO> ruleActionElementDOList= t.getRuleActionElements();
         if(ruleActionElementDOList != null){
-            for(RuleActionElementDO ruleActionElementDO:ruleActionElementDOList){
+            for(RuleActionElementDTO ruleActionElementDO:ruleActionElementDOList){
                 convertAction(actionDescList,ruleActionElementDO.getActions());
             }
         }
@@ -154,7 +154,7 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
      private Double                       downLimitScore;                          // 权重计算分数右值下限
      private Double                       upLimitScore;                            // 权重计算分数右值上限
      */
-    private ArithmeticOperator convertWeight(RuleDO t){
+    private ArithmeticOperator convertWeight(RuleDTO t){
         Addition addition = new Addition();
         addition.addOperand(new NumberVar(t.getBaseWeight()));
 
@@ -247,28 +247,30 @@ public class RuleConvertor implements IConvertor<RuleDO,Rule> {
     }
 
 
-    public Condition convertCondition(RuleConditionElementDO t,List<FunctionDesc> functionDescList ){
+    public Condition convertCondition(RuleConditionElementDTO t, List<FunctionDesc> functionDescList ){
 
 
         Condition condition = new Condition();
 
         condition.setId(t.getId().intValue());
-        condition.setOp(convertOperator(t.getOperator()));
+        condition.setOp(convertOperator(t.getOp()));
 
         ConditionParam leftParam = new ConditionParam();
         leftParam.setConditionId(condition.getId());
-        FieldTypeEnum fieldType = convertFieldType(t.getType(),t.getPropertyDataType());
-        leftParam.setFieldType(fieldType);
-        leftParam.setDataType(convertDataType(t.getPropertyDataType()));
-        leftParam.setName(t.getProperty());
+        leftParam.setDataType(convertDataType(t.getLeftPropertyDataType()));
+        leftParam.setName(t.getLeftProperty());
 
-        switch (fieldType){
-            case FUNC:
-                FunctionDesc functionDesc = convertFun(t.getId().intValue(),t.getProperty(), t.getParams());
-                functionDescList.add(functionDesc);
-                break;
-            case INDEX:
-                break;
+        FieldTypeEnum fieldType = convertFieldType(t.getLeftPropertyType(),t.getLeftPropertyDataType());
+        leftParam.setFieldType(fieldType);
+        if(fieldType != null) {
+            switch (fieldType) {
+                case FUNC:
+                    FunctionDesc functionDesc = convertFun(t.getId().intValue(), t.getLeftProperty(), t.getParams());
+                    functionDescList.add(functionDesc);
+                    break;
+                case INDEX:
+                    break;
+            }
         }
 
         return condition;
