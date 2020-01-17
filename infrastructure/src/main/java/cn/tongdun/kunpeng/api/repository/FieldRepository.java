@@ -2,8 +2,8 @@ package cn.tongdun.kunpeng.api.repository;
 
 import cn.tongdun.kunpeng.api.dao.RuleFieldDao;
 import cn.tongdun.kunpeng.api.dataobj.RuleFieldDO;
-import cn.tongdun.kunpeng.api.engine.IRuleFieldRepository;
-import cn.tongdun.kunpeng.api.engine.RuleField;
+import cn.tongdun.kunpeng.api.core.field.IFieldDefinitionRepository;
+import cn.tongdun.kunpeng.api.core.field.FieldDefinition;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @Date: 2019/12/10 下午1:46
  */
 @Repository
-public class FieldRepository implements IRuleFieldRepository {
+public class FieldRepository implements IFieldDefinitionRepository {
 
 
     @Autowired
@@ -26,14 +26,14 @@ public class FieldRepository implements IRuleFieldRepository {
 
 
     @Override
-    public List<RuleField> queryByParams(RuleField field){
+    public List<FieldDefinition> queryByParams(FieldDefinition field){
 
         List<RuleFieldDO> list = ruleFieldDao.queryByParams((JSONObject)JSON.toJSON(field));
 
-        List<RuleField> result = null;
+        List<FieldDefinition> result = null;
         if(list != null){
             result = list.stream().map(ruleFieldDO->{
-                RuleField ruleField = new RuleField();
+                FieldDefinition ruleField = new FieldDefinition();
                 BeanUtils.copyProperties(ruleFieldDO,ruleField);
                 return ruleField;
             }).collect(Collectors.toList());

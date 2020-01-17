@@ -23,6 +23,8 @@ public class PolicyDTO extends CommonDTO {
     private PolicyDefinitionDTO policyDefinition;
     private List<SubPolicyDTO>  subPolicyList;
 
+    private DecisionFlowDTO decisionFlowDTO;
+
     /**
      * 合作方
      */
@@ -98,4 +100,6 @@ public class PolicyDTO extends CommonDTO {
      * 原模板uuid（策略uuid）
      */
     private String originTemplateUuid;
+
+
 }

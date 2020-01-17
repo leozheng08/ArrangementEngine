@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.cache;
 
-import cn.tongdun.kunpeng.api.rule.Rule;
+import cn.tongdun.kunpeng.api.core.rule.Rule;
 
 /**
  * 本地缓存

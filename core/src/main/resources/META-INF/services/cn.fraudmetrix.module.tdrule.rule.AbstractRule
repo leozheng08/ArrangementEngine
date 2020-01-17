@@ -1,1 +1,1 @@
-pattern/regex=cn.tongdun.kunpeng.api.rule.template.LocalRegexRule
+pattern/regex=cn.tongdun.kunpeng.api.core.rule.template.LocalRegexRule

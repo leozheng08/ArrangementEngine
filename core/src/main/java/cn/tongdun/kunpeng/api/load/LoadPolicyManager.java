@@ -1,11 +1,11 @@
 package cn.tongdun.kunpeng.api.load;
 
 import cn.tongdun.kunpeng.api.cache.LocalCacheService;
-import cn.tongdun.kunpeng.api.cluster.ClusterCache;
+import cn.tongdun.kunpeng.api.core.cluster.ClusterCache;
 import cn.tongdun.kunpeng.api.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.dto.PolicyModifiedDTO;
-import cn.tongdun.kunpeng.api.policy.IPolicyRepository;
+import cn.tongdun.kunpeng.api.core.policy.IPolicyRepository;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;

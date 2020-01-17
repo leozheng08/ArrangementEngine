@@ -5,7 +5,7 @@ import cn.fraudmetrix.shutter.client.common.annotations.ShutterFile;
 import cn.fraudmetrix.shutter.client.common.annotations.ShutterObservable;
 import cn.fraudmetrix.shutter.client.common.observer.ShutterObserver;
 import cn.fraudmetrix.shutter.client.support.ShutterConfig;
-import cn.tongdun.tdframework.core.config.AbstractConfigRepository;
+import cn.tongdun.kunpeng.share.config.AbstractConfigRepository;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;

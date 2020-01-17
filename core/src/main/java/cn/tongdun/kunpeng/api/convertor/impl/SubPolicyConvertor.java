@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.api.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.dto.SubPolicyDTO;
-import cn.tongdun.kunpeng.api.subpolicy.SubPolicy;
+import cn.tongdun.kunpeng.api.core.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.common.data.DecisionResultType;
 import cn.tongdun.kunpeng.common.data.PolicyMode;
 import com.alibaba.fastjson.JSONArray;

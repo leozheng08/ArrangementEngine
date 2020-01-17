@@ -1,8 +1,7 @@
 package cn.tongdun.kunpeng.api.repository;
 
 import cn.tongdun.kunpeng.api.dto.*;
-import cn.tongdun.kunpeng.api.policy.IPolicyRepository;
-import org.springframework.cache.annotation.Cacheable;
+import cn.tongdun.kunpeng.api.core.policy.IPolicyRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

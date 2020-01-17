@@ -1,9 +1,9 @@
 package cn.tongdun.kunpeng.api.load;
 
-import cn.tongdun.kunpeng.api.eventtype.EventType;
-import cn.tongdun.kunpeng.api.eventtype.EventTypeCache;
-import cn.tongdun.kunpeng.api.eventtype.IEventTypeRepository;
-import cn.tongdun.kunpeng.api.engine.RuleField;
+import cn.tongdun.kunpeng.api.core.eventtype.EventType;
+import cn.tongdun.kunpeng.api.core.eventtype.EventTypeCache;
+import cn.tongdun.kunpeng.api.core.eventtype.IEventTypeRepository;
+import cn.tongdun.kunpeng.api.core.field.FieldDefinition;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -32,7 +32,7 @@ public class EventTypeLoadManager implements ILoad{
     @Override
     public boolean load(){
         logger.info("EventTypeLoadManager load()");
-        RuleField field = new RuleField();
+        FieldDefinition field = new FieldDefinition();
         //0为系统字段 1为扩展字段
         field.setSign(0);
         List<EventType> list = eventTypeRepository.queryAll();

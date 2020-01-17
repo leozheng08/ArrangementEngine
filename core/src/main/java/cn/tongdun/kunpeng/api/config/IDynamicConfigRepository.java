@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.config;
 
-import cn.tongdun.tdframework.core.config.IConfigRepository;
+import cn.tongdun.kunpeng.share.config.IConfigRepository;
 
 /**
  * @Author: liang.chen
