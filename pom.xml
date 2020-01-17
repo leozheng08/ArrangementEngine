@@ -173,12 +173,11 @@
         </dependencies>
     </dependencyManagement>
 
-
     <profiles>
         <profile>
             <id>pro</id>
             <build>
-                <finalName>kunpeng-api</finalName>
+                <finalName>kunpeng-admin</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

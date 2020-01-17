@@ -22,7 +22,6 @@ public class DecisionFlowEngine extends DecisionTool{
 
     @Override
     public PolicyResponse execute(AbstractRunMode abstractRunMode, FraudContext context){
-        ArrayList<? extends AbstractRunMode> a = new ArrayList<>();
 
         long start = System.currentTimeMillis();
         PolicyResponse rolicyResponse = new PolicyResponse();

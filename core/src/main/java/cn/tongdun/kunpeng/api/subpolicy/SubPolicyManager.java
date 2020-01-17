@@ -42,19 +42,23 @@ public class SubPolicyManager implements IExecutor<String,SubPolicyResponse>{
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_FIND.getCode(), ReasonCode.SUB_POLICY_NOT_FIND.getDescription(), "决策引擎执行"));
         }
         long start = System.currentTimeMillis();
-        switch (subPolicy.getPolicyMode()){
-            case FirstMatch: //首次匹配
-                firstMatch(subPolicy,context,subPolicyResponse);
-                break;
-            case WorstMatch:  //最坏匹配
-                worstMatch(subPolicy,context,subPolicyResponse);
-                break;
-            case Weighted: //权重模式
-                weighted(subPolicy,context,subPolicyResponse);
-                break;
-            default:
-                weighted(subPolicy,context,subPolicyResponse);
-                break;
+        if(subPolicy.getPolicyMode() == null) {
+            switch (subPolicy.getPolicyMode()) {
+                case FirstMatch: //首次匹配
+                    firstMatch(subPolicy, context, subPolicyResponse);
+                    break;
+                case WorstMatch:  //最坏匹配
+                    worstMatch(subPolicy, context, subPolicyResponse);
+                    break;
+                case Weighted: //权重模式
+                    weighted(subPolicy, context, subPolicyResponse);
+                    break;
+                default:
+                    weighted(subPolicy, context, subPolicyResponse);
+                    break;
+            }
+        } else {
+            weighted(subPolicy, context, subPolicyResponse);
         }
 
 
