@@ -40,6 +40,7 @@ public class SubPolicyManager implements IExecutor<String,SubPolicyResponse> {
         SubPolicy subPolicy = subPolicyCache.get(uuid);
         if(subPolicy == null){
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_FIND.getCode(), ReasonCode.SUB_POLICY_NOT_FIND.getDescription(), "决策引擎执行"));
+            return subPolicyResponse;
         }
         long start = System.currentTimeMillis();
         if(subPolicy.getPolicyMode() == null) {
