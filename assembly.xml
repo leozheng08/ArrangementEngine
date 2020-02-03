@@ -24,12 +24,12 @@
     </fileSets>
     <files>
         <file>
-            <source>core/target/${project.build.finalName}.jar</source>
+            <source>${basedir}/core/target/${project.build.finalName}.jar</source>
             <outputDirectory>bin</outputDirectory>
             <filtered>false</filtered>
         </file>
         <file>
-            <source>preboot</source>
+            <source>${basedir}/preboot</source>
             <filtered>false</filtered>
         </file>
     </files>
