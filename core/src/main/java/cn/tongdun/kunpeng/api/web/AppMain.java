@@ -127,6 +127,7 @@ public class AppMain implements ApplicationContextAware {
         log.warn("kunpeng-api started");
         try {
             SpringApplication.run(AppMain.class, args);
+            log.info("start env:"+System.getenv());
         } catch (Throwable e) {
             e.printStackTrace();
             throw e;
