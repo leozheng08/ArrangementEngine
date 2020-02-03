@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,6 +40,7 @@ import java.util.List;
 @EnableScheduling
 @EnableAutoConfiguration
 @ImportResource(locations = {"classpath*:app.xml","classpath*:spring/*"})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class AppMain implements ApplicationContextAware {
 
     private final static Logger log = LoggerFactory.getLogger(AppMain.class);
