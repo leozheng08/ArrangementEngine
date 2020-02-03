@@ -177,7 +177,7 @@
         <profile>
             <id>pro</id>
             <build>
-                <finalName>kunpeng-admin</finalName>
+                <finalName>kunpeng-api</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
