@@ -129,6 +129,7 @@ public class AppMain implements ApplicationContextAware {
             SpringApplication.run(AppMain.class, args);
             log.info("start env:"+System.getenv());
         } catch (Throwable e) {
+            log.info("start failed env:"+System.getenv());
             e.printStackTrace();
             throw e;
         }
