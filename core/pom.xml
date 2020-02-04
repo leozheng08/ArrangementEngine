@@ -23,7 +23,6 @@
         <start-class>cn.tongdun.kunpeng.api.web.AppMain</start-class>
 
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-        <tdframework.version>1.0.0-SNAPSHOT</tdframework.version>
 
     </properties>
 
