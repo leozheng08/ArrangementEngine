@@ -40,7 +40,7 @@ import java.util.List;
 @EnableScheduling
 @EnableAutoConfiguration
 @ImportResource(locations = {"classpath*:app.xml","classpath*:spring/*"})
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+//SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class AppMain implements ApplicationContextAware {
 
     private final static Logger log = LoggerFactory.getLogger(AppMain.class);
