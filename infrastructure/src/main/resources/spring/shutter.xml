@@ -8,7 +8,7 @@
 
     <shutter:application name="kunpeng-api" environment="dev"/>
     <shutter:security accessKey="38X5Z679VAS8upB2" secretKey="9645effa30144e0abbc4730fac6bbc99"/>
-    <shutter:config-center address="10.57.17.39:8188" download-dir="/Users/liang.chen/IdeaProjects/tongdun/paas/kunpeng-api/output" protocol="http"/>
+    <shutter:config-center address="${shutter.hostList}" download-dir="${shutter.output}" protocol="http"/>
 
     <shutter:annotation-scan base-package="cn.tongdun.kunpeng.api.config"/>
 

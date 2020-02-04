@@ -24,8 +24,8 @@
         <page-helper.version>4.1.6</page-helper.version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.0-SNAPSHOT</tdframework.version>
-        <ddd.version>1.0-SNAPSHOT</ddd.version>
+        <tdframework.version>1.0.1</tdframework.version>
+        <ddd.version>1.0.2</ddd.version>
 
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
@@ -57,7 +57,7 @@
             <dependency>
                 <groupId>cn.tongdun</groupId>
                 <artifactId>tdframework-common</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${tdframework.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun</groupId>
@@ -147,7 +147,7 @@
             <dependency>
                 <groupId>cn.tongdun.kunpeng</groupId>
                 <artifactId>kunpeng-share</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0.1</version>
             </dependency>
             <!-- ddd end-->
 
@@ -172,7 +172,13 @@
             <dependency>
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>redis-client</artifactId>
-                <version>3.4.3</version>
+                <version>3.4.7</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>cn.fraudmetrix</groupId>
+                        <artifactId>module-metrics</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
