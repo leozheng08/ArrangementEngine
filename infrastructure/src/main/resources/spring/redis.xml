@@ -5,9 +5,9 @@
        xmlns:redis="http://www.tongdun.cn/schema/redis"
        default-autowire="byName">
 
-    <redis:sentinel id="kunPengRedisClient" master-name="${kunpeng-api.redis.master}"
-                    sentinels="${kunpeng-api.redis.sentinels}"
-                    namespace="${kunpeng-api.redis.namespace}" password="${kunpeng-api.redis.password}"
-                    monitor-center="${kunpeng-api.redis.monitor.center}"/>
+    <!--<redis:sentinel id="kunPengRedisClient" master-name="${kunpeng-api.redis.master}"-->
+                    <!--sentinels="${kunpeng-api.redis.sentinels}"-->
+                    <!--namespace="${kunpeng-api.redis.namespace}" password="${kunpeng-api.redis.password}"-->
+                    <!--monitor-center="${kunpeng-api.redis.monitor.center}"/>-->
 
 </beans>
