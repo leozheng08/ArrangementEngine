@@ -11,4 +11,26 @@ import lombok.Data;
 @Data
 public class FraudContext extends AbstractFraudContext{
 
+
+    @Override
+    public Object getField(String var1){
+        return get(var1);
+    }
+
+    @Override
+    public void setField(String var1,Object obj){
+        set(var1,obj);
+    }
+
+    @Override
+    public Double getIndex(String var1){
+        //测试代码
+        return 6D;
+    }
+
+    @Override
+    public Double getOriginIndex(String var1){
+        return null;
+    }
+
 }

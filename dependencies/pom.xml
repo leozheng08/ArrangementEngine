@@ -26,7 +26,7 @@
         <guava-version>20.0</guava-version>
         <tdframework.version>1.0.3</tdframework.version>
         <ddd.version>1.0.4</ddd.version>
-        <tdrule.version>0.0.2-snapshot</tdrule.version>
+        <tdrule.version>0.0.1-SNAPSHOT</tdrule.version>
 
 
         <maven_deploy_version>2.8.2</maven_deploy_version>

@@ -11,7 +11,6 @@ import cn.fraudmetrix.module.tdrule.rule.Condition;
 import cn.fraudmetrix.module.tdrule.util.RuleCreateFactory;
 import cn.tongdun.ddd.common.exception.BasicErrorCode;
 import cn.tongdun.ddd.common.exception.BizException;
-import cn.tongdun.ddd.common.exception.ErrorCode;
 import cn.tongdun.kunpeng.api.engine.convertor.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.dto.RuleActionElementDTO;
