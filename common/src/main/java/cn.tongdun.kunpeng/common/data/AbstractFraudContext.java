@@ -54,7 +54,6 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
     private boolean testFlag = false;
     private long requestTraceStartTime;//trace开始时间
     private transient boolean async = false;
-    boolean eventTypeIsCredit;
 
     /**
      * 规则仿真

@@ -27,7 +27,7 @@ public class DeviceInfoStep implements IRiskStep{
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){
 
         //取得应用类型，并调用到上下文中
-        //String appType = getAppType(context);
+        String appType = getAppType(context);
         //todo context.setAppType()
 
 
@@ -41,7 +41,8 @@ public class DeviceInfoStep implements IRiskStep{
      * @return
      */
     private String getAppType(AbstractFraudContext context){
-        String appType = extensionExecutor.execute(IFpGetAppTypeExtPt.class, context.getBizScenario(), extension -> extension.getAppType(context));
+        String appType = extensionExecutor.execute(IFpGetAppTypeExtPt.class, context.getBizScenario(),
+                extension -> extension.getAppType(context));
         return appType;
     }
 

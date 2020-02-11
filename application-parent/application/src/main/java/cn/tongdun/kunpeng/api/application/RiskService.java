@@ -3,6 +3,8 @@ package cn.tongdun.kunpeng.api.application;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
+import cn.tongdun.kunpeng.api.config.ConfigManager;
+import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.kunpeng.common.data.RiskResponse;
 import cn.tongdun.tdframework.common.dto.Response;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -24,6 +27,10 @@ public class RiskService {
     @Autowired
     PipelineExecutor pipelineExecutor;
 
+    @Resource(name="configManager")
+    ConfigManager configManager;
+
+
     public RiskResponse riskService(Map<String,String> request) {
         FraudContext context = new FraudContext();
         context.setRequestParamsMap(request);
@@ -33,6 +40,10 @@ public class RiskService {
         context.setPolicyUuid("123456789");
         context.setPartnerCode(request.get("partner_code"));
         context.set("accountMobile",request.get("accountMobile"));
+        context.setEventType("Loan");
+
+        BizScenario bizScenario = createBizScenario(context);
+        context.setBizScenario(bizScenario);
 
         RiskResponse riskResponse = new RiskResponse();
 
@@ -48,6 +59,15 @@ public class RiskService {
         );
 
         return riskResponse;
+    }
+
+    private BizScenario createBizScenario(FraudContext context){
+        BizScenario bizScenario = new BizScenario();
+        bizScenario.setTenant(configManager.getProperty("tenant"));
+        bizScenario.setPartner(context.getPartnerCode());
+        String businessType = configManager.getBusinessByEventType(context.getEventType());
+        bizScenario.setBusiness(businessType);
+        return bizScenario;
     }
 
 }
