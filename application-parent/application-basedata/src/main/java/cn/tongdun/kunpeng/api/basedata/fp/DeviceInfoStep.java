@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.common.data.RiskResponse;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * @Author: liang.chen
  * @Date: 2020/2/10 下午2:19
  */
+@Component
 @Step(pipeline = Risk.NAME,phase = Risk.BASIC_DATA)
 public class DeviceInfoStep implements IRiskStep{
 
@@ -25,7 +27,7 @@ public class DeviceInfoStep implements IRiskStep{
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){
 
         //取得应用类型，并调用到上下文中
-        String appType = getAppType(context);
+        //String appType = getAppType(context);
         //todo context.setAppType()
 
 
