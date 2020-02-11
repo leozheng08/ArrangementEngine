@@ -13,4 +13,12 @@
     <cache:annotation-driven />
     <context:component-scan base-package="cn.tongdun.kunpeng.api"/>
     <context:component-scan base-package="cn.tongdun.tdframework"/>
+
+    <bean id="tdframework-bootstrap" class="cn.tongdun.tdframework.core.boot.Bootstrap" init-method="init">
+        <property name="packages">
+            <list>
+                <value>cn.tongdun.kunpeng.api</value>
+            </list>
+        </property>
+    </bean>
 </beans>
