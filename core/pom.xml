@@ -41,11 +41,6 @@
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>biz</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>interface-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>
