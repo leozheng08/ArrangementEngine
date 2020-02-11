@@ -24,7 +24,7 @@
         <page-helper.version>4.1.6</page-helper.version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.3</tdframework.version>
+        <tdframework.version>1.0.4-SNAPSHOT</tdframework.version>
         <ddd.version>1.0.4</ddd.version>
         <tdrule.version>0.0.1-SNAPSHOT</tdrule.version>
 
@@ -190,6 +190,12 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.4</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-math3</artifactId>
+                <version>3.4</version>
+            </dependency>
+
 
 
             <!-- ddd start -->
