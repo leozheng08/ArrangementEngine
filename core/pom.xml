@@ -20,7 +20,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <start-class>cn.tongdun.kunpeng.api.web.AppMain</start-class>
+        <start-class>cn.tongdun.kunpeng.api.AppMain</start-class>
 
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
 
@@ -44,6 +44,13 @@
             <artifactId>biz</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>interface-adapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
 
 
         <!--Spring Boot-->

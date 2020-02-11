@@ -17,7 +17,7 @@
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>biz</artifactId>
+            <artifactId>engine</artifactId>
         </dependency>
 
         <dependency>

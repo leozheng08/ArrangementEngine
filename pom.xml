@@ -13,10 +13,14 @@
     <modules>
         <module>client</module>
         <module>core</module>
-        <module>common</module>
-        <module>infrastructure</module>
-        <module>biz</module>
         <module>dependencies</module>
+        <module>common</module>
+        <module>rule-detail</module>
+        <module>engine</module>
+        <module>infrastructure</module>
+        <module>application-parent</module>
+        <module>interface-adapter</module>
+
     </modules>
 
 

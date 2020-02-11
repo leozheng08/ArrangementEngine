@@ -6,6 +6,7 @@ import cn.fraudmetrix.shutter.client.common.annotations.ShutterObservable;
 import cn.fraudmetrix.shutter.client.common.observer.ShutterObserver;
 import cn.fraudmetrix.shutter.client.support.ShutterConfig;
 import cn.tongdun.kunpeng.share.config.AbstractConfigRepository;
+import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.tdframework.core.logger.Logger;
 import cn.tongdun.tdframework.core.logger.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -22,7 +23,7 @@ import java.util.Map;
 @Component
 @ShutterObservable(filenames = "kunpeng-api-observe.properties")
 @ShutterFile(filename = "kunpeng-api-observe.properties", observable = true,cluster = "DEFAULT_GROUP", group = "DEFAULT_GROUP") // 支持改变监听
-public class DynamicConfigRepository extends AbstractConfigRepository implements InitializingBean, ShutterObserver,IDynamicConfigRepository{
+public class DynamicConfigRepository extends AbstractConfigRepository implements InitializingBean, ShutterObserver,IConfigRepository{
 
     public final static Logger logger = LoggerFactory.getLogger(DynamicConfigRepository.class);
 

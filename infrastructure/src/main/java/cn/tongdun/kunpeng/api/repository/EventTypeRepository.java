@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.repository;
 
 import cn.tongdun.kunpeng.api.dataobj.SelectDO;
-import cn.tongdun.kunpeng.api.core.eventtype.EventType;
-import cn.tongdun.kunpeng.api.core.eventtype.IEventTypeRepository;
+import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
+import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

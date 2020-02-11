@@ -2,8 +2,8 @@ package cn.tongdun.kunpeng.api.repository;
 
 import cn.tongdun.kunpeng.api.dao.RuleFieldDao;
 import cn.tongdun.kunpeng.api.dataobj.RuleFieldDO;
-import cn.tongdun.kunpeng.api.core.field.IFieldDefinitionRepository;
-import cn.tongdun.kunpeng.api.core.field.FieldDefinition;
+import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;

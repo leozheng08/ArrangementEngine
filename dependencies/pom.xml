@@ -26,6 +26,7 @@
         <guava-version>20.0</guava-version>
         <tdframework.version>1.0.3</tdframework.version>
         <ddd.version>1.0.4</ddd.version>
+        <tdrule.version>0.0.1</tdrule.version>
 
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
@@ -40,12 +41,17 @@
         <dependencies>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>biz</artifactId>
+                <artifactId>engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -64,6 +70,13 @@
                 <artifactId>tdframework-core</artifactId>
                 <version>${tdframework.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>module-tdrule</artifactId>
+                <version>${tdrule.version}</version>
+            </dependency>
+
 
 
             <!--Spring Boot-->
@@ -165,6 +178,12 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>2.8.4</version>
             </dependency>
 
             <!-- module start -->

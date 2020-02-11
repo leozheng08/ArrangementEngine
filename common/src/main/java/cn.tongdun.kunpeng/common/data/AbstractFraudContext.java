@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.common.data;
 
+import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.tongdun.tdframework.common.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Sets;
 import lombok.Data;
@@ -14,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
-public abstract class AbstractFraudContext implements Serializable, Cloneable{
+public abstract class AbstractFraudContext implements Serializable, Cloneable,ExecuteContext {
 
 
     private static final long serialVersionUID = -3320502733559293390L;
@@ -33,6 +35,8 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable{
         }
     }
 
+    private IBizScenario bizScenario;
+
     private String policyUuid;
     /**
      * 服务类型。比如基础版avalon，信贷云creditcloud
@@ -50,6 +54,7 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable{
     private boolean testFlag = false;
     private long requestTraceStartTime;//trace开始时间
     private transient boolean async = false;
+    boolean eventTypeIsCredit;
 
     /**
      * 规则仿真
@@ -217,6 +222,30 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable{
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+
+
+
+    @Override
+    public Object getField(String var1){
+        return get(var1);
+    }
+
+    @Override
+    public void setField(String var1,Object obj){
+        set(var1,obj);
+    }
+
+    @Override
+    public Double getIndex(String var1){
+        //测试代码
+        return 6D;
+    }
+
+    @Override
+    public Double getOriginIndex(String var1){
+        return null;
     }
 
 
