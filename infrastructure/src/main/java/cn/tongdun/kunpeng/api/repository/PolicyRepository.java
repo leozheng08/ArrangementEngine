@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.repository;
 
 
-import cn.tongdun.kunpeng.api.engine.dto.dto.*;
+import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import org.springframework.stereotype.Component;
 
