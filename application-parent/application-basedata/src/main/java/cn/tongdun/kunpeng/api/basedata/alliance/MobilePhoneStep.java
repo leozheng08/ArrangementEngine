@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * ip画像信息获取
+ * 手机画像信息获取
  * @Author: liang.chen
  * @Date: 2020/2/10 下午2:19
  */
 @Component
 @Step(pipeline = Risk.NAME,phase = Risk.BASIC_DATA)
-public class IpReputationStep implements IRiskStep{
+public class MobilePhoneStep implements IRiskStep{
 
     @Autowired
     private ExtensionExecutor extensionExecutor;
@@ -26,11 +26,11 @@ public class IpReputationStep implements IRiskStep{
     @Override
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){
 
-        //调用Ip画像之前，调用参数的组织
+        //调用手机画像之前，调用参数的组织
 
-        //调用Ip画像
+        //调用手机画像
 
-        //Ip画像信息处理
+        //手机画像信息处理
 
         return true;
     }

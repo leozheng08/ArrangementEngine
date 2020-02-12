@@ -3,9 +3,9 @@ package cn.tongdun.kunpeng.api.basedata.elfin.ext;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 
 /**
- * 调用手机画像
+ * 调用elfin
  * @Author: liang.chen
  * @Date: 2020/2/10 下午3:12
  */
-public interface IMobilePhoneInvokeExtPt extends IExtensionPoint {
+public interface IGeoIpInvokeExtPt extends IExtensionPoint {
 }

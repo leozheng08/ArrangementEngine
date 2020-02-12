@@ -7,5 +7,5 @@ import cn.tongdun.tdframework.core.extension.IExtensionPoint;
  * @Author: liang.chen
  * @Date: 2020/2/10 下午3:11
  */
-public interface IIpReputatHandleExtPt extends IExtensionPoint {
+public interface IIpReputationHandleExtPt extends IExtensionPoint {
 }
