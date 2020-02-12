@@ -128,7 +128,7 @@ public class RuleConditionElementConvertor implements IConvertor<RuleConditionEl
                 break;
             case "context":
                 if(dataType != null && dataType.equals("GAEA_INDICATRIX")){
-                    fieldType = FieldTypeEnum.INDEX;
+                    fieldType = FieldTypeEnum.PLATFORM_INDEX;
                 } else{
                     fieldType = FieldTypeEnum.CONTEXT;
                 }

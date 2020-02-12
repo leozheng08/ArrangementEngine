@@ -2,10 +2,11 @@ package cn.tongdun.kunpeng.api.engine.model.rule.function.pattern;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.Variable;
-import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
+import cn.fraudmetrix.module.tdrule.exception.ParseException;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.VelocityFuncType;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -16,77 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FunctionKit extends AbstractFunction {
+public class FunctionKit extends AbstractCalculateFunction {
+
     private static final Logger logger = LoggerFactory.getLogger(FunctionKit.class);
-
-//[
-//    {
-//        "name": "funcType",
-//            "type": "enum",
-//            "value": "VelocityFuncType.SUM"
-//    },
-//    {
-//        "name": "calVariable",
-//            "type": "GAEA_INDICATRIX",
-//            "value": "391277626028733417"
-//    },
-//    {
-//        "name": "otherCalVariables",
-//            "type": "GAEA_INDICATRIX",
-//            "value": "391248999354725353",
-//            "index": 0
-//    },
-//    {
-//        "name": "naturalValue",
-//            "type": "double",
-//            "value": "0"
-//    }
-//]
-
-
-//[
-//    {
-//        "name": "calVariable",
-//            "type": "index",
-//            "value": "0679f4d11a4d4931921c1a3b0e6e2b83"
-//    },
-//    {
-//        "name": "otherCalVariables",
-//            "type": "index",
-//            "value": "cc406b8f99a646a8b5a5e6c5a57fd90e"
-//    },
-//    {
-//        "name": "funcType",
-//            "type": "enum",
-//            "value": "VelocityFuncType.SUM"
-//    }
-//]
-
-
-//[
-//    {
-//        "name": "funcType",
-//            "type": "enum",
-//            "value": "VelocityFuncType.INDEX"
-//    },
-//    {
-//        "name": "calVariable",
-//            "type": "GAEA_INDICATRIX",
-//            "value": "252524598116209673"
-//    },
-//    {
-//        "name": "otherCalVariables",
-//            "type": "index",
-//            "value": "",
-//            "index": 0
-//    },
-//    {
-//        "name": "naturalValue",
-//            "type": "double",
-//            "value": "10"
-//    }
-//]
-
 
     private VelocityFuncType funcType;
     private Variable calVariableVar;
@@ -100,77 +33,59 @@ public class FunctionKit extends AbstractFunction {
     }
 
     @Override
-    public void parse(List<FunctionParam> list) {
-        if (CollectionUtils.isEmpty(list)) {
-            return;
+    public void parse(FunctionDesc functionDesc) {
+        if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
+            throw new ParseException("FunctionKit function parse error,no params!");
         }
 
-        List<FunctionParam> lstOther = list.stream()
+        List<FunctionParam> lstOther = functionDesc.getParamList().stream()
                 .filter(p -> "otherCalVariables".equals(p.getName()))
                 .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(lstOther)) {
-            otherCalVariablesVar = buildParam(lstOther);
+        otherCalVariablesVar = Lists.newArrayList();
+        for (FunctionParam functionParam : lstOther) {
+            otherCalVariablesVar.add(buildVariable(functionParam, Double.class));
         }
 
-        list.forEach(param -> {
+        functionDesc.getParamList().forEach(param -> {
             if (StringUtils.equals("funcType", param.getName())) {
-                String funcTypeValue = String.valueOf(param.getValue());
+                String funcTypeValue = param.getValue();
                 if (StringUtils.startsWith(funcTypeValue, "VelocityFuncType.")) {
                     funcType = VelocityFuncType.valueOf(funcTypeValue.split("VelocityFuncType.")[1]);
-                }
-                else {
+                } else {
                     funcType = VelocityFuncType.valueOf(funcTypeValue);
                 }
-            }
-            else if (StringUtils.equals("calVariable", param.getName())) {
-                calVariableVar = buildParam(param);
-            }
-            else if (StringUtils.equals("naturalValue", param.getName())) {
+            } else if (StringUtils.equals("calVariable", param.getName())) {
+                calVariableVar = buildVariable(param, Double.class);
+            } else if (StringUtils.equals("naturalValue", param.getName())) {
                 naturalValue = Integer.parseInt(param.getValue());
             }
-
         });
-
-
+        if (null == funcType || null == calVariableVar) {
+            throw new ParseException("FunctionKit function parse error,null == funcType || null == calVariableVar,conditionUuid:"
+                    + functionDesc.getConditionUuid() + ",ruleUuid:" + functionDesc.getRuleUuid());
+        }
     }
 
     @Override
-    public CalculateResult run(ExecuteContext context) {
-//        @Param("funcType") VelocityFuncType funcType,
-//        @Param("calVariable") Double variable,
-//        @Param("otherCalVariables") List<Double> otherVariables,
-//        @Param("naturalValue") Integer naturalValue,
-
-
-        Double calVariable = (Double) calVariableVar.eval(context);
-        List<Double> otherCalVariables = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(otherCalVariablesVar)) {
-            for (Variable variable : otherCalVariablesVar) {
-                otherCalVariables.add((Double) variable.eval(context));
-            }
-        }
-
-
-        double result = Double.NaN;
-
-        if (null == otherCalVariables || null == funcType) {
-            logger.warn("functionKit get null parameter, otherVariables or funcType");
-            return new CalculateResult(false, null);
-        }
-
+    public Object eval(ExecuteContext context) {
+        double result;
         List<Double> values = new ArrayList<>();
-        values.add(calVariable);
-        values.addAll(otherCalVariables);
-
-
+        try {
+            values.add((Double) calVariableVar.eval(context));
+            if (CollectionUtils.isNotEmpty(otherCalVariablesVar)) {
+                for (Variable variable : otherCalVariablesVar) {
+                    values.add((Double) variable.eval(context));
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("FunctionKit eval error!", e);
+        }
         result = statisticCalculate(values, funcType, naturalValue);
-
-
-        return new CalculateResult(true, null);
+        return result;
     }
 
 
-    public static double statisticCalculate(List<Double> values, VelocityFuncType funcType, int naturalValue) {
+    private static double statisticCalculate(List<Double> values, VelocityFuncType funcType, int naturalValue) {
         double result = Double.NaN;
         if (null == values || 0 == values.size() || null == funcType) {
             return result;
@@ -187,7 +102,7 @@ public class FunctionKit extends AbstractFunction {
         return result;
     }
 
-    public static double getCalculateResult(VelocityFuncType funcType, DescriptiveStatistics statistics, int naturalValue) {
+    private static double getCalculateResult(VelocityFuncType funcType, DescriptiveStatistics statistics, int naturalValue) {
         try {
             switch (funcType) {
                 case SUM:
@@ -221,8 +136,7 @@ public class FunctionKit extends AbstractFunction {
                 default:
                     return Double.NaN;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.warn("calculate error", e);
             return Double.NaN;
         }
@@ -231,7 +145,7 @@ public class FunctionKit extends AbstractFunction {
     /**
      * 求幂a^b
      */
-    public static double getPower(DescriptiveStatistics ds) {
+    private static double getPower(DescriptiveStatistics ds) {
         double[] values = ds.getValues();
         if (values.length < 3) {
             return Double.NaN;
@@ -262,7 +176,7 @@ public class FunctionKit extends AbstractFunction {
     /**
      * 求对数log(b^a)
      */
-    public static double getLogarithm(DescriptiveStatistics ds) {
+    private static double getLogarithm(DescriptiveStatistics ds) {
         double[] values = ds.getValues();
         if (values.length < 3) {
             return Double.NaN;
