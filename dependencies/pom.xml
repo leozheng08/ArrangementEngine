@@ -24,7 +24,7 @@
         <page-helper.version>4.1.6</page-helper.version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.4</tdframework.version>
+        <tdframework.version>1.0.5</tdframework.version>
         <ddd.version>1.0.4</ddd.version>
         <tdrule.version>0.0.2-SNAPSHOT</tdrule.version>
 
