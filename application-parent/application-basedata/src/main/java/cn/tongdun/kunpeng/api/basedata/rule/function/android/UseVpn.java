@@ -1,14 +1,12 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.android;
+package cn.tongdun.kunpeng.api.basedata.rule.function.android;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
 import java.util.Map;
 
 public class UseVpn extends AbstractFunction {
@@ -19,14 +17,15 @@ public class UseVpn extends AbstractFunction {
         return Constant.Function.ANDROID_VPN;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> functionParamList) {
+    public void parse(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
-        AbstractFraudContext context = (AbstractFraudContext) executeContext;
+    public Object eval(ExecuteContext executeContext) {
+        FraudContext context = (FraudContext) executeContext;
 
         boolean ret = false;
         Map<String, Object> deviceInfo = context.getDeviceInfo();
@@ -42,6 +41,8 @@ public class UseVpn extends AbstractFunction {
                 ret = false;
             }
         }
-        return new CalculateResult(ret, null);
+        return ret;
     }
+
+
 }

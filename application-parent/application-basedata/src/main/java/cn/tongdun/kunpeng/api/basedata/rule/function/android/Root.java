@@ -1,14 +1,12 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.android;
+package cn.tongdun.kunpeng.api.basedata.rule.function.android;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
 import java.util.Map;
 
 public class Root extends AbstractFunction {
@@ -18,30 +16,33 @@ public class Root extends AbstractFunction {
         return Constant.Function.ANDROID_ROOT;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> functionParamList) {
+    public void parse(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
-        AbstractFraudContext context = (AbstractFraudContext) executeContext;
+    public Object eval(ExecuteContext executeContext) {
+        FraudContext context = (FraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            return new CalculateResult(false, null);
+            return false;
         }
 
         Object isRoot = deviceInfo.get("isRoot");
         Object isRootNew = deviceInfo.get("root");
         if (isRoot != null && StringUtils.equalsIgnoreCase(isRoot.toString(), "true")) {
-            return new CalculateResult(true, null);
+            return true;
         }
 
         if (isRootNew != null && Boolean.TRUE.equals(isRootNew)) {
-            return new CalculateResult(true, null);
+            return true;
         }
 
-        return new CalculateResult(false, null);
+        return false;
     }
+
+
 }

@@ -225,8 +225,8 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
 
 
 
-    private String accountMobile;
-    private String idNumber;
+    private String accountMobile;           //address Match
+    private String idNumber;                //address Match
 
     public String getIpAddress() {
         Object result = get("ipAddress");
@@ -234,7 +234,7 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
             result = get("ipAddr");
         }
         return (String) result;
-    }
+    }      //Proxy function
 
 
 

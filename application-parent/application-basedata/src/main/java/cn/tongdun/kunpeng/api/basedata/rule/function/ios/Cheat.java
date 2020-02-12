@@ -1,15 +1,13 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.ios;
+package cn.tongdun.kunpeng.api.basedata.rule.function.ios;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 
 public class Cheat extends AbstractFunction {
@@ -22,28 +20,31 @@ public class Cheat extends AbstractFunction {
         return Constant.Function.IOS_IS_CHEAT;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> functionParamList) {
+    public void parse(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
-        AbstractFraudContext context = (AbstractFraudContext) executeContext;
+    public Object eval(ExecuteContext executeContext) {
+        FraudContext context = (FraudContext) executeContext;
 
         Map<String, Object> systemFields = context.getSystemFiels();
         Object containsCheatApp = systemFields.get("containsCheatApp");
         if (containsCheatApp == null) {
             logger.warn("ios cheat containsCheatApp system field not configured");
-            return new CalculateResult(false, null);
+            return false;
         }
         else {
             if (Boolean.TRUE.equals(containsCheatApp)) {
-                return new CalculateResult(true, null);
+                return true;
             }
             else {
-                return new CalculateResult(false, null);
+                return false;
             }
         }
     }
+
+
 }

@@ -1,9 +1,9 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.anomaly;
+package cn.tongdun.kunpeng.api.basedata.rule.function.anomaly;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -18,13 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class FpException extends AbstractFunction {
-//[
-//  {
-//    "name": "codes",
-//    "type": "string",
-//    "value": "071,072,073,074,075"
-//  }
-//]
 
     private static final Logger logger = LoggerFactory.getLogger(FpException.class);
 
@@ -37,21 +30,22 @@ public class FpException extends AbstractFunction {
         return Constant.Function.ANOMALY_FP_EXCEPTION;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> list) {
-        if (CollectionUtils.isEmpty(list)) {
-            return;
+    public void parse(FunctionDesc functionDesc) {
+        if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
+            throw new ParseException("anomaly FpException function parse error,no params!");
         }
 
-        list.forEach(functionParam -> {
-            if (StringUtils.equals("codes", functionParam.getName())) {
-                codes = functionParam.getValue();
+        functionDesc.getParamList().forEach(param -> {
+            if (StringUtils.equals("codes", param.getName())) {
+                codes = param.getValue();
             }
         });
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
+    public Object eval(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
@@ -60,14 +54,14 @@ public class FpException extends AbstractFunction {
         if (success) {
             String result = (String) deviceInfo.get("exceptionInfo");
             if (result == null) {
-                return new CalculateResult(false, null);
+                return false;
             }
             try {
                 JSONObject obj = JSONObject.parseObject(result);
                 code = (String) obj.get("code");
             }
             catch (Exception e) {
-                return new CalculateResult(false, null);
+                return false;
             }
         }
         else {
@@ -75,7 +69,7 @@ public class FpException extends AbstractFunction {
         }
 
         if (code == null || "".equals(code)) {
-            return new CalculateResult(false, null);
+            return false;
         }
 
         List<String> mycodes = Splitter.on(",").splitToList(codes);
@@ -83,13 +77,15 @@ public class FpException extends AbstractFunction {
             // 详情
             String result = fpResultMap.get(code);
             if (result == null) {
-                return new CalculateResult(false, null);
+                return false;
             }
 
-            return new CalculateResult(true, null);
+            return true;
         }
         else {
-            return new CalculateResult(false, null);
+            return false;
         }
     }
+
+
 }

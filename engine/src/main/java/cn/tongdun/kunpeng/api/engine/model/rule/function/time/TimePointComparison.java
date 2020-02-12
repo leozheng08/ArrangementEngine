@@ -1,81 +1,61 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.function.time;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
 import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class TimePointComparison extends AbstractFunction {
-//[
-//  {
-//    "name": "calcField",
-//    "type": "string",
-//    "value": "eventOccurTime"
-//  },
-//  {
-//    "name": "timeunit",
-//    "type": "string",
-//    "value": "h"
-//  },
-//  {
-//    "name": "lowerLimit",
-//    "type": "string",
-//    "value": "1"
-//  },
-//  {
-//    "name": "upperLimit",
-//    "type": "string",
-//    "value": "4"
-//  }
-//]
 
     private String calcField;
     private String timeunit;
     private String lowerLimit;
     private String upperLimit;
 
-
     @Override
     public String getName() {
         return Constant.Function.TIME_TIME_POINT_COMPARISON;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> list) {
-        if(CollectionUtils.isEmpty(list)){
-            return;
+    public void parse(FunctionDesc functionDesc) {
+        if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
+            throw new ParseException("TimePointComparison function parse error,no params!");
         }
 
-        list.forEach(functionParam -> {
-            if (StringUtils.equals("calcField", functionParam.getName())) {
-                calcField = functionParam.getValue();
+        functionDesc.getParamList().forEach(param -> {
+            if (StringUtils.equals("calcField", param.getName())) {
+                calcField = param.getValue();
             }
-            else if (StringUtils.equals("timeunit", functionParam.getName())) {
-                timeunit = functionParam.getValue();
+            else if (StringUtils.equals("timeunit", param.getName())) {
+                timeunit = param.getValue();
             }
-            else if (StringUtils.equals("lowerLimit", functionParam.getName())) {
-                lowerLimit = functionParam.getValue();
+            else if (StringUtils.equals("lowerLimit", param.getName())) {
+                lowerLimit = param.getValue();
             }
-            else if (StringUtils.equals("upperLimit", functionParam.getName())) {
-                upperLimit = functionParam.getValue();
+            else if (StringUtils.equals("upperLimit", param.getName())) {
+                upperLimit = param.getValue();
             }
         });
     }
 
     @Override
-    public CalculateResult run(ExecuteContext context) {
-        Date date = DateUtil.getDateValue(context.getField(calcField));
+    public Object eval(ExecuteContext executeContext) {
+        AbstractFraudContext context = (AbstractFraudContext) executeContext;
+
+        Date date = DateUtil.getDateValue(context.get(calcField));
         if (null == date) {
-            return new CalculateResult(false, null);
+            return false;
         }
 
         int dateValue = 0;
@@ -107,8 +87,11 @@ public class TimePointComparison extends AbstractFunction {
         if (StringUtils.isNotBlank(upperLimit) && StringUtils.isNotBlank(lowerLimit)) {
             result = isInTimeRange(dateValue, lowerLimit, upperLimit);
         }
+        else {
+            // FIXME: 2/13/20 hanle none
+        }
 
-        return new CalculateResult(result, null);
+        return result;
     }
 
 

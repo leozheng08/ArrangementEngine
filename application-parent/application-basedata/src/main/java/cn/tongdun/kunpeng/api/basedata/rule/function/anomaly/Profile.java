@@ -1,13 +1,11 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.anomaly;
+package cn.tongdun.kunpeng.api.basedata.rule.function.anomaly;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 
-import java.util.List;
 import java.util.Map;
 
 public class Profile extends AbstractFunction {
@@ -18,14 +16,15 @@ public class Profile extends AbstractFunction {
         return Constant.Function.ANOMALY_PROFILE;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> functionParamList) {
+    public void parse(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
-        AbstractFraudContext context = (AbstractFraudContext) executeContext;
+    public Object eval(ExecuteContext executeContext) {
+        FraudContext context = (FraudContext) executeContext;
 
         Map<String, Object> map = context.getDeviceInfo();
         boolean imageLoaded = false;
@@ -37,10 +36,12 @@ public class Profile extends AbstractFunction {
 
         if (!imageLoaded && deviceId != null) {
 
-            return new CalculateResult(true, null);
+            return true;
         }
         else {
-            return new CalculateResult(false, null);
+            return false;
         }
     }
+
+
 }

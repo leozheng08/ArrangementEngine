@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.location;
+package cn.tongdun.kunpeng.api.basedata.rule.function.location;
 
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.riskbase.object.BinInfoDO;
@@ -7,46 +7,21 @@ import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
 import cn.fraudmetrix.module.riskbase.service.intf.BinInfoQueryService;
 import cn.fraudmetrix.module.riskbase.service.intf.IdInfoQueryService;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
-import cn.tongdun.kunpeng.api.engine.service.ElfinBaseDataService;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
+import cn.tongdun.kunpeng.api.basedata.service.elfin.ElfinBaseDataService;
 import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 public class AddressMatch extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(AddressMatch.class);
-//[
-//  {
-//    "name": "addressA",
-//    "type": "string",
-//    "value": "ipAddress"
-//  },
-//  {
-//    "name": "addressB",
-//    "type": "string",
-//    "value": "ipAddress"
-//  },
-//  {
-//    "name": "scope",
-//    "type": "string",
-//    "value": "country"
-//  },
-//  {
-//    "name": "isMatch",
-//    "type": "int",
-//    "value": "0"
-//  }
-//]
-
 
     private String addressA;
     private String addressB;
@@ -59,56 +34,58 @@ public class AddressMatch extends AbstractFunction {
         return Constant.Function.LOCATION_ADDRESS_MATCH;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> list) {
-        if (CollectionUtils.isEmpty(list)) {
-            return;
+    public void parse(FunctionDesc functionDesc) {
+        if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
+            throw new ParseException("AddressMatch function parse error,no params!");
         }
 
-        list.forEach(functionParam -> {
-            if (StringUtils.equals("addressA", functionParam.getName())) {
-                addressA = functionParam.getValue();
+        functionDesc.getParamList().forEach(param -> {
+            if (StringUtils.equals("addressA", param.getName())) {
+                addressA = param.getValue();
             }
-            else if (StringUtils.equals("addressB", functionParam.getName())) {
-                addressB = functionParam.getValue();
+            else if (StringUtils.equals("addressB", param.getName())) {
+                addressB = param.getValue();
             }
-            else if (StringUtils.equals("scope", functionParam.getName())) {
-                scope = functionParam.getValue();
+            else if (StringUtils.equals("scope", param.getName())) {
+                scope = param.getValue();
             }
-            else if (StringUtils.equals("isMatch", functionParam.getName())) {
-                isMatch = Integer.parseInt(functionParam.getValue());
+            else if (StringUtils.equals("isMatch", param.getName())) {
+                isMatch = Integer.parseInt(param.getValue());
             }
         });
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
+    public Object eval(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
         String addrOne = getAddress(context, addressA, scope);
         String addrTwo = getAddress(context, addressB, scope);
         if (StringUtils.isBlank(addrOne) || StringUtils.isBlank(addrTwo)) {
-            return new CalculateResult(false, null);
+            return false;
         }
 
-        boolean result = false;
+        int result = 0;
         if (StringUtils.equalsIgnoreCase(addrOne, addrTwo)) {
-            result = true;
+            result = 1;
         }
         else {
-            result = false;
+            result = 0;
         }
 
-        return new CalculateResult(result, null);
+        return isMatch == result;
     }
 
-    private String getAddress(AbstractFraudContext context, String address, String scope) {
+
+    private String getAddress(FraudContext context, String address, String scope) {
         ElfinBaseDataService elfinBaseDataService = SpringContextHolder.getBean("elfinBaseDataService", ElfinBaseDataService.class);
         IdInfoQueryService idInfoQueryService = SpringContextHolder.getBean("idInfoQueryService", IdInfoQueryService.class);
         BinInfoQueryService binInfoQueryService = SpringContextHolder.getBean("binInfoQueryService", BinInfoQueryService.class);
 
         if ("ipAddress".equalsIgnoreCase(address)) {// IP地理位置
-            GeoipEntity geoInfo = null;             // FIXME: 2/12/20 how to get
+            GeoipEntity geoInfo = context.getGeoipEntity();         // FIXME: 2/13/20 hanle geoip
             if (null == geoInfo) {
                 return null;
             }

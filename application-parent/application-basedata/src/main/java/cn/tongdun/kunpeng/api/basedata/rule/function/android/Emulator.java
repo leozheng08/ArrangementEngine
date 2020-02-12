@@ -1,11 +1,10 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.android;
+package cn.tongdun.kunpeng.api.basedata.rule.function.android;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
-import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Emulator extends AbstractFunction {
@@ -26,18 +24,19 @@ public class Emulator extends AbstractFunction {
         return Constant.Function.ANDROID_EMULATOR;
     }
 
+
     @Override
-    public void parse(List<FunctionParam> functionParamList) {
+    public void parse(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
-        AbstractFraudContext context = (AbstractFraudContext) executeContext;
+    public Object eval(ExecuteContext executeContext) {
+        FraudContext context = (FraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            return new CalculateResult(false, null);
+            return false;
         }
 
         // 设备指纹银行基金部署改造需求,客户直接传设备信息参数(device_raw)的话,拷贝fp的代码自己处理模拟器
@@ -49,10 +48,10 @@ public class Emulator extends AbstractFunction {
 
         Object isAndroidEmulator = deviceInfo.get("isEmulator");
         if (Boolean.TRUE.equals(isAndroidEmulator)) {
-            return new CalculateResult(true, null);
+            return true;
         }
         else {
-            return new CalculateResult(false, null);
+            return false;
         }
     }
 

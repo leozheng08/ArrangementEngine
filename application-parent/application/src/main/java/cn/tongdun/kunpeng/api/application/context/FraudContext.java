@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.application.context;
 
+import cn.fraudmetrix.horde.biz.entity.IpReputationRulesObj;
+import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import lombok.Data;
@@ -10,6 +12,14 @@ import lombok.Data;
  */
 @Data
 public class FraudContext extends AbstractFraudContext{
+
+
+    private GeoipEntity geoipEntity;                        //function AddressMatch
+    private IpReputationRulesObj ipReputationRulesObj;      //function Proxy
+
+
+
+
 
     @Override
     public Object getField(String name) {
