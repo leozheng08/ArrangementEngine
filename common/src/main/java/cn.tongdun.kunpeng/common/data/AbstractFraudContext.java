@@ -225,6 +225,20 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
 
 
 
+    private String accountMobile;
+    private String idNumber;
+
+    public String getIpAddress() {
+        Object result = get("ipAddress");
+        if (result == null) {
+            result = get("ipAddr");
+        }
+        return (String) result;
+    }
+
+
+
+
 
 
 

@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.engine.convertor.impl;
 
 import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
-import cn.fraudmetrix.module.tdrule.eval.Index;
+import cn.fraudmetrix.module.tdrule.eval.PlatformIndex;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.ConditionParam;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
@@ -160,7 +160,7 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
         addition.addOperand(new NumberVar(t.getBaseWeight()));
 
         if(t.getWeightIndex() != null ){
-            Index index = new Index(t.getWeightIndex(),false);
+            PlatformIndex index = new PlatformIndex(t.getWeightIndex(),false);
             NumberVar weightRatio = new NumberVar(t.getWeightRatio());
 
             Multiply multiply = new Multiply();
@@ -269,7 +269,7 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
                     FunctionDesc functionDesc = convertFun(t.getId().intValue(), t.getLeftProperty(), t.getParams());
                     functionDescList.add(functionDesc);
                     break;
-                case INDEX:
+                case PLATFORM_INDEX:
                     break;
             }
         }
@@ -342,7 +342,7 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
                 break;
             case "context":
                 if(dataType != null && dataType.equals("GAEA_INDICATRIX")){
-                    fieldType = FieldTypeEnum.INDEX;
+                    fieldType = FieldTypeEnum.PLATFORM_INDEX;
                 } else{
                     fieldType = FieldTypeEnum.CONTEXT;
                 }

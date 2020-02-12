@@ -3,11 +3,11 @@ package cn.tongdun.kunpeng.api.engine.model.rule.function;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
-import cn.fraudmetrix.module.tdrule.function.CalculateResult;
+import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,14 +34,14 @@ public class LocalRegexFunction extends AbstractFunction {
     }
 
     @Override
-    public void parse(List<FunctionParam> functionParamList) {
-        if (null == functionParamList || functionParamList.isEmpty()) {
+    public void parse(FunctionDesc functionDesc) {
+        if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("LocalRegexFunction parse error,function params is blank!");
         }
 
         boolean ignoreCase = true;
         String regexString = null;
-        for (FunctionParam functionParam : functionParamList) {
+        for (FunctionParam functionParam : functionDesc.getParamList()) {
             if (StringUtils.equals("property", functionParam.getName())) {
                 property = functionParam.getValue();
             }
@@ -67,22 +67,14 @@ public class LocalRegexFunction extends AbstractFunction {
     }
 
     @Override
-    public CalculateResult run(ExecuteContext executeContext) {
+    public Object eval(ExecuteContext executeContext) {
 
-        CalculateResult calculateResult = new CalculateResult();
         Object propertyField = executeContext.getField(property);
         if (propertyField == null) {
-            calculateResult.setResult(false);
-            return calculateResult;
+            return false;
         }
         String propertyString = propertyField.toString();
         Matcher matcher = regexPattern.matcher(propertyString);
-        boolean ret = matcher.matches();
-        if (!isMatch) {
-            calculateResult.setResult(!ret);
-        } else {
-            calculateResult.setResult(ret);
-        }
-        return calculateResult;
+        return matcher.matches();
     }
 }

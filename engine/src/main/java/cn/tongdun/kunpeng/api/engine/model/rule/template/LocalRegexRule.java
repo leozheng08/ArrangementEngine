@@ -3,10 +3,11 @@ package cn.tongdun.kunpeng.api.engine.model.rule.template;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
-import cn.fraudmetrix.module.tdrule.function.Function;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
+import cn.fraudmetrix.module.tdrule.rule.EvalDetailResult;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
+import cn.tongdun.kunpeng.api.engine.model.rule.function.LocalRegexFunction;
 
 /**
  * @Author: liuq
@@ -14,12 +15,13 @@ import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
  */
 public class LocalRegexRule extends AbstractRule {
 
-    private Function function;
+    private LocalRegexFunction function;
 
     @Override
-    public EvalResult run(ExecuteContext executeContext) {
+    public EvalDetailResult run(ExecuteContext executeContext) {
         Object ret = function.eval(executeContext);
-        return EvalResult.valueOf(ret);
+        EvalResult evalResult = EvalResult.valueOf(ret);
+        return new EvalDetailResult(evalResult);
     }
 
     @Override
@@ -31,6 +33,6 @@ public class LocalRegexRule extends AbstractRule {
         if (rawRule.getFunctionDescList().size() > 1) {
             throw new ParseException("LocalRegexRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
-        function = FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (LocalRegexFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }
