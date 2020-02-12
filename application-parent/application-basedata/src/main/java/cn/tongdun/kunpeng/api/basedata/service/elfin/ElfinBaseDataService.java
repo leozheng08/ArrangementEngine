@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.elfin;
+package cn.tongdun.kunpeng.api.basedata.service.elfin;
 
 /**
  * @Author: liang.chen

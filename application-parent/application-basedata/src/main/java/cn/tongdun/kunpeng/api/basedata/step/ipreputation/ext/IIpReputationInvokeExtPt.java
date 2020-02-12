@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.service.horde.ext;
+package cn.tongdun.kunpeng.api.basedata.step.ipreputation.ext;
 
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 

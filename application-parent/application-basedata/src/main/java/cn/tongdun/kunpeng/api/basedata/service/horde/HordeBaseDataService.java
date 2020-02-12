@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.horde;
+package cn.tongdun.kunpeng.api.basedata.service.horde;
 
 /**
  * @Author: liang.chen

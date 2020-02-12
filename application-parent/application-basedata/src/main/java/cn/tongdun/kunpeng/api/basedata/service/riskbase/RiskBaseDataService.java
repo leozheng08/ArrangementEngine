@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.riskbase;
+package cn.tongdun.kunpeng.api.basedata.service.riskbase;
 
 /**
  * @Author: liang.chen

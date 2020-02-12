@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.service.fp.ext;
+package cn.tongdun.kunpeng.api.basedata.step.device.ext;
 
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 

@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.alliance;
+package cn.tongdun.kunpeng.api.basedata.service.alliance;
 
 /**
  * @Author: liang.chen

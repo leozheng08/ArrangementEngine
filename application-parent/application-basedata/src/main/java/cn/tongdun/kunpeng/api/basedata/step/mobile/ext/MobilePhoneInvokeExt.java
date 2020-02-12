@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.service.alliance.ext;
+package cn.tongdun.kunpeng.api.basedata.step.mobile.ext;
 
 import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;

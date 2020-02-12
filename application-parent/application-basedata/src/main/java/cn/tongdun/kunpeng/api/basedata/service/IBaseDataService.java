@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata;
+package cn.tongdun.kunpeng.api.basedata.service;
 
 public interface IBaseDataService {
 }

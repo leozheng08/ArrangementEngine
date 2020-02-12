@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata;
+package cn.tongdun.kunpeng.api.basedata.step.geoIp;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
