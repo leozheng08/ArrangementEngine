@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.policy;
 
-import cn.tongdun.kunpeng.api.engine.dto.dto.PolicyDTO;
-import cn.tongdun.kunpeng.api.engine.dto.dto.PolicyModifiedDTO;
+import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
+import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
 
 import java.util.List;
 import java.util.Set;

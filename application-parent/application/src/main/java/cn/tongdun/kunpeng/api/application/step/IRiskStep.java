@@ -4,7 +4,10 @@ package cn.tongdun.kunpeng.api.application.step;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.RiskResponse;
 import cn.tongdun.tdframework.core.pipeline.IStep;
-import cn.tongdun.tdframework.core.pipeline.Step;
+import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.Map;
 
@@ -15,6 +18,7 @@ import java.util.Map;
  * @Date: 2019/12/17 下午3:53
  */
 public interface IRiskStep extends IStep {
+    Logger logger = LoggerFactory.getLogger(IRiskStep.class);
 
     String        PARTNER_CODE = "partner_code";
     String        SECRET_KEY   = "secret_key";
@@ -29,4 +33,9 @@ public interface IRiskStep extends IStep {
      */
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request);
 
+
+    @Override
+    default void errorHandle(Throwable e) {
+        logger.error("riskStep error",e);
+    }
 }

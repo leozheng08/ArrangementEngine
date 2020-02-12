@@ -11,9 +11,9 @@
     <name>kunpeng-api</name>
 
     <modules>
+        <module>dependencies</module>
         <module>client</module>
         <module>core</module>
-        <module>dependencies</module>
         <module>common</module>
         <module>rule-detail</module>
         <module>engine</module>

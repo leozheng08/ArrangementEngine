@@ -11,13 +11,14 @@ import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
-import cn.tongdun.tdframework.core.logger.Logger;
-import cn.tongdun.tdframework.core.logger.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -50,7 +51,7 @@ public class ParallelEngine extends DecisionTool {
     @Autowired
     private SubPolicyManager subPolicyManager;
 
-    @Autowired
+    @Resource(name="dynamicConfigRepository")
     private IConfigRepository configRepository;
 
 
@@ -85,8 +86,9 @@ public class ParallelEngine extends DecisionTool {
      * @return 规则引擎执行超时时间
      */
     private long resolveExecuteTimeout(AbstractFraudContext context) {
-        boolean isCredit = context.isEventTypeIsCredit();
-        long timeout = isCredit ? configRepository.getLongConfigData("rule.engine.execute.credit.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT) : configRepository.getLongConfigData("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT);
+        String eventType = context.getEventType();
+        long timeout = configRepository.getLongConfigData("rule.engine.execute.credit.timeout",
+                configRepository.getLongConfigData("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT));
         if (timeout < DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT) {
             timeout = DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT;
         }
