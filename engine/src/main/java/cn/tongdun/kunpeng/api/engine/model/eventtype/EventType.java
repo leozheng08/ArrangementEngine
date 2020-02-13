@@ -12,8 +12,8 @@ public class EventType extends EntityObject {
 
     private long id;                    /* 全局唯一ID*/
 
-    private String            name;
+    private String            code;
 
-    private String            displayName;
+    private String            name;
 
 }

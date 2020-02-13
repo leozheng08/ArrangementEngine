@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyIndicatrixItemDOMapper" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.PolicyIndicatrixItemDO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
+    <result column="indicatrix_id" property="indicatrixId" jdbcType="CHAR" />
+    <result column="master_field" property="masterField" jdbcType="VARCHAR" />
+    <result column="policy_uuid" property="policyUuid" jdbcType="CHAR" />
+    <result column="biz_uuid" property="bizUuid" jdbcType="CHAR" />
+    <result column="biz_item_uuid" property="bizItemUuid" jdbcType="CHAR" />
+    <result column="biz_type" property="bizType" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, partner_code, indicatrix_id, master_field, policy_uuid, biz_uuid, biz_type, status, 
+    gmt_create, gmt_modify
+  </sql>
+  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from policy_indicatrix_item
+    where status=1 and policy_uuid = #{policyUuid}
+  </select>
+</mapper>

@@ -39,7 +39,7 @@ public class EventTypeLoadManager implements ILoad{
         if(list != null) {
             eventTypeLocalCache.setEventTypeList(list);
         }
-        logger.info("EventTypeLoadManager load() success"+eventTypeLocalCache.getEventTypeList().size());
+        logger.info("EventTypeLoadManager load() success,eventType size:"+eventTypeLocalCache.getEventTypeList().size());
         return true;
     }
 }

@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.application;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
-import cn.tongdun.kunpeng.api.config.ConfigManager;
+import cn.tongdun.kunpeng.api.infrastructure.config.ConfigManager;
 import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.kunpeng.common.data.RiskResponse;
 import cn.tongdun.tdframework.common.dto.Response;

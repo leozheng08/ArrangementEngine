@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDOMapper" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.PolicyDO" >
+
+    <id column="id" property="id" />
+    <result column="gmt_create" property="gmtCreate" />
+    <result column="gmt_modify" property="gmtModify" />
+    <result column="creator" property="creator" />
+    <result column="operator" property="operator" />
+    <result column="uuid" property="uuid" />
+    <result column="partner_code" property="partnerCode" />
+    <result column="status" property="status" />
+    <result column="is_deleted" property="deleted" />
+    <result column="gmt_delete" property="gmtDelete" />
+    <result column="display_order" property="displayOrder" />
+    <result column="is_template" property="template" />
+    <result column="version" property="version"/>
+    <result column="version_desc" property="versionDesc"/>
+    <result column="is_default_version" property="defaultVersion" />
+    <result column="attribute" property="attribute"/>
+    <result column="curr_decision_mode" property="currDecisionMode"/>
+    <result column="curr_decision_mode_uuid" property="currDecisionModeUuid" />
+    <result column="concurrency_version" property="concurrencyVersion" />
+    <result column="policy_definition_uuid" property="policyDefinitionUuid" />
+    <result column="origin_template_uuid" property="originTemplateUuid" />
+    <result column="origin_policy_uuid" property="originPolicyUuid" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid,
+   t.partner_code, t.status, t.display_order,
+    t.is_template, t.version, t.version_desc, t.is_default_version, t.attribute, t.curr_decision_mode,
+    t.curr_decision_mode_uuid, t.concurrency_version, t.is_deleted, t.gmt_delete, t.policy_definition_uuid, t.origin_template_uuid, t.origin_policy_uuid
+  </sql>
+
+  <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from policy t where t. uuid = #{uuid}
+  </select>
+
+  <select id="selectByPolicyDefinitionUuid" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from policy t
+    where t.policy_definition_uuid = #{policyDefinitionUuid} and t.is_deleted = 0
+    order by t.display_order asc, t.gmt_create desc
+  </select>
+
+
+</mapper>

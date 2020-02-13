@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDOMapper" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="uuid" property="uuid" jdbcType="CHAR" />
+    <result column="parent_uuid" property="parentUuid" jdbcType="CHAR" />
+    <result column="logic_operator" property="logicOperator" jdbcType="VARCHAR" />
+    <result column="left_property" property="leftProperty" jdbcType="VARCHAR" />
+    <result column="left_property_type" property="leftPropertyType" jdbcType="VARCHAR" />
+    <result column="left_property_data_type" property="leftPropertyDataType" jdbcType="VARCHAR" />
+    <result column="op" property="op" jdbcType="VARCHAR" />
+    <result column="right_value" property="rightValue" jdbcType="VARCHAR" />
+    <result column="right_type" property="rightType" jdbcType="VARCHAR" />
+    <result column="right_data_type" property="rightDataType" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="is_left_use_origin_value" property="leftUseOriginValue" jdbcType="BIT" />
+    <result column="is_right_use_origin_value" property="rightUseOriginValue" jdbcType="BIT" />
+    <result column="priority" property="priority" jdbcType="INTEGER" />
+    <result column="attribute" property="attribute" jdbcType="VARCHAR" />
+    <result column="biz_uuid" property="bizUuid" jdbcType="CHAR" />
+    <result column="biz_type" property="bizType" jdbcType="VARCHAR" />
+    <result column="params" property="params"  />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uuid, parent_uuid, logic_operator, left_property, left_property_type, left_property_data_type, 
+    op, right_value, right_type, right_data_type, gmt_create, gmt_modify, creator, operator, 
+    description, is_left_use_origin_value, is_right_use_origin_value, priority, attribute, 
+    biz_uuid, biz_type, params
+  </sql>
+
+  <select id="selectByBizUuidBizType" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from rule_condition_element
+    where biz_uuid = #{bizUuid} and biz_type = #{bizType}
+  </select>
+</mapper>

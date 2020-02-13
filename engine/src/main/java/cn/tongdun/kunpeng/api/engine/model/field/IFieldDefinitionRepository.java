@@ -8,6 +8,8 @@ import java.util.List;
  */
 public interface IFieldDefinitionRepository {
 
+    List<FieldDefinition> queryAllSystemField();
 
-    List<FieldDefinition> queryByParams(FieldDefinition field);
+    List<FieldDefinition> queryAllExtendField();
+
 }

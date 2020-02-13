@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.IndexDefinitionDOMapper" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="uuid" property="uuid" jdbcType="CHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="template" property="template" jdbcType="VARCHAR" />
+    <result column="params" property="params" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="sub_policy_uuid" property="subPolicyUuid" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER" />
+    <result column="is_deleted" property="deleted" jdbcType="BIT" />
+    <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uuid, gmt_create, gmt_modify, creator, operator, name, template, params, description, sub_policy_uuid
+    status, concurrency_version, is_deleted, gmt_delete
+  </sql>
+
+  <select id="getEnabledIndexesBySubPolicyUuid" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from index_definition where is_deleted = 0 and status = 1 and sub_policy_uuid = #{subPolicyUuid}
+  </select>
+
+
+</mapper>

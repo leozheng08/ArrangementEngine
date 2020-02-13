@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.EventTypeDOMapper" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.EventTypeDO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="event_code" property="eventCode" jdbcType="VARCHAR" />
+    <result column="event_name" property="eventName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="uuid" property="uuid" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="decision_type" property="decisionType" jdbcType="VARCHAR" />
+    <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER" />
+    <result column="is_deleted" property="deleted" jdbcType="BIT" />
+    <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modify, creator, operator, event_code, event_name, description, 
+    uuid, status, decision_type, concurrency_version, is_deleted, gmt_delete
+  </sql>
+
+  <select id="selectByUuid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from event_type
+    where uuid = #{uuid,jdbcType=CHAR}
+  </select>
+
+  <select id="selectAvailableByCodes" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from event_type
+    where  is_deleted = 0 and status = 1 and event_code in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="selectAllAvailable" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from event_type
+    where  is_deleted = 0 and status = 1
+  </select>
+
+
+</mapper>

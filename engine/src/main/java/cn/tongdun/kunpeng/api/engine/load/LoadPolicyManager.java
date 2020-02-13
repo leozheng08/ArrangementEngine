@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.load;
 
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
-import cn.tongdun.kunpeng.api.engine.model.cluster.ClusterCache;
+import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
@@ -46,7 +46,7 @@ public class LoadPolicyManager implements ILoadByPartner{
     private LocalCacheService localCacheService;
 
     @Autowired
-    private ClusterCache clusterCache;
+    private PartnerClusterCache clusterCache;
 
 
 

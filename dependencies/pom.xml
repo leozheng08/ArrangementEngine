@@ -22,11 +22,15 @@
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
         <mysql-connector.version>5.1.41</mysql-connector.version>
         <page-helper.version>4.1.6</page-helper.version>
+        <druid.version>1.0.0</druid.version>
+
+
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.5</tdframework.version>
+        <tdframework.version>1.0.6-SNAPSHOT</tdframework.version>
         <ddd.version>1.0.4</ddd.version>
         <tdrule.version>0.0.2-SNAPSHOT</tdrule.version>
+        <kunpeng-share.version>1.0-SNAPSHOT</kunpeng-share.version>
 
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
@@ -162,6 +166,11 @@
 
             <!--db start-->
             <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector.version}</version>
@@ -171,12 +180,6 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper</artifactId>
                 <version>${page-helper.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-jdbc</artifactId>
-                <version>9.0.29</version>
             </dependency>
             <!--db end-->
 
@@ -208,7 +211,7 @@
             <dependency>
                 <groupId>cn.tongdun.kunpeng</groupId>
                 <artifactId>kunpeng-share</artifactId>
-                <version>1.0.1</version>
+                <version>${kunpeng-share.version}</version>
             </dependency>
             <!-- ddd end-->
 
