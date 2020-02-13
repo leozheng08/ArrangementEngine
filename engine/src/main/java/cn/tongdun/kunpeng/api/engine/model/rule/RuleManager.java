@@ -62,12 +62,8 @@ public class RuleManager implements IExecutor<String,RuleResponse> {
 
     private Integer getWeight(Rule rule,AbstractFraudContext context){
         Integer weight = 0;
-        if( rule.getWeightEval() != null){
-            Number n = rule.getWeightEval().eval(context);
-            if(NaN.equals(n)){
-                return weight;
-            }
-            weight = n.intValue();
+        if( rule.getWeightFunction()!=null){
+            weight = (Integer) rule.getWeightFunction().eval(context);
         }
         return weight;
     }

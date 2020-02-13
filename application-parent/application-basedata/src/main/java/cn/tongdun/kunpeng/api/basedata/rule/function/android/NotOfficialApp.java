@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,7 +23,7 @@ public class NotOfficialApp extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("android NotOfficialApp function parse error,no params!");
         }
@@ -35,7 +36,7 @@ public class NotOfficialApp extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
         boolean ret = false;
@@ -54,7 +55,7 @@ public class NotOfficialApp extends AbstractFunction {
             }
         }
 
-        return ret;
+        return new FunctionResult(ret);
     }
 
 

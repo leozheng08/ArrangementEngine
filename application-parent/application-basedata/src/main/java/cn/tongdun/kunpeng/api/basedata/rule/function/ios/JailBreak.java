@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.basedata.rule.function.ios;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
 
@@ -18,26 +19,26 @@ public class JailBreak extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            return false;
+            return new FunctionResult(false);
         }
         else {
             Object jailBreak = deviceInfo.get("jailbreak");
             String appType = context.getAppType();
             if ("ios".equalsIgnoreCase(appType) && "1".equals(jailBreak)) {
-                return true;
+                return new FunctionResult(true);
             }
             else {
-                return false;
+                return new FunctionResult(false);
             }
         }
     }

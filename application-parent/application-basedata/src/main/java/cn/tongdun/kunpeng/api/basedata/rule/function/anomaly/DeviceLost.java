@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,7 +25,7 @@ public class DeviceLost extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("anomaly DeviceLost function parse error,no params!");
         }
@@ -37,33 +38,33 @@ public class DeviceLost extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
         try {
             Map<String, Object> deviceInfo = context.getDeviceInfo();
             if (deviceInfo == null) {
-                return true;
+                return new FunctionResult(true);
             }
 
             String deviceId = (String) context.get("deviceId");
             String code = (String) deviceInfo.get("code");
             if (code == null) {
                 if (StringUtils.isNotBlank(deviceId)) {
-                    return false;
+                    return new FunctionResult(false);
                 }
                 else {
-                    return true;
+                    return new FunctionResult(true);
                 }
             }
 
             if (StringUtils.isNotBlank(codes) && codes.contains(code)) {
-                return true;
+                return new FunctionResult(true);
             }
 
-            return false;
+            return new FunctionResult(false);
         }
         catch (Exception e) {
-            return false;
+            return new FunctionResult(false);
         }
     }
 

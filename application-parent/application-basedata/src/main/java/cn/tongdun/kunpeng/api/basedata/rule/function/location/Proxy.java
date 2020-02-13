@@ -8,6 +8,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
@@ -31,7 +32,7 @@ public class Proxy extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("Proxy function parse error,no params!");
         }
@@ -44,7 +45,7 @@ public class Proxy extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
         ProxyIpService proxyIpService = SpringContextHolder.getBean("proxyIpService", ProxyIpService.class);
@@ -71,23 +72,23 @@ public class Proxy extends AbstractFunction {
                 isProxyIp = proxyIpService.isProxy(ip, proxyType);
             }
             if (isProxyIp) {
-                return true;
+                return new FunctionResult(true);
             }
         }
 
         if (StringUtils.equals("HTTP", proxyIpType)) {
             Map<String, Object> deviceInfo = context.getDeviceInfo();
             if (deviceInfo == null) {
-                return false;
+                return new FunctionResult(false);
             }
             Object isUseHttpProxy = deviceInfo.get("proxyHeaders");
             if (isUseHttpProxy != null && StringUtils.isNotBlank(isUseHttpProxy.toString())) {
 
-                return false;
+                return new FunctionResult(true);
             }
         }
 
-        return false;
+        return new FunctionResult(false);
     }
 
 

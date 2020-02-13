@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -27,7 +28,7 @@ public class TimeDiff extends AbstractFunction {
     }
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("TimeDiff function parse error,no params!");
         }
@@ -53,14 +54,14 @@ public class TimeDiff extends AbstractFunction {
 
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         boolean result = false;
         Date dateA = DateUtil.getDateValue(context.get(timeA));
         Date dateB = DateUtil.getDateValue(context.get(timeB));
         if (null == dateA || null == dateB) {
-            return false;
+            return new FunctionResult(false);
         }
 
         if (null != timeOperator && null != timeunit) {
@@ -70,7 +71,7 @@ public class TimeDiff extends AbstractFunction {
             result = timeDiffResult(timeOperator, value, diff);
         }
 
-        return result;
+        return new FunctionResult(result);
     }
 
 

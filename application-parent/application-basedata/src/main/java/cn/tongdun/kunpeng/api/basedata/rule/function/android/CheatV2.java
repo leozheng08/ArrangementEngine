@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.basedata.service.fp.Anomaly;
 import cn.tongdun.kunpeng.api.basedata.service.fp.ContainCheatingApps;
@@ -31,7 +32,7 @@ public class CheatV2 extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("android CheatV2 function parse error,no params!");
         }
@@ -47,7 +48,7 @@ public class CheatV2 extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
 
@@ -60,7 +61,7 @@ public class CheatV2 extends AbstractFunction {
 
         if (StringUtils.isBlank(installedDangerAppCodes) && StringUtils.isBlank(runningDangerAppCodes)) {
             logger.warn("the installedDangerAppCodes and runningDangerAppCodes are blank, platform=android, deviceInfo={}", deviceInfo);
-            return false;
+            return new FunctionResult(false);
 
         }
 
@@ -74,7 +75,7 @@ public class CheatV2 extends AbstractFunction {
 
         if (containCheatingApps == null) {
             logger.warn("cannot parse containCheatingApps(AnomalyUtil), platform=android, deviceInfo={}", deviceInfo);
-            return false;
+            return new FunctionResult(false);
         }
 
 //        AndroidCheatAppDetail detail = new AndroidCheatAppDetail();
@@ -109,7 +110,7 @@ public class CheatV2 extends AbstractFunction {
 //
 //        return results;
 
-        return hitValue;
+        return new FunctionResult(hitValue);
     }
 
 

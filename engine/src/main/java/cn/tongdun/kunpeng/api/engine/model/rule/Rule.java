@@ -1,11 +1,14 @@
 package cn.tongdun.kunpeng.api.engine.model.rule;
 
 import cn.tongdun.ddd.common.domain.Entity;
-import cn.tongdun.kunpeng.api.engine.model.rule.operator.ArithmeticOperator;
+import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 规则实体，规则的定义已经经过解析，可放到manager中执行。
+ *
  * @Author: liang.chen
  * @Date: 2019/12/16 下午3:20
  */
@@ -24,8 +27,17 @@ public class Rule extends Entity {
     private Integer displayOrder;
     private Boolean pilotRun;
     private String template;
-
+    /**
+     * 规则引擎的可执行对象
+     */
     private cn.fraudmetrix.module.tdrule.rule.Rule eval;
+    /**
+     * 定义一个tdrule的函数来计算规则的权重
+     */
+    private WeightFunction weightFunction;
 
-    private ArithmeticOperator weightEval;
+    /**
+     * 某些规则有子规则，在规则本身命中的情况下，需要执行子规则
+     */
+    private List<Rule> childrenRuleList;
 }

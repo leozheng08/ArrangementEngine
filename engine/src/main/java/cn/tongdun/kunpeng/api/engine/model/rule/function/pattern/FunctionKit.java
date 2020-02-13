@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.VelocityFuncType;
 import com.google.common.collect.Lists;
@@ -33,7 +34,7 @@ public class FunctionKit extends AbstractCalculateFunction {
     }
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("FunctionKit function parse error,no params!");
         }
@@ -67,7 +68,7 @@ public class FunctionKit extends AbstractCalculateFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext context) {
+    public FunctionResult run(ExecuteContext context) {
         double result;
         List<Double> values = new ArrayList<>();
         try {
@@ -81,7 +82,7 @@ public class FunctionKit extends AbstractCalculateFunction {
             logger.warn("FunctionKit eval error!", e);
         }
         result = statisticCalculate(values, funcType, naturalValue);
-        return result;
+        return new FunctionResult(result);
     }
 
 

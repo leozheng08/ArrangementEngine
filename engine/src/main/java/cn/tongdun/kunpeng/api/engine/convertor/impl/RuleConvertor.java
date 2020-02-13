@@ -96,7 +96,6 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
         //生成条件
         List<RuleConditionElementDTO> conditionElements = t.getRuleConditionElements();
         if(conditionElements == null || conditionElements.isEmpty()){
-//            logger.error("RuleConvertor error RuleConditionElement is empty:"+t);
             throw new BizException(BasicErrorCode.SYS_ERROR,"RuleConvertor error RuleConditionElement is empty");
         }
         List<Condition> conditionList = new ArrayList<>();
@@ -104,7 +103,8 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
 
         //生成条件的逻辑操作表达式
         StringBuilder buffer = new StringBuilder();
-        String logic = null; // 1&2&3  //1|2|3
+        // 如1&2&3  1|2|3
+        String logic = null;
         int i=0;
         for(RuleConditionElementDTO conditionElementDO:conditionElements){
             if(i==0){
@@ -141,8 +141,7 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
         cn.fraudmetrix.module.tdrule.rule.Rule rule = RuleCreateFactory.createRule(rawRule);
         result.setEval(rule);
 
-        ArithmeticOperator weightEval = convertWeight(t);
-        result.setWeightEval(weightEval);
+        //权重函数
 
         return result;
     }
@@ -216,8 +215,8 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
         if(source == null){
             return null;
         }
-        String target = source.replaceAll("&&","&");
-        return target;
+        return source.replaceAll("&&","&");
+
     }
 
     /**

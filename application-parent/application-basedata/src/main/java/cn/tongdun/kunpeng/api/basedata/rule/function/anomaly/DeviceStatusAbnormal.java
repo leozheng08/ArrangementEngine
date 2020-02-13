@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -31,7 +32,7 @@ public class DeviceStatusAbnormal extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("anomaly DeviceStatusAbnormal function parse error,no params!");
         }
@@ -44,12 +45,12 @@ public class DeviceStatusAbnormal extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null || deviceInfo.isEmpty()) {
-            return false;
+            return new FunctionResult(false);
         }
 
         boolean result = false;
@@ -90,7 +91,7 @@ public class DeviceStatusAbnormal extends AbstractFunction {
             logger.error("[Abnormality] isDeviceStatusAbnormal", e);
         }
 
-        return result;
+        return new FunctionResult(result);
     }
 
 

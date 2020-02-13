@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.basedata.rule.function.anomaly;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
 
@@ -18,12 +19,12 @@ public class Profile extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
         Map<String, Object> map = context.getDeviceInfo();
@@ -36,10 +37,10 @@ public class Profile extends AbstractFunction {
 
         if (!imageLoaded && deviceId != null) {
 
-            return true;
+            return new FunctionResult(true);
         }
         else {
-            return false;
+            return new FunctionResult(false);
         }
     }
 

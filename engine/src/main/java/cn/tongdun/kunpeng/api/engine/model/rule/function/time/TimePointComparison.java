@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
 import cn.tongdun.kunpeng.common.Constant;
@@ -28,7 +29,7 @@ public class TimePointComparison extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("TimePointComparison function parse error,no params!");
         }
@@ -50,12 +51,12 @@ public class TimePointComparison extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         Date date = DateUtil.getDateValue(context.get(calcField));
         if (null == date) {
-            return false;
+            return new FunctionResult(false);
         }
 
         int dateValue = 0;
@@ -91,7 +92,7 @@ public class TimePointComparison extends AbstractFunction {
             // FIXME: 2/13/20 hanle none
         }
 
-        return result;
+        return new FunctionResult(result);
     }
 
 

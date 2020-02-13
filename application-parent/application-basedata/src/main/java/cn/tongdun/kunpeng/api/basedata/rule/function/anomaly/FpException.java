@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -32,7 +33,7 @@ public class FpException extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("anomaly FpException function parse error,no params!");
         }
@@ -45,7 +46,7 @@ public class FpException extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
@@ -54,14 +55,14 @@ public class FpException extends AbstractFunction {
         if (success) {
             String result = (String) deviceInfo.get("exceptionInfo");
             if (result == null) {
-                return false;
+                return new FunctionResult(false);
             }
             try {
                 JSONObject obj = JSONObject.parseObject(result);
                 code = (String) obj.get("code");
             }
             catch (Exception e) {
-                return false;
+                return new FunctionResult(false);
             }
         }
         else {
@@ -69,7 +70,7 @@ public class FpException extends AbstractFunction {
         }
 
         if (code == null || "".equals(code)) {
-            return false;
+            return new FunctionResult(false);
         }
 
         List<String> mycodes = Splitter.on(",").splitToList(codes);
@@ -77,13 +78,13 @@ public class FpException extends AbstractFunction {
             // 详情
             String result = fpResultMap.get(code);
             if (result == null) {
-                return false;
+                return new FunctionResult(false);
             }
 
-            return true;
+            return new FunctionResult(true);
         }
         else {
-            return false;
+            return new FunctionResult(false);
         }
     }
 

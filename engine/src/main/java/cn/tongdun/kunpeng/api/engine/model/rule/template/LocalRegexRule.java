@@ -18,10 +18,9 @@ public class LocalRegexRule extends AbstractRule {
     private LocalRegexFunction function;
 
     @Override
-    public EvalDetailResult run(ExecuteContext executeContext) {
+    public EvalResult run(ExecuteContext executeContext) {
         Object ret = function.eval(executeContext);
-        EvalResult evalResult = EvalResult.valueOf(ret);
-        return new EvalDetailResult(evalResult);
+        return EvalResult.valueOf(ret);
     }
 
     @Override

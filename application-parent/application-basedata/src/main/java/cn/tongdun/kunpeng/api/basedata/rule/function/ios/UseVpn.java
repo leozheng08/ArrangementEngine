@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.basedata.rule.function.ios;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.lang3.StringUtils;
@@ -19,25 +20,25 @@ public class UseVpn extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            return false;
+            return new FunctionResult(false);
         }
         else {
             Object vpnIp = deviceInfo.get("vpnIp");
             if (vpnIp != null && StringUtils.isNotBlank(vpnIp.toString())) {
-                return true;
+                return new FunctionResult(true);
             }
             else {
-                return false;
+                return new FunctionResult(false);
             }
         }
     }

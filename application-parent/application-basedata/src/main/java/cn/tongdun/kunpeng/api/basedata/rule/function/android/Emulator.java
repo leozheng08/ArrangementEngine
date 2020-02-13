@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.basedata.rule.function.android;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
 import com.alibaba.fastjson.JSON;
@@ -26,17 +27,17 @@ public class Emulator extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
 
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            return false;
+            return new FunctionResult(false);
         }
 
         // 设备指纹银行基金部署改造需求,客户直接传设备信息参数(device_raw)的话,拷贝fp的代码自己处理模拟器
@@ -48,10 +49,10 @@ public class Emulator extends AbstractFunction {
 
         Object isAndroidEmulator = deviceInfo.get("isEmulator");
         if (Boolean.TRUE.equals(isAndroidEmulator)) {
-            return true;
+            return new FunctionResult(true);
         }
         else {
-            return false;
+            return new FunctionResult(false);
         }
     }
 

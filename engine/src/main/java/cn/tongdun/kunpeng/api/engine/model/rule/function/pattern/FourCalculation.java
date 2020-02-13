@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class FourCalculation extends AbstractCalculateFunction {
     }
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("FourCalculation function parse error,no params!");
         }
@@ -50,7 +51,7 @@ public class FourCalculation extends AbstractCalculateFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext context) {
+    public FunctionResult run(ExecuteContext context) {
 
         Double leftVariable = (Double) leftVariableVar.eval(context);
         Double rightVariable = (Double) rightVariableVar.eval(context);
@@ -81,6 +82,6 @@ public class FourCalculation extends AbstractCalculateFunction {
             default:
                 throw new RuntimeException("FourCalculation cann't recognize arithmetic:" + arithmetic);
         }
-        return result;
+        return new FunctionResult(result);
     }
 }

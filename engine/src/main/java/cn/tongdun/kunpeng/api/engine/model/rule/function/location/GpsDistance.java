@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
@@ -27,7 +28,7 @@ public class GpsDistance extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("GpsDistance function parse error,no params!");
         }
@@ -49,13 +50,13 @@ public class GpsDistance extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         GpsEntity gps1 = getGpsEntity(context.getField(gpsA));
         GpsEntity gps2 = getGpsEntity(context.getField(gpsB));
         if (null == gps1 || null == gps2 || null == distanceOperator) {
-            return false;
+            return new FunctionResult(false);
         }
 
         int difference = 0;
@@ -69,7 +70,7 @@ public class GpsDistance extends AbstractFunction {
         }
 
         double distance = getDistance(gps1, gps2, false);
-        return distanceDiffResult(distanceOperator, difference, distance);
+        return new FunctionResult(distanceDiffResult(distanceOperator, difference, distance));
 
     }
 

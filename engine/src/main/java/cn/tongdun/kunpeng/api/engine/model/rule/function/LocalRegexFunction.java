@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,7 @@ public class LocalRegexFunction extends AbstractFunction {
     }
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("LocalRegexFunction parse error,function params is blank!");
         }
@@ -67,14 +68,14 @@ public class LocalRegexFunction extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
 
         Object propertyField = executeContext.getField(property);
         if (propertyField == null) {
-            return false;
+            return new FunctionResult(false);
         }
         String propertyString = propertyField.toString();
         Matcher matcher = regexPattern.matcher(propertyString);
-        return matcher.matches();
+        return new FunctionResult(matcher.matches());
     }
 }

@@ -10,6 +10,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
+import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.basedata.service.elfin.ElfinBaseDataService;
@@ -36,7 +37,7 @@ public class AddressMatch extends AbstractFunction {
 
 
     @Override
-    public void parse(FunctionDesc functionDesc) {
+    public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("AddressMatch function parse error,no params!");
         }
@@ -58,13 +59,13 @@ public class AddressMatch extends AbstractFunction {
     }
 
     @Override
-    public Object eval(ExecuteContext executeContext) {
+    public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
         String addrOne = getAddress(context, addressA, scope);
         String addrTwo = getAddress(context, addressB, scope);
         if (StringUtils.isBlank(addrOne) || StringUtils.isBlank(addrTwo)) {
-            return false;
+            return new FunctionResult(false);
         }
 
         int result = 0;
@@ -75,7 +76,7 @@ public class AddressMatch extends AbstractFunction {
             result = 0;
         }
 
-        return isMatch == result;
+        return new FunctionResult(isMatch == result);
     }
 
 
