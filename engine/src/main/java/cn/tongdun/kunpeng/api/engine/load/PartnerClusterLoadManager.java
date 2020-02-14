@@ -3,7 +3,6 @@ package cn.tongdun.kunpeng.api.engine.load;
 import cn.tongdun.kunpeng.api.engine.model.cluster.IPartnerClusterRepository;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
-import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,9 +18,9 @@ import java.util.Set;
  */
 @Component
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_COMM)
-public class PartnerClusterLoadManager implements ILoad{
+public class PartnerClusterLoadManager implements ILoad {
 
-    private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
+    private Logger logger = LoggerFactory.getLogger(PartnerClusterLoadManager.class);
 
     @Autowired
     IPartnerClusterRepository partnerClusterRepository;

@@ -127,7 +127,7 @@ public class RuleDTO extends CommonDTO {
 
     private List<RuleConditionElementDTO> ruleConditionElements;
     private List<RuleActionElementDTO>    ruleActionElements;
-    private List<RuleDTO>                 children;// if下边的规则
+
 
     public Double getDownLimitScore() {
         if( downLimitScore == null){
