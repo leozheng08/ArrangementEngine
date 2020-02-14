@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.engine.convertor.impl;
 
 import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
-import cn.fraudmetrix.module.tdrule.eval.PlatformIndex;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.ConditionParam;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
@@ -17,8 +16,6 @@ import cn.tongdun.kunpeng.api.engine.dto.RuleActionElementDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
-import cn.tongdun.kunpeng.api.engine.model.rule.function.arithmetic.*;
-import cn.tongdun.kunpeng.api.engine.model.rule.operator.ArithmeticOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -74,27 +71,27 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
 
 
     @Override
-    public Rule convert(RuleDTO t){
+    public Rule convert(RuleDTO dto){
         Rule result = new Rule();
         //规则基本信息
-        result.setRuleId(t.getId().toString());
-        result.setRuleCustomId(t.getRuleCustomId());
-        result.setUuid(t.getUuid());
-        result.setDisplayOrder(t.getPriority());
-        result.setName(t.getName());
-        result.setParentUuid(t.getParentUuid());
-        result.setSubPolicyUuid(t.getPolicyUuid());
-        result.setTemplate(t.getTemplate());
-        result.setDecision(t.getRiskDecision());
+        result.setRuleId(dto.getId().toString());
+        result.setRuleCustomId(dto.getRuleCustomId());
+        result.setUuid(dto.getUuid());
+        result.setDisplayOrder(dto.getPriority());
+        result.setName(dto.getName());
+        result.setParentUuid(dto.getParentUuid());
+        result.setSubPolicyUuid(dto.getPolicyUuid());
+        result.setTemplate(dto.getTemplate());
+        result.setDecision(dto.getRiskDecision());
 
         //生成规则引擎的RawRule对象
         RawRule rawRule = new RawRule();
-        rawRule.setId(t.getId().toString());
-        rawRule.setName(t.getName());
-        rawRule.setType(t.getTemplate());
+        rawRule.setId(dto.getId().toString());
+        rawRule.setName(dto.getName());
+        rawRule.setType(dto.getTemplate());
 
         //生成条件
-        List<RuleConditionElementDTO> conditionElements = t.getRuleConditionElements();
+        List<RuleConditionElementDTO> conditionElements = dto.getRuleConditionElements();
         if(conditionElements == null || conditionElements.isEmpty()){
             throw new BizException(BasicErrorCode.SYS_ERROR,"RuleConvertor error RuleConditionElement is empty");
         }
@@ -111,7 +108,6 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
                 logic =  convertlogic(conditionElementDO.getLogicOperator());
             } else {
                 if(logic == null){
-                    logger.error("RuleConvertor error LogicOperator is null:"+t);
                     throw new BizException(BasicErrorCode.SYS_ERROR,"RuleConvertor error LogicOperator is null");
                 }
                 buffer.append(logic);
@@ -129,7 +125,7 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
 
         //生成action
         List<ActionDesc> actionDescList = new ArrayList<>();
-        List<RuleActionElementDTO> ruleActionElementDOList= t.getRuleActionElements();
+        List<RuleActionElementDTO> ruleActionElementDOList= dto.getRuleActionElements();
         if(ruleActionElementDOList != null){
             for(RuleActionElementDTO ruleActionElementDO:ruleActionElementDOList){
                 convertAction(actionDescList,ruleActionElementDO.getActions());
@@ -154,29 +150,6 @@ public class RuleConvertor implements IConvertor<RuleDTO,Rule> {
      private Double                       downLimitScore;                          // 权重计算分数右值下限
      private Double                       upLimitScore;                            // 权重计算分数右值上限
      */
-    private ArithmeticOperator convertWeight(RuleDTO t){
-        Addition addition = new Addition();
-        addition.addOperand(new NumberVar(t.getBaseWeight()));
-
-        if(t.getWeightIndex() != null ){
-            PlatformIndex index = new PlatformIndex(t.getWeightIndex(),false);
-            NumberVar weightRatio = new NumberVar(t.getWeightRatio());
-
-            Multiply multiply = new Multiply();
-            multiply.addOperand(weightRatio);
-            multiply.addOperand(index);
-
-            addition.addOperand(multiply);
-        }
-        Min min = new Min();
-        min.addOperand(addition);
-        min.addOperand(new NumberVar(t.getUpLimitScore()));
-
-        Max max = new Max();
-        max.addOperand(min);
-        max.addOperand(new NumberVar(t.getDownLimitScore()));
-        return max;
-    }
 
 
     private void convertAction(List<ActionDesc> actionDescList ,String params){
