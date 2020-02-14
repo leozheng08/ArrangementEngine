@@ -2,10 +2,10 @@ package cn.tongdun.kunpeng.api.engine.model.rule.template;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
-import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
+import cn.fraudmetrix.module.tdrule.operator.AbstractBinaryOperator;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
-import cn.fraudmetrix.module.tdrule.rule.EvalDetailResult;
+import cn.tongdun.kunpeng.api.engine.util.RawRuleParseUtils;
 
 /**
  * @Author: liuq
@@ -13,16 +13,15 @@ import cn.fraudmetrix.module.tdrule.rule.EvalDetailResult;
  */
 public class FourCalculationRule extends AbstractRule {
 
+    private AbstractBinaryOperator operator;
+
     @Override
     public EvalResult run(ExecuteContext executeContext) {
-        return null;
+        return operator.eval(executeContext);
     }
 
     @Override
     public void parse(RawRule rawRule) {
-        if (null == rawRule || rawRule.getFunctionDescList() == null || rawRule.getFunctionDescList().isEmpty()) {
-            throw new ParseException("LocalRegexRule parse error!null == rawRule or rawRule.getFunctionDescList is blank!");
-        }
-
+        this.operator = RawRuleParseUtils.parseWithFunctionAndRight(rawRule);
     }
 }
