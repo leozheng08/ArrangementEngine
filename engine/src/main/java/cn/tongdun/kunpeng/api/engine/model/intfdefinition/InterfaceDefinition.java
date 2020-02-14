@@ -1,14 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
-import cn.tongdun.ddd.common.domain.Entity;
+import cn.tongdun.ddd.common.domain.UUIDEntity;
 import lombok.Data;
 
-/**
- * @Author: liang.chen
- * @Date: 2020/1/17 下午10:10
- */
+
 @Data
-public class InterfaceDefinition extends Entity {
+public class InterfaceDefinition extends UUIDEntity {
+
     /**
      * 所属应用，非合作方应用 application
      */
@@ -55,16 +53,6 @@ public class InterfaceDefinition extends Entity {
     private Integer retryCount;
 
     /**
-     * 输入参数 input_param
-     */
-    private String inputParam;
-
-    /**
-     * 返回参数 output_param
-     */
-    private String outputParam;
-
-    /**
      * 描述 description
      */
     private String description;
@@ -75,17 +63,28 @@ public class InterfaceDefinition extends Entity {
     private boolean deleted;
 
     /**
-     * 模板 template
-     */
-    private String template;
-
-    /**
      * 接口唯一标识 interface_id
      */
     private String interfaceId;
 
     /**
+     * 输入参数 input_param
+     */
+    private String inputParam;
+
+    /**
+     * 返回参数 output_param
+     */
+    private String outputParam;
+
+    /**
+     * 模板 template
+     */
+    private String template;
+
+    /**
      * 状态 0:关闭 1:开启 status
      */
     private Integer status;
+
 }
