@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.reload;
 
 import cn.tongdun.kunpeng.api.engine.load.EventTypeLoadManager;
-import cn.tongdun.kunpeng.api.engine.load.FieldLoadManager;
+import cn.tongdun.kunpeng.api.engine.load.FieldDefinitionLoadManager;
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class ReLoadScheduler implements ILoad {
     EventTypeLoadManager eventTypeLoadManager;
 
     @Autowired
-    FieldLoadManager fieldLoadManager;
+    FieldDefinitionLoadManager fieldLoadManager;
 
     List<ILoad> reLoadTasks = new ArrayList<>();
 

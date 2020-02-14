@@ -10,7 +10,7 @@
     <shutter:security accessKey="38X5Z679VAS8upB2" secretKey="9645effa30144e0abbc4730fac6bbc99"/>
     <shutter:config-center address="${shutter.hostList}" download-dir="${shutter.output}" protocol="http"/>
 
-    <shutter:annotation-scan base-package="cn.tongdun.kunpeng.api.config"/>
+    <shutter:annotation-scan base-package="cn.tongdun.kunpeng.api.infrastructure.config"/>
 
 
     <shutter:property-placeholder location="classpath*:kunpeng-api.properties" application="kunpeng-api" ignore-unresolvable="true" group="DEFAULT_GROUP"/>

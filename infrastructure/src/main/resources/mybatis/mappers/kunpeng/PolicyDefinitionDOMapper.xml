@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDefinitionDOMapper" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.PolicyDefinitionDO" >
+
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="uuid" property="uuid" jdbcType="CHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+    <result column="event_type" property="eventType" jdbcType="VARCHAR" />
+    <result column="event_id" property="eventId" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
+    <result column="service_type" property="serviceType" jdbcType="VARCHAR" />
+    <result column="status" property="status" />
+    <result column="is_deleted" property="deleted" jdbcType="BIT" />
+    <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
+    <result column="is_template" property="template" jdbcType="BIT" />
+    <result column="app_type" property="appType" jdbcType="VARCHAR" />
+    <result column="industry_type" property="industryType" jdbcType="VARCHAR" />
+    <result column="product_tag" property="productTag" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="source_type" property="sourceType" jdbcType="VARCHAR" />
+    <result column="curr_version" property="currVersion" jdbcType="VARCHAR" />
+    <result column="curr_version_uuid" property="currVersionUuid" jdbcType="VARCHAR" />
+    <result column="attribute" property="attribute" jdbcType="VARCHAR" />
+    <result column="origin_template_uuid" property="originTemplateUuid" jdbcType="CHAR" />
+    <result column="is_common" property="common" jdbcType="BIT" />
+    <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER" />
+
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.name, t.app_name, t.event_type,
+    t.event_id, t.description, t.partner_code, t.service_type, t.status, t.is_deleted,
+    t.is_template, t.app_type, t.industry_type, t.product_tag, t.source, t.source_type, t.curr_version, t.curr_version_uuid,
+    t.attribute, t.origin_template_uuid,
+    t.is_common, t.concurrency_version, t.gmt_delete
+  </sql>
+
+  <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_definition t where t. uuid = #{uuid} limit 1
+  </select>
+
+  <select id="selectByPolicyUuid" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from policy_definition t
+    join policy p on t.uuid = p.policy_definition_uuid
+    where p.uuid = #{policyUuid}
+  </select>
+
+</mapper>
