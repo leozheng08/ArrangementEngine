@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.common.data;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.common.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Sets;
@@ -160,7 +161,7 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
         }
 
         if (fieldNames.contains(key)) {
-            String methodName = "get" + cn.tongdun.kunpeng.common.util.StringUtils.upperCaseFirstChar(key);
+            String methodName = "get" + KunpengStringUtils.upperCaseFirstChar(key);
             try {
                 Method method = this.getClass().getMethod(methodName);
                 Object value = method.invoke(this);
@@ -194,7 +195,7 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
 
         if (fieldNames.contains(key)) {
             try {
-                String methodName = "set" + cn.tongdun.kunpeng.common.util.StringUtils.upperCaseFirstChar(key);
+                String methodName = "set" + KunpengStringUtils.upperCaseFirstChar(key);
                 Method method = this.getClass().getDeclaredMethod(methodName, o.getClass());
                 method.invoke(this, o);
             } catch (Exception ex) {

@@ -32,11 +32,11 @@ public class FourCalculation extends AbstractCalculateFunction {
 
         functionDesc.getParamList().forEach(param -> {
             if (StringUtils.equals("leftVariable", param.getName())) {
-                leftVariableVar = buildVariable(param, Double.class);
+                leftVariableVar = buildVariable(param, "double");
             } else if (StringUtils.equals("arithmetic", param.getName())) {
                 arithmetic = param.getValue();
             } else if (StringUtils.equals("rightVariable", param.getName())) {
-                rightVariableVar = buildVariable(param, Double.class);
+                rightVariableVar = buildVariable(param, "double");
             }
 
         });
