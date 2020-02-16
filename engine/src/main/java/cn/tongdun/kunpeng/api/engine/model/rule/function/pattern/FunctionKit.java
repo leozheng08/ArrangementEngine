@@ -44,7 +44,7 @@ public class FunctionKit extends AbstractCalculateFunction {
                 .collect(Collectors.toList());
         otherCalVariablesVar = Lists.newArrayList();
         for (FunctionParam functionParam : lstOther) {
-            otherCalVariablesVar.add(buildVariable(functionParam, Double.class));
+            otherCalVariablesVar.add(buildVariable(functionParam, "double"));
         }
 
         functionDesc.getParamList().forEach(param -> {
@@ -56,7 +56,7 @@ public class FunctionKit extends AbstractCalculateFunction {
                     funcType = VelocityFuncType.valueOf(funcTypeValue);
                 }
             } else if (StringUtils.equals("calVariable", param.getName())) {
-                calVariableVar = buildVariable(param, Double.class);
+                calVariableVar = buildVariable(param, "double");
             } else if (StringUtils.equals("naturalValue", param.getName())) {
                 naturalValue = Integer.parseInt(param.getValue());
             }

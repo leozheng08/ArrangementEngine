@@ -35,9 +35,4 @@ public class Rule extends Entity {
      * 定义一个tdrule的函数来计算规则的权重
      */
     private WeightFunction weightFunction;
-
-    /**
-     * 某些规则有子规则，在规则本身命中的情况下，需要执行子规则
-     */
-    private List<Rule> childrenRuleList;
 }

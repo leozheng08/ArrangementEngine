@@ -1,6 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.util;
 
-import cn.fraudmetrix.module.tdrule.eval.Variable;
+import cn.fraudmetrix.module.tdrule.constant.FieldConstants;
+import cn.fraudmetrix.module.tdrule.eval.*;
+import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.ConditionParam;
 
 /**
@@ -16,7 +18,27 @@ public class ConditionParamUtils {
      * @return
      */
     public static Variable parseConditionParam(ConditionParam conditionParam) {
-
-        return null;
+        if (null == conditionParam) {
+            return null;
+        }
+        switch (conditionParam.getFieldType()) {
+            case INPUT:
+                return new Literal(conditionParam.getValue(), conditionParam.getDataType());
+            case CONTEXT:
+                return new Field(conditionParam.getName(), conditionParam.getDataType());
+            case FUNC:
+                throw new ParseException("ConditionParamUtils parseConditionParam error,Function can't user this method!conditionId:" + conditionParam.getConditionId());
+            case POLICY_INDEX:
+                return new PolicyIndex(conditionParam.getName());
+            case PLATFORM_INDEX:
+                Object isUseOriginValue = conditionParam.getExtProperty(FieldConstants.INDEX_USE_ORIGIN_VALUE);
+                if (null != isUseOriginValue && Boolean.valueOf(isUseOriginValue.toString())) {
+                    return new PlatformIndex(conditionParam.getName(), true);
+                } else {
+                    return new PlatformIndex(conditionParam.getName(), false);
+                }
+            default:
+                throw new ParseException("illegal filedType:" + conditionParam.getFieldType() + ",conditionId:" + conditionParam.getConditionId());
+        }
     }
 }
