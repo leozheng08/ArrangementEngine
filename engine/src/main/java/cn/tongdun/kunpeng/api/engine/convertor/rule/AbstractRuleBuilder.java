@@ -75,31 +75,31 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         List<FunctionParam> paramList = Lists.newArrayList();
 
         FunctionParam baseWeight = new FunctionParam();
-        baseWeight.setType(FieldTypeEnum.INPUT.getCode());
+        baseWeight.setType(FieldTypeEnum.INPUT.name());
         baseWeight.setValue(Double.valueOf(ruleDTO.getBaseWeight()).toString());
         baseWeight.setName("baseWeight");
         paramList.add(baseWeight);
 
         FunctionParam weightRatio = new FunctionParam();
-        weightRatio.setType(FieldTypeEnum.INPUT.getCode());
+        weightRatio.setType(FieldTypeEnum.INPUT.name());
         baseWeight.setValue(Double.valueOf(ruleDTO.getWeightRatio()).toString());
         weightRatio.setName("weightRatio");
         paramList.add(weightRatio);
 
         FunctionParam weightIndex = new FunctionParam();
-        weightIndex.setType(FieldTypeEnum.getFieldType(ruleDTO.getIndexType()).getCode());
+        weightIndex.setType(ruleDTO.getIndexType());
         weightIndex.setValue(ruleDTO.getWeightIndex());
         weightIndex.setName("weightIndex");
         paramList.add(weightIndex);
 
         FunctionParam downLimitScore = new FunctionParam();
-        downLimitScore.setType(FieldTypeEnum.INPUT.getCode());
+        downLimitScore.setType(FieldTypeEnum.INPUT.name());
         downLimitScore.setValue(ruleDTO.getDownLimitScore().toString());
         downLimitScore.setName("downLimitScore");
         paramList.add(downLimitScore);
 
         FunctionParam upLimitScore = new FunctionParam();
-        upLimitScore.setType(FieldTypeEnum.INPUT.getCode());
+        upLimitScore.setType(FieldTypeEnum.INPUT.name());
         upLimitScore.setValue(ruleDTO.getUpLimitScore().toString());
         upLimitScore.setName("upLimitScore");
         paramList.add(upLimitScore);
@@ -180,7 +180,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             left.setFieldType(FieldTypeEnum.FUNC);
 
         } else {
-            FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(elementDTO.getLeftPropertyType());
+            FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(elementDTO.getLeftPropertyType());
             if (null == fieldTypeEnum) {
                 throw new ParseException("CustomRuleBuilder processOneElement error,FieldType not exist!LeftPropertyType:"
                         + elementDTO.getLeftPropertyType() + "conditionUuid:" + elementDTO.getUuid());
@@ -206,7 +206,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
      */
     private ConditionParam constructRight(RuleConditionElementDTO elementDTO) {
         ConditionParam right = new ConditionParam();
-        FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(elementDTO.getRightType());
+        FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(elementDTO.getRightType());
         if (null == fieldTypeEnum) {
             throw new ParseException("CustomRuleBuilder processOneElement error,FieldType not exist!RightType:"
                     + elementDTO.getRightType() + "conditionUuid:" + elementDTO.getUuid());

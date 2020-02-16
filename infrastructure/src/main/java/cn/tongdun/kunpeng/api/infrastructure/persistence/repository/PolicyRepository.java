@@ -159,7 +159,7 @@ public class PolicyRepository implements IPolicyRepository{
 
     //查询规则
     private List<RuleDTO> queryRuleDTOBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"SUB_POLICY");
+        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
 
         if(ruleDOList == null) {
             return null;
@@ -182,7 +182,7 @@ public class PolicyRepository implements IPolicyRepository{
 
     //查询规则条件
     private List<RuleConditionElementDTO> queryRuleConditionElementDTOByRuleUuid(String ruleUuid){
-        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDOMapper.selectByBizUuidBizType(ruleUuid,"RULE");
+        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDOMapper.selectByBizUuidBizType(ruleUuid,"rule");
         if(ruleConditionElementDOList == null) {
             return null;
         }
@@ -194,6 +194,8 @@ public class PolicyRepository implements IPolicyRepository{
             return ruleConditionElementDTO;
         }).collect(Collectors.toList());
 
+        //创建条件树
+        result = buildConditionTree(result);
         return result;
     }
 
@@ -295,6 +297,45 @@ public class PolicyRepository implements IPolicyRepository{
     }
 
 
+    private List<RuleConditionElementDTO> buildConditionTree(List<RuleConditionElementDTO> ruleConditionElementDTOList){
+        if(ruleConditionElementDTOList == null || ruleConditionElementDTOList.isEmpty()){
+            return ruleConditionElementDTOList;
+        }
+
+        List<RuleConditionElementDTO> result = new ArrayList<>();
+
+        // 查找根节点
+        for (RuleConditionElementDTO element : ruleConditionElementDTOList) {
+            if (StringUtils.isBlank(element.getParentUuid())) {
+                // 递归查找每个根节点下的元素,
+                findChildren(element, ruleConditionElementDTOList);
+                result.add(element);
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 查询子节点
+     * @param parent
+     * @param conditionElements
+     */
+    private void findChildren(RuleConditionElementDTO parent, List<RuleConditionElementDTO> conditionElements) {
+        List<RuleConditionElementDTO> children = new ArrayList<RuleConditionElementDTO>();
+        for (RuleConditionElementDTO re : conditionElements) {
+            if (parent.getUuid().equals(re.getParentUuid())) {
+                children.add(re);
+            }
+        }
+
+        parent.setSubConditions(children);
+
+        for (RuleConditionElementDTO element : children) {
+            findChildren(element, conditionElements);
+        }
+    }
 
 
 

@@ -23,7 +23,11 @@ public class ConditionParamUtils {
         }
         switch (conditionParam.getFieldType()) {
             case INPUT:
-                return new Literal(conditionParam.getValue(), conditionParam.getDataType());
+                try{
+                    return new Literal(conditionParam.getValue(), Class.forName(conditionParam.getDataType()));
+                } catch (ClassNotFoundException e){
+                    throw new IllegalArgumentException("dataType not found:"+e.toString());
+                }
             case CONTEXT:
                 return new Field(conditionParam.getName(), conditionParam.getDataType());
             case FUNC:

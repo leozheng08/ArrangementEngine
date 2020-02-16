@@ -91,6 +91,11 @@ public class RuleDTO extends CommonDTO {
      */
     private String bizType;
 
+
+    /**
+     * 风险配置
+     */
+    private String riskConfig;
     /**
      * 风险配置
      {
