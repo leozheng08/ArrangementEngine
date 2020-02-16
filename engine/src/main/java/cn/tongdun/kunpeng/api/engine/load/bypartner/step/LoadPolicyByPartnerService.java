@@ -1,21 +1,21 @@
-package cn.tongdun.kunpeng.api.engine.load.partner;
+package cn.tongdun.kunpeng.api.engine.load.bypartner.step;
 
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
-import cn.tongdun.kunpeng.api.engine.load.ILoad;
-import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
-import cn.tongdun.kunpeng.api.engine.load.LoadPolicyTask;
-import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
+import cn.tongdun.kunpeng.api.engine.load.bypartner.ILoadByPartner;
+import cn.tongdun.kunpeng.api.engine.load.bypartner.LoadByPartnerPipeline;
+import cn.tongdun.kunpeng.api.engine.load.step.LoadPolicyTask;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
-import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -28,11 +28,10 @@ import java.util.concurrent.TimeUnit;
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:44
  */
-@Component
-@Step(pipeline = LoadByPartnerPipeline.NAME, phase = LoadByPartnerPipeline.LOAD_POLICY)
-public class LoadPolicyByPartnerManager implements ILoadByPartner {
+@Service
+public class LoadPolicyByPartnerService {
 
-    private Logger logger = LoggerFactory.getLogger(LoadPolicyByPartnerManager.class);
+    private Logger logger = LoggerFactory.getLogger(LoadPolicyByPartnerService.class);
 
     private ExecutorService executeThreadPool;
 
@@ -61,27 +60,24 @@ public class LoadPolicyByPartnerManager implements ILoadByPartner {
     }
 
 
+    public boolean loadByPartner(String partnerCode){
+        return loadByPartner(Sets.newHashSet(partnerCode));
+    }
 
-    /**
-     * 只加载一个合作方的策略
-     * @param partnerCode
-     * @return
-     */
-    @Override
-    public boolean loadByPartner(String partnerCode) {
-        logger.info("LoadPolicyByPartnerManager loadByPartner()");
+    public boolean loadByPartner(Set<String> partners){
         //取得策略列表
-        PolicyModifiedDTO policyModifiedDO = policyRepository.queryByPartner(partnerCode);
+        List<PolicyModifiedDTO> policyModifiedDOList = policyRepository.queryDefaultPolicyByPartners(partners);
 
-        if(!policyModifiedDO.isStatus()){
-            return true;
-        }
-
-        PolicyDTO policyDO = policyRepository.queryByUuid(policyModifiedDO.getPolicyUuid());
-
-        LoadPolicyTask task = new LoadPolicyTask(policyDO,defaultConvertorFactory,localCacheService);
         List<LoadPolicyTask> tasks = new ArrayList<>();
-        tasks.add(task);
+        for(PolicyModifiedDTO policyModifiedDO:policyModifiedDOList){
+            if(policyModifiedDO.getStatus() != 1){
+                //todo 缓存不在用状态，便于返回404子码
+                continue;
+            }
+
+            LoadPolicyTask task = new LoadPolicyTask(policyModifiedDO.getPolicyUuid(),policyRepository,defaultConvertorFactory,localCacheService);
+            tasks.add(task);
+        }
 
         try {
             executeThreadPool.invokeAll(tasks);
@@ -90,8 +86,6 @@ public class LoadPolicyByPartnerManager implements ILoadByPartner {
             return false;
         }
 
-        logger.info("LoadPolicyByPartnerManager loadByPartner() success");
         return true;
     }
-
 }

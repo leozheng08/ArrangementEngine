@@ -16,7 +16,7 @@
     id, uuid, gmt_create, gmt_modify, creator, policy_uuid,
     field_name, is_required, status
   </sql>
-  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="string" >
     select 
     <include refid="Base_Column_List" />
     from policy_field

@@ -14,17 +14,19 @@ public class PolicyDTO extends CommonDTO {
 
 
     private String appName;
-    private String eventId;
-
-    private String eventType;
     private String appType;
+
+    private String eventId;
+    private String eventType;
+
     private String name;
 
-    private PolicyDefinitionDTO policyDefinition;
     private List<SubPolicyDTO>  subPolicyList;
+    private List<PolicyIndicatrixItemDTO> policyIndicatrixItemList;
+    private List<PolicyFieldDTO> policyFieldList;
 
+    private PolicyDecisionModeDTO policyDecisionModeDTO;
     private DecisionFlowDTO decisionFlowDTO;
-
     /**
      * 合作方
      */

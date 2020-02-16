@@ -105,9 +105,9 @@ public class ParallelEngine extends DecisionTool {
         String policyUuid = parallelSubPolicy.getPolicyUuid();
         Policy policy = policyCache.get(policyUuid);
 
-        rolicyResponse.setPolicyUuid(policy.getPolicyUuId());
+        rolicyResponse.setPolicyUuid(policy.getUuid());
         rolicyResponse.setPolicyName(policy.getName());
-        rolicyResponse.setRiskType(policy.getRiskType());
+
 
         //取得此策略配置的子策略，子策略并行执行。
         List<String> subPolicyUuidList =  policy.getSubPolicyList();
@@ -157,6 +157,11 @@ public class ParallelEngine extends DecisionTool {
             rolicyResponse.setCostTime(System.currentTimeMillis()-start);
             return rolicyResponse;
         }
+
+        // TODO:设置风险类型
+        //rolicyResponse.setRiskType();
+
+
 
         rolicyResponse.setSuccess(true);
         rolicyResponse.setSubPolicyList(subPolicyResponseList);

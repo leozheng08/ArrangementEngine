@@ -33,7 +33,7 @@ public class PolicyConvertor implements IConvertor<PolicyDTO,Policy> {
     @Override
     public Policy convert(PolicyDTO t){
         Policy policy = new Policy();
-        policy.setPolicyUuId(t.getUuid());
+        policy.setUuid(t.getUuid());
         policy.setPartnerCode(t.getPartnerCode());
         policy.setEventType(t.getEventType());
         policy.setEventId(t.getEventId());

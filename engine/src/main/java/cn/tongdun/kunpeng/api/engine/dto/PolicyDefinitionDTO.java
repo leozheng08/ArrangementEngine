@@ -95,4 +95,5 @@ public class PolicyDefinitionDTO extends CommonDTO  {
     private Date gmtDelete;
 
 
+
 }

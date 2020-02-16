@@ -27,9 +27,8 @@ public class DecisionTreeEngine extends DecisionTool{
         Policy policy = policyCache.get(policyUuid);
 
 
-        rolicyResponse.setPolicyUuid(policy.getPolicyUuId());
+        rolicyResponse.setPolicyUuid(policy.getUuid());
         rolicyResponse.setPolicyName(policy.getName());
-        rolicyResponse.setRiskType(policy.getRiskType());
 
         rolicyResponse.setCostTime(System.currentTimeMillis()-start);
         return rolicyResponse;

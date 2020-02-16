@@ -18,7 +18,7 @@
     id, partner_code, indicatrix_id, master_field, policy_uuid, biz_uuid, biz_type, status, 
     gmt_create, gmt_modify
   </sql>
-  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="string" >
     select 
     <include refid="Base_Column_List" />
     from policy_indicatrix_item

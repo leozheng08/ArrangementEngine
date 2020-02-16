@@ -23,12 +23,9 @@
     <result column="app_type" property="appType" jdbcType="VARCHAR" />
     <result column="industry_type" property="industryType" jdbcType="VARCHAR" />
     <result column="product_tag" property="productTag" jdbcType="VARCHAR" />
-    <result column="source" property="source" jdbcType="VARCHAR" />
-    <result column="source_type" property="sourceType" jdbcType="VARCHAR" />
     <result column="curr_version" property="currVersion" jdbcType="VARCHAR" />
     <result column="curr_version_uuid" property="currVersionUuid" jdbcType="VARCHAR" />
     <result column="attribute" property="attribute" jdbcType="VARCHAR" />
-    <result column="origin_template_uuid" property="originTemplateUuid" jdbcType="CHAR" />
     <result column="is_common" property="common" jdbcType="BIT" />
     <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER" />
 
@@ -38,9 +35,8 @@
   <sql id="Base_Column_List" >
     t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.name, t.app_name, t.event_type,
     t.event_id, t.description, t.partner_code, t.service_type, t.status, t.is_deleted,
-    t.is_template, t.app_type, t.industry_type, t.product_tag, t.source, t.source_type, t.curr_version, t.curr_version_uuid,
-    t.attribute, t.origin_template_uuid,
-    t.is_common, t.concurrency_version, t.gmt_delete
+    t.is_template, t.app_type, t.industry_type, t.product_tag, t.curr_version, t.curr_version_uuid,
+    t.attribute, t.is_common, t.concurrency_version, t.gmt_delete
   </sql>
 
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
@@ -54,5 +50,24 @@
     join policy p on t.uuid = p.policy_definition_uuid
     where p.uuid = #{policyUuid}
   </select>
+
+  <select id="selectByPartners" resultMap="BaseResultMap" parameterType="java.util.Set" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_definition t where is_deleted =0
+    and partner_code in
+    <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
+      #{partner}
+    </foreach>
+  </select>
+
+  <select id="selectByPartner" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_definition t where is_deleted =0
+    and partner_code = #{partner}
+  </select>
+
+
 
 </mapper>

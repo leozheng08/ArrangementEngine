@@ -27,9 +27,9 @@ public class DecisionFlowEngine extends DecisionTool{
         String policyUuid = abstractRunMode.getPolicyUuid();
         Policy policy = policyCache.get(policyUuid);
 
-        rolicyResponse.setPolicyUuid(policy.getPolicyUuId());
+        rolicyResponse.setPolicyUuid(policy.getUuid());
         rolicyResponse.setPolicyName(policy.getName());
-        rolicyResponse.setRiskType(policy.getRiskType());
+
 
         rolicyResponse.setCostTime(System.currentTimeMillis()-start);
         return rolicyResponse;

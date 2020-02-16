@@ -16,15 +16,28 @@
     <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, policy_definition_uuid, gmt_create, gmt_modify, creator, operator, start_time, end_time,
-    is_deleted, status, config, concurrency_version
+    a.id, a.policy_definition_uuid, a.gmt_create, a.gmt_modify, a.creator, a.operator, a.start_time, a.end_time,
+    a.is_deleted, a.status, a.config, a.concurrency_version
   </sql>
-  <select id="selectByPolicyDefinitionUuid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPolicyDefinitionUuid" resultMap="BaseResultMap" parameterType="string" >
     select 
     <include refid="Base_Column_List" />
-    from policy_challenger
+    from policy_challenger a
     where is_deleted =0 and status=1
     and policy_definition_uuid = #{policyDefinitionUuid}
     and limit=1
+  </select>
+
+  <select id="selectAvailableByPartners" resultMap="BaseResultMap" parameterType="java.util.Set">
+    select
+    <include refid="Base_Column_List" />
+    from policy_challenger a,policy_definition b
+    where a.policy_definition_uuid=b.uuid
+    and a.is_deleted =0 and a.status=1
+    and b.is_deleted =0 and b.status=1
+    and b.partner_code in
+    <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
+      #{partner}
+    </foreach>
   </select>
 </mapper>

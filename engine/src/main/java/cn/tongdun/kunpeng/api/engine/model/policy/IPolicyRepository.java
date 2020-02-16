@@ -13,13 +13,15 @@ import java.util.Set;
 public interface IPolicyRepository {
 
 
-    //取得所有策略清单
-    List<PolicyModifiedDTO> queryByPartners(Set<String> partners);
+    //根据合作列表，取得运行版本的策略清单
+    List<PolicyModifiedDTO> queryDefaultPolicyByPartners(Set<String> partners);
 
 
-    //取得所有策略清单
-    PolicyModifiedDTO queryByPartner(String partner);
+
+    //根据合作列表，取得挑战者版本的策略清单
+    List<PolicyModifiedDTO> queryChallengerPolicyByPartners(Set<String> partners);
 
 
+    //查询单个策略的完整信息，包含各个子对象
     PolicyDTO queryByUuid(String uuid);
 }

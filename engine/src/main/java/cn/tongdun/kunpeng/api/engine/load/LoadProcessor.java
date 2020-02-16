@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.load;
 
-import cn.tongdun.kunpeng.api.engine.load.partner.ILoadByPartner;
-import cn.tongdun.kunpeng.api.engine.load.partner.LoadByPartnerPipeline;
+import cn.tongdun.kunpeng.api.engine.load.bypartner.ILoadByPartner;
+import cn.tongdun.kunpeng.api.engine.load.bypartner.LoadByPartnerPipeline;
 import cn.tongdun.tdframework.common.dto.Response;
 import cn.tongdun.tdframework.core.exception.SysException;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 /**
- * 启动加载处理器
+ * 启动时缓存加载处理器
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:43
  */

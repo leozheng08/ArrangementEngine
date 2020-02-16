@@ -1,10 +1,13 @@
 package cn.tongdun.kunpeng.api.engine.model.policy;
 
 import cn.tongdun.ddd.common.domain.Entity;
+import cn.tongdun.ddd.common.domain.UUIDEntity;
 import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 策略。将会放到缓存中，属性尽量简化，不要保留跟策略运行无关的属性
@@ -12,24 +15,72 @@ import java.util.List;
  * @Date: 2019/12/16 下午3:21
  */
 @Data
-public class Policy extends Entity {
-    private String            policyUuId;
+public class Policy extends UUIDEntity {
+    /**
+     * 策略名称
+     */
     private String            name;
+
+    /**
+     * 合作方编码
+     */
     private String            partnerCode;
+
+    /**
+     * appName
+     */
     private String            appName;
+
+    /**
+     * appType
+     */
     private String            appType;
-    private String            appDisplayName;
+
+    /**
+     *  eventId
+     */
     private String            eventId;
+
+    /**
+     * eventType
+     */
     private String            eventType;
-    private String            version;
 
-    private String           riskType;
+    /**
+     * 版本
+     */
+    private String version;
 
-    private String            antlrCode;
-    private boolean           selfOutput;
-    private String            dataPermission;
+    /**
+     * 是否默认版本
+     */
+    private boolean defaultVersion;
+
+    /**
+     * 决策方式 并行、决策流、决策树、决策表等 parallel、flow、tree、table
+     */
+    private String currDecisionMode;
+
+
+    /**
+     * 决策方式对应的策略工具uuid 当currDecisionMode=parallel是，currDecisionModeUuid=null
+     */
+    private String currDecisionModeUuid;
+
+
+    /**
+     * 策略定义uuid
+     */
+    private String policyDefinitionUuid;
+
+    /**
+     * 状态 0：已关闭 1：已启用
+     */
+    private Integer status;
+
     //执行方式，并行执行子策略、决策流、决策表、决策树
     private AbstractRunMode runMode;
 
+    //子策略的uuid列表
     private List<String> subPolicyList;
 }

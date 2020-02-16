@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.load.partner;
+package cn.tongdun.kunpeng.api.engine.load.bypartner;
 
 import cn.tongdun.tdframework.core.pipeline.IStep;
 

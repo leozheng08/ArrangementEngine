@@ -1,6 +1,6 @@
-package cn.tongdun.kunpeng.api.engine.model.policy;
+package cn.tongdun.kunpeng.api.engine.model.policy.definition;
 
-import cn.tongdun.ddd.common.domain.Entity;
+import cn.tongdun.ddd.common.domain.UUIDEntity;
 import lombok.Data;
 
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * 策略定义。将会放到缓存中，属性尽量简化，不要保留跟策略运行无关的属性
  */
 @Data
-public class PolicyDefinition extends Entity {
+public class PolicyDefinition extends UUIDEntity {
 
     private String name;
 
@@ -77,10 +77,5 @@ public class PolicyDefinition extends Entity {
      */
 
     private Integer status;
-
-    /**
-     * 是否删除
-     */
-    private boolean deleted;
 
 }

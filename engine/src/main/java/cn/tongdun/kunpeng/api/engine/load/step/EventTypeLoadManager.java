@@ -1,5 +1,7 @@
-package cn.tongdun.kunpeng.api.engine.load;
+package cn.tongdun.kunpeng.api.engine.load.step;
 
+import cn.tongdun.kunpeng.api.engine.load.ILoad;
+import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
@@ -19,7 +21,7 @@ import java.util.List;
  */
 @Component
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_COMM)
-public class EventTypeLoadManager implements ILoad{
+public class EventTypeLoadManager implements ILoad {
 
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
@@ -31,7 +33,7 @@ public class EventTypeLoadManager implements ILoad{
 
     @Override
     public boolean load(){
-        logger.info("EventTypeLoadManager load()");
+        logger.info("EventTypeLoadManager start");
         FieldDefinition field = new FieldDefinition();
         //0为系统字段 1为扩展字段
         field.setSign(0);
@@ -39,7 +41,7 @@ public class EventTypeLoadManager implements ILoad{
         if(list != null) {
             eventTypeLocalCache.setEventTypeList(list);
         }
-        logger.info("EventTypeLoadManager load() success,eventType size:"+eventTypeLocalCache.getEventTypeList().size());
+        logger.info("EventTypeLoadManager success, size:"+eventTypeLocalCache.getEventTypeList().size());
         return true;
     }
 }

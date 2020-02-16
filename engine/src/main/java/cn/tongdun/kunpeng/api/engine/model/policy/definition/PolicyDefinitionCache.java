@@ -1,8 +1,10 @@
-package cn.tongdun.kunpeng.api.engine.model.policy;
+package cn.tongdun.kunpeng.api.engine.model.policy.definition;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -12,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 策略定义缓存。
  */
+@Component
 @Data
 public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefinition> {
 
@@ -33,13 +36,19 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
     }
 
     @Override
-    public void put(String uuid, PolicyDefinition policy){
-        policyDefinitionMap.put(uuid,policy);
+    public void put(String uuid, PolicyDefinition policyDefinition){
+        policyDefinitionMap.put(uuid,policyDefinition);
+        policyDefinitionUuidMap.put(buildKey(policyDefinition),uuid);
     }
 
     @Override
     public PolicyDefinition remove(String uuid){
-        return policyDefinitionMap.remove(uuid);
+
+        PolicyDefinition policyDefinition = policyDefinitionMap.remove(uuid);
+        if(policyDefinition != null) {
+            policyDefinitionUuidMap.remove(buildKey(policyDefinition));
+        }
+        return policyDefinition;
     }
 
 
@@ -67,8 +76,8 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
     }
 
 
-    private static String buildKey(Policy policy){
-        return buildKey(policy.getPartnerCode(),policy.getAppName(),policy.getVersion());
+    private static String buildKey(PolicyDefinition policyDefinition){
+        return buildKey(policyDefinition.getPartnerCode(),policyDefinition.getAppName(),policyDefinition.getEventId());
     }
 
     /**

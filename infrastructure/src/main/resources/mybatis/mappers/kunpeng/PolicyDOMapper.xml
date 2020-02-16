@@ -26,6 +26,7 @@
     <result column="origin_template_uuid" property="originTemplateUuid" />
     <result column="origin_policy_uuid" property="originPolicyUuid" />
   </resultMap>
+
   <sql id="Base_Column_List" >
     t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid,
    t.partner_code, t.status, t.display_order,
@@ -44,6 +45,47 @@
     where t.policy_definition_uuid = #{policyDefinitionUuid} and t.is_deleted = 0
     order by t.display_order asc, t.gmt_create desc
   </select>
+
+
+  <resultMap id="PolicyModifiedResultMap" type="cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO" >
+
+    <result column="uuid" property="policyUuid" />
+    <result column="partner_code" property="partnerCode" />
+    <result column="app_name" property="appName" />
+    <result column="app_type" property="appType" />
+    <result column="event_id" property="eventId" />
+    <result column="event_type" property="eventType" />
+    <result column="version" property="version" />
+    <result column="is_default_version" property="defaultVersion" />
+    <result column="status" property="status" />
+    <result column="gmt_modify" property="modifiedVersion" />
+  </resultMap>
+
+  <sql id="Modified_Column_List" >
+    a.uuid,a.partner_code,b.app_name,b.app_type,b.event_id,b.event_type,a.version,a.is_default_version,a.status,a.gmt_modify
+  </sql>
+
+  <select id="selectDefaultPolicyByPartners" resultMap="PolicyModifiedResultMap" parameterType="java.util.Set" >
+    select <include refid="Modified_Column_List"/>
+    from policy a,policy_definition b
+    where a.policy_definition_uuid=b.uuid and a.is_default_version=1
+    and a.partner_code in
+    <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
+      #{partner}
+    </foreach>
+  </select>
+
+  <select id="selectPolicyByUuids" resultMap="PolicyModifiedResultMap" parameterType="java.util.List" >
+    select <include refid="Base_Column_List"/>
+    from policy a,policy_definition b
+    where a.policy_definition_uuid=b.uuid and a.is_default_version=1
+    and a.uuid in
+    <foreach collection="list" item="uuid" index="index"  open="(" separator="," close=")">
+      #{uuid}
+    </foreach>
+  </select>
+
+
 
 
 </mapper>

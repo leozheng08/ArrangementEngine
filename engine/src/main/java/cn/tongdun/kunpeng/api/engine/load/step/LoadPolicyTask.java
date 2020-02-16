@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.load;
+package cn.tongdun.kunpeng.api.engine.load.step;
 
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
@@ -22,17 +23,20 @@ import java.util.concurrent.Callable;
  */
 public class LoadPolicyTask implements Callable<Boolean> {
     private Logger logger = LoggerFactory.getLogger(LoadPolicyTask.class);
-    private PolicyDTO policyDO;
+    private String policyUuid;
     private IConvertorFactory convertorFactory;
 
     private LocalCacheService localCacheService;
 
+    private IPolicyRepository policyRepository;
 
 
-    public LoadPolicyTask(PolicyDTO policyDO, IConvertorFactory convertorFactory, LocalCacheService localCacheService){
-        this.policyDO = policyDO;
+
+    public LoadPolicyTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService){
+        this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
+        this.policyRepository = policyRepository;
     }
 
     /**
@@ -46,6 +50,8 @@ public class LoadPolicyTask implements Callable<Boolean> {
     public Boolean call(){
 
         try {
+            PolicyDTO policyDO = policyRepository.queryByUuid(policyUuid);
+
             List<SubPolicyDTO> subPolicyDOList = policyDO.getSubPolicyList();
 
             IConvertor<PolicyDTO, Policy> policyConvertor = convertorFactory.getConvertor(PolicyDTO.class);
@@ -69,9 +75,9 @@ public class LoadPolicyTask implements Callable<Boolean> {
             }
 
             //缓存运行模式
-            localCacheService.put(AbstractRunMode.class,policy.getPolicyUuId(),policy.getRunMode());
+            localCacheService.put(AbstractRunMode.class,policy.getUuid(),policy.getRunMode());
             //缓存策略
-            localCacheService.put(Policy.class,policy.getPolicyUuId(), policy);
+            localCacheService.put(Policy.class,policy.getUuid(), policy);
         } catch (Exception e){
             logger.error("LoadPolicyTask error",e);
         }

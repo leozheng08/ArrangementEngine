@@ -8,15 +8,15 @@
     <result column="creator" property="creator" jdbcType="VARCHAR" />
     <result column="operator" property="operator" jdbcType="VARCHAR" />
     <result column="decision_mode_type" property="decisionModeType" jdbcType="VARCHAR" />
-    <result column="decision_mode_uuid" property="decisionModeUuid" jdbcType="CHAR" />
+    <result column="decision_mode_uuid" property="decisionModeUuid" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT" />
-    <result column="policy_uuid" property="policyUuid" jdbcType="CHAR" />
+    <result column="policy_uuid" property="policyUuid" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, gmt_create, gmt_modify, creator, operator, decision_mode_type, decision_mode_uuid, 
     status, policy_uuid
   </sql>
-  <select id="selectBypolicyUuid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="string" >
     select 
     <include refid="Base_Column_List" />
     from policy_decision_mode

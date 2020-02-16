@@ -22,7 +22,7 @@ public class LoadPipeline {
     public final static String LOAD_PARTNER = "loadPartner";
 
     //加载策略集到内存
-    @Phase(parallel = true, order = 300)
+    @Phase(parallel = false, order = 300)
     public final static String LOAD_POLICY = "loadPolicy";
 
     //预热处理
