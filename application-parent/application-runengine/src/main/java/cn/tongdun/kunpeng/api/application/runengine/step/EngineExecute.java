@@ -2,8 +2,8 @@ package cn.tongdun.kunpeng.api.application.runengine.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
-import cn.tongdun.kunpeng.api.engine.model.runmode.RunModeCache;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.DecisionTool;
 import cn.tongdun.kunpeng.api.engine.DecisionToolFactory;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -11,8 +11,6 @@ import cn.tongdun.kunpeng.common.data.PolicyResponse;
 import cn.tongdun.kunpeng.common.data.RiskResponse;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +28,7 @@ public class EngineExecute implements IRiskStep {
 
 
     @Autowired
-    RunModeCache runModeCache;
+    DecisionModeCache cecisionModeCache;
 
     @Autowired
     DecisionToolFactory decisionToolFactory;
@@ -43,9 +41,9 @@ public class EngineExecute implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){
 
-        AbstractRunMode AbstractRunMode = runModeCache.get(context.getPolicyUuid());
-        DecisionTool decisionTool = decisionToolFactory.getDecisionTool(AbstractRunMode);
-        PolicyResponse policyResponse = decisionTool.execute(AbstractRunMode,context);
+        AbstractDecisionMode decisionMode = cecisionModeCache.get(context.getPolicyUuid());
+        DecisionTool decisionTool = decisionToolFactory.getDecisionTool(decisionMode);
+        PolicyResponse policyResponse = decisionTool.execute(decisionMode,context);
         response.setSuccess(true);
         return true;
     }

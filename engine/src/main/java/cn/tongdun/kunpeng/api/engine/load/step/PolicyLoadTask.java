@@ -3,13 +3,13 @@ package cn.tongdun.kunpeng.api.engine.load.step;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
-import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
-import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,19 +50,19 @@ public class PolicyLoadTask implements Callable<Boolean> {
     public Boolean call(){
 
         try {
-            PolicyDTO policyDO = policyRepository.queryByUuid(policyUuid);
+            PolicyDTO policyDTO = policyRepository.queryByUuid(policyUuid);
 
-            List<SubPolicyDTO> subPolicyDOList = policyDO.getSubPolicyList();
+            List<SubPolicyDTO> subpolicyDTOList = policyDTO.getSubPolicyList();
 
             IConvertor<PolicyDTO, Policy> policyConvertor = convertorFactory.getConvertor(PolicyDTO.class);
-            Policy policy = policyConvertor.convert(policyDO);
+            Policy policy = policyConvertor.convert(policyDTO);
 
-            if (subPolicyDOList != null) {
-                for (SubPolicyDTO subPolicyDO : subPolicyDOList) {
+            if (subpolicyDTOList != null) {
+                for (SubPolicyDTO subpolicyDTO : subpolicyDTOList) {
                     IConvertor<SubPolicyDTO, SubPolicy> subPolicyConvertor = convertorFactory.getConvertor(SubPolicyDTO.class);
-                    SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDO);
-                    if (subPolicyDO.getRules() != null) {
-                        for (RuleDTO ruleDO : subPolicyDO.getRules()) {
+                    SubPolicy subPolicy = subPolicyConvertor.convert(subpolicyDTO);
+                    if (subpolicyDTO.getRules() != null) {
+                        for (RuleDTO ruleDO : subpolicyDTO.getRules()) {
                             IConvertor<RuleDTO, Rule> ruleConvertor = convertorFactory.getConvertor(RuleDTO.class);
                             Rule rule = ruleConvertor.convert(ruleDO);
                             //缓存规则
@@ -74,8 +74,25 @@ public class PolicyLoadTask implements Callable<Boolean> {
                 }
             }
 
+            PolicyDecisionModeDTO policyDecisionModeDTO = policyDTO.getPolicyDecisionModeDTO();
+            if(policyDecisionModeDTO != null && "flow".equals(policyDecisionModeDTO.getDecisionModeType())
+                && policyDTO.getDecisionFlowDTO() != null){
+                //策略流运行模式
+                IConvertor<DecisionFlowDTO, DecisionFlow> flowConvertor = convertorFactory.getConvertor(DecisionFlowDTO.class);
+                DecisionFlow decisionFlow = flowConvertor.convert(policyDTO.getDecisionFlowDTO());
+                policy.setDecisionMode(decisionFlow);
+            } else {
+                //策略运行模式
+                ParallelSubPolicy parallelSubPolicy = new ParallelSubPolicy();
+                parallelSubPolicy.setPolicyUuid(policy.getUuid());
+                policy.setDecisionMode(parallelSubPolicy);
+
+            }
+            
+            
+
             //缓存运行模式
-            localCacheService.put(AbstractRunMode.class,policy.getUuid(),policy.getRunMode());
+            localCacheService.put(AbstractDecisionMode.class,policy.getUuid(),policy.getDecisionMode());
             //缓存策略
             localCacheService.put(Policy.class,policy.getUuid(), policy);
         } catch (Exception e){

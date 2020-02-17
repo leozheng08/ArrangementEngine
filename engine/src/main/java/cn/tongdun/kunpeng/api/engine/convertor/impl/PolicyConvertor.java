@@ -5,7 +5,6 @@ import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
-import cn.tongdun.kunpeng.api.engine.model.runmode.ParallelSubPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -49,11 +48,6 @@ public class PolicyConvertor implements IConvertor<PolicyDTO,Policy> {
                 subPolicyList.add(subPolicyDO.getUuid());
             }
         }
-
-        //策略运行模式
-        ParallelSubPolicy parallelSubPolicy = new ParallelSubPolicy();
-        parallelSubPolicy.setPolicyUuid(t.getUuid());
-        policy.setRunMode(parallelSubPolicy);
 
         return policy;
     }
