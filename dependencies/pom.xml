@@ -266,7 +266,12 @@
 
             <!-- module end -->
 
-
+            <!-- json-flattener -->
+            <dependency>
+                <groupId>com.github.wnameless</groupId>
+                <artifactId>json-flattener</artifactId>
+                <version>0.2.2</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

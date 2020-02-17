@@ -3,10 +3,9 @@ package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
-public class InterfaceDefinitionInfo {
+public class DecisionFlowInterface {
 
     /**
      * uuid
@@ -17,6 +16,16 @@ public class InterfaceDefinitionInfo {
      * uuid
      */
     private String name;
+
+    /**
+     * 指标uuid拼接
+     */
+    private String indexUuids;
+
+    /**
+     * 字段拼接
+     */
+    private String fields;
 
     /**
      * inputParams

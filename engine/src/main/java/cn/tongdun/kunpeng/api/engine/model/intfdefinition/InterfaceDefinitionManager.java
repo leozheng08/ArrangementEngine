@@ -25,36 +25,28 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
     /**
      * 接口的详细配置
      */
-    private InterfaceDefinitionInfo interfaceDefinitionInfo;
-
-    /**
-     * 指标uuid拼接
-     */
-    private String indexUuids;
-
-    /**
-     * 字段拼接
-     */
-    private String fields;
+    private DecisionFlowInterface decisionFlowInterface;
 
     @Override
     public void parse(NodeDesc nodeDesc) {
         setId(nodeDesc.getId());
         Map<String, String> paramMap = nodeDesc.getParamList().stream().collect(Collectors.toMap(a -> a.getName(), b -> b.getValue()));
         String interfaceTaskConfig = paramMap.get("tns:interfaceTask");
-        indexUuids = paramMap.get("tns:indexUuids");
-        fields = paramMap.get("tns:fields");
+        String indexUuids = paramMap.get("tns:indexUuids");
+        String fields = paramMap.get("tns:fields");
         if (StringUtils.isBlank(interfaceTaskConfig)) {
             throw new ParseException("Service Node id:" + this.getId() + " tns:interfaceTask is blank!");
         }
         try {
-            interfaceDefinitionInfo = new InterfaceDefinitionInfo();
+            decisionFlowInterface = new DecisionFlowInterface();
             JSONObject json = JSONObject.parseObject(interfaceTaskConfig);
-            interfaceDefinitionInfo.setUuid(json.getString("uuid"));
-            interfaceDefinitionInfo.setName(json.getString("name"));
-            interfaceDefinitionInfo.setInputParams(buildParaInfo(json.getJSONArray("inputs"), "input"));
-            interfaceDefinitionInfo.setOutputParams(buildParaInfo(json.getJSONArray("outputs"), "output"));
-            interfaceDefinitionInfo.setRiskServiceOutput(json.getBoolean("isRiskServiceOutput"));
+            decisionFlowInterface.setUuid(json.getString("uuid"));
+            decisionFlowInterface.setName(json.getString("name"));
+            decisionFlowInterface.setIndexUuids(indexUuids);
+            decisionFlowInterface.setFields(fields);
+            decisionFlowInterface.setInputParams(buildParaInfo(json.getJSONArray("inputs"), "input"));
+            decisionFlowInterface.setOutputParams(buildParaInfo(json.getJSONArray("outputs"), "output"));
+            decisionFlowInterface.setRiskServiceOutput(json.getBoolean("isRiskServiceOutput"));
         } catch (Exception e) {
 
         }
@@ -71,7 +63,7 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
         IGenericDubboCaller genericDubboCaller;
         try {
             genericDubboCaller = (IGenericDubboCaller)SpringContextHolder.getBean("genericDubboCaller");
-            genericDubboCaller.call((AbstractFraudContext) executeContext, interfaceDefinitionInfo, indexUuids, fields);
+            genericDubboCaller.call((AbstractFraudContext) executeContext, decisionFlowInterface);
         } catch (Exception e) {
         }
         nodeResult.putOneResult("Thread", Thread.currentThread().getName());

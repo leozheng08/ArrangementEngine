@@ -71,12 +71,20 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
      */
     private transient boolean isDecisionFlow = false;
 
-
+    /**
+     * 是否是复杂对象查询
+     */
+    private boolean isObject = false;
 
     /**
      * 原始请求入参
      */
     private Map<String, String> requestParamsMap;
+
+    /**
+     * 规则引擎dubbo泛化输入参数/调用结果放在这里
+     */
+    private Object dubboCallResult;  // kunta的调用结果
 
     /**
      * 系统字段
@@ -105,6 +113,16 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
 
     // 决策流模型输出变量配置决策接口直接输出的决策引擎字段
     private List<Map<String, Object>> modelOutputFields = new ArrayList<>();
+
+    /**
+     * Key: indexUuid
+     */
+    private transient Map<String, Double> indexResultMap = new HashMap<>(200);
+
+    /**
+     * Key: IndicatrixId
+     */
+    private transient Map<String, List<Double>> indicatrixResultMap = new HashMap<>(200);
 
 
     public void addSubReasonCode(SubReasonCode subReasonCode, SubReasonCode.ExtCode extCode) {
@@ -262,6 +280,31 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
         if (interfaceOutputFields != null) {
             this.interfaceOutputFields.add(interfaceOutputFields);
         }
+    }
+
+    public Double getIndexResult(String indexUuid) {
+        if (null == indexResultMap) {
+            return null;
+        }
+        return indexResultMap.get(indexUuid);
+    }
+
+    /**
+     * 获取第一个元素，兼容之前的方法 2017-08-21
+     *
+     * @param indexUuid
+     * @return
+     */
+    public Double getIndicatrix(String indexUuid) {
+        if (null == indicatrixResultMap || StringUtils.isBlank(indexUuid)) {
+            return null;
+        }
+        List<Double> indicatrixs = indicatrixResultMap.get(indexUuid);
+        if (indicatrixs == null || indicatrixs.size() <= 0) {
+            return null;
+        }
+
+        return indicatrixs.get(0);
     }
 
 
