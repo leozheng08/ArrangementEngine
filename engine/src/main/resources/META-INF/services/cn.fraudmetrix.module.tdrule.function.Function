@@ -71,3 +71,4 @@ pattern/regex=cn.tongdun.kunpeng.api.engine.model.rule.function.LocalRegexFuncti
 #watchlist/complexCustomList=
 #watchlist/customList=
 #watchlist/risklist=
+ruleWeight=cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction

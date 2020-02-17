@@ -1,5 +1,9 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
+import cn.fraudmetrix.module.tdrule.model.IDetail;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import lombok.Data;
+
 import java.util.Date;
 
 
@@ -8,7 +12,8 @@ import java.util.Date;
  * @Author: liang.chen
  * @Date: 2020/2/5 下午8:05
  */
-public class TimePointComparisonDetail extends ConditionDetail {
+@Data
+public class TimePointComparisonDetail extends ConditionDetail implements DetailCallable {
 
     //时间点的值，根据时间片取得当前的周数，小时数，或分钟数等
     private Double result;
@@ -23,5 +28,8 @@ public class TimePointComparisonDetail extends ConditionDetail {
         super("time_point_comparison");
     }
 
-
+    @Override
+    public IDetail call() {
+        return this;
+    }
 }

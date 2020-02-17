@@ -21,16 +21,9 @@ public abstract class AbstractCalculateFunction extends AbstractFunction {
             return null;
         }
         FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(functionParam.getType());
-        if (null == fieldTypeEnum) {
-            throw new IllegalArgumentException("AbstractCalculateFunction type is:" + functionParam.getType() + ",cann't use this method,please parse yourself!");
-        }
         switch (fieldTypeEnum) {
             case INPUT:
-                try{
-                    return new Literal(functionParam.getValue(), Class.forName(dataType));
-                } catch (ClassNotFoundException e){
-                    throw new IllegalArgumentException("dataType not found:"+e.toString());
-                }
+                return new Literal(functionParam.getValue(), dataType);
             case PLATFORM_INDEX:
                 return new PlatformIndex(functionParam.getValue(), false);
             case POLICY_INDEX:

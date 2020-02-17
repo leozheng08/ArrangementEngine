@@ -7,13 +7,13 @@ import java.util.List;
 
 /**
  * 规则
- * 
+ *
  * @author du 2014年2月15日 下午5:45:09
  */
 @Data
 public class RuleDTO extends CommonDTO {
 
-    private static final long            serialVersionUID = -2526030344227360438L;
+    private static final long serialVersionUID = -2526030344227360438L;
 
     private String ruleCustomId;
 
@@ -70,12 +70,10 @@ public class RuleDTO extends CommonDTO {
     private boolean deleted;
 
 
-
     /**
      * 策略定义
      */
     private String policyDefinitionUuid;
-
 
 
     /**
@@ -87,7 +85,6 @@ public class RuleDTO extends CommonDTO {
      * 业务类型
      * decision_flow:决策流
      * sub_policy:子策略
-     *
      */
     private String bizType;
 
@@ -98,51 +95,51 @@ public class RuleDTO extends CommonDTO {
     private String riskConfig;
     /**
      * 风险配置
-     {
-     "mode":"WorstMatch"
-     "riskDecision":"Accept"
-     }
-     或者
-     {
-     "mode":"Weighted",
-     "riskWeight":10,
-     "weightRatio":20.33,
-     "op":"+",
-     "property":{
-     "type":"indicatrix/field",
-     "name":"指标/字段"
-     },
-     "propertyValue":{
-     "value":"3333333333"
-     },
-     "upperLimitScore":-30,
-     "lowerLimitScore":30
-     }
+     * {
+     * "mode":"WorstMatch"
+     * "riskDecision":"Accept"
+     * }
+     * 或者
+     * {
+     * "mode":"Weighted",
+     * "riskWeight":10,
+     * "weightRatio":20.33,
+     * "op":"+",
+     * "property":{
+     * "type":"indicatrix/field",
+     * "name":"指标/字段"
+     * },
+     * "propertyValue":{
+     * "value":"3333333333"
+     * },
+     * "upperLimitScore":-30,
+     * "lowerLimitScore":30
+     * }
      */
-    private String                       mode;                                    //WorstMatch,Weighted
-    private String                       riskDecision;                            // 风险决策结果
+    private String mode;                                    //WorstMatch,Weighted
+    private String riskDecision;                            // 风险决策结果
 
-    private double                       baseWeight;                              // 风险权重基线
-    private double                       weightRatio;                             // 风险权重比例
-    private String                       weightIndex;                             // 风险权重指标　
-    private String                       indexType;                               // 指标类型    旧的为空,新的GAEA_INDICATRIX　
-    private Double                       downLimitScore;                          // 权重计算分数右值下限
-    private Double                       upLimitScore;                            // 权重计算分数右值上限
+    private double baseWeight = 0;                              // 风险权重基线
+    private double weightRatio = 0;                             // 风险权重比例
+    private String weightIndex;                             // 风险权重指标　
+    private String indexType;                               // 指标类型    旧的为空,新的GAEA_INDICATRIX　
+    private Double downLimitScore;                          // 权重计算分数右值下限
+    private Double upLimitScore;                            // 权重计算分数右值上限
 
 
     private List<RuleConditionElementDTO> ruleConditionElements;
-    private List<RuleActionElementDTO>    ruleActionElements;
+    private List<RuleActionElementDTO> ruleActionElements;
 
 
     public Double getDownLimitScore() {
-        if( downLimitScore == null){
+        if (downLimitScore == null) {
             return -30d;
         }
         return downLimitScore;
     }
 
     public Double getUpLimitScore() {
-        if(upLimitScore == null){
+        if (upLimitScore == null) {
             return 30d;
         }
         return upLimitScore;
