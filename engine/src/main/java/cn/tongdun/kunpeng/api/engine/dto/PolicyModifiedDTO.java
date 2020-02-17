@@ -2,6 +2,8 @@ package cn.tongdun.kunpeng.api.engine.dto;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class PolicyModifiedDTO {
 
@@ -54,7 +56,7 @@ public class PolicyModifiedDTO {
     /**
      * 修改时间
      */
-    private long                    modifiedVersion;
+    private Date gmtModify;
 
 
 

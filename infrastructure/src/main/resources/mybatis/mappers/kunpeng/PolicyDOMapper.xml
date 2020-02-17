@@ -58,7 +58,7 @@
     <result column="version" property="version" />
     <result column="is_default_version" property="defaultVersion" />
     <result column="status" property="status" />
-    <result column="gmt_modify" property="modifiedVersion" />
+    <result column="gmt_modify" property="gmtModify" />
   </resultMap>
 
   <sql id="Modified_Column_List" >

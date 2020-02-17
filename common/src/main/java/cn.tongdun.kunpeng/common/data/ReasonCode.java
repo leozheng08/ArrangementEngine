@@ -31,6 +31,8 @@ public enum ReasonCode {
     RULE_NOT_CONFIG("40402", "对应的策略下没有规则"),
     POLICY_LOAD_ERROR("40403", "策略加载有误"),
     RECALL_DATA_EXIST("470", "重试查询不到数据"),
+    RULE_NOT_FIND("40404","没有对应的规则配置"),
+    SUB_POLICY_NOT_FIND("40405","没有对应的子规则配置"),
 
     //此状态码表示：部分数据获取失败的，仍旧返回调用成功，同时返回部分数据获取失败的状态码，不计费、记录事件；客户可以重试
     DATA_NOT_READY("507", "部分数据未准备好"),
@@ -77,7 +79,10 @@ public enum ReasonCode {
     CREDIT_LIST_DETAIL_SERVICE_CALL_ERROR("50736", "信贷名单库详情服务调用出错"),
     INDICATRIX_QUERY_LIMITING("50737", "指标平台限流"),
 
-    RULE_RUN_EXCEPTION("50740","规则引擎执行异常"),
+    ENGINE_ERROR("506", "决策引擎运行异常"),
+    RULE_ENGINE_TIMEOUT("50601", "规则引擎运行超时"),
+    RULE_ENGINE_ERROR("50602", "规则引擎运行异常"),
+    FLOW_ENGINE_ERROR("50603", "决策流引擎运行异常"),
 
     GAEA_FLOW_ERROR("50801", "指标流量不足"),
     THIRD_FLOW_ERROR("50806", "三方流量不足"),

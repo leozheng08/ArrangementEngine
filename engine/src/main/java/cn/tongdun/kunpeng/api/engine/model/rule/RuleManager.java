@@ -47,7 +47,7 @@ public class RuleManager implements IExecutor<String,RuleResponse> {
                 break;
             case Exception:
             case Unknown:
-                context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_RUN_EXCEPTION.getCode(), ReasonCode.RULE_RUN_EXCEPTION.getDescription(), "决策引擎执行"));
+                context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
                 break;
         }
 

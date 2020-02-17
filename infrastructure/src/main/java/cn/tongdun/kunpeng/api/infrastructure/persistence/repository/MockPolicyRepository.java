@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class MockPolicyRepository implements IPolicyRepository{
         policyModifiedDO.setEventId("eventId");
         policyModifiedDO.setPartnerCode("demo");
         policyModifiedDO.setAppName("ios");
-        policyModifiedDO.setModifiedVersion(1);
+        policyModifiedDO.setGmtModify(new Date());
         policyModifiedDO.setVersion("v1.0");
         list.add(policyModifiedDO);
         return list;
@@ -53,7 +54,7 @@ public class MockPolicyRepository implements IPolicyRepository{
         policyModifiedDO.setEventId("eventId");
         policyModifiedDO.setPartnerCode("demo");
         policyModifiedDO.setAppName("ios");
-        policyModifiedDO.setModifiedVersion(1);
+        policyModifiedDO.setGmtModify(new Date());
         policyModifiedDO.setVersion("v1.0");
         list.add(policyModifiedDO);
         return list;
