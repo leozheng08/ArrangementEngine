@@ -5,17 +5,15 @@ import cn.fraudmetrix.module.tdflow.exception.ParseException;
 import cn.fraudmetrix.module.tdflow.model.NodeResult;
 import cn.fraudmetrix.module.tdflow.model.node.AbstractBizNode;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 /**
@@ -70,16 +68,10 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
     @Override
     protected NodeResult run(ExecuteContext executeContext) {
         NodeResult nodeResult = new NodeResult();
-        ServiceLoader<IGenericDubboCaller> serviceLoader = ServiceLoader.load(IGenericDubboCaller.class);
-        Iterator<IGenericDubboCaller> iterator = serviceLoader.iterator();
         IGenericDubboCaller genericDubboCaller;
-        while (iterator.hasNext()) {
-            genericDubboCaller = iterator.next();
-            //调用
-            genericDubboCaller.call((AbstractFraudContext) executeContext, interfaceDefinitionInfo, indexUuids, fields);
-        }
         try {
-            Thread.sleep(80);
+            genericDubboCaller = (IGenericDubboCaller)SpringContextHolder.getBean("genericDubboCaller");
+            genericDubboCaller.call((AbstractFraudContext) executeContext, interfaceDefinitionInfo, indexUuids, fields);
         } catch (Exception e) {
         }
         nodeResult.putOneResult("Thread", Thread.currentThread().getName());
