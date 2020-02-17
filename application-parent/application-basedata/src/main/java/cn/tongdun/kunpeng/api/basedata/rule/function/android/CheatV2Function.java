@@ -8,6 +8,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.basedata.service.fp.Anomaly;
 import cn.tongdun.kunpeng.api.basedata.service.fp.ContainCheatingApps;
+import cn.tongdun.kunpeng.api.ruledetail.AndroidCheatAppDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CheatV2 extends AbstractFunction {
-    private static final Logger logger = LoggerFactory.getLogger(CheatV2.class);
+public class CheatV2Function extends AbstractFunction {
+    private static final Logger logger = LoggerFactory.getLogger(CheatV2Function.class);
 
     private String installedDangerAppCodes;
     private String runningDangerAppCodes;
@@ -80,22 +81,28 @@ public class CheatV2 extends AbstractFunction {
 
 //        AndroidCheatAppDetail detail = new AndroidCheatAppDetail();
 
+
         List<Anomaly> installedDangerApps = containCheatingApps.getInstalledDangerApps();
+        List<String> installedApps = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(installedDangerApps)) {
             for (Anomaly anomaly : installedDangerApps) {
                 if (installedDangerAppCodes.contains(anomaly.getCode())) {
                     hitValue = 1D;
 //                    detail.addInstalledDangerApp(anomaly.getCode());
+                    installedApps.add(anomaly.getCode());
                 }
             }
         }
 
         List<Anomaly> runningDangerApps = containCheatingApps.getRunningDangerApps();
+        List<String> runningApps = new ArrayList<>();
+
         if (CollectionUtils.isNotEmpty(runningDangerApps)) {
             for (Anomaly anomaly : runningDangerApps) {
                 if (runningDangerAppCodes.contains(anomaly.getCode())) {
                     hitValue = 1D;
 //                    detail.addRunningDangerApp(anomaly.getCode());
+                    runningApps.add(anomaly.getCode());
                 }
             }
         }
@@ -110,7 +117,20 @@ public class CheatV2 extends AbstractFunction {
 //
 //        return results;
 
-        return new FunctionResult(hitValue);
+
+        AndroidCheatAppDetail detail = null;
+        if (1 == hitValue) {
+            detail = new AndroidCheatAppDetail();
+
+            if (CollectionUtils.isNotEmpty(installedApps)) {
+                detail.setInstalledDangerApps(installedApps);
+            }
+            if (CollectionUtils.isNotEmpty(runningApps)) {
+                detail.setRunningDangerApps(runningApps);
+            }
+        }
+
+        return new FunctionResult(hitValue, detail);
     }
 
 

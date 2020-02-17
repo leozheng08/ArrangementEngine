@@ -5,6 +5,7 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
+import cn.tongdun.kunpeng.api.ruledetail.AndroidEmulatorDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -16,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Emulator extends AbstractFunction {
-    private static final Logger logger = LoggerFactory.getLogger(Emulator.class);
+public class EmulatorFunction extends AbstractFunction {
+    private static final Logger logger = LoggerFactory.getLogger(EmulatorFunction.class);
 
 
     @Override
@@ -48,12 +49,17 @@ public class Emulator extends AbstractFunction {
         }
 
         Object isAndroidEmulator = deviceInfo.get("isEmulator");
-        if (Boolean.TRUE.equals(isAndroidEmulator)) {
-            return new FunctionResult(true);
+        boolean result = false;
+        result = Boolean.TRUE.equals(isAndroidEmulator);
+
+
+        AndroidEmulatorDetail detail = null;
+        if (result && null != context.getDeviceInfo().get("emulatorType")) {
+            detail = new AndroidEmulatorDetail();
+            detail.setEmulatorType(context.getDeviceInfo().get("emulatorType").toString());
         }
-        else {
-            return new FunctionResult(false);
-        }
+
+        return new FunctionResult(result, detail);
     }
 
 

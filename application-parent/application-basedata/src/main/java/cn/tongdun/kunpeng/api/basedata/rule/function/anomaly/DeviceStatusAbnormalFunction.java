@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Map;
 
-public class DeviceStatusAbnormal extends AbstractFunction {
+public class DeviceStatusAbnormalFunction extends AbstractFunction {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(DeviceStatusAbnormal.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeviceStatusAbnormalFunction.class);
 
 
     private String abnormalTags;

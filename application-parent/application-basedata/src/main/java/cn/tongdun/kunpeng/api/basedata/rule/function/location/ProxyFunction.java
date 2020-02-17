@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class Proxy extends AbstractFunction {
-    private static final Logger logger = LoggerFactory.getLogger(Proxy.class);
+public class ProxyFunction extends AbstractFunction {
+    private static final Logger logger = LoggerFactory.getLogger(ProxyFunction.class);
 
     private String proxyIpType;
 

@@ -1,11 +1,17 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
+import cn.fraudmetrix.module.tdrule.model.IDetail;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import lombok.Data;
+
 /**
  * 位置字段的距离计算，即计算位置A到位置B的距离
+ *
  * @Author: liang.chen
  * @Date: 2020/2/6 下午9:53
  */
-public class GpsDistanceDetail extends ConditionDetail {
+@Data
+public class GpsDistanceDetail extends ConditionDetail implements DetailCallable {
 
     private String gpsA;
     private String gpsADisplayName;
@@ -14,9 +20,13 @@ public class GpsDistanceDetail extends ConditionDetail {
     private Double result;
     private String unit;
 
-    public GpsDistanceDetail(){
+    public GpsDistanceDetail() {
         super("gps_distance");
     }
 
+    @Override
+    public IDetail call() {
+        return this;
+    }
 
 }

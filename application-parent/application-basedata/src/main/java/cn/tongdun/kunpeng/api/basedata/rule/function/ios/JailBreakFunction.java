@@ -1,40 +1,26 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function.ios;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
-import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class NotOfficialApp extends AbstractFunction {
-
-    private String bundleId;
+public class JailBreakFunction extends AbstractFunction {
 
 
     @Override
     public String getName() {
-        return Constant.Function.IOS_NOT_OFFICIAL_APP;
+        return Constant.Function.IOS_IS_JAILBREAK;
     }
 
 
     @Override
     public void parseFunction(FunctionDesc functionDesc) {
-        if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
-            throw new ParseException("ios NotOfficialApp function parse error,no params!");
-        }
 
-        functionDesc.getParamList().forEach(param -> {
-            if (StringUtils.equals("bundleId", param.getName())) {
-                bundleId = param.getValue();
-            }
-        });
     }
 
     @Override
@@ -46,8 +32,9 @@ public class NotOfficialApp extends AbstractFunction {
             return new FunctionResult(false);
         }
         else {
-            Object officialBundleId = deviceInfo.get("bundleId");
-            if (officialBundleId != null && !officialBundleId.equals(bundleId)) {
+            Object jailBreak = deviceInfo.get("jailbreak");
+            String appType = context.getAppType();
+            if ("ios".equalsIgnoreCase(appType) && "1".equals(jailBreak)) {
                 return new FunctionResult(true);
             }
             else {

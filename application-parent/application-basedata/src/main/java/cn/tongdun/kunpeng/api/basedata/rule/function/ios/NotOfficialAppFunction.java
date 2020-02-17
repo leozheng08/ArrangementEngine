@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.android;
+package cn.tongdun.kunpeng.api.basedata.rule.function.ios;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
@@ -7,30 +7,32 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class NotOfficialApp extends AbstractFunction {
+public class NotOfficialAppFunction extends AbstractFunction {
 
-    private String packageName;
+    private String bundleId;
+
 
     @Override
     public String getName() {
-        return Constant.Function.ANDROID_NOT_OFFICIAL_APP;
+        return Constant.Function.IOS_NOT_OFFICIAL_APP;
     }
 
 
     @Override
     public void parseFunction(FunctionDesc functionDesc) {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
-            throw new ParseException("android NotOfficialApp function parse error,no params!");
+            throw new ParseException("ios NotOfficialApp function parse error,no params!");
         }
 
         functionDesc.getParamList().forEach(param -> {
-            if (StringUtils.equals("packageName", param.getName())) {
-                packageName = param.getValue();
+            if (StringUtils.equals("bundleId", param.getName())) {
+                bundleId = param.getValue();
             }
         });
     }
@@ -39,23 +41,19 @@ public class NotOfficialApp extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
-        boolean ret = false;
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            ret = false;
+            return new FunctionResult(false);
         }
         else {
-            Object officialPackageName = deviceInfo.get("packageName");
-            if (officialPackageName != null && !officialPackageName.equals(packageName)) {
-
-                ret = true;
+            Object officialBundleId = deviceInfo.get("bundleId");
+            if (officialBundleId != null && !officialBundleId.equals(bundleId)) {
+                return new FunctionResult(true);
             }
             else {
-                ret = false;
+                return new FunctionResult(false);
             }
         }
-
-        return new FunctionResult(ret);
     }
 
 

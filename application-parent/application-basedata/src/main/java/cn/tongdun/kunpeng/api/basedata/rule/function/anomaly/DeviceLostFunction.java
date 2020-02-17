@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class DeviceLost extends AbstractFunction {
+public class DeviceLostFunction extends AbstractFunction {
 
 
     private String codes;

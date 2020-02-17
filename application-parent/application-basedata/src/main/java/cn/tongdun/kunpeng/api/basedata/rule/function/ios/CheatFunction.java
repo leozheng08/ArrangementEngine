@@ -5,15 +5,16 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
+import cn.tongdun.kunpeng.api.ruledetail.IOSCheatAppDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class Cheat extends AbstractFunction {
+public class CheatFunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(Cheat.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheatFunction.class);
 
 
     @Override
@@ -39,7 +40,17 @@ public class Cheat extends AbstractFunction {
         }
         else {
             if (Boolean.TRUE.equals(containsCheatApp)) {
-                return new FunctionResult(true);
+                IOSCheatAppDetail detail = null;
+                if (null != context.getDeviceInfo() && context.getDeviceInfo().size() > 0) {
+                    detail = new IOSCheatAppDetail();
+                    if (null != context.getDeviceInfo().get("hookInline")) {
+                        detail.setHookInline(context.getDeviceInfo().get("hookInline").toString());
+                    }
+                    if (null != context.getDeviceInfo().get("hookIMP")) {
+                        detail.setHookIMP(context.getDeviceInfo().get("hookIMP").toString());
+                    }
+                }
+                return new FunctionResult(true, detail);
             }
             else {
                 return new FunctionResult(false);

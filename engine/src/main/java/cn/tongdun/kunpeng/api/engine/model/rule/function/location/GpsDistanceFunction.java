@@ -5,6 +5,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.tongdun.kunpeng.api.ruledetail.GpsDistanceDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,14 +13,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GpsDistance extends AbstractFunction {
-    private static final Logger logger = LoggerFactory.getLogger(GpsDistance.class);
+public class GpsDistanceFunction extends AbstractFunction {
+    private static final Logger logger = LoggerFactory.getLogger(GpsDistanceFunction.class);
 
     private String gpsA;
     private String gpsB;
     private String distanceOperator;
     private String distanceSlice;
-
 
     @Override
     public String getName() {
@@ -70,8 +70,21 @@ public class GpsDistance extends AbstractFunction {
         }
 
         double distance = getDistance(gps1, gps2, false);
-        return new FunctionResult(distanceDiffResult(distanceOperator, difference, distance));
+        double diff = distanceDiffResult(distanceOperator, difference, distance);
 
+
+        boolean ret = false;
+        GpsDistanceDetail detail = null;
+        if (1 == diff) {
+            detail = new GpsDistanceDetail();
+            detail.setConditionUuid(conditionUuid);
+            detail.setRuleUuid(ruleUuid);
+            detail.setGpsA(gpsA);
+            detail.setGpsB(gpsB);
+            detail.setResult(distance);
+            detail.setUnit("m");
+        }
+        return new FunctionResult(ret, detail);
     }
 
 
@@ -98,7 +111,6 @@ public class GpsDistance extends AbstractFunction {
             return null;
         }
     }
-
 
     private GpsEntity getGpsEntity(String[] latitudeNLongitude) {
         if (null == latitudeNLongitude || latitudeNLongitude.length != 2) {

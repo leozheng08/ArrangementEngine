@@ -6,16 +6,14 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class UseVpn extends AbstractFunction {
-
+public class UseHttpProxyFunction extends AbstractFunction {
 
     @Override
     public String getName() {
-        return Constant.Function.IOS_USE_VPN;
+        return Constant.Function.IOS_USE_HTTP_PROXY;
     }
 
 
@@ -33,8 +31,8 @@ public class UseVpn extends AbstractFunction {
             return new FunctionResult(false);
         }
         else {
-            Object vpnIp = deviceInfo.get("vpnIp");
-            if (vpnIp != null && StringUtils.isNotBlank(vpnIp.toString())) {
+            Object proxyType = deviceInfo.get("proxyType");
+            if (proxyType != null && !"none".equalsIgnoreCase(proxyType.toString())) {
                 return new FunctionResult(true);
             }
             else {

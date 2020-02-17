@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-public class AddressMatch extends AbstractFunction {
-    private static final Logger logger = LoggerFactory.getLogger(AddressMatch.class);
+public class AddressMatchFunction extends AbstractFunction {
+    private static final Logger logger = LoggerFactory.getLogger(AddressMatchFunction.class);
 
     private String addressA;
     private String addressB;

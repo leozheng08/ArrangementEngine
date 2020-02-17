@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
+import cn.tongdun.kunpeng.api.ruledetail.TimePointComparisonDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
@@ -15,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimePointComparison extends AbstractFunction {
+public class TimePointComparisonFunction extends AbstractFunction {
 
     private String calcField;
     private String timeunit;
@@ -90,6 +91,16 @@ public class TimePointComparison extends AbstractFunction {
         }
         else {
             // FIXME: 2/13/20 hanle none
+        }
+
+        TimePointComparisonDetail detail = null;
+        if (result) {
+            detail = new TimePointComparisonDetail();
+            detail.setConditionUuid(conditionUuid);
+            detail.setRuleUuid(ruleUuid);
+            detail.setDate(date);
+            detail.setTimeSlice(timeunit);
+            detail.setResult((double) dateValue);
         }
 
         return new FunctionResult(result);

@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
+import cn.tongdun.kunpeng.api.ruledetail.FpExceptionDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.alibaba.fastjson.JSONObject;
@@ -18,9 +19,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-public class FpException extends AbstractFunction {
+public class FpExceptionFunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(FpException.class);
+    private static final Logger logger = LoggerFactory.getLogger(FpExceptionFunction.class);
 
     private String codes;
     private Map<String, String> fpResultMap;
@@ -81,7 +82,12 @@ public class FpException extends AbstractFunction {
                 return new FunctionResult(false);
             }
 
-            return new FunctionResult(true);
+
+            FpExceptionDetail detail = new FpExceptionDetail();
+            detail.setCode(code);
+            detail.setCodeDisplayName(result);
+
+            return new FunctionResult(true, detail);
         }
         else {
             return new FunctionResult(false);

@@ -10,11 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class Root extends AbstractFunction {
+public class UseHttpFunction extends AbstractFunction {
 
     @Override
     public String getName() {
-        return Constant.Function.ANDROID_ROOT;
+        return Constant.Function.ANDROID_HTTP;
     }
 
 
@@ -27,22 +27,26 @@ public class Root extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
+        boolean result = false;
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            return new FunctionResult(false);
+            result = false;
+        }
+        else {
+            Object isUseHttpProxy = deviceInfo.get("proxyStr");
+            Object isUseHttpProxyNew = deviceInfo.get("proxyInfo");
+            if (isUseHttpProxy != null && StringUtils.isNotBlank(isUseHttpProxy.toString())) {
+                result = true;
+            }
+            else if (isUseHttpProxyNew != null && StringUtils.isNotBlank(isUseHttpProxyNew.toString())) {
+                result = true;
+            }
+            else {
+                result = false;
+            }
         }
 
-        Object isRoot = deviceInfo.get("isRoot");
-        Object isRootNew = deviceInfo.get("root");
-        if (isRoot != null && StringUtils.equalsIgnoreCase(isRoot.toString(), "true")) {
-            return new FunctionResult(true);
-        }
-
-        if (isRootNew != null && Boolean.TRUE.equals(isRootNew)) {
-            return new FunctionResult(true);
-        }
-
-        return new FunctionResult(false);
+        return new FunctionResult(result);
     }
 
 
