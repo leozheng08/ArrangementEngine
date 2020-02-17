@@ -100,6 +100,11 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
      */
     private Map<String, Object> bizData = new ConcurrentHashMap<String, Object>();
 
+    // 决策流三方接口输出变量配置决策接口直接输出的决策引擎字段
+    private List<Map<String, Object>> interfaceOutputFields = new ArrayList<>();
+
+    // 决策流模型输出变量配置决策接口直接输出的决策引擎字段
+    private List<Map<String, Object>> modelOutputFields = new ArrayList<>();
 
 
     public void addSubReasonCode(SubReasonCode subReasonCode, SubReasonCode.ExtCode extCode) {
@@ -239,7 +244,25 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
 
 
 
+    public void appendModelOutputFields(Map<String, Object> modelOutputFields) {
+        if (interfaceOutputFields != null) {
+            this.modelOutputFields.add(modelOutputFields);
+        }
+    }
 
+    public List<Map<String, Object>> getInterfaceOutputFields() {
+        return interfaceOutputFields;
+    }
+
+    public void setInterfaceOutputFields(List<Map<String, Object>> interfaceOutputFields) {
+        this.interfaceOutputFields = interfaceOutputFields;
+    }
+
+    public void appendInterfaceOutputFields(Map<String, Object> interfaceOutputFields) {
+        if (interfaceOutputFields != null) {
+            this.interfaceOutputFields.add(interfaceOutputFields);
+        }
+    }
 
 
 

@@ -27,9 +27,10 @@
 
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.6-SNAPSHOT</tdframework.version>
+        <tdframework.version>1.0.5</tdframework.version>
         <ddd.version>1.0.4</ddd.version>
         <tdrule.version>0.0.2-SNAPSHOT</tdrule.version>
+        <tdflow.version>0.0.1-SNAPSHOT</tdflow.version>
         <kunpeng-share.version>1.0-SNAPSHOT</kunpeng-share.version>
 
 
@@ -121,6 +122,12 @@
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>module-tdrule</artifactId>
                 <version>${tdrule.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>module-tdflow</artifactId>
+                <version>${tdflow.version}</version>
             </dependency>
 
 
