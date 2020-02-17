@@ -40,7 +40,7 @@ public class PolicyDefinitionLoadManager implements ILoad {
      */
     @Override
     public boolean load(){
-        logger.info("LoadPolicyDefinitionManager start");
+        logger.info("PolicyDefinitionLoadManager start");
 
         //取得合作方范围
         Set<String> partners = partnerClusterCache.getPartners();
@@ -52,7 +52,7 @@ public class PolicyDefinitionLoadManager implements ILoad {
             policyDefinitionCache.put(policyDefinition.getUuid(),policyDefinition);
         }
 
-        logger.info("LoadPolicyDefinitionManager success, size:"+PolicyModifiedDOList.size());
+        logger.info("PolicyDefinitionLoadManager success, size:"+PolicyModifiedDOList.size());
         return true;
     }
 }
