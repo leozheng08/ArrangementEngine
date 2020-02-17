@@ -63,8 +63,8 @@ public class SubPolicyManager implements IExecutor<String,SubPolicyResponse> {
 
 
         subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());
-        subPolicyResponse.setSubPolicyUuid(subPolicy.getSubPolicyUuid());
-        subPolicyResponse.setSubPolicyName(subPolicy.getSubPolicyName());
+        subPolicyResponse.setSubPolicyUuid(subPolicy.getUuid());
+        subPolicyResponse.setSubPolicyName(subPolicy.getName());
         subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
         subPolicyResponse.setRiskType(subPolicy.getRiskType());
         subPolicyResponse.setCostTime(System.currentTimeMillis()-start);

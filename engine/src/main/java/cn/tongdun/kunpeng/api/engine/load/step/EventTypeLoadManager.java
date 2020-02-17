@@ -23,7 +23,7 @@ import java.util.List;
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_COMM)
 public class EventTypeLoadManager implements ILoad {
 
-    private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
+    private Logger logger = LoggerFactory.getLogger(EventTypeLoadManager.class);
 
     @Autowired
     IEventTypeRepository eventTypeRepository;
@@ -34,9 +34,6 @@ public class EventTypeLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("EventTypeLoadManager start");
-        FieldDefinition field = new FieldDefinition();
-        //0为系统字段 1为扩展字段
-        field.setSign(0);
         List<EventType> list = eventTypeRepository.queryAll();
         if(list != null) {
             eventTypeLocalCache.setEventTypeList(list);

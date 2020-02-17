@@ -21,8 +21,8 @@ import java.util.concurrent.Callable;
  * @Author: liang.chen
  * @Date: 2019/12/18 下午1:45
  */
-public class LoadPolicyTask implements Callable<Boolean> {
-    private Logger logger = LoggerFactory.getLogger(LoadPolicyTask.class);
+public class PolicyLoadTask implements Callable<Boolean> {
+    private Logger logger = LoggerFactory.getLogger(PolicyLoadTask.class);
     private String policyUuid;
     private IConvertorFactory convertorFactory;
 
@@ -32,7 +32,7 @@ public class LoadPolicyTask implements Callable<Boolean> {
 
 
 
-    public LoadPolicyTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService){
+    public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService){
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
@@ -70,7 +70,7 @@ public class LoadPolicyTask implements Callable<Boolean> {
                         }
                     }
                     //缓存子策略
-                    localCacheService.put(SubPolicy.class,subPolicy.getSubPolicyUuid(),subPolicy);
+                    localCacheService.put(SubPolicy.class,subPolicy.getUuid(),subPolicy);
                 }
             }
 

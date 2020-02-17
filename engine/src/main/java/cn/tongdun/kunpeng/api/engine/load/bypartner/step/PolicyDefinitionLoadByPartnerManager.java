@@ -1,7 +1,7 @@
-package cn.tongdun.kunpeng.api.engine.load.step;
+package cn.tongdun.kunpeng.api.engine.load.bypartner.step;
 
-import cn.tongdun.kunpeng.api.engine.load.ILoad;
-import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
+import cn.tongdun.kunpeng.api.engine.load.bypartner.ILoadByPartner;
+import cn.tongdun.kunpeng.api.engine.load.bypartner.LoadByPartnerPipeline;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
@@ -13,17 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-@Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_POLICY, order=100)
-public class LoadPolicyDefinitionManager implements ILoad {
+@Step(pipeline = LoadByPartnerPipeline.NAME, phase = LoadByPartnerPipeline.LOAD_POLICY, order=100)
+public class PolicyDefinitionLoadByPartnerManager implements ILoadByPartner {
 
-    private Logger logger = LoggerFactory.getLogger(LoadPolicyDefinitionManager.class);
+    private Logger logger = LoggerFactory.getLogger(PolicyDefinitionLoadByPartnerManager.class);
 
     @Autowired
     private IPolicyDefinitionRepository policyDefinitionRepository;
@@ -39,20 +38,17 @@ public class LoadPolicyDefinitionManager implements ILoad {
      * @return
      */
     @Override
-    public boolean load(){
-        logger.info("LoadPolicyDefinitionManager start");
-
-        //取得合作方范围
-        Set<String> partners = partnerClusterCache.getPartners();
+    public boolean loadByPartner(String partnerCode){
+        logger.info("LoadPolicyDefinitionByPartnerManager start");
 
         //取得策略定义列表
-        List<PolicyDefinition> PolicyModifiedDOList = policyDefinitionRepository.queryByPartners(partners);
+        List<PolicyDefinition> PolicyModifiedDOList = policyDefinitionRepository.queryByPartner(partnerCode);
 
         for(PolicyDefinition policyDefinition:PolicyModifiedDOList) {
             policyDefinitionCache.put(policyDefinition.getUuid(),policyDefinition);
         }
 
-        logger.info("LoadPolicyDefinitionManager success, size:"+PolicyModifiedDOList.size());
+        logger.info("LoadPolicyDefinitionByPartnerManager success, size:"+PolicyModifiedDOList.size());
         return true;
     }
 }

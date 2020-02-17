@@ -1,11 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
 import cn.tongdun.ddd.common.domain.UUIDEntity;
+import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import lombok.Data;
 
 
 @Data
-public class InterfaceDefinition extends UUIDEntity {
+public class InterfaceDefinition extends VersionedEntity {
 
     /**
      * 所属应用，非合作方应用 application

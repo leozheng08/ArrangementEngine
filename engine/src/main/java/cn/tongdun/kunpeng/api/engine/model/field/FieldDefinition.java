@@ -1,80 +1,101 @@
 package cn.tongdun.kunpeng.api.engine.model.field;
 
+import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import cn.tongdun.tdframework.core.domain.EntityObject;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  *
  */
 @Data
-public class FieldDefinition extends EntityObject {
+public class FieldDefinition extends VersionedEntity {
     private static final long serialVersionUID = 8963907847949013871L;
 
     /**
-     * 0 表示系统字段，1表示扩展字段。
+     * sys为系统字段 ext为扩展字段 field_type
      */
-    private Integer sign;
-    private String  partnerCode;
-    private String  appName;
-    private String  appType;                  // 系统字段适用的应用类型
-    private String  name;
-    private String  displayName;
-    private String  createdBy;
-    private String  modifiedBy;
-    private String  type;
-    private Integer maxLength;
-    private String  description;
-    private Integer necessary;
-    private String  eventType;                // 事件类型
-    private String  signForRule;              // 标示是否在规则配置左变量中展示
-    private boolean signForVelocity;          // 标示是否作为主维度过滤
-    private String  eventTypeDisplayName = "";
-    private String  typeDisplayName      = "";
-    private String  eventId;
-    private String  appDisplayName;
-    private String  partnerDisplayName;
-    private String  appTypeName;              // 系统字段适用的应用类型展示名
-    private String  fieldValue;
-    private String  classDefinition;          // 对象定义文本(存uuid引用)
-    private Boolean isArray;                  // 是否为数组
-    private Boolean rootObject;             //是否是根对象
-    private String  masterField="";             //指标平台需要用到的主属性字段
-    private String  uuid;
-    private String  uniqueName;                // 属性名（指标平台2期新增）
-
-    private String  operationIp;             // 登录ip，为了操作日志增加
-
-    private String attribute;  //字段属性列，用于追加字段所属类别——身份证、手机号、邮箱……
-
-    public String getFieldType(){
-        if(this.getSign() == null){
-            return "NULL";
-        }
-        int sign = this.getSign();
-        switch (sign){
-            case 0:
-                return "SYSTEM";
-            case 1:
-                return "EXTEND";
-            case 2:
-                return "SYSTEM_OBJECT";
-            default:
-                return "NULL";
-        }
-    }
-
-    public boolean isCustomField() {
-        return new Integer(1).equals(this.getSign());
-    }
+    private String fieldType;
 
     /**
-     * 避免名字被认为是boolean属性的getter，is写作iz<br/>
-     * 1 为必填，2为非必填，将此逻辑转化为布尔。
-     *
-     * @return
+     * 合作方 partner_code
      */
-    public boolean izNecessary() {
-        return getNecessary() != null && getNecessary() == 1;
+    private String partnerCode;
+
+    /**
+     * 应用名 app_name
+     */
+    private String appName;
+
+    /**
+     * 字段code field_code
+     */
+    private String fieldCode;
+
+    /**
+     * field_name
+     */
+    private String fieldName;
+
+    /**
+     * 字段显示名称 display_name
+     */
+    private String displayName;
+
+    /**
+     * 字段属性列，用于追加字段所属类型idNumber:身份证 mobile:手机号 email:邮箱 property
+     */
+    private String property;
+
+    /**
+     * 事件类型 event_type
+     */
+    private String eventType;
+
+    /**
+     * 应用类型 app_type
+     */
+    private String appType;
+
+    /**
+     * 字段数据类型 string、int、double等 data_type
+     */
+    private String dataType;
+
+    /**
+     * 最大长度 max_length
+     */
+    private Integer maxLength;
+
+    /**
+     * 描述 description
+     */
+    private String description;
+
+    /**
+     * 是否velocity字段 is_velocity_field
+     */
+    private boolean velocityField;
+
+    /**
+     * 是否被审核通过，1为通过，-1为未通过，0为未审核 status
+     */
+    private Integer status;
+
+    /**
+     * 字段的使用场景 usage_scene
+     */
+    private String usageScene;
+
+    /**
+     * 是否已删除 is_deleted
+     */
+    private boolean deleted;
+
+
+    public boolean isCustomField() {
+        return "ext".equals(fieldType);
     }
 
 }

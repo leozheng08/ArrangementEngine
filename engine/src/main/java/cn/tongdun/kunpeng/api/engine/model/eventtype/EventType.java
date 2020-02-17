@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.eventtype;
 
+import cn.tongdun.kunpeng.api.engine.model.Entity;
 import cn.tongdun.tdframework.core.domain.EntityObject;
 import lombok.Data;
 
@@ -8,12 +9,12 @@ import lombok.Data;
  * @Date: 2019/12/11 下午1:42
  */
 @Data
-public class EventType extends EntityObject {
+public class EventType extends Entity {
 
     private long id;                    /* 全局唯一ID*/
 
-    private String            code;
+    private String code;
 
-    private String            name;
+    private String name;
 
 }

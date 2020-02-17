@@ -1,13 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.partner;
 
-import cn.tongdun.ddd.common.domain.Entity;
-import cn.tongdun.kunpeng.common.data.DecisionResultType;
-import cn.tongdun.kunpeng.common.data.PolicyMode;
+import cn.tongdun.kunpeng.api.engine.model.Entity;
 import lombok.Data;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: liang.chen

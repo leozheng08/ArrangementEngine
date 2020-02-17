@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.subpolicy;
 
 import cn.tongdun.ddd.common.domain.Entity;
+import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import cn.tongdun.kunpeng.common.data.DecisionResultType;
 import cn.tongdun.kunpeng.common.data.PolicyMode;
 import lombok.Data;
@@ -12,9 +13,8 @@ import java.util.*;
  * @Date: 2019/12/16 下午3:21
  */
 @Data
-public class SubPolicy extends Entity {
-    private String subPolicyUuid;
-    private String subPolicyName;
+public class SubPolicy extends VersionedEntity {
+    private String name;
     private String policyUuid;
     private PolicyMode policyMode;
     private String riskType;

@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.rule;
 
 import cn.tongdun.ddd.common.domain.Entity;
+import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
 import lombok.Data;
 
@@ -13,11 +14,10 @@ import java.util.List;
  * @Date: 2019/12/16 下午3:20
  */
 @Data
-public class Rule extends Entity {
+public class Rule extends VersionedEntity {
 
     private String ruleId;
     private String ruleCustomId;
-    private String uuid;
     private String parentUuid;
     private String subPolicyUuid;
 

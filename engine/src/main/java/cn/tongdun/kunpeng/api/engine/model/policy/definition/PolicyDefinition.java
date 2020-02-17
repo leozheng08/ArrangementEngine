@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.policy.definition;
 
-import cn.tongdun.ddd.common.domain.UUIDEntity;
+import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import lombok.Data;
 
 
@@ -8,7 +8,9 @@ import lombok.Data;
  * 策略定义。将会放到缓存中，属性尽量简化，不要保留跟策略运行无关的属性
  */
 @Data
-public class PolicyDefinition extends UUIDEntity {
+public class PolicyDefinition extends VersionedEntity {
+
+
 
     private String name;
 

@@ -1,8 +1,7 @@
-package cn.tongdun.kunpeng.api.engine.load.bypartner.step;
+package cn.tongdun.kunpeng.api.engine.load.step;
 
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
-import cn.tongdun.kunpeng.api.engine.load.bypartner.ILoadByPartner;
-import cn.tongdun.kunpeng.api.engine.load.bypartner.LoadByPartnerPipeline;
+import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
@@ -21,10 +20,10 @@ import java.util.Set;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-@Step(pipeline = LoadByPartnerPipeline.NAME, phase = LoadByPartnerPipeline.LOAD_POLICY, order=100)
-public class LoadPolicyDefinitionByPartnerManager implements ILoadByPartner {
+@Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_POLICY, order=100)
+public class PolicyDefinitionLoadManager implements ILoad {
 
-    private Logger logger = LoggerFactory.getLogger(LoadPolicyDefinitionByPartnerManager.class);
+    private Logger logger = LoggerFactory.getLogger(PolicyDefinitionLoadManager.class);
 
     @Autowired
     private IPolicyDefinitionRepository policyDefinitionRepository;
@@ -40,17 +39,20 @@ public class LoadPolicyDefinitionByPartnerManager implements ILoadByPartner {
      * @return
      */
     @Override
-    public boolean loadByPartner(String partnerCode){
-        logger.info("LoadPolicyDefinitionByPartnerManager start");
+    public boolean load(){
+        logger.info("LoadPolicyDefinitionManager start");
+
+        //取得合作方范围
+        Set<String> partners = partnerClusterCache.getPartners();
 
         //取得策略定义列表
-        List<PolicyDefinition> PolicyModifiedDOList = policyDefinitionRepository.queryByPartner(partnerCode);
+        List<PolicyDefinition> PolicyModifiedDOList = policyDefinitionRepository.queryByPartners(partners);
 
         for(PolicyDefinition policyDefinition:PolicyModifiedDOList) {
             policyDefinitionCache.put(policyDefinition.getUuid(),policyDefinition);
         }
 
-        logger.info("LoadPolicyDefinitionByPartnerManager success, size:"+PolicyModifiedDOList.size());
+        logger.info("LoadPolicyDefinitionManager success, size:"+PolicyModifiedDOList.size());
         return true;
     }
 }

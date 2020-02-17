@@ -1,9 +1,11 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,6 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class InterfaceDefinitionCache extends AbstractLocalCache<String,InterfaceDefinition> {
 
+    //interfaceDefinitionUuid -> InterfaceDefinition
+    private Map<String,InterfaceDefinition> interfaceDefinitionMap = new ConcurrentHashMap<>(50);
+
+
     @PostConstruct
     public void init(){
         register(InterfaceDefinition.class);
@@ -22,17 +28,16 @@ public class InterfaceDefinitionCache extends AbstractLocalCache<String,Interfac
 
     @Override
     public InterfaceDefinition get(String uuid){
-        return null;
+        return interfaceDefinitionMap.get(uuid);
     }
 
     @Override
     public void put(String uuid, InterfaceDefinition interfaceDefinition){
-
+        interfaceDefinitionMap.put(uuid,interfaceDefinition);
     }
 
     @Override
     public InterfaceDefinition remove(String uuid){
-
-        return null;
+        return interfaceDefinitionMap.remove(uuid);
     }
 }

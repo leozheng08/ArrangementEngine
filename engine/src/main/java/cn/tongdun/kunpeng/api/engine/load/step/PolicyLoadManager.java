@@ -1,29 +1,16 @@
 package cn.tongdun.kunpeng.api.engine.load.step;
 
-import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
-import cn.tongdun.kunpeng.api.engine.load.bypartner.ILoadByPartner;
-import cn.tongdun.kunpeng.api.engine.load.bypartner.step.LoadPolicyByPartnerService;
+import cn.tongdun.kunpeng.api.engine.load.bypartner.step.PolicyLoadByPartnerService;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
-import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
-import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
-import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: liang.chen
@@ -31,12 +18,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_POLICY, order = 200)
-public class LoadPolicyManager implements ILoad {
+public class PolicyLoadManager implements ILoad {
 
-    private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
+    private Logger logger = LoggerFactory.getLogger(PolicyLoadManager.class);
 
     @Autowired
-    private LoadPolicyByPartnerService loadPolicyByPartnerService;
+    private PolicyLoadByPartnerService loadPolicyByPartnerService;
 
     @Autowired
     private PartnerClusterCache partnerClusterCache;

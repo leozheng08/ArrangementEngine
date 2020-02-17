@@ -22,12 +22,12 @@ public class FieldDefinitionCache {
     /**
      * 系统字段
      */
-    private Map<String, List<FieldDefinition>> systemFieldMap = new ConcurrentHashMap<>();
+    private Map<String, List<FieldDefinition>> systemFieldMap = new ConcurrentHashMap<>(200);
 
     /**
      * 系统字段
      */
-    private Map<String, List<FieldDefinition>> extendFieldMap = new ConcurrentHashMap<>();
+    private Map<String, List<FieldDefinition>> extendFieldMap = new ConcurrentHashMap<>(200);
 
 
 

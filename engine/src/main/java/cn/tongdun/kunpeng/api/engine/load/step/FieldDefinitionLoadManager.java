@@ -25,7 +25,7 @@ import java.util.List;
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_PARTNER)
 public class FieldDefinitionLoadManager implements ILoad {
 
-    private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
+    private Logger logger = LoggerFactory.getLogger(EventTypeLoadManager.class);
 
     @Autowired
     IFieldDefinitionRepository ruleFieldRepository;

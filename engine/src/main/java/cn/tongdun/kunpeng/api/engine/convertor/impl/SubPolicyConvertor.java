@@ -37,8 +37,8 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
     public SubPolicy convert(SubPolicyDTO t){
         SubPolicy subPolicy = new SubPolicy();
         subPolicy.setPolicyUuid(t.getPolicyUuid());
-        subPolicy.setSubPolicyUuid(t.getUuid());
-        subPolicy.setSubPolicyName(t.getName());
+        subPolicy.setUuid(t.getUuid());
+        subPolicy.setName(t.getName());
         subPolicy.setRiskType(t.getRiskType());
 
         //策略模式,如首次匹配、最坏匹配、权重模式

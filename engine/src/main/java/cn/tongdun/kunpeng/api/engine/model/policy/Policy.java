@@ -1,13 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.model.policy;
 
-import cn.tongdun.ddd.common.domain.Entity;
-import cn.tongdun.ddd.common.domain.UUIDEntity;
+import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 策略。将会放到缓存中，属性尽量简化，不要保留跟策略运行无关的属性
@@ -15,7 +12,8 @@ import java.util.Map;
  * @Date: 2019/12/16 下午3:21
  */
 @Data
-public class Policy extends UUIDEntity {
+public class Policy extends VersionedEntity {
+
     /**
      * 策略名称
      */
