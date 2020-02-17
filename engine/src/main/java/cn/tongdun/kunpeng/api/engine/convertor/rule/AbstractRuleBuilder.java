@@ -182,7 +182,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         } else {
             FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(elementDTO.getLeftPropertyType());
             if (null == fieldTypeEnum) {
-                throw new ParseException("CustomRuleBuilder processOneElement error,FieldType not exist!LeftPropertyType:"
+                throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!LeftPropertyType:"
                         + elementDTO.getLeftPropertyType() + "conditionUuid:" + elementDTO.getUuid());
             }
             left.setFieldType(fieldTypeEnum);
@@ -208,7 +208,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         ConditionParam right = new ConditionParam();
         FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(elementDTO.getRightType());
         if (null == fieldTypeEnum) {
-            throw new ParseException("CustomRuleBuilder processOneElement error,FieldType not exist!RightType:"
+            throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!RightType:"
                     + elementDTO.getRightType() + "conditionUuid:" + elementDTO.getUuid());
         }
         right.setFieldType(fieldTypeEnum);
@@ -218,7 +218,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         }
         right.setName(elementDTO.getRightValue());
         right.setConditionId(elementDTO.getId().intValue());
-        
+
         //平台指标需要考虑原始值
         if (elementDTO.isRightUseOriginValue()) {
             right.putExtProperty(FieldConstants.INDEX_USE_ORIGIN_VALUE, true);
@@ -234,18 +234,11 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
      * @return
      */
     private String constructOperator(RuleConditionElementDTO elementDTO) {
-        if (StringUtils.equalsIgnoreCase("==", elementDTO.getOp()) &&
-                StringUtils.equalsIgnoreCase("1", elementDTO.getRightValue()) &&
-                StringUtils.equalsIgnoreCase("alias", elementDTO.getLeftPropertyType())) {
-            //左变量是返回true/false的函数，可以不需要又变量，直接给一个一元操作符
-            return "isTrue";
-        } else {
-            String op = TdRuleOperatorMapUtils.getEngineTypeFromDisplay(elementDTO.getOp());
-            if (StringUtils.isBlank(op)) {
-                throw new ParseException("CustomRuleBuilder processOneElement error,can't map operator:" + elementDTO.getOp());
-            }
-            return op;
+        String op = TdRuleOperatorMapUtils.getEngineTypeFromDisplay(elementDTO.getOp());
+        if (StringUtils.isBlank(op)) {
+            throw new ParseException("AbstractRuleBuilder processOneElement error,can't map operator:" + elementDTO.getOp());
         }
+        return op;
     }
 
     /**
