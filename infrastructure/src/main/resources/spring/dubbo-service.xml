@@ -13,7 +13,8 @@
     <!-- 使用zookeeper注册中心暴露服务地址 -->
     <dubbo:registry group="${dubbo.zookeeper.root}" protocol="zookeeper" address="${dubbo.zookeeper.host}" port="${dubbo.port}" />
 
-    <dubbo:consumer check="${dubbo.check}" timeout="${dubbo.consumer.default.timeout}" retries="0" filter="seqid,dubbo_timeout_retry_filter,dubbo_monitor_filter,dubboTrace" loadbalance="smart2">
+    <dubbo:consumer check="${dubbo.check}" timeout="${dubbo.consumer.default.timeout}" retries="0"
+                    filter="seqid" loadbalance="smart">
         <dubbo:parameter key="threadname" value="Dubbo-share-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
         <dubbo:parameter key="corethreads" value="5" />

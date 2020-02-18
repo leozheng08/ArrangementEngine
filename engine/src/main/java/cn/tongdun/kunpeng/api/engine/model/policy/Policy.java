@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.policy;
 
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
-import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import lombok.Data;
 
 import java.util.List;
@@ -77,7 +77,7 @@ public class Policy extends VersionedEntity {
     private Integer status;
 
     //执行方式，并行执行子策略、决策流、决策表、决策树
-    private AbstractRunMode runMode;
+    private AbstractDecisionMode decisionMode;
 
     //子策略的uuid列表
     private List<String> subPolicyList;

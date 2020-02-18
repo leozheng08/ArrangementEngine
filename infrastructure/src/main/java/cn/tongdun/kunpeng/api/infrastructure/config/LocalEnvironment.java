@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.config;
 
-import cn.tongdun.kunpeng.api.infrastructure.util.NetWorkUtil;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
+import cn.tongdun.kunpeng.common.util.NetWorkUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,9 @@ public class LocalEnvironment implements ILocalEnvironment{
     private String dc;
 
     private String ip;
+
+    @Value("${cluster.poc.name}")
+    private String pocClusterName;
 
     @Override
     public String getCluster() {
@@ -84,6 +87,11 @@ public class LocalEnvironment implements ILocalEnvironment{
         this.ip = ip;
     }
 
+    @Override
+    public boolean isPocCluster() {
+        return StringUtils.equals(cluster,pocClusterName);
+    }
+
 
     public void init() {
         try {
@@ -107,6 +115,7 @@ public class LocalEnvironment implements ILocalEnvironment{
                 ", appPort=" + appPort +
                 ", dc='" + dc + '\'' +
                 ", ip='" + ip + '\'' +
+                ", pocClusterName='" + pocClusterName + '\'' +
                 '}';
     }
 

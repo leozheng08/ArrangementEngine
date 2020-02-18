@@ -40,6 +40,11 @@
             <artifactId>spring-context</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.tongdun</groupId>
+            <artifactId>common-arch</artifactId>
+        </dependency>
+
         <!--Spring Boot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -3,9 +3,9 @@ package cn.tongdun.kunpeng.api.engine;
 
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
-import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
-import cn.tongdun.kunpeng.api.engine.model.runmode.ParallelSubPolicy;
-import cn.tongdun.kunpeng.api.engine.model.runmode.RunModeCache;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
 import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
@@ -43,7 +43,7 @@ public class ParallelEngine extends DecisionTool {
     private ThreadService threadService;
 
     @Autowired
-    private RunModeCache runModeCache;
+    private DecisionModeCache decisionModeCache;
 
     @Autowired
     private PolicyCache policyCache;
@@ -97,11 +97,11 @@ public class ParallelEngine extends DecisionTool {
 
 
     @Override
-    public PolicyResponse execute(AbstractRunMode abstractRunMode, AbstractFraudContext context){
+    public PolicyResponse execute(AbstractDecisionMode decisionMode, AbstractFraudContext context){
         long start = System.currentTimeMillis();
         PolicyResponse rolicyResponse = new PolicyResponse();
 
-        ParallelSubPolicy parallelSubPolicy = (ParallelSubPolicy)abstractRunMode;
+        ParallelSubPolicy parallelSubPolicy = (ParallelSubPolicy)decisionMode;
         String policyUuid = parallelSubPolicy.getPolicyUuid();
         Policy policy = policyCache.get(policyUuid);
 

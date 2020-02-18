@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.model.runmode;
+package cn.tongdun.kunpeng.api.engine.model.decisionmode;
 
 import lombok.Data;
 
@@ -8,6 +8,6 @@ import lombok.Data;
  * @Date: 2019/12/16 下午3:22
  */
 @Data
-public class DecisionFlow extends AbstractRunMode {
+public class DecisionFlow extends AbstractDecisionMode {
     String decisionFlowUuid;
 }

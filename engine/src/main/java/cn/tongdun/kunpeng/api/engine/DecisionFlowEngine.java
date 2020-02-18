@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.engine;
 
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
-import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.PolicyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,12 @@ public class DecisionFlowEngine extends DecisionTool{
     PolicyCache policyCache;
 
     @Override
-    public PolicyResponse execute(AbstractRunMode abstractRunMode, AbstractFraudContext context){
+    public PolicyResponse execute(AbstractDecisionMode decisionMode, AbstractFraudContext context){
 
         long start = System.currentTimeMillis();
         PolicyResponse rolicyResponse = new PolicyResponse();
 
-        String policyUuid = abstractRunMode.getPolicyUuid();
+        String policyUuid = decisionMode.getPolicyUuid();
         Policy policy = policyCache.get(policyUuid);
 
         rolicyResponse.setPolicyUuid(policy.getUuid());

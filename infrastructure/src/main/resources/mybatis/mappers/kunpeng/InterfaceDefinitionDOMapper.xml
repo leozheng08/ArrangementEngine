@@ -39,7 +39,7 @@
     <include refid="Base_Column_List"/>
     from interface_definition
     where
-    is_delete = 0
+    is_deleted = 0
   </select>
 
   <select id="selectByUuid" parameterType="java.lang.String" resultMap="BaseResultMap">

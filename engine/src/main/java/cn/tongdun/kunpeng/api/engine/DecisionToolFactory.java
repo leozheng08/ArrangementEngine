@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine;
 
-import cn.tongdun.kunpeng.api.engine.model.runmode.*;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +23,14 @@ public class DecisionToolFactory  {
     @Autowired
     DecisionTreeEngine decisionTreeEngine;
 
-    public DecisionTool getDecisionTool(AbstractRunMode abstractRunMode){
-        if(abstractRunMode instanceof ParallelSubPolicy){
+    public DecisionTool getDecisionTool(AbstractDecisionMode abstractDecisionMode){
+        if(abstractDecisionMode instanceof ParallelSubPolicy){
             return parallelEngine;
-        } else if(abstractRunMode instanceof DecisionFlow){
+        } else if(abstractDecisionMode instanceof DecisionFlow){
             return decisionFlowEngine;
-        } else if(abstractRunMode instanceof DecisionTable){
+        } else if(abstractDecisionMode instanceof DecisionTable){
             return decisionTableEngine;
-        } else if(abstractRunMode instanceof DecisionTree){
+        } else if(abstractDecisionMode instanceof DecisionTree){
             return decisionTreeEngine;
         }
         return null;

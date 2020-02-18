@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.common.data;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
  * 
  * @author zxb 2014年3月12日 上午11:00:59
  */
+@Data
 public class RiskResponse extends ApiResponse implements Cloneable {
 
     private static final long         serialVersionUID    = 844958112006659504L;

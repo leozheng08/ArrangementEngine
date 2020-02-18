@@ -37,18 +37,12 @@ public class RiskService {
 
 
         //测试
-        context.setPolicyUuid("123456789");
-        context.setPartnerCode(request.get("partner_code"));
-        context.set("accountMobile",request.get("accountMobile"));
-        context.setEventType("Loan");
+//        context.setPolicyUuid("123456789");
+//        context.setPartnerCode(request.get("partner_code"));
+//        context.set("accountMobile",request.get("accountMobile"));
 
-        BizScenario bizScenario = createBizScenario(context);
-        context.setBizScenario(bizScenario);
 
         RiskResponse riskResponse = new RiskResponse();
-
-
-
         Response result = pipelineExecutor.execute(Risk.NAME, IRiskStep.class,
                 step -> step.invoke(context,riskResponse,request), (isSuccess, e)->
             {
@@ -60,14 +54,4 @@ public class RiskService {
 
         return riskResponse;
     }
-
-    private BizScenario createBizScenario(FraudContext context){
-        BizScenario bizScenario = new BizScenario();
-        bizScenario.setTenant(configManager.getProperty("tenant"));
-        bizScenario.setPartner(context.getPartnerCode());
-        String businessType = configManager.getBusinessByEventType(context.getEventType());
-        bizScenario.setBusiness(businessType);
-        return bizScenario;
-    }
-
 }

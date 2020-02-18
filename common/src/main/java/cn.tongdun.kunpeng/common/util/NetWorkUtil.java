@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.infrastructure.util;
+package cn.tongdun.kunpeng.common.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
