@@ -225,13 +225,18 @@
         </dependency>
         <!-- ddd end-->
 
+        <!-- holmes start -->
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>holmes-share</artifactId>
+        </dependency>
+        <!-- holmes end -->
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
         </dependency>
-
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>
