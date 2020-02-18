@@ -24,13 +24,14 @@ import java.util.concurrent.*;
 
 /**
  * 子策略并行执行引擎
+ *
  * @Author: liang.chen
  * @Date: 2019/12/17 下午3:53
  */
 @Component
 public class ParallelEngine extends DecisionTool {
 
-    private Logger logger = LoggerFactory.getLogger(ParallelEngine.class);
+    private static Logger logger = LoggerFactory.getLogger(ParallelEngine.class);
 
     private static final long DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT = 800L;
 
@@ -51,7 +52,7 @@ public class ParallelEngine extends DecisionTool {
     @Autowired
     private SubPolicyManager subPolicyManager;
 
-    @Resource(name="dynamicConfigRepository")
+    @Resource(name = "dynamicConfigRepository")
     private IConfigRepository configRepository;
 
 
@@ -97,11 +98,11 @@ public class ParallelEngine extends DecisionTool {
 
 
     @Override
-    public PolicyResponse execute(AbstractDecisionMode decisionMode, AbstractFraudContext context){
+    public PolicyResponse execute(AbstractDecisionMode decisionMode, AbstractFraudContext context) {
         long start = System.currentTimeMillis();
         PolicyResponse rolicyResponse = new PolicyResponse();
 
-        ParallelSubPolicy parallelSubPolicy = (ParallelSubPolicy)decisionMode;
+        ParallelSubPolicy parallelSubPolicy = (ParallelSubPolicy) decisionMode;
         String policyUuid = parallelSubPolicy.getPolicyUuid();
         Policy policy = policyCache.get(policyUuid);
 
@@ -110,10 +111,10 @@ public class ParallelEngine extends DecisionTool {
 
 
         //取得此策略配置的子策略，子策略并行执行。
-        List<String> subPolicyUuidList =  policy.getSubPolicyList();
+        List<String> subPolicyUuidList = policy.getSubPolicyList();
         List<Callable<SubPolicyResponse>> tasks = new ArrayList<>();
-        for(String subPolicyUuid:subPolicyUuidList){
-            SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager,subPolicyUuid,context);
+        for (String subPolicyUuid : subPolicyUuidList) {
+            SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicyUuid, context);
             tasks.add(MDCUtil.wrap(task));
         }
 
@@ -127,9 +128,9 @@ public class ParallelEngine extends DecisionTool {
                 futures = executeThreadPool.invokeAll(tasks, timeout, TimeUnit.MILLISECONDS);
             }
         } catch (InterruptedException | NullPointerException e) {
-            logger.error("规则引擎执行被中断",  e);
+            logger.error("规则引擎执行被中断", e);
         } catch (RejectedExecutionException e) {
-            logger.error("规则引擎执行被丢弃",  e);
+            logger.error("规则引擎执行被丢弃", e);
         }
 
         if (null == futures || futures.isEmpty()) {
@@ -154,7 +155,7 @@ public class ParallelEngine extends DecisionTool {
         // 超时的任务，结果不会添加到subPolicyResponseList中
         if (subPolicyResponseList.size() < futures.size()) {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_TIMEOUT.getCode(), ReasonCode.RULE_ENGINE_TIMEOUT.getDescription(), "决策引擎执行"));
-            rolicyResponse.setCostTime(System.currentTimeMillis()-start);
+            rolicyResponse.setCostTime(System.currentTimeMillis() - start);
             return rolicyResponse;
         }
 
@@ -162,26 +163,15 @@ public class ParallelEngine extends DecisionTool {
         //rolicyResponse.setRiskType();
 
 
-
         rolicyResponse.setSuccess(true);
         rolicyResponse.setSubPolicyList(subPolicyResponseList);
 
         //取最坏策略结果
-        SubPolicyResponse finalSubPolicyResponse = null;
-        for(SubPolicyResponse subPolicyResponse:subPolicyResponseList){
-            if(finalSubPolicyResponse == null){
-                finalSubPolicyResponse = subPolicyResponse;
-                continue;
-            }
-
-            if(subPolicyResponse.getDecision().compareTo(finalSubPolicyResponse.getDecision())>0){
-                finalSubPolicyResponse = subPolicyResponse;
-            }
-        }
+        SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponseList);
         rolicyResponse.setDecision(finalSubPolicyResponse.getDecision());
         rolicyResponse.setScore(finalSubPolicyResponse.getScore());
 
-        rolicyResponse.setCostTime(System.currentTimeMillis()-start);
+        rolicyResponse.setCostTime(System.currentTimeMillis() - start);
         return rolicyResponse;
     }
 }
