@@ -34,7 +34,7 @@ public class ReasonCodeUtil {
             context.addSubReasonCode(new SubReasonCode(subReasonCode.getCode(),subReasonCode.getDescription(),service));
         }
         catch (Exception e){
-            LogUtil.logWarn(LOGGER, "sub_reason_code", "", "sub_reason_code_write_error");
+            LOGGER.warn("sub_reason_code sub_reason_code_write_error");
         }
     }
 
