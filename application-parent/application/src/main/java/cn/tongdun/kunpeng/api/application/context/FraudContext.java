@@ -43,11 +43,6 @@ public class FraudContext extends AbstractFraudContext{
     }
 
     @Override
-    public Object getPolicyIndex(String indexId) {
-        return null;
-    }
-
-    @Override
     public void saveDetail(String ruleUuid, String conditionUuid, DetailCallable detailCallable) {
 
     }

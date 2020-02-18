@@ -44,8 +44,8 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
             decisionFlowInterface.setName(json.getString("name"));
             decisionFlowInterface.setIndexUuids(indexUuids);
             decisionFlowInterface.setFields(fields);
-            decisionFlowInterface.setInputParams(buildParaInfo(json.getJSONArray("inputs"), "input"));
-            decisionFlowInterface.setOutputParams(buildParaInfo(json.getJSONArray("outputs"), "output"));
+            decisionFlowInterface.setInputParams(buildParaInfo(json.getJSONArray("inputs")));
+            decisionFlowInterface.setOutputParams(buildParaInfo(json.getJSONArray("outputs")));
             decisionFlowInterface.setRiskServiceOutput(json.getBoolean("isRiskServiceOutput"));
         } catch (Exception e) {
 
@@ -73,10 +73,9 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
     /**
      * 解析输入|输出参数
      * @param array
-     * @param arrayType
      * @return
      */
-    private List<InterfaceDefinitionParamInfo> buildParaInfo(JSONArray array, String arrayType) {
+    private List<InterfaceDefinitionParamInfo> buildParaInfo(JSONArray array) {
         if (null != array) {
             List<InterfaceDefinitionParamInfo> list = Lists.newArrayList();
             array.stream().forEach(o -> {

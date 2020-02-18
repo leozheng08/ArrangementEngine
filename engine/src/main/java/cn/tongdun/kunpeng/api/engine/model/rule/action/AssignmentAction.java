@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.action.Action;
 import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.*;
+import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -23,13 +24,15 @@ public class AssignmentAction implements Action {
 
         String rightValueType = json.getString("rightValueType");
         String rightValue = json.getString("rightValue");
-        switch (rightValueType){
+        switch (rightValueType) {
             case "input":
                 right = new Literal(rightValue);
                 break;
             case "context":
-                right = new Field(rightValue,"object");
+                right = new Field(rightValue, "object");
                 break;
+            default:
+                throw new ParseException("AssignmentAction parse error!");
         }
 
 
@@ -38,7 +41,7 @@ public class AssignmentAction implements Action {
     @Override
     public Void eval(ExecuteContext executeContext) {
         Object value = right.eval(executeContext);
-        if(value != null) {
+        if (value != null) {
             executeContext.setField(leftProperty, value);
         }
         return null;

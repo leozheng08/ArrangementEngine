@@ -1,11 +1,19 @@
 package cn.tongdun.kunpeng.api.engine.convertor.impl;
 
+import cn.fraudmetrix.module.tdflow.model.graph.Graph;
+import cn.fraudmetrix.module.tdflow.util.GraphUtil;
+import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexManager;
+import cn.tongdun.kunpeng.api.engine.util.CompressUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -18,19 +26,44 @@ import javax.annotation.PostConstruct;
  */
 @Component
 @DependsOn(value = "defaultConvertorFactory")
-public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO,DecisionFlow> {
+public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, DecisionFlow> {
+
+    private static Logger logger = LoggerFactory.getLogger(DecisionFlowConvertor.class);
 
     @Autowired
     DefaultConvertorFactory convertorFactory;
 
     @PostConstruct
-    public void init(){
-        convertorFactory.register(DecisionFlowDTO.class,this);
+    public void init() {
+        convertorFactory.register(DecisionFlowDTO.class, this);
     }
 
     @Override
-    public DecisionFlow convert(DecisionFlowDTO t){
-        //todo 决策流的解析
-        return null;
+    public DecisionFlow convert(DecisionFlowDTO decisionFlowDTO) {
+        if (StringUtils.isBlank(decisionFlowDTO.getProcessContent())) {
+            throw new ParseException("DecisionFlowConvertor convert error,decisionFlowUuid:" + decisionFlowDTO.getUuid());
+        }
+
+        DecisionFlow decisionFlow = new DecisionFlow();
+        decisionFlow.setDecisionFlowUuid(decisionFlowDTO.getUuid());
+
+        String processXml = null;
+        try {
+            processXml = CompressUtil.ungzip(decisionFlowDTO.getProcessContent());
+        } catch (Exception e) {
+            logger.error("DecisionFlowConvertor convert processContent error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
+            throw new ParseException("DecisionFlowConvertor convert error!Uuid:" + decisionFlowDTO.getUuid(), e);
+        }
+
+        Graph graph = null;
+        try {
+            graph = GraphUtil.createGraph(processXml);
+        } catch (Exception e) {
+            logger.error("DecisionFlowConvertor createGraph error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
+            throw e;
+        }
+
+        decisionFlow.setGraph(graph);
+        return decisionFlow;
     }
 }

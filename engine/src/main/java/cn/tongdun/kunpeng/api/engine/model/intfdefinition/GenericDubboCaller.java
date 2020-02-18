@@ -3,7 +3,6 @@ package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
-import cn.tongdun.kunpeng.common.util.LogUtil;
 import cn.tongdun.kunpeng.common.util.ReasonCodeUtil;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.service.GenericService;
@@ -74,9 +73,9 @@ public class GenericDubboCaller implements IGenericDubboCaller {
             String[] keys = typeList.stream().toArray(String[]::new);
             Object[] values = valueList.stream().toArray(Object[]::new);
 
-            LogUtil.logInfo(logger, "dubbo泛化调用执行入参", null, "interface_method", interfaceDefinition.getName() + "-" + interfaceDefinition.getMethodName(),
-                    "interfaceParamInfos", Arrays.toString(decisionFlowInterface.getInputParams().toArray()), "parametersType",
-                    Arrays.toString(keys), "methodValues", Arrays.toString(values));
+            logger.info("dubbo泛化调用执行入参 interface_method:" + interfaceDefinition.getName() + "-" + interfaceDefinition.getMethodName() +
+                    "interfaceParamInfos" + Arrays.toString(decisionFlowInterface.getInputParams().toArray()) + "parametersType" +
+                    Arrays.toString(keys) + "methodValues" + Arrays.toString(values));
 
             result = genericService.$invoke(interfaceDefinition.getMethodName(), keys, values);
 
@@ -89,14 +88,13 @@ public class GenericDubboCaller implements IGenericDubboCaller {
             } else {
                 result = APIResult.DUBBO_API_RESULT_INTERNAL_ERROR;                         //哎呦，我TMD也不知道发生什么错误了!
             }
-            LogUtil.logWarn(logger, "generic dubbo call", interfaceDefinition.getName(), "catch exception", e,
-                    "result", result);
+            logger.warn("generic dubbo call " + interfaceDefinition.getName() + " catch exception result:" + JSONObject.toJSONString(result), e);
         } finally {
             try {
                 //如果dubbo返回的类是QuickJSONResult,有可能是信贷云那边卡住了
                 if (result.getClass().getSimpleName().equalsIgnoreCase("QuickJSONResult")) {
                     //缓存移除,因为某些不同的外部接口可能会调用同一个dubbo服务(即ReferenceConfig),所以这里全部移除
-                    LogUtil.logError(logger, "dubbo泛化调用stop异常", null, "call generic dubbo interface(stop)");
+                    logger.error("dubbo泛化调用stop异常 call generic dubbo interface(stop)");
                 }
 
                 Map<String, Object> resultMap = wrapResult(fraudContext, result);
@@ -106,7 +104,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                 serializeOutParamsToRuleEngine(fraudContext, decisionFlowInterface.isRiskServiceOutput(), decisionFlowInterface, interfaceDefinition, resultMap);
 
             } catch (Exception e) {
-                LogUtil.logError(logger, "dubbo泛化调用异常", null, "call generic dubbo interface(generate result) error", e);
+                logger.error("dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
             }
         }
         return true;
@@ -120,7 +118,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
      * @return
      */
     private Map.Entry<APIResult, List<InterfaceDefinitionParamInfo>> encapsulateParams(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
-        List<InterfaceDefinitionParamInfo>  inputParams = decisionFlowInterface.getInputParams();
+        List<InterfaceDefinitionParamInfo> inputParams = decisionFlowInterface.getInputParams();
         if (null == inputParams) {
             return new AbstractMap.SimpleEntry(APIResult.DUBBO_API_RESULT_MISSING_PARAMETER, Collections.EMPTY_MAP);
         }
@@ -146,10 +144,10 @@ public class GenericDubboCaller implements IGenericDubboCaller {
         for (String uuid : indexUuidArray) {
             Double indexTemp;
             if (StringUtils.isNotBlank(uuid)) {
-                if (fraudContext.getIndexResult(uuid) != null) {
-                    indexTemp = fraudContext.getIndexResult(uuid);
-                } else if (fraudContext.getIndicatrix(uuid) != null) {
-                    indexTemp = fraudContext.getIndicatrix(uuid);
+                if (fraudContext.getPolicyIndex(uuid) != null) {
+                    indexTemp = fraudContext.getPolicyIndex(uuid);
+                } else if (fraudContext.getPlatformIndex(uuid) != null) {
+                    indexTemp = fraudContext.getPlatformIndex(uuid);
                 } else {
                     indexTemp = Double.NaN;
                 }
@@ -283,7 +281,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
             resultMap.put("result", result);
         } else {        //其它dubbo异常情况产生的返回值一律处理成外部服务器错误501
             resultMap = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR.toMap();
-            LogUtil.logInfo(logger, "dubbo泛化调用返回501错误", null, "errorMessage", "incorrect generic dubbo result");
+            logger.info("dubbo泛化调用返回501错误 errorMessage incorrect generic dubbo result");
         }
         //以下两部判断是为了兼容规则引擎定义的下划线形式的字段和kunta返回的驼峰形式
         Object reasonCode = resultMap.remove("reason_code");
@@ -337,7 +335,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
         interfaceResult.addInterfaceParams(interfaceDefinition.getMethodName(), interfaceParams);
 
 
-        LogUtil.logInfo(logger, "封装泛化dubbo调用结果", null, "resultMap", JSON.toJSONString(resultMap));
+        logger.info("封装泛化dubbo调用结果 resultMap:" + JSON.toJSONString(resultMap));
 
         //记录调用业务日志
         writeBusinessLog(fraudContext.getSequenceId(), interfaceDefinition.getServiceName(), interfaceDefinition.getMethodName(), interfaceParams.toString(), beginTime);
@@ -377,13 +375,12 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                     try {
                         interfaceResult = JSON.parseObject(JSON.toJSONString(interfaceResult));
                     } catch (Exception e) {
-                        LogUtil.logError(logger, "dubbo泛化调用异常", null, "序列化结果异常", e);
+                        logger.error("dubbo泛化调用异常 序列化结果异常", e);
                     }
 
                     JSONObject resultObjectOutput = resultMapOutput.get(interfaceParams[0]) == null ? new JSONObject((JSONObject) interfaceResult) : (JSONObject) resultMapOutput.get(interfaceParams[0]);
                     if (paramInfo.isArray()) {
-                        LogUtil.logInfo(logger, "三方调用有数组返回", paramInfo.getInterfaceField(), "partnerCode",
-                                fraudContext.getPartnerCode());
+                        logger.info("三方调用有数组返回 " + paramInfo.getInterfaceField() + " partnerCode:" + fraudContext.getPartnerCode());
                         boolean firstSet = true;
                         int i = 1;
                         for (; i < interfaceParams.length - 1; i++) {
@@ -475,7 +472,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
             }
 
         } catch (Exception e) {
-            LogUtil.logError(logger, "dubbo泛化调用异常", null, "接口调用的结果赋值给规则引擎字段异常", e);
+            logger.error("dubbo泛化调用异常 接口调用的结果赋值给规则引擎字段异常", e);
         }
     }
 
@@ -489,7 +486,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
     private List<InterfaceDefinitionParamInfo> getOutParams(DecisionFlowInterface interfaceInfo) {
         List<InterfaceDefinitionParamInfo> paramInfoList = new CopyOnWriteArrayList<>();
         try {
-            for(InterfaceDefinitionParamInfo paramInfo : interfaceInfo.getOutputParams()) {
+            for (InterfaceDefinitionParamInfo paramInfo : interfaceInfo.getOutputParams()) {
                 String ruleParamName = paramInfo.getRuleField();
                 String interfaceParamName = paramInfo.getInterfaceField();
                 boolean isArray = paramInfo.isArray();
@@ -500,7 +497,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                 paramInfoList.add(outputParamInfo);
             }
         } catch (Exception e) {
-            LogUtil.logError(logger, "dubbo泛化调用异常", null, "获取接口输入输出参数异常", e);
+            logger.error("dubbo泛化调用异常 获取接口输入输出参数异常", e);
         }
         return paramInfoList;
     }
@@ -608,7 +605,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
         jsonObject.put("method_name", method);
         jsonObject.put("params", params);
         jsonObject.put("cost", System.currentTimeMillis() - beginTime);
-        LogUtil.logInfo(logger, "泛化dubbo调用业务日志", null, jsonObject);
+        logger.info("泛化dubbo调用业务日志" + jsonObject);
     }
 
 }
