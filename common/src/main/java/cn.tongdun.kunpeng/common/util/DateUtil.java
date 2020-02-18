@@ -93,7 +93,7 @@ public class DateUtil {
 				return Long.parseLong(dateStr);
 			}
 		} catch (Exception e) {
-            LogUtil.logError(logger, "时间转时间戳异常", null, e.getMessage());
+			logger.error("时间转时间戳异常:"+ e.getMessage());
 			return null;
 		}
 	}
