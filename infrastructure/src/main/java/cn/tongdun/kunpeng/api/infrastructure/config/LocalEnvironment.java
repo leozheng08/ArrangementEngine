@@ -115,7 +115,7 @@ public class LocalEnvironment implements ILocalEnvironment{
                 ", appPort=" + appPort +
                 ", dc='" + dc + '\'' +
                 ", ip='" + ip + '\'' +
-                ", pocCluster='" + pocCluster + '\'' +
+                ", pocClusterName='" + pocClusterName + '\'' +
                 '}';
     }
 
