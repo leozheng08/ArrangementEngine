@@ -78,7 +78,6 @@ public class PolicyIndexConvertor implements IConvertor<List<IndexDefinitionDTO>
             PolicyIndex policyIndex = new PolicyIndex();
             policyIndex.setGmtModify(indexDefinitionDTO.getGmtModify());
             policyIndex.setUuid(indexDefinitionDTO.getUuid());
-            policyIndex.setSubPolicyUuid(indexDefinitionDTO.getSubPolicyUuid());
             policyIndex.setPolicyUuid(indexDefinitionDTO.getPolicyUuid());
             policyIndex.setCalculateFunction(FunctionLoader.getFunction(functionDescMap.get(indexDefinitionDTO.getUuid())));
             policyIndexList.add(policyIndex);

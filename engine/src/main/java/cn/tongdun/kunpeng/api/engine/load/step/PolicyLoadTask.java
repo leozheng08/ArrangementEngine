@@ -78,11 +78,11 @@ public class PolicyLoadTask implements Callable<Boolean> {
                     localCacheService.put(SubPolicy.class,subPolicy.getUuid(),subPolicy);
 
                     //缓存策略指标
-                    if (null!=subPolicyDO.getIndexDefinitionList()&&!subPolicyDO.getIndexDefinitionList().isEmpty()){
+                    if (null!=subpolicyDTO.getIndexDefinitionList()&&!subpolicyDTO.getIndexDefinitionList().isEmpty()){
                         IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor=convertorFactory.getConvertor(IndexDefinitionDTO.class);
-                        List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(subPolicyDO.getIndexDefinitionList());
+                        List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(subpolicyDTO.getIndexDefinitionList());
                         if (null!=policyIndexList&&!policyIndexList.isEmpty()){
-                            localCacheService.putList(PolicyIndex.class,policyDO.getUuid(),policyIndexList);
+                            localCacheService.putList(PolicyIndex.class,policyDTO.getUuid(),policyIndexList);
                         }
                     }
 

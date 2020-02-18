@@ -35,7 +35,10 @@ public class PolicyIndexManager implements IExecutor<String, Void> {
                 continue;
             }
             Object object = calculateFunction.eval(context);
-            context.putPolicyIndex(policyIndex.getUuid(), convert2Double(object, policyIndex));
+            if (null != object) {
+                context.putPolicyIndex(policyIndex.getUuid(), convert2Double(object, policyIndex));
+            }
+
         }
         return null;
     }
