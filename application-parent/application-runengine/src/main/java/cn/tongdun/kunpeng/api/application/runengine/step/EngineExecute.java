@@ -33,10 +33,6 @@ public class EngineExecute implements IRiskStep {
     @Autowired
     DecisionToolFactory decisionToolFactory;
 
-    @PostConstruct
-    public void init(){
-        System.out.println("abcabcabcabc");
-    }
 
     @Override
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){

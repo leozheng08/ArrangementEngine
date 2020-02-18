@@ -11,4 +11,5 @@ public interface ILocalEnvironment {
     public String getDc();
     public String getIp();
     public boolean isInternalEnvironment();
+    public boolean isPocCluster();
 }

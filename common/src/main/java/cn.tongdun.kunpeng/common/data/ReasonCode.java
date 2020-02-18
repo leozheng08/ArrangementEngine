@@ -5,17 +5,64 @@ package cn.tongdun.kunpeng.common.data;
  */
 public enum ReasonCode {
 
+    // 1~99：权限认证错误
+    AUTH_FAILED("001", "001"), //
+
+
+    // 100~199：数据和参数校验错误
+    REQ_DATA_TYPE_ERROR("100", "100"), //
+    PARAM_NULL_ERROR("101", "101"), //
+    PARAM_DATA_TYPE_ERROR("102", "102"), //
+    PARAM_OVER_MAX_LEN("103", "103"), //
+    PARAM_FORMAT_ERROR("104", "104"), //
+    QUERY_TIME_INTERVAL_INVALID("105", "105"), //
+    PARAM_DATA_NOT_EXIST_ERROR("106", "106"), //
+    PARAM_RECALL_SEQID_ILLEGAL("108", "重试验证失败,重试seqId不合法"),
+    PARAM_RECALL_HAVE_SUCCESS("109", "已重试成功,无法再次重试"),
+    RECALL_TIME_TOO_LONG("110", "重试时间太久远,超过3个月"),
+
+
+    LOAN_APPLY_ID_BLANK_ERROR("130", "130"),
+    LOAN_APPLY_ID_PARTNER_ERROR("131", "131"),
+    LOAN_APPLY_ID_ID_NUMBER_ERROR("132", "132"),
+    LOAN_APPLY_ID_NOT_EXIST_ERROR("133", "133"),
+
+
+    SUCCESS("200", "处理成功"),
+
+    // 300～399 客户账单错误
+    NOT_BUY_SERVICE("301", "301"), //
+    NOT_ALLOWED("302", "302"), //
+    FLOW_POOR("303", "303"), //
+    OUT_OF_SERVICE_DATE("304", "304"), //
+    NOT_ACCEPTABLE("305", "305"), //
+
+    // 400~499：策略执行错误
+    POLICY_NOT_EXIST("404", "没有对应的策略配置"), //
+    POLICY_EXECUTE_TIMEOUT("405", "405"), //
+    RECALL_DATA_EXIST("470", "重试查询不到数据"),
+
+    // 500~599:服务器内部错误
+    INTERNAL_ERROR("500", "500"),
+    ENGINE_EXECUTE_ERROR("505", "505"),
+    ENGINE_EXECUTE_TIMEOUT("506", "决策引擎运行异常"),
+    DATA_NOT_READY("507", "部分数据未准备好"),
+    SERVICE_FLOW_ERROR("508", "子服务流量不足"),
+    ENCRYPTION_FIELD_NOT_READY("509","字段获取失败，部分数据获取不全"),
+    RATE_LIMITING("600", "限流"),
+    // 600~:其它
+    NO_RESULT("666", "666"),
+    CALCULATE_ERROR("701", "数据查询失败"),
+
+
     PARAM_NECESSARY_FIELD_NULL("10101", "缺少必传字段"),
     PARAM_NECESSARY_FIELD_TYPE_ERROR("10102", "必传字段格式校验失败"),
     PARAM_NECESSARY_FIELD_ATTRIBUTE_ERROR("10103", "必传字段属性读取失败"),
     PARAM_NECESSARY_FIELD_TIMEOUT("10104", "必传字段获取超时"),
     PARAM_NECESSARY_FIELD_ERROR("10105", "必传字段获取失败"),
 
-    //错误码参看ReasonCodeEnum类，以后统一写在这里
-    PARAM_RECALL_SEQID_ILLEGAL("108", "重试验证失败,重试seqId不合法"),
-    PARAM_RECALL_HAVE_SUCCESS("109", "已重试成功,无法再次重试"),
-    RECALL_TIME_TOO_LONG("110", "重试时间太久远,超过3个月"),
-    SUCCESS("200", "处理成功"),
+
+
     NO_PASS_DATA("20001", "客户没有传规则所需的参数"),
     NO_INDICATRIX("20002", "没有指标数据"),
     NO_NAME_LIST("20003", "没有名单数据"),
@@ -26,17 +73,14 @@ public enum ReasonCode {
     NO_WATSON("20008", "没有地址服务数据"),
 
     // 400~499：策略执行错误
-    POLICY_NOT_EXIST("404", "没有对应的策略配置"), //
     POLICY_NOT_EXIST_SUB("40401", "没有对应的策略配置"),
     RULE_NOT_CONFIG("40402", "对应的策略下没有规则"),
     POLICY_LOAD_ERROR("40403", "策略加载有误"),
-    RECALL_DATA_EXIST("470", "重试查询不到数据"),
     RULE_NOT_FIND("40404","没有对应的规则配置"),
     SUB_POLICY_NOT_FIND("40405","没有对应的子规则配置"),
 
     //此状态码表示：部分数据获取失败的，仍旧返回调用成功，同时返回部分数据获取失败的状态码，不计费、记录事件；客户可以重试
-    DATA_NOT_READY("507", "部分数据未准备好"),
-    SERVICE_FLOW_ERROR("508", "子服务流量不足"),
+
     INDICATRIX_QUERY_ERROR("50701", "指标查询出错"),
     INDICATRIX_QUERY_TIMEOUT("50702", "指标查询超时"),
     NAME_LIST_QUERY_ERROR("50703", "名单库查询出错"),
@@ -79,7 +123,7 @@ public enum ReasonCode {
     CREDIT_LIST_DETAIL_SERVICE_CALL_ERROR("50736", "信贷名单库详情服务调用出错"),
     INDICATRIX_QUERY_LIMITING("50737", "指标平台限流"),
 
-    ENGINE_ERROR("506", "决策引擎运行异常"),
+
     RULE_ENGINE_TIMEOUT("50601", "规则引擎运行超时"),
     RULE_ENGINE_ERROR("50602", "规则引擎运行异常"),
     FLOW_ENGINE_ERROR("50603", "决策流引擎运行异常"),
@@ -92,17 +136,14 @@ public enum ReasonCode {
     /**
      * 加密管理：针对非必传字段
      */
-    ENCRYPTION_FIELD_NOT_READY("509","字段获取失败，部分数据获取不全"),
     ENCRYPTION_FIELD_ATTRIBUTE_ERROR("50901","字段属性读取失败，置空"),
     ENCRYPTION_FIELD_TYPE_ERROR("50902","字段格式校验失败，置空"),
     ENCRYPTION_FIELD_QUERY_ERROR("50903","字段获取失败，置空"),
 
-    RATE_LIMITING("600", "限流"),
+
     APPLICATION_RATE_LIMITING("60001", "forseti-api应用限流"),
     THIRD_SERVICE_FALLBACK("60002", "三方接口子服务降级"),
 
-
-    CALCULATE_ERROR("701", "数据查询失败"),
     CALCULATE_QUERY_ERROR("70101", "决策结果自定义数据查询失败"),
     NO_OUTPUT_FORMULA("70102", "决策结果自定义公式有误"),
     PART_CALCULATE_ERROR("70103", "部分计算失败"),;
@@ -133,6 +174,10 @@ public enum ReasonCode {
 
     @Override
     public String toString() {
+        if(code.equals(description)){
+            return code;
+        }
+
         return code + ":" + description;
     }
 }
