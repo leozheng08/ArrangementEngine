@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
-public abstract class AbstractFraudContext implements Serializable, Cloneable,ExecuteContext {
+public abstract class AbstractFraudContext implements Serializable, Cloneable, ExecuteContext {
 
 
     private static final long serialVersionUID = -3320502733559293390L;
@@ -117,12 +117,12 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
     /**
      * Key: indexUuid
      */
-    private transient Map<String, Double> indexResultMap = new HashMap<>(200);
+    private transient Map<String, Double> policyIndexMap = new ConcurrentHashMap<>(20);
 
     /**
      * Key: IndicatrixId
      */
-    private transient Map<String, List<Double>> indicatrixResultMap = new HashMap<>(200);
+    private transient Map<String, List<Double>> platformIndexMap = new ConcurrentHashMap<>(50);
 
 
     public void addSubReasonCode(SubReasonCode subReasonCode, SubReasonCode.ExtCode extCode) {
@@ -248,7 +248,6 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
     }
 
 
-
     private String accountMobile;           //address Match
     private String idNumber;                //address Match
 
@@ -259,7 +258,6 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
         }
         return (String) result;
     }      //Proxy function
-
 
 
     public void appendModelOutputFields(Map<String, Object> modelOutputFields) {
@@ -282,11 +280,16 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
         }
     }
 
-    public Double getIndexResult(String indexUuid) {
-        if (null == indexResultMap) {
+    @Override
+    public Double getPolicyIndex(String indexUuid) {
+        if (null == policyIndexMap) {
             return null;
         }
-        return indexResultMap.get(indexUuid);
+        return policyIndexMap.get(indexUuid);
+    }
+
+    public void putPolicyIndex(String indexUuid, Double indexValue) {
+        policyIndexMap.put(indexUuid, indexValue);
     }
 
     /**
@@ -295,20 +298,18 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
      * @param indexUuid
      * @return
      */
-    public Double getIndicatrix(String indexUuid) {
-        if (null == indicatrixResultMap || StringUtils.isBlank(indexUuid)) {
+    @Override
+    public Double getPlatformIndex(String indexUuid) {
+        if (null == platformIndexMap || StringUtils.isBlank(indexUuid)) {
             return null;
         }
-        List<Double> indicatrixs = indicatrixResultMap.get(indexUuid);
+        List<Double> indicatrixs = platformIndexMap.get(indexUuid);
         if (indicatrixs == null || indicatrixs.size() <= 0) {
             return null;
         }
 
         return indicatrixs.get(0);
     }
-
-
-
 
 
 }

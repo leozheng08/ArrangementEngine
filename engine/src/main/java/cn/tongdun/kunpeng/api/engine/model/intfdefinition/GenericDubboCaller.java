@@ -146,10 +146,10 @@ public class GenericDubboCaller implements IGenericDubboCaller {
         for (String uuid : indexUuidArray) {
             Double indexTemp;
             if (StringUtils.isNotBlank(uuid)) {
-                if (fraudContext.getIndexResult(uuid) != null) {
-                    indexTemp = fraudContext.getIndexResult(uuid);
-                } else if (fraudContext.getIndicatrix(uuid) != null) {
-                    indexTemp = fraudContext.getIndicatrix(uuid);
+                if (fraudContext.getPolicyIndex(uuid) != null) {
+                    indexTemp = fraudContext.getPolicyIndex(uuid);
+                } else if (fraudContext.getPlatformIndex(uuid) != null) {
+                    indexTemp = fraudContext.getPlatformIndex(uuid);
                 } else {
                     indexTemp = Double.NaN;
                 }

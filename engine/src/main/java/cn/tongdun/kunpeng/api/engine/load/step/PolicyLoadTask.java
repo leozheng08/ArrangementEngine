@@ -3,11 +3,13 @@ package cn.tongdun.kunpeng.api.engine.load.step;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
+import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.runmode.AbstractRunMode;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
@@ -22,7 +24,7 @@ import java.util.concurrent.Callable;
  * @Date: 2019/12/18 下午1:45
  */
 public class PolicyLoadTask implements Callable<Boolean> {
-    private Logger logger = LoggerFactory.getLogger(PolicyLoadTask.class);
+    private static Logger logger = LoggerFactory.getLogger(PolicyLoadTask.class);
     private String policyUuid;
     private IConvertorFactory convertorFactory;
 
@@ -71,6 +73,16 @@ public class PolicyLoadTask implements Callable<Boolean> {
                     }
                     //缓存子策略
                     localCacheService.put(SubPolicy.class,subPolicy.getUuid(),subPolicy);
+
+                    //缓存策略指标
+                    if (null!=subPolicyDO.getIndexDefinitionList()&&!subPolicyDO.getIndexDefinitionList().isEmpty()){
+                        IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor=convertorFactory.getConvertor(IndexDefinitionDTO.class);
+                        List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(subPolicyDO.getIndexDefinitionList());
+                        if (null!=policyIndexList&&!policyIndexList.isEmpty()){
+                            localCacheService.putList(PolicyIndex.class,policyDO.getUuid(),policyIndexList);
+                        }
+                    }
+
                 }
             }
 
