@@ -30,8 +30,8 @@ public class LocalEnvironment implements ILocalEnvironment{
 
     private String ip;
 
-    @Value("${isPocCluster}")
-    private boolean pocCluster;
+    @Value("${cluster.poc.name}")
+    private String pocClusterName;
 
     @Override
     public String getCluster() {
@@ -89,12 +89,9 @@ public class LocalEnvironment implements ILocalEnvironment{
 
     @Override
     public boolean isPocCluster() {
-        return pocCluster;
+        return StringUtils.equals(cluster,pocClusterName);
     }
 
-    public void setPocCluster(boolean pocCluster) {
-        this.pocCluster = pocCluster;
-    }
 
     public void init() {
         try {
