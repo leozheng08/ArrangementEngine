@@ -66,6 +66,10 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable,Ex
      */
     private boolean recall = false;
 
+    private String simulatePartnerCode;
+    private String simulateAppName;
+    private String simulateSequenceId;
+
     /**
      * 是否是决策流. 默认否, 默认为策略集.
      */

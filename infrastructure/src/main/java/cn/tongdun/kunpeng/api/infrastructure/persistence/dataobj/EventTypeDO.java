@@ -15,6 +15,7 @@ import java.util.List;
  * 
  * @author du 2014年9月25日 下午3:21:48
  */
+
 public class EventTypeDO extends CommonDO {
 
     private static final long serialVersionUID = -4778972339196365935L;

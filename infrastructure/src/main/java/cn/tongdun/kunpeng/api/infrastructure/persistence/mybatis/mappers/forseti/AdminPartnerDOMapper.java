@@ -13,10 +13,13 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface AdminPartnerDOMapper {
 
-    public List<AdminPartnerDO> queryByParams(Map<String, Object> map);
+    public AdminPartnerDO selectByPartnerCode(String partnerCode);
 
-    List<String> queryAllEnabledPartnerCodes();
+    public List<AdminPartnerDO> selectEnabledByPartners(Set<String> partners);
+
+    List<String> selectAllEnabledPartnerCodes();
 }

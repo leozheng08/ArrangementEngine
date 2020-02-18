@@ -12,11 +12,10 @@ public class Risk {
 
     public final static String NAME = "risk";
 
-    @Phase(parallel = true,order = 100)
+    @Phase(parallel = false,order = 100)
     public final static String CHECK = "check";
 
-    //todo 暂时改为串行来调试，需要改回并行
-    @Phase(parallel = false, timeOut = 200,poolSize = 100,order=200)
+    @Phase(parallel = true, timeOut = 200,poolSize = 100,order=200)
     public final static String BASIC_DATA = "baseData";
 
     @Phase(parallel = true, timeOut = 200,poolSize = 100,order=300)

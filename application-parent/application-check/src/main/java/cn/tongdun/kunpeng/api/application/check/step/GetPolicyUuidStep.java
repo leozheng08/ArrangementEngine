@@ -71,7 +71,6 @@ public class GetPolicyUuidStep implements IRiskStep {
         context.setEventType(policy.getEventType());
         context.setAppName(policy.getAppName());
         context.setAppType(policy.getAppType());
-        context.setEventType(policy.getEventType());
 
         BizScenario bizScenario = createBizScenario(context);
         context.setBizScenario(bizScenario);

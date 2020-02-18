@@ -21,14 +21,29 @@ public class FieldDefinitionCache {
 
     /**
      * 系统字段
+     * eventType.appType -> List<FieldDefinition>>
      */
     private Map<String, List<FieldDefinition>> systemFieldMap = new ConcurrentHashMap<>(200);
 
     /**
      * 系统字段
+     * partnerCode.appName.eventType -> List<FieldDefinition>>
      */
     private Map<String, List<FieldDefinition>> extendFieldMap = new ConcurrentHashMap<>(200);
 
+
+
+    public List<FieldDefinition> getSystemField(String eventType, String appType){
+        String key = getSystemFieldKey(eventType,appType);
+
+        return systemFieldMap.get(key);
+    }
+
+    public List<FieldDefinition> getExtendField(String partnerCode, String appName, String eventType){
+        String key = getExtendFieldKey(eventType,appName,eventType);
+
+        return extendFieldMap.get(key);
+    }
 
 
     public void addSystemField(FieldDefinition field, List<EventType> eventTypeList) {
@@ -46,12 +61,13 @@ public class FieldDefinitionCache {
         if (eventType == null || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
             for (EventType et : eventTypeList) {
                 for (String appType : appTypeArr) {
-                    List<FieldDefinition> list = systemFieldMap.get(et.getName() + "." + appType);
+                    String key = getSystemFieldKey(et.getName(),appType);
+                    List<FieldDefinition> list = systemFieldMap.get(key);
                     if (list == null) {
                         list = new ArrayList<FieldDefinition>();
                     }
                     list.add(field);
-                    systemFieldMap.put(et.getName() + "." + appType, list);
+                    systemFieldMap.put(key, list);
                 }
             }
         } else {
@@ -107,14 +123,14 @@ public class FieldDefinitionCache {
 
     public static String getExtendFieldKey(String partnerCode, String appName, String eventType) {
         if (StringUtils.isNotBlank(partnerCode) && StringUtils.isNotBlank(appName) && StringUtils.isNotBlank(eventType)) {
-            return partnerCode + "." + appName + "." + eventType;
+            return StringUtils.join(partnerCode , "." , appName , "." , eventType);
         }
         return null;
     }
 
     public static String getSystemFieldKey(String eventType, String appType) {
         if (StringUtils.isNotBlank(eventType) && StringUtils.isNotBlank(appType)) {
-            return eventType + "." + appType;
+            return StringUtils.join(eventType , "." , appType);
         }
         return null;
     }

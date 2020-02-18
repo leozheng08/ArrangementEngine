@@ -37,6 +37,7 @@ public class GenerateSequenceStep implements IRiskStep {
         context.setSequenceId(seqId);
         context.setRequestId(request.get("requestId"));
 
+        //事件发生时间，默认取seqId中的时间戳，如果客户有传event_occur_time则会覆盖
         try {
             String time = seqId.substring(0, 13);
             context.setEventOccurTime(new Date(Long.parseLong(time)));

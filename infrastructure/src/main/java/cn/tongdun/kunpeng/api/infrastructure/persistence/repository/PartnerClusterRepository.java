@@ -46,7 +46,7 @@ public class PartnerClusterRepository implements IPartnerClusterRepository {
      */
     @Override
     public Set<String> queryAllPartner(){
-        List<String> partnerCodes = adminPartnerDOMapper.queryAllEnabledPartnerCodes();
+        List<String> partnerCodes = adminPartnerDOMapper.selectAllEnabledPartnerCodes();
         Set partners = new HashSet(partnerCodes);
         return partners;
 
