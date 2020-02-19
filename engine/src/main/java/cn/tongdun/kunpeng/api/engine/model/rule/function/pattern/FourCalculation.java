@@ -5,6 +5,9 @@ import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.rule.LocalRegexDetail;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import cn.tongdun.kunpeng.api.ruledetail.FourCalculationDetail;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -82,6 +85,22 @@ public class FourCalculation extends AbstractCalculateFunction {
             default:
                 throw new RuntimeException("FourCalculation cann't recognize arithmetic:" + arithmetic);
         }
-        return new FunctionResult(result);
+        /**
+         * 用于骗过lambda的校验
+         */
+        final double lambdaRet = result;
+        /**
+         * 生成详情
+         */
+        DetailCallable detailCallable = () -> {
+            FourCalculationDetail detail = new FourCalculationDetail();
+            detail.setLeft(leftVariable);
+            detail.setRight(rightVariable);
+            detail.setResult(lambdaRet);
+            detail.setConditionUuid(this.getConditionUuid());
+            detail.setRuleUuid(this.getRuleUuid());
+            return detail;
+        };
+        return new FunctionResult(lambdaRet, detailCallable);
     }
 }

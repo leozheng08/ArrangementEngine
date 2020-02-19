@@ -4,7 +4,6 @@ import cn.fraudmetrix.module.tdflow.definition.NodeDesc;
 import cn.fraudmetrix.module.tdflow.exception.ParseException;
 import cn.fraudmetrix.module.tdflow.model.NodeResult;
 import cn.fraudmetrix.module.tdflow.model.node.AbstractBizNode;
-import cn.fraudmetrix.module.tdflow.model.node.InnerPolicyNode;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.constant.DecisionFlowConstant;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public class SubPolicyNode extends AbstractBizNode {
 
-    private static Logger logger = LoggerFactory.getLogger(InnerPolicyNode.class);
+    private static Logger logger = LoggerFactory.getLogger(SubPolicyNode.class);
 
     private String subPolicyUuid;
 
@@ -49,7 +48,7 @@ public class SubPolicyNode extends AbstractBizNode {
         Map<String, String> paramMap = nodeDesc.getParamList().stream().collect(Collectors.toMap(a -> a.getName(), b -> b.getValue()));
         subPolicyUuid = paramMap.get("tns:ruleFlowGroup");
         if (StringUtils.isBlank(subPolicyUuid)) {
-            throw new ParseException("Policy Node id:" + this.getId() + " have no policyUuid,tns:ruleFlowGroup is blank!");
+            throw new ParseException("Policy Node id:" + this.getId() + " have no subPolicyUuid,tns:ruleFlowGroup is blank!");
         }
     }
 }

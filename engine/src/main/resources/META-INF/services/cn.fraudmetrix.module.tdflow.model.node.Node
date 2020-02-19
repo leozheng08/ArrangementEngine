@@ -1,2 +1,3 @@
 interface=cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinitionManager
 model=cn.tongdun.kunpeng.api.engine.model.decisionflow.DecisionFlowModelManager
+subpolicy=cn.tongdun.kunpeng.api.engine.model.decisionflow.SubPolicyNode
