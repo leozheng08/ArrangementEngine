@@ -5,6 +5,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
 import cn.tongdun.kunpeng.api.ruledetail.TimePointComparisonDetail;
@@ -49,6 +50,10 @@ public class TimePointComparisonFunction extends AbstractFunction {
                 upperLimit = param.getValue();
             }
         });
+
+        if (StringUtils.isAnyBlank(lowerLimit, upperLimit)) {
+            throw new ParseException("TimePointComparison function lowerLimit or upperLimit error");
+        }
     }
 
     @Override
@@ -89,21 +94,24 @@ public class TimePointComparisonFunction extends AbstractFunction {
         if (StringUtils.isNotBlank(upperLimit) && StringUtils.isNotBlank(lowerLimit)) {
             result = isInTimeRange(dateValue, lowerLimit, upperLimit);
         }
-        else {
-            // FIXME: 2/13/20 hanle none
-        }
 
-        TimePointComparisonDetail detail = null;
+
+        DetailCallable detailCallable = null;
         if (result) {
-            detail = new TimePointComparisonDetail();
-            detail.setConditionUuid(conditionUuid);
-            detail.setRuleUuid(ruleUuid);
-            detail.setDate(date);
-            detail.setTimeSlice(timeunit);
-            detail.setResult((double) dateValue);
+            int finalDateValue = dateValue;
+            detailCallable = () -> {
+                TimePointComparisonDetail detail = null;
+                detail = new TimePointComparisonDetail();
+                detail.setConditionUuid(conditionUuid);
+                detail.setRuleUuid(ruleUuid);
+                detail.setDate(date);
+                detail.setTimeSlice(timeunit);
+                detail.setResult((double) finalDateValue);
+                return detail;
+            };
         }
 
-        return new FunctionResult(result);
+        return new FunctionResult(result, detailCallable);
     }
 
 

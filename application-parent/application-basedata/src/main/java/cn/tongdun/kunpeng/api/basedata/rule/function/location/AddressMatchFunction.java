@@ -12,7 +12,7 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
-import cn.tongdun.kunpeng.api.application.context.FraudContext;
+import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
 import cn.tongdun.kunpeng.api.basedata.service.elfin.ElfinBaseDataService;
 import cn.tongdun.kunpeng.common.Constant;
 import org.apache.commons.collections.CollectionUtils;
@@ -60,7 +60,7 @@ public class AddressMatchFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
-        FraudContext context = (FraudContext) executeContext;
+        BaseDataContext context = (BaseDataContext) executeContext;
 
         String addrOne = getAddress(context, addressA, scope);
         String addrTwo = getAddress(context, addressB, scope);
@@ -80,7 +80,7 @@ public class AddressMatchFunction extends AbstractFunction {
     }
 
 
-    private String getAddress(FraudContext context, String address, String scope) {
+    private String getAddress(BaseDataContext context, String address, String scope) {
         ElfinBaseDataService elfinBaseDataService = SpringContextHolder.getBean("elfinBaseDataService", ElfinBaseDataService.class);
         IdInfoQueryService idInfoQueryService = SpringContextHolder.getBean("idInfoQueryService", IdInfoQueryService.class);
         BinInfoQueryService binInfoQueryService = SpringContextHolder.getBean("binInfoQueryService", BinInfoQueryService.class);

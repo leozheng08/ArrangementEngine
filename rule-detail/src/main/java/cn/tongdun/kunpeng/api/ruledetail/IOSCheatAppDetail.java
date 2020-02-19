@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
-import cn.fraudmetrix.module.tdrule.model.IDetail;
-import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import lombok.Data;
 
 /**
@@ -10,7 +8,7 @@ import lombok.Data;
  * @Date: 2020/2/6 下午4:37
  */
 @Data
-public class IOSCheatAppDetail extends ConditionDetail implements DetailCallable {
+public class IOSCheatAppDetail extends ConditionDetail {
 
     private String hookInline;
 
@@ -20,8 +18,5 @@ public class IOSCheatAppDetail extends ConditionDetail implements DetailCallable
         super("ios_cheat_app");
     }
 
-    @Override
-    public IDetail call() {
-        return this;
-    }
+
 }

@@ -5,6 +5,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.api.ruledetail.FpExceptionDetail;
 import cn.tongdun.kunpeng.common.Constant;
@@ -75,23 +76,20 @@ public class FpExceptionFunction extends AbstractFunction {
         }
 
         List<String> mycodes = Splitter.on(",").splitToList(codes);
-        if (mycodes.contains(code)) {
-            // 详情
-            String result = fpResultMap.get(code);
-            if (result == null) {
-                return new FunctionResult(false);
-            }
 
-
-            FpExceptionDetail detail = new FpExceptionDetail();
-            detail.setCode(code);
-            detail.setCodeDisplayName(result);
-
-            return new FunctionResult(true, detail);
+        boolean ret = false;
+        DetailCallable detailCallable = null;
+        if (mycodes.contains(code) && null != fpResultMap.get(code)) {
+            ret = true;
+            detailCallable = () -> {
+                FpExceptionDetail detail = new FpExceptionDetail();
+                detail.setCode(code);
+                detail.setCodeDisplayName(fpResultMap.get(code));
+                return detail;
+            };
         }
-        else {
-            return new FunctionResult(false);
-        }
+
+        return new FunctionResult(ret, detailCallable);
     }
 
 

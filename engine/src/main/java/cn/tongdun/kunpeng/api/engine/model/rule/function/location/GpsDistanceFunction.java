@@ -5,6 +5,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.ruledetail.GpsDistanceDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -47,6 +48,11 @@ public class GpsDistanceFunction extends AbstractFunction {
                 distanceSlice = param.getValue();
             }
         });
+
+        if (StringUtils.isBlank(distanceOperator) || "none".equals(distanceOperator)) {
+            throw new ParseException(("GpsDistance function parse error, distanceOperator error"));
+        }
+
     }
 
     @Override
@@ -70,21 +76,23 @@ public class GpsDistanceFunction extends AbstractFunction {
         }
 
         double distance = getDistance(gps1, gps2, false);
-        double diff = distanceDiffResult(distanceOperator, difference, distance);
+        boolean result = distanceDiffResult(distanceOperator, difference, distance);
 
-
-        boolean ret = false;
-        GpsDistanceDetail detail = null;
-        if (1 == diff) {
-            detail = new GpsDistanceDetail();
-            detail.setConditionUuid(conditionUuid);
-            detail.setRuleUuid(ruleUuid);
-            detail.setGpsA(gpsA);
-            detail.setGpsB(gpsB);
-            detail.setResult(distance);
-            detail.setUnit("m");
+        DetailCallable detailCallable = null;
+        if (result) {
+            detailCallable = () -> {
+                GpsDistanceDetail detail = null;
+                detail = new GpsDistanceDetail();
+                detail.setConditionUuid(conditionUuid);
+                detail.setRuleUuid(ruleUuid);
+                detail.setGpsA(gpsA);
+                detail.setGpsB(gpsB);
+                detail.setResult(distance);
+                detail.setUnit("m");
+                return detail;
+            };
         }
-        return new FunctionResult(ret, detail);
+        return new FunctionResult(result, detailCallable);
     }
 
 
@@ -155,27 +163,25 @@ public class GpsDistanceFunction extends AbstractFunction {
         return d * Math.PI / 180.0;
     }
 
-    private double distanceDiffResult(String distanceOperator, int difference, double distance) {
-        // FIXME: 2/13/20 
-        if ("none".equalsIgnoreCase(distanceOperator)) {// 为指标数据返回原始计算值
-            return distance;
+    private boolean distanceDiffResult(String distanceOperator, int difference, double distance) {
+        boolean ret = false;
+
+        if (">".equals(distanceOperator)) {
+            ret = distance > difference;
         }
-        else if (distanceOperator.equals(">")) {
-            return (distance > difference ? 1 : 0);
+        else if (">=".equals(distanceOperator)) {
+            ret = distance >= difference;
         }
-        else if (distanceOperator.equals(">=")) {
-            return (distance >= difference ? 1 : 0);
+        else if ("<".equals(distanceOperator)) {
+            ret = distance < difference;
         }
-        else if (distanceOperator.equals("<")) {
-            return (distance < difference ? 1 : 0);
+        else if ("<=".equals(distanceOperator)) {
+            ret = distance <= difference;
         }
-        else if (distanceOperator.equals("<=")) {
-            return (distance <= difference ? 1 : 0);
+        else if ("==".equals(distanceOperator)) {
+            ret = distance == difference;
         }
-        else if (distanceOperator.equals("==")) {
-            return (distance == difference ? 1 : 0);
-        }
-        return 0;
+        return ret;
     }
 
 

@@ -4,9 +4,11 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.ruledetail.IOSCheatAppDetail;
 import cn.tongdun.kunpeng.common.Constant;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,28 +36,32 @@ public class CheatFunction extends AbstractFunction {
 
         Map<String, Object> systemFields = context.getSystemFiels();
         Object containsCheatApp = systemFields.get("containsCheatApp");
+
         if (containsCheatApp == null) {
             logger.warn("ios cheat containsCheatApp system field not configured");
             return new FunctionResult(false);
         }
-        else {
-            if (Boolean.TRUE.equals(containsCheatApp)) {
-                IOSCheatAppDetail detail = null;
-                if (null != context.getDeviceInfo() && context.getDeviceInfo().size() > 0) {
-                    detail = new IOSCheatAppDetail();
-                    if (null != context.getDeviceInfo().get("hookInline")) {
-                        detail.setHookInline(context.getDeviceInfo().get("hookInline").toString());
-                    }
-                    if (null != context.getDeviceInfo().get("hookIMP")) {
-                        detail.setHookIMP(context.getDeviceInfo().get("hookIMP").toString());
-                    }
-                }
-                return new FunctionResult(true, detail);
-            }
-            else {
-                return new FunctionResult(false);
-            }
+
+
+        boolean ret = false;
+        DetailCallable detailCallable = null;
+        if (Boolean.TRUE.equals(containsCheatApp)) {
+            ret = true;
         }
+
+        if (ret && MapUtils.isNotEmpty(context.getDeviceInfo())) {
+            detailCallable = () -> {
+                IOSCheatAppDetail detail = new IOSCheatAppDetail();
+                if (null != context.getDeviceInfo().get("hookInline")) {
+                    detail.setHookInline(context.getDeviceInfo().get("hookInline").toString());
+                }
+                if (null != context.getDeviceInfo().get("hookIMP")) {
+                    detail.setHookIMP(context.getDeviceInfo().get("hookIMP").toString());
+                }
+                return detail;
+            };
+        }
+        return new FunctionResult(ret, detailCallable);
     }
 
 
