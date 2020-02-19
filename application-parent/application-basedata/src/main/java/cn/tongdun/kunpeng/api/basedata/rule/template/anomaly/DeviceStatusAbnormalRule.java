@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.template.ios;
+package cn.tongdun.kunpeng.api.basedata.rule.template.anomaly;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
@@ -6,11 +6,11 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.ios.CheatFunction;
+import cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.DeviceStatusAbnormalFunction;
 
-public class CheatRule extends AbstractRule {
+public class DeviceStatusAbnormalRule extends AbstractRule {
 
-    private CheatFunction function;
+    private DeviceStatusAbnormalFunction function;
 
 
     @Override
@@ -28,6 +28,6 @@ public class CheatRule extends AbstractRule {
             throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
-        function = (CheatFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (DeviceStatusAbnormalFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }
