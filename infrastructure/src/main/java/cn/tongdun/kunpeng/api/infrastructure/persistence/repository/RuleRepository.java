@@ -38,21 +38,25 @@ public class RuleRepository implements IRuleRepository {
     public RuleDTO queryByUuid(String ruleUuid) {
 
         RuleDO ruleDO = ruleDOMapper.selectByUuid(ruleUuid);
+        RuleDTO ruleDTO = new RuleDTO();
+        BeanUtils.copyProperties(ruleDO, ruleDTO);
 
-        return null;
+        ruleDTO.setRuleConditionElements(queryRuleConditionElementDTOByRuleUuid(ruleUuid));
+        ruleDTO.setRuleActionElements(queryRuleActionElementDTOByRuleUuid(ruleUuid));
+        return ruleDTO;
     }
 
     //查询规则条件
-    public List<RuleConditionElementDTO> queryRuleConditionElementDTOByRuleUuid(String ruleUuid){
-        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDOMapper.selectByBizUuidBizType(ruleUuid,"rule");
-        if(ruleConditionElementDOList == null) {
+    public List<RuleConditionElementDTO> queryRuleConditionElementDTOByRuleUuid(String ruleUuid) {
+        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDOMapper.selectByBizUuidBizType(ruleUuid, "rule");
+        if (ruleConditionElementDOList == null) {
             return null;
         }
 
         List<RuleConditionElementDTO> result = null;
-        result = ruleConditionElementDOList.stream().map(ruleConditionElementDO->{
+        result = ruleConditionElementDOList.stream().map(ruleConditionElementDO -> {
             RuleConditionElementDTO ruleConditionElementDTO = new RuleConditionElementDTO();
-            BeanUtils.copyProperties(ruleConditionElementDO,ruleConditionElementDTO);
+            BeanUtils.copyProperties(ruleConditionElementDO, ruleConditionElementDTO);
             return ruleConditionElementDTO;
         }).collect(Collectors.toList());
 
@@ -62,24 +66,24 @@ public class RuleRepository implements IRuleRepository {
     }
 
     //查询规则动作
-    public List<RuleActionElementDTO> queryRuleActionElementDTOByRuleUuid(String ruleUuid){
+    public List<RuleActionElementDTO> queryRuleActionElementDTOByRuleUuid(String ruleUuid) {
         List<RuleActionElementDO> ruleActionElementDOList = ruleActionElementDOMapper.selectByRuleUuid(ruleUuid);
-        if(ruleActionElementDOList == null) {
+        if (ruleActionElementDOList == null) {
             return null;
         }
 
         List<RuleActionElementDTO> result = null;
-        result = ruleActionElementDOList.stream().map(ruleActionElementDO->{
+        result = ruleActionElementDOList.stream().map(ruleActionElementDO -> {
             RuleActionElementDTO ruleActionElementDTO = new RuleActionElementDTO();
-            BeanUtils.copyProperties(ruleActionElementDO,ruleActionElementDTO);
+            BeanUtils.copyProperties(ruleActionElementDO, ruleActionElementDTO);
             return ruleActionElementDTO;
         }).collect(Collectors.toList());
 
         return result;
     }
 
-    private List<RuleConditionElementDTO> buildConditionTree(List<RuleConditionElementDTO> ruleConditionElementDTOList){
-        if(ruleConditionElementDTOList == null || ruleConditionElementDTOList.isEmpty()){
+    private List<RuleConditionElementDTO> buildConditionTree(List<RuleConditionElementDTO> ruleConditionElementDTOList) {
+        if (ruleConditionElementDTOList == null || ruleConditionElementDTOList.isEmpty()) {
             return ruleConditionElementDTOList;
         }
 
@@ -100,6 +104,7 @@ public class RuleRepository implements IRuleRepository {
 
     /**
      * 查询子节点
+     *
      * @param parent
      * @param conditionElements
      */
