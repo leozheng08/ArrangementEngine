@@ -5,6 +5,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.basedata.service.fp.Anomaly;
 import cn.tongdun.kunpeng.api.basedata.service.fp.ContainCheatingApps;
@@ -52,18 +53,11 @@ public class CheatV2Function extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
-
-        final List<Double> results = new ArrayList<>(1);
-
-        // 1命中，0不命中
-        double hitValue = 0D;
-
         final Map<String, Object> deviceInfo = context.getDeviceInfo();
 
         if (StringUtils.isBlank(installedDangerAppCodes) && StringUtils.isBlank(runningDangerAppCodes)) {
             logger.warn("the installedDangerAppCodes and runningDangerAppCodes are blank, platform=android, deviceInfo={}", deviceInfo);
             return new FunctionResult(false);
-
         }
 
         long start = System.currentTimeMillis();
@@ -73,22 +67,18 @@ public class CheatV2Function extends AbstractFunction {
         if (cost > 150) {
             logger.warn("AnomalyUtil.getContainCheatingApps cost too long({}ms)", cost);
         }
-
         if (containCheatingApps == null) {
             logger.warn("cannot parse containCheatingApps(AnomalyUtil), platform=android, deviceInfo={}", deviceInfo);
             return new FunctionResult(false);
         }
 
-//        AndroidCheatAppDetail detail = new AndroidCheatAppDetail();
-
-
+        boolean hitValue = false;
         List<Anomaly> installedDangerApps = containCheatingApps.getInstalledDangerApps();
         List<String> installedApps = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(installedDangerApps)) {
             for (Anomaly anomaly : installedDangerApps) {
                 if (installedDangerAppCodes.contains(anomaly.getCode())) {
-                    hitValue = 1D;
-//                    detail.addInstalledDangerApp(anomaly.getCode());
+                    hitValue = true;
                     installedApps.add(anomaly.getCode());
                 }
             }
@@ -100,37 +90,31 @@ public class CheatV2Function extends AbstractFunction {
         if (CollectionUtils.isNotEmpty(runningDangerApps)) {
             for (Anomaly anomaly : runningDangerApps) {
                 if (runningDangerAppCodes.contains(anomaly.getCode())) {
-                    hitValue = 1D;
-//                    detail.addRunningDangerApp(anomaly.getCode());
+                    hitValue = true;
                     runningApps.add(anomaly.getCode());
                 }
             }
         }
 
-//        if (hitValue > 0) {
-//            detail.setFilterId(conditionId);
-//            detail.setTempRuleUuid(ruleUuid);
-//            context.putRuleDetail(detail);
-//        }
 
-//        results.add(hitValue);
-//
-//        return results;
+        DetailCallable detailCallable = null;
+        if (hitValue) {
+            detailCallable = () -> {
+                AndroidCheatAppDetail detail = null;
+                detail = new AndroidCheatAppDetail();
 
+                if (CollectionUtils.isNotEmpty(installedApps)) {
+                    detail.setInstalledDangerApps(installedApps);
+                }
+                if (CollectionUtils.isNotEmpty(runningApps)) {
+                    detail.setRunningDangerApps(runningApps);
+                }
 
-        AndroidCheatAppDetail detail = null;
-        if (1 == hitValue) {
-            detail = new AndroidCheatAppDetail();
-
-            if (CollectionUtils.isNotEmpty(installedApps)) {
-                detail.setInstalledDangerApps(installedApps);
-            }
-            if (CollectionUtils.isNotEmpty(runningApps)) {
-                detail.setRunningDangerApps(runningApps);
-            }
+                return detail;
+            };
         }
 
-        return new FunctionResult(hitValue, detail);
+        return new FunctionResult(hitValue, detailCallable);
     }
 
 

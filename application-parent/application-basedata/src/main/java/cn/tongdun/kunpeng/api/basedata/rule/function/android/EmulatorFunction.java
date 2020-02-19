@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.ruledetail.AndroidEmulatorDetail;
 import cn.tongdun.kunpeng.common.Constant;
@@ -49,17 +50,18 @@ public class EmulatorFunction extends AbstractFunction {
         }
 
         Object isAndroidEmulator = deviceInfo.get("isEmulator");
-        boolean result = false;
-        result = Boolean.TRUE.equals(isAndroidEmulator);
+        boolean result = Boolean.TRUE.equals(isAndroidEmulator);
 
 
-        AndroidEmulatorDetail detail = null;
+        DetailCallable detailCallable = null;
         if (result && null != context.getDeviceInfo().get("emulatorType")) {
-            detail = new AndroidEmulatorDetail();
-            detail.setEmulatorType(context.getDeviceInfo().get("emulatorType").toString());
+            detailCallable = () -> {
+                AndroidEmulatorDetail detail = new AndroidEmulatorDetail();
+                detail.setEmulatorType(context.getDeviceInfo().get("emulatorType").toString());
+                return detail;
+            };
         }
-
-        return new FunctionResult(result, detail);
+        return new FunctionResult(result, detailCallable);
     }
 
 
