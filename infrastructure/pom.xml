@@ -153,6 +153,9 @@
             </exclusions>
         </dependency>
 
+        <!-- module end -->
+
+
         <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>redis-client</artifactId>
@@ -161,7 +164,14 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
-        <!-- module end -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
