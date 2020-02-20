@@ -6,7 +6,10 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.VelocityFuncType;
+import cn.tongdun.kunpeng.api.ruledetail.FourCalculationDetail;
+import cn.tongdun.kunpeng.api.ruledetail.FunctionKitDetail;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -82,7 +85,22 @@ public class FunctionKit extends AbstractCalculateFunction {
             logger.warn("FunctionKit eval error!", e);
         }
         result = statisticCalculate(values, funcType, naturalValue);
-        return new FunctionResult(result);
+
+        /**
+         * 生成详情
+         */
+        final List<Double> valuesDetail = values;
+        DetailCallable detailCallable = () -> {
+            FunctionKitDetail detail = new FunctionKitDetail();
+            detail.setResult(result);
+            List<Number> vs = new ArrayList<>(values.size());
+            vs.addAll(valuesDetail);
+            detail.setVariables(vs);
+            detail.setConditionUuid(this.getConditionUuid());
+            detail.setRuleUuid(this.getRuleUuid());
+            return detail;
+        };
+        return new FunctionResult(result, detailCallable);
     }
 
 

@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.rule;
 
+import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 
 import java.util.List;
@@ -11,6 +12,5 @@ import java.util.List;
 public interface IRuleRepository {
 
 
-
-    List<EventType> queryAll();
+    RuleDTO queryByUuid(String ruleUuid);
 }

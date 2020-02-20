@@ -1,0 +1,2 @@
+rule=cn.tongdun.kunpeng.api.engine.model.decisionflow.RuleEdgeCondition
+subpolicy=cn.tongdun.kunpeng.api.engine.model.decisionflow.PolicyEdgeCondition

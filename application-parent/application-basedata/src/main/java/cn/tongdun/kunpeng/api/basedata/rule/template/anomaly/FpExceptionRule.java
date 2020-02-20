@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.template.anomaly;
+package cn.tongdun.kunpeng.api.basedata.rule.template.anomaly;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;

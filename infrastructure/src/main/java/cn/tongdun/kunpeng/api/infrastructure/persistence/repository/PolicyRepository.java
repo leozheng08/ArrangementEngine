@@ -39,10 +39,6 @@ public class PolicyRepository implements IPolicyRepository{
     @Autowired
     private RuleDOMapper ruleDOMapper;
     @Autowired
-    private RuleConditionElementDOMapper ruleConditionElementDOMapper;
-    @Autowired
-    private RuleActionElementDOMapper ruleActionElementDOMapper;
-    @Autowired
     private PolicyIndicatrixItemDOMapper policyIndicatrixItemDOMapper;
     @Autowired
     private IndexDefinitionDOMapper indexDefinitionDOMapper;
@@ -52,6 +48,8 @@ public class PolicyRepository implements IPolicyRepository{
     private PolicyDecisionModeDOMapper policyDecisionModeDOMapper;
     @Autowired
     private  DecisionFlowDOMapper decisionFlowDOMapper;
+    @Autowired
+    private RuleRepository ruleRepository;
 
 
     //根据合作列表，取得运行版本的策略清单
@@ -173,48 +171,14 @@ public class PolicyRepository implements IPolicyRepository{
         }).collect(Collectors.toList());
 
         for(RuleDTO ruleDTO :result){
-            ruleDTO.setRuleConditionElements(queryRuleConditionElementDTOByRuleUuid(ruleDTO.getUuid()));
-            ruleDTO.setRuleActionElements(queryRuleActionElementDTOByRuleUuid(ruleDTO.getUuid()));
+            ruleDTO.setRuleConditionElements(ruleRepository.queryRuleConditionElementDTOByRuleUuid(ruleDTO.getUuid()));
+            ruleDTO.setRuleActionElements(ruleRepository.queryRuleActionElementDTOByRuleUuid(ruleDTO.getUuid()));
         }
 
         return result;
     }
 
-    //查询规则条件
-    private List<RuleConditionElementDTO> queryRuleConditionElementDTOByRuleUuid(String ruleUuid){
-        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDOMapper.selectByBizUuidBizType(ruleUuid,"rule");
-        if(ruleConditionElementDOList == null) {
-            return null;
-        }
 
-        List<RuleConditionElementDTO> result = null;
-        result = ruleConditionElementDOList.stream().map(ruleConditionElementDO->{
-            RuleConditionElementDTO ruleConditionElementDTO = new RuleConditionElementDTO();
-            BeanUtils.copyProperties(ruleConditionElementDO,ruleConditionElementDTO);
-            return ruleConditionElementDTO;
-        }).collect(Collectors.toList());
-
-        //创建条件树
-        result = buildConditionTree(result);
-        return result;
-    }
-
-    //查询规则动作
-    private List<RuleActionElementDTO> queryRuleActionElementDTOByRuleUuid(String ruleUuid){
-        List<RuleActionElementDO> ruleActionElementDOList = ruleActionElementDOMapper.selectByRuleUuid(ruleUuid);
-        if(ruleActionElementDOList == null) {
-            return null;
-        }
-
-        List<RuleActionElementDTO> result = null;
-        result = ruleActionElementDOList.stream().map(ruleActionElementDO->{
-            RuleActionElementDTO ruleActionElementDTO = new RuleActionElementDTO();
-            BeanUtils.copyProperties(ruleActionElementDO,ruleActionElementDTO);
-            return ruleActionElementDTO;
-        }).collect(Collectors.toList());
-
-        return result;
-    }
 
 
     //查询平台指标
@@ -295,50 +259,4 @@ public class PolicyRepository implements IPolicyRepository{
 
         return decisionFlowDTO;
     }
-
-
-    private List<RuleConditionElementDTO> buildConditionTree(List<RuleConditionElementDTO> ruleConditionElementDTOList){
-        if(ruleConditionElementDTOList == null || ruleConditionElementDTOList.isEmpty()){
-            return ruleConditionElementDTOList;
-        }
-
-        List<RuleConditionElementDTO> result = new ArrayList<>();
-
-        // 查找根节点
-        for (RuleConditionElementDTO element : ruleConditionElementDTOList) {
-            if (StringUtils.isBlank(element.getParentUuid())) {
-                // 递归查找每个根节点下的元素,
-                findChildren(element, ruleConditionElementDTOList);
-                result.add(element);
-            }
-        }
-
-        return result;
-    }
-
-
-    /**
-     * 查询子节点
-     * @param parent
-     * @param conditionElements
-     */
-    private void findChildren(RuleConditionElementDTO parent, List<RuleConditionElementDTO> conditionElements) {
-        List<RuleConditionElementDTO> children = new ArrayList<RuleConditionElementDTO>();
-        for (RuleConditionElementDTO re : conditionElements) {
-            if (parent.getUuid().equals(re.getParentUuid())) {
-                children.add(re);
-            }
-        }
-
-        parent.setSubConditions(children);
-
-        for (RuleConditionElementDTO element : children) {
-            findChildren(element, conditionElements);
-        }
-    }
-
-
-
-
-
 }

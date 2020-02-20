@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.template.android;
+package cn.tongdun.kunpeng.api.basedata.rule.template.ios;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
@@ -6,12 +6,11 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.android.CheatV2Function;
-import cn.tongdun.kunpeng.api.basedata.rule.function.android.UseHttpFunction;
+import cn.tongdun.kunpeng.api.basedata.rule.function.ios.UseHttpProxyFunction;
 
-public class UseHttpRule extends AbstractRule {
+public class UseHttpProxyRule extends AbstractRule {
 
-    private UseHttpFunction function;
+    private UseHttpProxyFunction function;
 
 
     @Override
@@ -29,6 +28,6 @@ public class UseHttpRule extends AbstractRule {
             throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
-        function = (UseHttpFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (UseHttpProxyFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }
