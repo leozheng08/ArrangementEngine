@@ -6,10 +6,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author du 2014年5月23日 下午5:33:18
- */
-public class GroovyField implements Serializable{
+public class WrappedGroovyObject implements Serializable{
 
     private static final long serialVersionUID = 2785807641911113679L;
     private GroovyObject        groovyObject;                                // 编译后的对象
