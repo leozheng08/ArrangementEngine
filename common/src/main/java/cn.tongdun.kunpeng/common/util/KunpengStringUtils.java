@@ -121,4 +121,43 @@ public class KunpengStringUtils {
         return s;
     }
 
+
+    /**
+     * 是否为数字
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str) {
+        if (str != null) {
+            if (StringUtils.isNumeric(str)) {
+                return true;
+            }
+
+            try {
+                Double.parseDouble(str);
+                return true;
+            } catch (Exception e) {
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * 是否是日期格式
+     *
+     * @param val
+     * @return
+     */
+    public static boolean isDate(String val) {
+        if (val == null) {
+            return false;
+        }
+        try {
+            return (DateUtil.parseDateTime(val) != null);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
