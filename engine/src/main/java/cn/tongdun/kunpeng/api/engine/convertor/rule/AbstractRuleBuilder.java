@@ -180,7 +180,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             left.setFieldType(FieldTypeEnum.FUNC);
 
         } else {
-            FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(elementDTO.getLeftPropertyType());
+            FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(elementDTO.getLeftPropertyType());
             if (null == fieldTypeEnum) {
                 throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!LeftPropertyType:"
                         + elementDTO.getLeftPropertyType() + "conditionUuid:" + elementDTO.getUuid());
@@ -206,7 +206,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
      */
     private ConditionParam constructRight(RuleConditionElementDTO elementDTO) {
         ConditionParam right = new ConditionParam();
-        FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(elementDTO.getRightType());
+        FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(elementDTO.getRightType());
         if (null == fieldTypeEnum) {
             throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!RightType:"
                     + elementDTO.getRightType() + "conditionUuid:" + elementDTO.getUuid());

@@ -52,13 +52,17 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
      * @return 返回逻辑表达式:1&(2|4)等
      */
     private String processOneLayerAndChildrenElements(RuleConditionElementDTO elementDTO, List<Condition> conditionList, List<FunctionDesc> functionDescList, Integer num) {
+        StringBuilder sb = new StringBuilder();
+        /**
+         * 只有一个条件的情况
+         */
+        if (elementDTO.getSubConditions() == null || elementDTO.getSubConditions().isEmpty()) {
+            processOneElement(elementDTO, conditionList, functionDescList, num);
+            return elementDTO.getId().toString();
+        }
         if (StringUtils.isBlank(elementDTO.getLogicOperator())) {
             throw new ParseException("CustomRuleBuilder parse format error,logicOperator blank,conditionUuid:" + elementDTO.getUuid());
         }
-        if (elementDTO.getSubConditions() == null || elementDTO.getSubConditions().isEmpty()) {
-            throw new ParseException("CustomRuleBuilder parse format error,no conditions,conditionUuid:" + elementDTO.getUuid());
-        }
-        StringBuilder sb = new StringBuilder();
         String logic = TdRuleOperatorMapUtils.getEngineTypeFromDisplay(elementDTO.getLogicOperator());
         if (StringUtils.isBlank(logic)) {
             throw new ParseException("CustomRuleBuilder logic error,conditionUuid:" + elementDTO.getUuid() + ",logic:" + elementDTO.getLogicOperator());
@@ -67,6 +71,7 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
         List<RuleConditionElementDTO> subConditions = elementDTO.getSubConditions();
         for (RuleConditionElementDTO ruleConditionElementDTO : subConditions) {
             if (StringUtils.isNotBlank(ruleConditionElementDTO.getLogicOperator())) {
+                sb.append(logic);
                 sb.append("(");
                 sb.append(processOneLayerAndChildrenElements(ruleConditionElementDTO, conditionList, functionDescList, num));
                 sb.append(")");
@@ -77,7 +82,6 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
         }
         return sb.substring(1);
     }
-
 
 
 }

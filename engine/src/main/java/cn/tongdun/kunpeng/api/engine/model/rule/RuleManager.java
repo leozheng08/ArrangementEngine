@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 
 /**
  * 规则执行，根据ruleUuid从缓存中取得规则实体Rule对象后运行。
+ *
  * @Author: liang.chen
  * @Date: 2019/12/16 下午7:58
  */
 @Component
-public class RuleManager implements IExecutor<String,RuleResponse> {
+public class RuleManager implements IExecutor<String, RuleResponse> {
 
     public final static Number NaN = Double.NaN;
 
@@ -23,35 +24,36 @@ public class RuleManager implements IExecutor<String,RuleResponse> {
     RuleCache ruleCache;
 
     @Override
-    public RuleResponse execute(String uuid, AbstractFraudContext context){
+    public RuleResponse execute(String uuid, AbstractFraudContext context) {
         RuleResponse ruleResponse = new RuleResponse();
 
         Rule rule = ruleCache.get(uuid);
-        if(rule == null || rule.getEval() == null){
+        if (rule == null || rule.getEval() == null) {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_NOT_FIND.getCode(), ReasonCode.RULE_NOT_FIND.getDescription(), "决策引擎执行"));
         }
 
         RuleResult ruleResult = rule.getEval().eval(context);
 
-        switch (ruleResult.getEvalResult()){
+        switch (ruleResult.getEvalResult()) {
             case True:
                 ruleResponse.setHit(true);
                 ruleResponse.setDecision(rule.getDecision());
-                ruleResponse.setScore(getWeight(rule,context));
+                ruleResponse.setScore(getWeight(rule, context));
                 break;
             case False:
                 ruleResponse.setHit(false);
+                context.removeFunctionDetail(uuid);
                 break;
             case Terminate:
                 ruleResponse.setTerminate(true);
+                context.removeFunctionDetail(uuid);
                 break;
-            case Exception:
-            case Unknown:
+            default:
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
-                break;
+                context.removeFunctionDetail(uuid);
         }
 
-        ruleResponse.setId(rule.getRuleCustomId() != null? rule.getRuleCustomId():rule.getRuleId());
+        ruleResponse.setId(rule.getRuleCustomId() != null ? rule.getRuleCustomId() : rule.getRuleId());
         ruleResponse.setName(rule.getName());
         ruleResponse.setUuid(rule.getUuid());
         ruleResponse.setParentUuid(rule.getParentUuid());
@@ -60,16 +62,16 @@ public class RuleManager implements IExecutor<String,RuleResponse> {
         return ruleResponse;
     }
 
-    private Integer getWeight(Rule rule,AbstractFraudContext context){
+    private Integer getWeight(Rule rule, AbstractFraudContext context) {
         Integer weight = 0;
-        if( rule.getWeightFunction()!=null){
+        if (rule.getWeightFunction() != null) {
             weight = (Integer) rule.getWeightFunction().eval(context);
         }
         return weight;
     }
 
     //命中后action操作
-    private void action(Rule rule,RuleResult ruleResult,AbstractFraudContext context,RuleResponse ruleResponse){
+    private void action(Rule rule, RuleResult ruleResult, AbstractFraudContext context, RuleResponse ruleResponse) {
 
     }
 }

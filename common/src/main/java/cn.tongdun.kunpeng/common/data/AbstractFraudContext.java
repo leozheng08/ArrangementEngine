@@ -1,14 +1,13 @@
 package cn.tongdun.kunpeng.common.data;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.common.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Sets;
 import lombok.Data;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -17,8 +16,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
-public abstract class AbstractFraudContext implements Serializable, Cloneable, ExecuteContext {
-
+public abstract class AbstractFraudContext implements Serializable, ExecuteContext {
 
     private static final long serialVersionUID = -3320502733559293390L;
     private static final Field[] fields = AbstractFraudContext.class.getDeclaredFields();
@@ -134,14 +132,23 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable, E
     private List<Map<String, Object>> modelOutputFields = new ArrayList<>();
 
     /**
-     * Key: indexUuid
+     * 策略指标
+     * Key: policyIndexUuid
      */
-    private transient Map<String, Double> policyIndexMap = new ConcurrentHashMap<>(20);
+    private Map<String, Double> policyIndexMap = new ConcurrentHashMap<>(20);
 
     /**
-     * Key: IndicatrixId
+     * Key: IndicatrixId，指标ID(指标平台的指标ID)
+     * Value：指标的相关信息，含值、原始值、描述、详情等
      */
-    private transient Map<String, List<Double>> platformIndexMap = new ConcurrentHashMap<>(50);
+    private Map<String, PlatformIndexData> platformIndexMap = new ConcurrentHashMap<>(50);
+    /**
+     * 规则引擎运行过程中命中的详情信息，结果只是详情的一个lamba函数，需要调用一次才能获取到真正的数据
+     * ruleUuid->ruleConditionUuid->DetailCallable.
+     * 注意：该命中详情不包含平台指标的详情,只有function运行过程中产生的详情。
+     * 没有使用guava Table的原因：线程不安全。
+     */
+    protected Map<String, Map<String, DetailCallable>> functionHitDetail = new ConcurrentHashMap<>(50);
 
 
     public void addSubReasonCode(SubReasonCode subReasonCode, SubReasonCode.ExtCode extCode) {
@@ -249,24 +256,6 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable, E
         this.systemFiels.put(key, o);
     }
 
-    public AbstractFraudContext shallowCopy() {
-        try {
-            return (AbstractFraudContext) this.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Failed to clone", e);
-        }
-    }
-
-    public AbstractFraudContext deepCopy() {
-        return SerializationUtils.clone(this);
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-
     public void appendModelOutputFields(Map<String, Object> modelOutputFields) {
         if (interfaceOutputFields != null) {
             this.modelOutputFields.add(modelOutputFields);
@@ -288,35 +277,51 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable, E
     }
 
     @Override
-    public Double getPolicyIndex(String indexUuid) {
+    public Double getPolicyIndex(String policyIndexUuid) {
         if (null == policyIndexMap) {
             return null;
         }
-        return policyIndexMap.get(indexUuid);
+        return policyIndexMap.get(policyIndexUuid);
     }
 
-    public void putPolicyIndex(String indexUuid, Double indexValue) {
-        policyIndexMap.put(indexUuid, indexValue);
+    public void putPolicyIndex(String policyIndexUuid, Double indexValue) {
+        policyIndexMap.put(policyIndexUuid, indexValue);
     }
 
     /**
-     * 获取第一个元素，兼容之前的方法 2017-08-21
-     *
-     * @param indexUuid
+     * @param platformIndexId
      * @return
      */
     @Override
-    public Double getPlatformIndex(String indexUuid) {
-        if (null == platformIndexMap || StringUtils.isBlank(indexUuid)) {
+    public Double getPlatformIndex(String platformIndexId) {
+        if (StringUtils.isBlank(platformIndexId)) {
             return null;
         }
-        List<Double> indicatrixs = platformIndexMap.get(indexUuid);
-        if (indicatrixs == null || indicatrixs.size() <= 0) {
+        PlatformIndexData platformIndexData = platformIndexMap.get(platformIndexId);
+        if (null == platformIndexData) {
             return null;
         }
-
-        return indicatrixs.get(0);
+        return platformIndexData.getValue();
     }
 
+    @Override
+    public Double getOriginPlatformIndex(String platformIndexId) {
+        if (StringUtils.isBlank(platformIndexId)) {
+            return null;
+        }
+        PlatformIndexData platformIndexData = platformIndexMap.get(platformIndexId);
+        if (null == platformIndexData) {
+            return null;
+        }
+        return platformIndexData.getOriginalValue();
+    }
 
+    /**
+     * 删除没有命中的规则的详情
+     *
+     * @param ruleUuid
+     */
+    public void removeFunctionDetail(String ruleUuid) {
+        this.functionHitDetail.remove(ruleUuid);
+    }
 }

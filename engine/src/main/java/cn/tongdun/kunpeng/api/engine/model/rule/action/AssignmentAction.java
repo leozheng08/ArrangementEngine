@@ -13,17 +13,20 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class AssignmentAction implements Action {
 
-    private String leftProperty;
+    private String left;
     private Variable right;
 
     @Override
     public void parse(ActionDesc actionDesc) {
-        //{"leftProperty":"accountLogin","leftPropertyType":"","operator":"==","rightValue":"abc","rightValueType":"input"}
+        //{"leftProperty":{"name":"idNumber","type":"context"},"op":"=","rightValue":{"type":"input","value":"333333"}}
         JSONObject json = JSONObject.parseObject(actionDesc.getParams());
-        leftProperty = json.getString("leftProperty");
+        JSONObject leftProperty = json.getJSONObject("leftProperty");
+        left=leftProperty.getString("name");
 
-        String rightValueType = json.getString("rightValueType");
-        String rightValue = json.getString("rightValue");
+        JSONObject rightValueJson = json.getJSONObject("rightValue");
+        String rightValueType = rightValueJson.getString("type");
+        String rightValue=rightValueJson.getString("value");
+
         switch (rightValueType) {
             case "input":
                 right = new Literal(rightValue);
@@ -42,7 +45,7 @@ public class AssignmentAction implements Action {
     public Void eval(ExecuteContext executeContext) {
         Object value = right.eval(executeContext);
         if (value != null) {
-            executeContext.setField(leftProperty, value);
+            executeContext.setField(left, value);
         }
         return null;
     }

@@ -1,1 +1,2 @@
 pattern/regex=cn.tongdun.kunpeng.api.engine.model.rule.template.LocalRegexRule
+common/custom=cn.fraudmetrix.module.tdrule.rule.CustomRule
