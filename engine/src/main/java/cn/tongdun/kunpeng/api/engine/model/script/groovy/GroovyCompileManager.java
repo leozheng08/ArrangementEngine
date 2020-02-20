@@ -26,7 +26,7 @@ public class GroovyCompileManager {
 
 
     @Autowired
-    private GroovyFieldCache groovyFieldCache;
+    private GroovyObjectCache groovyFieldCache;
 
 
     /**
@@ -51,28 +51,18 @@ public class GroovyCompileManager {
             return;
         }
 
-        String key = groovyFieldCache.bulidKey(partnerCode , appName , eventType);
-        GroovyField groovyField = groovyFieldCache.get(key);
+        String key = groovyFieldCache.generateKey(partnerCode , appName , eventType);
+        WrappedGroovyObject groovyField = new WrappedGroovyObject();
+        GroovyClassGenerator generator = new GroovyClassGenerator(key);
+        generator.init();
+        String methodName = replaceJavaVarNameNotSupportChar(field);
+        generator.appendMethod(methodName, methodBody);
 
-        // 为null则缓存中没有，重新编译新的类和方法
-        if (null == groovyField) {
-            groovyField = new GroovyField();
-            GroovyClassGenerator generator = new GroovyClassGenerator(key);
-            generator.init();
-            String methodName = replaceJavaVarNameNotSupportChar(field);
-            generator.appendMethod(methodName, methodBody);
-
-            GroovyObject groovyObject = generator.compileGroovySource();
-            groovyField.setGroovyObject(groovyObject);
-            groovyField.getFieldMethods().put(field, methodBody);
-            groovyFieldCache.put(key, groovyField);
-            return;
-        }
-
-        // 否则直接追加方法，然后重新编译
+        GroovyObject groovyObject = generator.compileGroovySource();
+        groovyField.setGroovyObject(groovyObject);
         groovyField.getFieldMethods().put(field, methodBody);
-        reCompileSource(key, groovyField);
-        return;
+        groovyField.setSource(generator.getSource().toString());
+        groovyFieldCache.put(key, field, groovyField);
     }
 
     /**
@@ -87,56 +77,15 @@ public class GroovyCompileManager {
      * @throws InstantiationException
      * @throws CompilationFailedException
      */
-    public void removeMethod(String partnerCode, String appName, String eventType, String field)
-            throws CompilationFailedException,
-            InstantiationException,
-            IllegalAccessException,
-            IOException {
-        String key =  groovyFieldCache.bulidKey(partnerCode , appName , eventType);
-        GroovyField groovyField = groovyFieldCache.get(key);
-
-        if (null == groovyField) {
-            return;
-        }
-
-        groovyField.getFieldMethods().remove(field);
-        reCompileSource(key, groovyField);
+    public void removeMethod(String partnerCode, String appName, String eventType, String field){
+        String key =  groovyFieldCache.generateKey(partnerCode , appName , eventType);
+        groovyFieldCache.remove(key,field);
     }
 
-
-
-    // 重新编译源码
-    private void reCompileSource(String key, GroovyField groovyField) throws CompilationFailedException,
-            InstantiationException,
-            IllegalAccessException, IOException {
-        if (null == key || null == groovyField) {
-            return;
-        }
-
-        if (groovyField.getFieldMethods().isEmpty()) {
-            remove(key);
-            return;
-        }
-
-        Map<String, String> fieldMethods = groovyField.getFieldMethods();
-        GroovyClassGenerator generator = new GroovyClassGenerator(key);
-        generator.init();
-        groovyField = new GroovyField();
-
-        for (Map.Entry<String, String> fm : fieldMethods.entrySet()) {
-            groovyField.getFieldMethods().put(fm.getKey(), fm.getValue());
-            generator.appendMethod(replaceJavaVarNameNotSupportChar(fm.getKey()), fm.getValue());
-        }
-
-        GroovyObject groovyObject = generator.compileGroovySource();
-
-        groovyField.setGroovyObject(groovyObject);
-        groovyFieldCache.put(key, groovyField);
-    }
 
 
     public void remove(String partnerCode, String appName, String eventType) {
-        String key = groovyFieldCache.bulidKey(partnerCode , appName , eventType);
+        String key = groovyFieldCache.generateKey(partnerCode , appName , eventType);
         groovyFieldCache.remove(key);
     }
 
@@ -161,12 +110,14 @@ public class GroovyCompileManager {
     public void warmAllGroovyFields() {
         Set<String> keys = groovyFieldCache.keySet();
         for (String key : keys) {
-            GroovyField field = groovyFieldCache.get(key);
-            warmGroovyField(field);
+            Map<String,WrappedGroovyObject> map = groovyFieldCache.get(key);
+            for(WrappedGroovyObject groovyField:map.values()){
+                warmGroovyField(groovyField);
+            }
         }
     }
 
-    private void warmGroovyField( GroovyField field) {
+    private void warmGroovyField( WrappedGroovyObject field) {
         try {
             AbstractFraudContext context = mockFraudContext();
             executeGroovyField(context, field);
@@ -202,7 +153,7 @@ public class GroovyCompileManager {
 
 
 
-    private boolean executeGroovyField(AbstractFraudContext context, GroovyField field) {
+    private boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject field) {
         int failedCnt = 0;
         for (String fieldName : field.getFieldMethods().keySet()) {
 

@@ -50,9 +50,12 @@ public class GroovyDynamicScriptLoadManager implements ILoad {
         int failedCount = 0;
         for (DynamicScript script : scripts) {
             try {
-                groovyCompileManager.addOrUpdate(KunpengStringUtils.valNullToAll(script.getPartnerCode()),
-                        KunpengStringUtils.valNullToAll(script.getAppName()), script.getEventType(),
-                        script.getAssignField(), script.getScriptCode());
+                groovyCompileManager.addOrUpdate(
+                        KunpengStringUtils.valNullToAll(script.getPartnerCode()),
+                        KunpengStringUtils.valNullToAll(script.getAppName()),
+                        script.getEventType(),
+                        script.getAssignField(),
+                        script.getScriptCode());
             } catch (Exception e) {
                 failedCount++;
                 logger.warn("Groovy编译失败,partnerCode:{},appName:{},eventType:{},assignField:{},script:{},message:{}",
