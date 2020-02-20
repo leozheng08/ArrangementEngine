@@ -2,8 +2,8 @@ package cn.tongdun.kunpeng.api.engine;
 
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
-import cn.tongdun.kunpeng.common.data.PolicyResponse;
-import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.client.data.PolicyResponse;
+import cn.tongdun.kunpeng.client.data.SubPolicyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

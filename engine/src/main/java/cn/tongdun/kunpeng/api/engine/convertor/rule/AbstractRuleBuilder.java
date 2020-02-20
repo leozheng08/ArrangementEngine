@@ -17,7 +17,7 @@ import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
 import cn.tongdun.kunpeng.api.engine.util.TdRuleOperatorMapUtils;
-import cn.tongdun.kunpeng.common.data.PolicyMode;
+import cn.tongdun.kunpeng.client.data.PolicyMode;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;

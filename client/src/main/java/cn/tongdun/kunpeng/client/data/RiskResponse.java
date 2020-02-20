@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.common.data;
+package cn.tongdun.kunpeng.client.data;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;

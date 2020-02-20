@@ -36,6 +36,21 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable, E
         }
     }
 
+
+    private String accountLogin;            //VelocityHelper NameList function
+
+    private String accountMobile;           //AddressMatch function
+    private String idNumber;                //AddressMatch function
+
+    public String getIpAddress() {
+        Object result = get("ipAddress");
+        if (result == null) {
+            result = get("ipAddr");
+        }
+        return (String) result;
+    }      //Proxy function
+
+
     private IBizScenario bizScenario;
 
     private String policyUuid;
@@ -250,18 +265,6 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable, E
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
-
-    private String accountMobile;           //address Match
-    private String idNumber;                //address Match
-
-    public String getIpAddress() {
-        Object result = get("ipAddress");
-        if (result == null) {
-            result = get("ipAddr");
-        }
-        return (String) result;
-    }      //Proxy function
 
 
     public void appendModelOutputFields(Map<String, Object> modelOutputFields) {

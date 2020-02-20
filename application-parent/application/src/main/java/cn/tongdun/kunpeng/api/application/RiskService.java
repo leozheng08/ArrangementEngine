@@ -1,15 +1,15 @@
 package cn.tongdun.kunpeng.api.application;
 
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
-import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
+import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.infrastructure.config.ConfigManager;
-import cn.tongdun.kunpeng.common.data.BizScenario;
-import cn.tongdun.kunpeng.common.data.RiskResponse;
+import cn.tongdun.kunpeng.client.api.IRiskService;
+import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.tdframework.common.dto.Response;
+import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,17 +21,17 @@ import java.util.Map;
  * @Date: 2019/12/18 下午5:16
  */
 @Component
-public class RiskService {
+public class RiskService implements IRiskService {
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
     @Autowired
     PipelineExecutor pipelineExecutor;
 
-    @Resource(name="configManager")
+    @Resource(name = "configManager")
     ConfigManager configManager;
 
-
-    public RiskResponse riskService(Map<String,String> request) {
+    @Override
+    public RiskResponse riskService(Map<String, String> request) {
         FraudContext context = new FraudContext();
         context.setRequestParamsMap(request);
 
@@ -44,12 +44,12 @@ public class RiskService {
 
         RiskResponse riskResponse = new RiskResponse();
         Response result = pipelineExecutor.execute(Risk.NAME, IRiskStep.class,
-                step -> step.invoke(context,riskResponse,request), (isSuccess, e)->
-            {
+                step -> step.invoke(context, riskResponse, request), (isSuccess, e) ->
+                {
 
-                //如果调用不成功时退出，不再执行后继步骤
-                return isSuccess == null || !isSuccess;
-            }
+                    //如果调用不成功时退出，不再执行后继步骤
+                    return isSuccess == null || !isSuccess;
+                }
         );
 
         return riskResponse;
