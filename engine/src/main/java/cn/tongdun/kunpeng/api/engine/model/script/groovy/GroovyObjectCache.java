@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class GroovyObjectCache {
 
-    //scope(适用范围) -> fieldName(字段名) -> GroovyField(编译后groovy对象)
+    //scope(适用范围) -> fieldName(字段名) -> WrappedGroovyObject(包含编译后groovy对象)
     //scope(适用范围)包含：
     //   合作方指定事件类型: context.getPartnerCode() + context.getAppName() + context.getEventType()
     //   合作方全部事件类型: context.getPartnerCode() + context.getAppName() + "All";
