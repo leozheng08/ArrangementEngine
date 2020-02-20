@@ -244,6 +244,15 @@
             <version>3.2.2</version>
         </dependency>
 
+
+        <!-- groovy -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
+
+
+
         <!-- ================================================= -->
         <!--              测试相关依赖                           -->
         <!-- ================================================= -->

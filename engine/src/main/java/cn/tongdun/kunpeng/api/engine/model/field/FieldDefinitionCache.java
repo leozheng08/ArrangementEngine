@@ -121,14 +121,14 @@ public class FieldDefinitionCache {
 
 
 
-    public static String getExtendFieldKey(String partnerCode, String appName, String eventType) {
+    private String getExtendFieldKey(String partnerCode, String appName, String eventType) {
         if (StringUtils.isNotBlank(partnerCode) && StringUtils.isNotBlank(appName) && StringUtils.isNotBlank(eventType)) {
             return StringUtils.join(partnerCode , "." , appName , "." , eventType);
         }
         return null;
     }
 
-    public static String getSystemFieldKey(String eventType, String appType) {
+    private String getSystemFieldKey(String eventType, String appType) {
         if (StringUtils.isNotBlank(eventType) && StringUtils.isNotBlank(appType)) {
             return StringUtils.join(eventType , "." , appType);
         }

@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.common.util;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by caipeichao on 2015/1/15.
@@ -110,6 +111,14 @@ public class KunpengStringUtils {
 
         }
         return sb.toString();
+    }
+
+    // 如果字串的值为空 将值转为all
+    public static String valNullToAll(String s) {
+        if (StringUtils.isBlank(s)) {
+            return "All";
+        }
+        return s;
     }
 
 }
