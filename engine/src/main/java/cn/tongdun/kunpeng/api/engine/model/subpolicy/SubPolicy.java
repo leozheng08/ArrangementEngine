@@ -1,9 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.subpolicy;
 
-import cn.tongdun.ddd.common.domain.Entity;
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
+import cn.tongdun.kunpeng.client.data.PolicyMode;
 import cn.tongdun.kunpeng.common.data.DecisionResultType;
-import cn.tongdun.kunpeng.common.data.PolicyMode;
 import lombok.Data;
 
 import java.util.*;

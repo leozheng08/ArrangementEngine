@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
 import cn.tongdun.kunpeng.api.application.RiskService;
-import cn.tongdun.kunpeng.common.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestHeader;

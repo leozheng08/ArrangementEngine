@@ -8,8 +8,8 @@ import cn.tongdun.kunpeng.api.engine.model.field.FieldType;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.data.RiskResponse;
 import cn.tongdun.kunpeng.common.util.DateUtil;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.management.ManagementFactory;
 import java.util.*;
 
 /**

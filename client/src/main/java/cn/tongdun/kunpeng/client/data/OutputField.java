@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.common.data;
+package cn.tongdun.kunpeng.client.data;
 
 import java.io.Serializable;
 

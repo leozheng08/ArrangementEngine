@@ -5,7 +5,7 @@
  * use it only in accordance with the terms of the license agreement you entered
  * into with FraudMetrix.cn.
  */
-package cn.tongdun.kunpeng.common.data;
+package cn.tongdun.kunpeng.client.data;
 
 import java.io.Serializable;
 
