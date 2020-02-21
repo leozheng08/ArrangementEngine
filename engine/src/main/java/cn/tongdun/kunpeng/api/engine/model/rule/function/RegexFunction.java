@@ -24,9 +24,9 @@ import java.util.regex.Pattern;
  * @Author: liuq
  * @Date: 2019/12/5 8:57 PM
  */
-public class LocalRegexFunction extends AbstractFunction {
+public class RegexFunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(LocalRegexFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegexFunction.class);
     private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() + 1;
     private static final int QUEUE_SIZE = 10_000;
 
