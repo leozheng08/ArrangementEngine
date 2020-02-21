@@ -17,6 +17,7 @@ public class TdRuleOperatorMapUtils {
         display2Engine.put(">","gt");
         display2Engine.put(">=","gte");
         display2Engine.put("==","equals");
+        display2Engine.put("=","equals");
         display2Engine.put("!=","notEquals");
         display2Engine.put("<","lt");
         display2Engine.put("<=","lte");
