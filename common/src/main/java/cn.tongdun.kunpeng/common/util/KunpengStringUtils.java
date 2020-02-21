@@ -160,4 +160,15 @@ public class KunpengStringUtils {
             return false;
         }
     }
+
+    /**
+     * 替换掉java变量名不支持的字符(允许的是: 下划线或者字母开头,后边允许加数字)<br>
+     * 并加 m_ 开头
+     *
+     * @param fieldName
+     * @return
+     */
+    public static String replaceJavaVarNameNotSupportChar(String fieldName) {
+        return ("m_" + fieldName).replaceAll("[^a-zA-Z0-9_]", "");
+    }
 }
