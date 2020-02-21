@@ -34,8 +34,6 @@ public class AdminApplicationDO extends CommonDO {
     private String            productCode;                            // 产品标识
     private String            productTag;                             // 产品标签
 
-    private List<EventTypeDO> eventTypeList    = new ArrayList<>();
-
     public AdminApplicationDO(){
         super();
     }

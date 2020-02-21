@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminDictionaryDO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.SelectDO;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.forseti.AdminDictionaryDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminDictionaryDOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
