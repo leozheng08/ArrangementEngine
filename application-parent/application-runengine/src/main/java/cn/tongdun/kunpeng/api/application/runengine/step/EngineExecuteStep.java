@@ -6,7 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.DecisionTool;
 import cn.tongdun.kunpeng.api.engine.DecisionToolFactory;
-import cn.tongdun.kunpeng.client.data.PolicyResponse;
+import cn.tongdun.kunpeng.common.data.PolicyResponse;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.Step;

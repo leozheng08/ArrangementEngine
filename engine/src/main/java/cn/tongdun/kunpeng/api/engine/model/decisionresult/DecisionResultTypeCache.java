@@ -20,9 +20,9 @@ public class DecisionResultTypeCache extends AbstractLocalCache<String,DecisionR
     //决策结果的类型，如Accept、Review、Reject.当前先固定三种，后继如果有决策结果定义表，再从数据库加载
     //code -> DecisionResultType
     private Map<String,DecisionResultType> decisionResultMap = new LinkedHashMap<String,DecisionResultType>(){{
-        put("Accept",new DecisionResultType("Accept","通过",1));
-        put("Review",new DecisionResultType("Review","人工审核",2));
-        put("Reject",new DecisionResultType("Reject","拒绝",3));
+        put("Accept",new DecisionResultType("Accept","通过",1,false));
+        put("Review",new DecisionResultType("Review","人工审核",2,true));
+        put("Reject",new DecisionResultType("Reject","拒绝",3,true));
     }};
 
 

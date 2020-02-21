@@ -1,5 +1,7 @@
-package cn.tongdun.kunpeng.client.data;
+package cn.tongdun.kunpeng.common.data;
 
+import cn.tongdun.kunpeng.client.data.HitRule;
+import cn.tongdun.kunpeng.client.data.PolicyMode;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -19,7 +21,13 @@ public class SubPolicyResponse extends Response{
     private String riskType;
     private PolicyMode policyMode;
 
+    private List<RuleResponse> ruleResponses = new ArrayList<>();
+
     private List<HitRule> hitRules = new ArrayList<>();
+
+    public void addRuleResponse(RuleResponse ruleResponse){
+        ruleResponses.add(ruleResponse);
+    }
 
     public void addHitRule(HitRule hitRule){
         hitRules.add(hitRule);

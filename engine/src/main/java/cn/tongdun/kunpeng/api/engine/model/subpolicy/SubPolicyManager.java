@@ -8,12 +8,11 @@ import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
 import cn.tongdun.kunpeng.client.data.HitRule;
-import cn.tongdun.kunpeng.client.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +178,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
             //执行此规则
             RuleResponse ruleResponse = ruleManager.execute(ruleUuid, context);
+            subPolicyResponse.addRuleResponse(ruleResponse);
 
             //命中中断规则，则中断退出，不再运行后继规则
             if (ruleResponse.isTerminate()) {

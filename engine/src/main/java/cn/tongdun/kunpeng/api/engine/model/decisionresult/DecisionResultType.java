@@ -15,6 +15,8 @@ public class DecisionResultType implements Comparable<DecisionResultType>{
     //顺序，Accept、Review、Reject 顺序为1、2、3, 序号越大，为最坏结果。
     private Integer order = 0;
 
+    private boolean risky;
+
     public DecisionResultType(){
 
     }
@@ -25,10 +27,11 @@ public class DecisionResultType implements Comparable<DecisionResultType>{
     }
 
 
-    public DecisionResultType(String code, String name,Integer order){
+    public DecisionResultType(String code, String name,Integer order,boolean risky){
         this.code = code;
         this.name = name;
         this.order = order;
+        this.risky = risky;
     }
 
     @Override

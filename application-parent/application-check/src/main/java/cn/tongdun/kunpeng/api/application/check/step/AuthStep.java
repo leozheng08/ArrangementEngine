@@ -31,6 +31,7 @@ public class AuthStep implements IRiskStep {
     @Autowired
     private PolicyCache policyCache;
 
+    @Autowired
     private ConfigManager configManager;
 
     @Override

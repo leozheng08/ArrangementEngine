@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.common.data;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
-import cn.tongdun.kunpeng.client.data.PolicyResponse;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.common.extension.IBizScenario;

@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.client.data;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**

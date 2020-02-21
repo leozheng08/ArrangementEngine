@@ -7,8 +7,8 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
-import cn.tongdun.kunpeng.client.data.PolicyResponse;
-import cn.tongdun.kunpeng.client.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.common.data.PolicyResponse;
+import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
@@ -96,14 +96,14 @@ public class ParallelEngine extends DecisionTool {
     @Override
     public PolicyResponse execute(AbstractDecisionMode decisionMode, AbstractFraudContext context) {
         long start = System.currentTimeMillis();
-        PolicyResponse rolicyResponse = new PolicyResponse();
+        PolicyResponse policyResponse = new PolicyResponse();
 
         ParallelSubPolicy parallelSubPolicy = (ParallelSubPolicy) decisionMode;
         String policyUuid = parallelSubPolicy.getPolicyUuid();
         Policy policy = policyCache.get(policyUuid);
 
-        rolicyResponse.setPolicyUuid(policy.getUuid());
-        rolicyResponse.setPolicyName(policy.getName());
+        policyResponse.setPolicyUuid(policy.getUuid());
+        policyResponse.setPolicyName(policy.getName());
 
 
         //取得此策略配置的子策略，子策略并行执行。
@@ -131,7 +131,7 @@ public class ParallelEngine extends DecisionTool {
 
         if (null == futures || futures.isEmpty()) {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
-            return rolicyResponse;
+            return policyResponse;
         }
         List<SubPolicyResponse> subPolicyResponseList = new ArrayList<>(futures.size());
         for (Future<SubPolicyResponse> future : futures) {
@@ -151,23 +151,25 @@ public class ParallelEngine extends DecisionTool {
         // 超时的任务，结果不会添加到subPolicyResponseList中
         if (subPolicyResponseList.size() < futures.size()) {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_TIMEOUT.getCode(), ReasonCode.RULE_ENGINE_TIMEOUT.getDescription(), "决策引擎执行"));
-            rolicyResponse.setCostTime(System.currentTimeMillis() - start);
-            return rolicyResponse;
+            policyResponse.setCostTime(System.currentTimeMillis() - start);
+            return policyResponse;
         }
 
-        // TODO:设置风险类型
-        //rolicyResponse.setRiskType();
-
-
-        rolicyResponse.setSuccess(true);
-        rolicyResponse.setSubPolicyList(subPolicyResponseList);
+        policyResponse.setSuccess(true);
+        policyResponse.setSubPolicyResponses(subPolicyResponseList);
 
         //取最坏策略结果
         SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponseList);
-        rolicyResponse.setDecision(finalSubPolicyResponse.getDecision());
-        rolicyResponse.setScore(finalSubPolicyResponse.getScore());
+        policyResponse.setFinalSubPolicyResponse(finalSubPolicyResponse);
 
-        rolicyResponse.setCostTime(System.currentTimeMillis() - start);
-        return rolicyResponse;
+        policyResponse.setDecision(finalSubPolicyResponse.getDecision());
+        policyResponse.setScore(finalSubPolicyResponse.getScore());
+        policyResponse.setRiskType(finalSubPolicyResponse.getRiskType());
+        policyResponse.setCostTime(System.currentTimeMillis() - start);
+        return policyResponse;
     }
+
+
+
+
 }
