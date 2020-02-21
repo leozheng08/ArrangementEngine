@@ -14,11 +14,11 @@ public class LoadPipeline {
     public final static String NAME = "load";
 
     //加载字段、字典表等基本信息到内存
-    @Phase(parallel = true, order = 100)
+    @Phase(parallel = true, order = 100, poolSize = 4, queueSize = 10,timeOut = 0)
     public final static String LOAD_COMM = "loadComm";
 
     //合作方信息到内存
-    @Phase(parallel = true, order = 200)
+    @Phase(parallel = true, order = 200, poolSize = 4, queueSize = 10,timeOut = 0)
     public final static String LOAD_PARTNER = "loadPartner";
 
     //加载策略集到内存
@@ -26,7 +26,7 @@ public class LoadPipeline {
     public final static String LOAD_POLICY = "loadPolicy";
 
     //预热处理
-    @Phase(parallel = true, order = 400)
+    @Phase(parallel = true, order = 400, poolSize = 4, queueSize = 10,timeOut = 0)
     public final static String WARN = "warn";
 
     //打开OK页面

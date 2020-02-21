@@ -119,8 +119,8 @@ public class RuleDTO extends CommonDTO {
     private String mode;                                    //WorstMatch,Weighted
     private String riskDecision;                            // 风险决策结果
 
-    private double baseWeight = 0;                              // 风险权重基线
-    private double weightRatio = 0;                             // 风险权重比例
+    private double baseWeight = 0;                          // 风险权重基线
+    private double weightRatio = 0;                         // 风险权重比例
     private String weightIndex;                             // 风险权重指标　
     private String indexType;                               // 指标类型    旧的为空,新的GAEA_INDICATRIX　
     private Double downLimitScore;                          // 权重计算分数右值下限

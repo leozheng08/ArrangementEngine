@@ -4,9 +4,11 @@ import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultThreshold;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
-import cn.tongdun.kunpeng.common.data.DecisionResultType;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: liang.chen
@@ -26,7 +30,10 @@ import java.util.List;
 public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
 
     @Autowired
-    DefaultConvertorFactory convertorFactory;
+    private DefaultConvertorFactory convertorFactory;
+
+    @Autowired
+    private DecisionResultTypeCache decisionResultTypeCache;
 
     @PostConstruct
     public void init(){
@@ -43,12 +50,8 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
 
         //策略模式,如首次匹配、最坏匹配、权重模式
         PolicyMode policyMode = PolicyMode.Weighted;
-        try{
-            policyMode = PolicyMode.valueOf(t.getMode());
-        }catch (Exception e){
-        }
+        policyMode = PolicyMode.valueOf(t.getMode());
         subPolicy.setPolicyMode(policyMode);
-
 
         //决策结果，如Accept、Review、Reject
         addDecisionResultType(subPolicy,t);
@@ -68,8 +71,6 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
 
     //决策结果，如Accept、Review、Reject, 但不限这三个结果，以后可能自定义;
     private void addDecisionResultType(SubPolicy subPolicy,SubPolicyDTO t){
-
-
         /**
          * 扩展字段，json结构
          *
@@ -99,43 +100,28 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
             return;
         }
 
-        try {
-            JSONObject json = JSONObject.parseObject(attribute);
-            JSONArray riskThresholdArray = json.getJSONArray("riskThreshold");
+        JSONObject json = JSONObject.parseObject(attribute);
+        JSONArray riskThresholdArray = json.getJSONArray("riskThreshold");
 
-            if(riskThresholdArray == null){
-                return;
-            }
-
-            for(Object riskThresholdTmp:riskThresholdArray){
-                JSONObject riskThreshold = (JSONObject)riskThresholdTmp;
-                int start = riskThreshold.getInteger("start");
-                int end = riskThreshold.getInteger("end");
-                String riskDecision = riskThreshold.getString("riskDecision");
-
-                DecisionResultType decisionResultType = new DecisionResultType(riskDecision,riskDecision);
-                decisionResultType.setStartThreshold(start);
-                decisionResultType.setEndThreshold(end);
-                subPolicy.addDecisionResultType(riskDecision,decisionResultType);
-            }
-
-        } catch (Exception e){
-
+        if(riskThresholdArray == null){
+            return;
         }
 
-//        DecisionResultType accept = new DecisionResultType("Accept","通过");
-//        accept.setStartThreshold(t.getBeginThreshold() != null? t.getBeginThreshold(): Integer.MIN_VALUE);
-//        accept.setEndThreshold(t.getReviewThreshold());
-//        subPolicy.addDecisionResultType(accept.getCode(),accept);
-//
-//        DecisionResultType review = new DecisionResultType("Review","Review");
-//        review.setStartThreshold(t.getReviewThreshold());
-//        review.setEndThreshold(t.getDenyThreshold());
-//        subPolicy.addDecisionResultType(accept.getCode(),accept);
-//
-//        DecisionResultType reject = new DecisionResultType("Reject","拒绝");
-//        reject.setStartThreshold(t.getDenyThreshold());
-//        reject.setEndThreshold(t.getEndThreshold() != null? t.getEndThreshold():Integer.MAX_VALUE);
-//        subPolicy.addDecisionResultType(accept.getCode(),accept);
+        List<DecisionResultThreshold> riskThresholds = new ArrayList<>();
+        for(Object riskThresholdTmp:riskThresholdArray){
+            JSONObject riskThreshold = (JSONObject)riskThresholdTmp;
+            int start = riskThreshold.getInteger("start");
+            int end = riskThreshold.getInteger("end");
+            String riskDecision = riskThreshold.getString("riskDecision");
+
+            DecisionResultType decisionResultType = decisionResultTypeCache.get(riskDecision);
+
+            DecisionResultThreshold decisionResultThreshold = new DecisionResultThreshold();
+            decisionResultThreshold.setDecisionResultType(decisionResultType);
+            decisionResultThreshold.setStartThreshold(start);
+            decisionResultThreshold.setEndThreshold(end);
+            riskThresholds.add(decisionResultThreshold);
+        }
+        subPolicy.setRiskThresholds(riskThresholds);
     }
 }

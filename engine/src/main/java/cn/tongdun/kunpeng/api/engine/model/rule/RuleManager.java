@@ -43,7 +43,7 @@ public class RuleManager implements IExecutor<String,RuleResponse> {
                 ruleResponse.setHit(false);
                 break;
             case Terminate:
-                ruleResponse.setTerminate(true);
+                ruleResponse.setTerminate(true);//subPolicy在执行时，如果某条规则返回Terminate=true，则不再执行后继规则。
                 break;
             case Exception:
             case Unknown:
@@ -66,10 +66,5 @@ public class RuleManager implements IExecutor<String,RuleResponse> {
             weight = (Integer) rule.getWeightFunction().eval(context);
         }
         return weight;
-    }
-
-    //命中后action操作
-    private void action(Rule rule,RuleResult ruleResult,AbstractFraudContext context,RuleResponse ruleResponse){
-
     }
 }

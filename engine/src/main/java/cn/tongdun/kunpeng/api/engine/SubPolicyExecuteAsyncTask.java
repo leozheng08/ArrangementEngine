@@ -8,7 +8,7 @@ import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import java.util.concurrent.Callable;
 
 /**
- * 子策略异常执行任务
+ * 子策略异步执行任务
  * @Author: liang.chen
  * @Date: 2019/12/17 下午3:53
  */

@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.common.data;
+package cn.tongdun.kunpeng.api.engine.model.decisionresult;
 
 import lombok.Data;
 
@@ -12,12 +12,8 @@ public class DecisionResultType implements Comparable<DecisionResultType>{
     private String code;
     private String name;
 
-    //顺序，便Pass、Review、Reject 顺序为1、2、3, 序号越大，为最坏结果。
+    //顺序，Accept、Review、Reject 顺序为1、2、3, 序号越大，为最坏结果。
     private Integer order = 0;
-
-    //例：startThreshold <= 分数 < endThreshold 则决策结果为review
-    private int startThreshold;
-    private int endThreshold;
 
     public DecisionResultType(){
 
@@ -26,6 +22,13 @@ public class DecisionResultType implements Comparable<DecisionResultType>{
     public DecisionResultType(String code, String name){
         this.code = code;
         this.name = name;
+    }
+
+
+    public DecisionResultType(String code, String name,Integer order){
+        this.code = code;
+        this.name = name;
+        this.order = order;
     }
 
     @Override

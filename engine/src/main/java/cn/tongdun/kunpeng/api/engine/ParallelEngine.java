@@ -77,12 +77,6 @@ public class ParallelEngine extends DecisionTool {
         }
     }
 
-
-    private boolean isAsyncExecute(AbstractFraudContext context) {
-        Map<String, String> request = context.getRequestParamsMap();
-        return "true".equals(request.get("async"));
-    }
-
     /**
      * 根据事件类型确认规则引擎执行超时时间，单位ms 默认800ms
      *
@@ -123,7 +117,7 @@ public class ParallelEngine extends DecisionTool {
         //各子策略执行结果
         List<Future<SubPolicyResponse>> futures = null;
         try {
-            if (isAsyncExecute(context)) {
+            if (context.isAsync()) {
                 futures = executeThreadPool.invokeAll(tasks);
             } else {
                 long timeout = resolveExecuteTimeout(context);

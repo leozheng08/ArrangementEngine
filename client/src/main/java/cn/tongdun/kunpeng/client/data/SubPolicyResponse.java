@@ -24,4 +24,5 @@ public class SubPolicyResponse extends Response{
     public void addHitRule(HitRule hitRule){
         hitRules.add(hitRule);
     }
+
 }

@@ -38,8 +38,11 @@ public class PartnerLoadByPartnerManager implements ILoadByPartner {
         logger.info("PartnerLoadByPartnerManager start");
 
         Partner partner = partnerRepository.queryByPartnerCode(partnerCode);
+        if(partner == null){
+            return false;
+        }
+
         partnerCache.put(partner.getPartnerCode(),partner);
-        
         logger.info("PartnerLoadByPartnerManager success");
         return true;
     }

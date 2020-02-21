@@ -15,7 +15,7 @@ public class HitRule implements Serializable {
     private String               id;                                     // 规则编号
     private String               uuid;
     private String               name;                                   // 规则名称
-    private String               decision;                               // 该条规则决策结果
+    private String               decision;                               // 该条规则决策结果，如Accept、Review、Reject
     private Integer              score= 0;                               // 规则分数
     private String               parentUuid;
 

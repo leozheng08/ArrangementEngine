@@ -1,8 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.model.subpolicy;
 
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultThreshold;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
-import cn.tongdun.kunpeng.common.data.DecisionResultType;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import lombok.Data;
 
 import java.util.*;
@@ -18,24 +19,9 @@ public class SubPolicy extends VersionedEntity {
     private PolicyMode policyMode;
     private String riskType;
 
-    private int denyThreshold;
-    private int reviewThreshold;
-
     private List<String> ruleUuidList;
 
-    private DecisionResultType defaultDecisionResultType;
-    private Map<String,DecisionResultType> decisionResultMap = new LinkedHashMap<>();
-
-    public void addDecisionResultType(String code,DecisionResultType type){
-        if(defaultDecisionResultType == null){
-            defaultDecisionResultType = type;
-        }
-        decisionResultMap.put(code,type);
-    }
-
-    public DecisionResultType getDecisionResultType(String code){
-        return decisionResultMap.get(code);
-    }
-
+    //决策结果的类型，如Accept、Review、Reject 对应的阈值
+    private List<DecisionResultThreshold> riskThresholds;
 
 }

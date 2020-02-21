@@ -10,6 +10,7 @@ import lombok.Data;
 public class Response {
     private boolean success;
     private Integer score = 0;
+    //决策结果,如
     private String decision;
 
     private long costTime;

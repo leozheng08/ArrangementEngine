@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.common.data;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.tongdun.kunpeng.client.data.PolicyResponse;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.common.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
@@ -142,6 +143,8 @@ public abstract class AbstractFraudContext implements Serializable, Cloneable, E
      * Key: IndicatrixId
      */
     private transient Map<String, List<Double>> platformIndexMap = new ConcurrentHashMap<>(50);
+
+    private transient PolicyResponse policyResponse;
 
 
     public void addSubReasonCode(SubReasonCode subReasonCode, SubReasonCode.ExtCode extCode) {

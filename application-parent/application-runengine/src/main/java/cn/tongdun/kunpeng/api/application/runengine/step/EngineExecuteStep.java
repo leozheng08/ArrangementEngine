@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @Component
 @Step(pipeline = Risk.NAME,phase = Risk.RUN_ENGINE)
-public class EngineExecute implements IRiskStep {
+public class EngineExecuteStep implements IRiskStep {
 
 
 
@@ -39,6 +39,7 @@ public class EngineExecute implements IRiskStep {
         AbstractDecisionMode decisionMode = cecisionModeCache.get(context.getPolicyUuid());
         DecisionTool decisionTool = decisionToolFactory.getDecisionTool(decisionMode);
         PolicyResponse policyResponse = decisionTool.execute(decisionMode,context);
+        context.setPolicyResponse(policyResponse);
         response.setSuccess(true);
         return true;
     }

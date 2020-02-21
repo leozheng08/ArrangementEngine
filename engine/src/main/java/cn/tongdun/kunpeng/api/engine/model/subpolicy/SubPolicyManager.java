@@ -1,6 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.model.subpolicy;
 
 import cn.tongdun.kunpeng.api.engine.IExecutor;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultThreshold;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
@@ -16,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static cn.tongdun.kunpeng.client.data.PolicyMode.*;
-
 /**
  * 子策略执行，根据subPolicyUuid从缓存中取得子策略实体SubPolicy对象后运行。
  *
@@ -30,6 +31,8 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
     @Autowired
     SubPolicyCache subPolicyCache;
 
+    @Autowired
+    DecisionResultTypeCache decisionResultTypeCache;
 
     @Autowired
     RuleCache ruleCache;
@@ -109,9 +112,10 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
         //取得最坏决策结果
         List<HitRule> hitRuleList = subPolicyResponse.getHitRules();
-        DecisionResultType decisionResult = subPolicy.getDefaultDecisionResultType();
+        DecisionResultType decisionResult = decisionResultTypeCache.getDefaultType();
         for (HitRule hitRule : hitRuleList) {
-            DecisionResultType newdecisionResult = subPolicy.getDecisionResultType(hitRule.getDecision());
+            //根据DecisionResultType的order顺序，Pass、Review、Reject顺序为1、2、3, 序号越大，为最坏结果
+            DecisionResultType newdecisionResult = decisionResultTypeCache.get(hitRule.getDecision());
             if (newdecisionResult != null) {
                 if (newdecisionResult.compareTo(decisionResult) > 0) {
                     decisionResult = newdecisionResult;
@@ -141,20 +145,27 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             score += hitRule.getScore();
         }
 
-        Collection<DecisionResultType> decisionResultTypeList = subPolicy.getDecisionResultMap().values();
-        DecisionResultType decisionResult = subPolicy.getDefaultDecisionResultType();
-        for (DecisionResultType newDecisionResult : decisionResultTypeList) {
-            if (score >= newDecisionResult.getStartThreshold() && score < newDecisionResult.getEndThreshold()) {
-                decisionResult = newDecisionResult;
+        List<DecisionResultThreshold>  decisionResultTypeList = subPolicy.getRiskThresholds();
+        DecisionResultType decisionResult = decisionResultTypeCache.getDefaultType();
+        for (DecisionResultThreshold threshold : decisionResultTypeList) {
+            if (score >= threshold.getStartThreshold() && score < threshold.getEndThreshold()) {
+                decisionResult = threshold.getDecisionResultType();
             }
         }
+
         subPolicyResponse.setDecision(decisionResult.getCode());
         subPolicyResponse.setScore(score);
     }
 
-
-    //执行流程控制
-    private void executePorcess(SubPolicy subPolicy, AbstractFraudContext context, SubPolicyResponse subPolicyResponse, Function<RuleResponse, Boolean> func) {
+    /**
+     * 执行流程控制
+     * @param subPolicy
+     * @param context
+     * @param subPolicyResponse
+     * @param breakWhenHitfunc 在规则命中情况下，如果此函数返回true则退出。用于首次匹配模式下，命中第一个即退出。
+     */
+    private void executePorcess(SubPolicy subPolicy, AbstractFraudContext context,
+                                SubPolicyResponse subPolicyResponse, Function<RuleResponse, Boolean> breakWhenHitfunc) {
         Map<String, Boolean> hitMap = new HashMap<>();
         for (String ruleUuid : subPolicy.getRuleUuidList()) {
             //子规则在上级规则命中情况下才能运行，
@@ -182,11 +193,12 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
                 hitRule.setUuid(ruleResponse.getUuid());
                 hitRule.setParentUuid(ruleResponse.getParentUuid());
                 hitRule.setScore(ruleResponse.getScore());
+                //决策结果,如Accept、Review、Reject
                 hitRule.setDecision(ruleResponse.getDecision());
                 subPolicyResponse.addHitRule(hitRule);
 
-                //如果返回true则退出
-                if (func.apply(ruleResponse)) {
+                //如果返回true则退出。用于首次匹配模式下，命中第一个即退出。
+                if (breakWhenHitfunc.apply(ruleResponse)) {
                     break;
                 }
             }

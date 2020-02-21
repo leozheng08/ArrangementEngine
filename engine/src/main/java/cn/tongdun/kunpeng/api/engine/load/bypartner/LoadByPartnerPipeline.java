@@ -14,11 +14,11 @@ public class LoadByPartnerPipeline {
     public final static String NAME = "loadByPartner";
 
     //合作方信息到内存
-    @Phase(parallel = true, order = 200)
+    @Phase(parallel = true, order = 200, poolSize = 2, queueSize = 10,timeOut = 0)
     public final static String LOAD_PARTNER = "loadPartner";
 
     //加载策略集到内存
-    @Phase(parallel = true, order = 300)
+    @Phase(parallel = true, order = 300, poolSize = 2, queueSize = 10,timeOut = 0)
     public final static String LOAD_POLICY = "loadPolicy";
 
 

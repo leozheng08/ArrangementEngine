@@ -35,11 +35,12 @@ public class PartnerRepository implements IPartnerRepository{
     @Override
     public Partner queryByPartnerCode(String partnerCode){
         AdminPartnerDO adminPartnerDO = adminPartnerDOMapper.selectByPartnerCode(partnerCode);
-
-        Partner result = null;
-        if(adminPartnerDO != null){
-            BeanUtils.copyProperties(adminPartnerDO,result);
+        if(adminPartnerDO == null){
+            return null;
         }
+
+        Partner result = new Partner();
+        BeanUtils.copyProperties(adminPartnerDO,result);
         return result;
     }
 }

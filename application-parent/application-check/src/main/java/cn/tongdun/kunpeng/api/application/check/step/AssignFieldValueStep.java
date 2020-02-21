@@ -233,8 +233,12 @@ public class AssignFieldValueStep implements IRiskStep {
      * @param request
      */
     private void writeSyncInfoToContext(AbstractFraudContext context, Map<String, String> request){
-        if(request.containsKey("async")){
-            context.setAsync(Boolean.parseBoolean(request.get("async")));
+        try {
+            if (request.containsKey("async")) {
+                context.setAsync(Boolean.parseBoolean(request.get("async")));
+            }
+        } catch (Exception e){
+            logger.warn("writeSyncInfoToContext error",e);
         }
     }
 
