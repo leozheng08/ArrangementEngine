@@ -6,7 +6,9 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
+import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,65 +43,73 @@ public class CustomListFunction extends AbstractFunction {
         if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
             throw new ParseException("CustomList function parse error,no params!");
         }
-
         functionDesc.getParamList().forEach(param -> {
             if (StringUtils.equals("calcField", param.getName())) {
                 calcField = param.getValue();
-            }
-           else if (StringUtils.equals("definitionList", param.getName())) {
+            } else if (StringUtils.equals("definitionList", param.getName())) {
                 definitionList = param.getValue();
-            }
-           else if (StringUtils.equals("matchMode", param.getName())) {
+            } else if (StringUtils.equals("matchMode", param.getName())) {
                 matchMode = param.getValue();
             }
         });
-
-        customListValueCache = (CustomListValueCache) SpringContextHolder.getBean("customListValueCache");
+        customListValueCache = SpringContextHolder.getBean("customListValueCache", CustomListValueCache.class);
     }
-
-
 
     @Override
     public FunctionResult run(ExecuteContext context) {
-
-            List<String> dimValueList = VelocityHelper.getDimensionValues((BaseDataContext) context, calcField);
-            if (CollectionUtils.isNotEmpty(dimValueList)) {
-                for (String dim : dimValueList) {
-                    List<String> dims = Lists.newArrayList(dim.split(","));
-                    Set<String> matchList = new HashSet<>();
-                    MatchModeEnum matchModeEnum = MatchModeEnum.valueOf(matchMode);
-                    if (MatchModeEnum.EQUALS.equals(matchModeEnum) || MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
-                        for (String dimValue : dims) {
-                            processOneDimValue(definitionList, dimValue, matchList);
+        List<String> dimValueList = VelocityHelper.getDimensionValues((BaseDataContext) context, calcField);
+        if (CollectionUtils.isNotEmpty(dimValueList)) {
+            for (String dim : dimValueList) {
+                List<String> dims = Lists.newArrayList(dim.split(","));
+                Set<String> matchList = new HashSet<>();
+                MatchModeEnum matchModeEnum = MatchModeEnum.valueOf(matchMode);
+                if (MatchModeEnum.EQUALS.equals(matchModeEnum) || MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
+                    for (String dimValue : dims) {
+                        processOneDimValue(definitionList, dimValue, matchList);
+                    }
+                    if (MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
+                        if (CollectionUtils.isEmpty(matchList)) {
+                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                        } else {
+                            return new FunctionResult(false, null);
                         }
-                        if (MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
-                            if (CollectionUtils.isEmpty(matchList)) {
-                                return new FunctionResult(true, null);
-                            } else {
-                                return new FunctionResult(false, null);
+                    }
+                } else {
+                    List<String> listDataList = customListValueCache.get(definitionList);
+                    for (String dimValue : dims) {
+                        for (String data : listDataList) {
+                            if (match(dimValue, data, matchModeEnum)) {
+                                matchList.add(data);
                             }
                         }
-                    } else {
-                        List<String> listDataList = customListValueCache.get(definitionList);
-                        for (String dimValue : dims) {
-                            for (String data : listDataList) {
-                                if (match(dimValue, data, matchModeEnum)) {
-                                    matchList.add(data);
-                                }
-                            }
-                        }
-
-                        if (MatchModeEnum.EXCLUDE.equals(matchModeEnum)) {
-                            if (CollectionUtils.isEmpty(matchList)) {
-                                return new FunctionResult(true, null);
-                            } else {
-                                return new FunctionResult(false, null);
-                            }
+                    }
+                    if (MatchModeEnum.EXCLUDE.equals(matchModeEnum)) {
+                        if (CollectionUtils.isEmpty(matchList)) {
+                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                        } else {
+                            return new FunctionResult(false, null);
                         }
                     }
                 }
             }
+        }
         return new FunctionResult(false, null);
+    }
+
+    private DetailCallable buildConditionDetail(Set<String> matchList, String dimValue) {
+        return () -> {
+            CustomListDetail detail = new CustomListDetail();
+            detail.setRuleUuid(this.ruleUuid);
+            detail.setConditionUuid(this.conditionUuid);
+            if (CollectionUtils.isEmpty(matchList)) {
+                detail.setList(null);
+            } else {
+                detail.setList(Lists.newLinkedList(matchList));
+            }
+            detail.setDimType(this.calcField);
+            detail.setDimValue(dimValue);
+            return detail;
+        };
     }
 
     private boolean match(String string, String matchString, MatchModeEnum matchMode) {
