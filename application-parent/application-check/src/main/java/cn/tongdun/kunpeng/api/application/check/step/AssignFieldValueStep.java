@@ -79,6 +79,19 @@ public class AssignFieldValueStep implements IRiskStep {
 
 
         /*************决策引擎除字段以外其他参数的获取**********************/
+        //service-type=creditcloud时决策接口直接返回详情
+        String serviceType = request.get("service-type");
+        if (StringUtils.isBlank(serviceType)) {
+            serviceType = "professional";
+            context.setServiceType(serviceType);
+        }
+
+
+        //判断是否测试数据
+        boolean testFlag = StringUtils.equalsIgnoreCase(request.get("test-flag"), "true");
+        context.setTestFlag(testFlag);
+
+
         // 设置合作方的行业信息
         if(partner != null) {
             context.set("firstIndustryType", partner.getIndustryType());

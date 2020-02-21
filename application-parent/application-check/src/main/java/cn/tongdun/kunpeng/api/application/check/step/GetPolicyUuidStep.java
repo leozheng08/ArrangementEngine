@@ -39,9 +39,8 @@ public class GetPolicyUuidStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
 
         String partnerCode = context.getPartnerCode();
-        String secretKey = context.getSecretKey();
+        String appName = context.getAppName();
         String eventId = request.get(RequestParamName.EVENT_ID);
-        String appName = request.get(RequestParamName.APP_NAME);//todo 改为SECRET_KEY转appName
         String policyVersion = request.get(RequestParamName.POLICY_VERSION);
 
         if(StringUtils.isBlank(eventId)){
@@ -56,7 +55,7 @@ public class GetPolicyUuidStep implements IRiskStep {
             policyUuid = policyDefinitionCache.getPolicyUuid(partnerCode, appName, eventId);
         }
 
-        if(StringUtils.isNotBlank(policyUuid)){ //todo 增加404子码的细分
+        if(StringUtils.isBlank(policyUuid)){ //todo 增加404子码的细分
             response.setReason_code(ReasonCode.POLICY_NOT_EXIST.toString());
             return false;
         }

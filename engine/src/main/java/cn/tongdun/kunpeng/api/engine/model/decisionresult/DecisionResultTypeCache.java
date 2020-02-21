@@ -47,7 +47,7 @@ public class DecisionResultTypeCache extends AbstractLocalCache<String,DecisionR
     }
 
     public DecisionResultType getDefaultType(){
-        return decisionResultMap.get("Accept");
+        return decisionResultMap.values().iterator().next();
     }
 
     public Collection<DecisionResultType> getDecisionResultTypes(){
