@@ -40,7 +40,7 @@ public class EngineExecuteStep implements IRiskStep {
         DecisionTool decisionTool = decisionToolFactory.getDecisionTool(decisionMode);
         PolicyResponse policyResponse = decisionTool.execute(decisionMode,context);
         context.setPolicyResponse(policyResponse);
-        response.setSuccess(true);
+        response.setSuccess(policyResponse.isSuccess());
         return true;
     }
 

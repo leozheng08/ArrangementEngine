@@ -108,6 +108,13 @@ public class ParallelEngine extends DecisionTool {
 
         //取得此策略配置的子策略，子策略并行执行。
         List<String> subPolicyUuidList = policy.getSubPolicyList();
+        if(subPolicyUuidList.isEmpty()) {
+            logger.warn("决策引擎执行40402,存在空的策略,policyUuid:{}", policyUuid);
+            context.addSubReasonCode(new SubReasonCode("40402", "存在空的策略", "决策引擎执行"));
+            policyResponse.setSuccess(false);
+            return policyResponse;
+        }
+
         List<Callable<SubPolicyResponse>> tasks = new ArrayList<>();
         for (String subPolicyUuid : subPolicyUuidList) {
             SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicyUuid, context);

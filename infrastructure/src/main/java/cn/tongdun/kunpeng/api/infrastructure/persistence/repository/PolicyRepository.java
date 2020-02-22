@@ -107,7 +107,7 @@ public class PolicyRepository implements IPolicyRepository{
         BeanUtils.copyProperties(policyDO,policyDTO);
 
         //取得策略定义表中的策略名称、appName、eventId
-        PolicyDefinitionDO policyDefinitionDO = policyDefinitionDOMapper.selectByPolicyUuid(policyDO.getUuid());
+        PolicyDefinitionDO policyDefinitionDO = policyDefinitionDOMapper.selectByUuid(policyDO.getPolicyDefinitionUuid());
         policyDTO.setName(policyDefinitionDO.getName());
         policyDTO.setAppName(policyDefinitionDO.getAppName());
         policyDTO.setAppType(policyDefinitionDO.getAppType());

@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldType;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
@@ -80,39 +80,39 @@ public class BaseCheckParamsStep implements IRiskStep {
     private void checkParams(Map<String, String> request,List<FieldDefinition> fields,
                              StringBuilder sbType, StringBuilder sbFormat, StringBuilder sbOvermax){
         for (FieldDefinition fieldDefinition : fields) {
-            String name = fieldDefinition.getFieldName();
-            String type = fieldDefinition.getFieldType();
+            String fieldCode = fieldDefinition.getFieldCode();
+            String dataType = fieldDefinition.getDataType();
 
-            String val = request.get(KunpengStringUtils.camel2underline(name));
+            String val = request.get(KunpengStringUtils.camel2underline(fieldCode));
 
             if (StringUtils.isNotBlank(val)) {
-                if (FieldType.INT.name().equals(type) || FieldType.DOUBLE.name().equals(type)) {
+                if (FieldDataType.INT.name().equals(dataType) || FieldDataType.DOUBLE.name().equals(dataType)) {
                     if (!KunpengStringUtils.isNumeric(val)) {
                         if (sbType.length() > 0) {
                             sbType.append(",");
                         }
-                        sbType.append(name);
+                        sbType.append(fieldCode);
                     }
-                } else if (FieldType.DATETIME.name().equals(type)) {
+                } else if (FieldDataType.DATETIME.name().equals(dataType)) {
                     if (!KunpengStringUtils.isDate(val)) {
                         if (sbType.length() > 0){
                             sbType.append(",");
                         }
-                        sbType.append(name);
+                        sbType.append(fieldCode);
                     }
-                } else if (FieldType.BOOLEAN.name().equals(type)) {
+                } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
                     if (!"true".equalsIgnoreCase(val) && !"false".equalsIgnoreCase(val)) {
                         if (sbType.length() > 0) {
                             sbType.append(",");
                         }
-                        sbType.append(name);
+                        sbType.append(fieldCode);
                     }
-                } else if (FieldType.ARRAY.name().equals(type)) {
+                } else if (FieldDataType.ARRAY.name().equals(dataType)) {
                     if (val.replaceAll("，", ",").split(",").length > 20) {
                         if (sbOvermax.length() > 0) {
                             sbOvermax.append(",");
                         }
-                        sbOvermax.append(name);
+                        sbOvermax.append(fieldCode);
                     }
                 }
             }

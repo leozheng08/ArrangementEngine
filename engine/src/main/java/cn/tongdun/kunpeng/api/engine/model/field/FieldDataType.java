@@ -12,7 +12,7 @@ package cn.tongdun.kunpeng.api.engine.model.field;
  * 
  * @author zhaoyao 2014年3月10日 下午7:03:19
  */
-public enum FieldType {
+public enum FieldDataType {
     INT("整数"),
     DOUBLE("小数"),
     STRING("字符串"),
@@ -23,7 +23,7 @@ public enum FieldType {
 
     private String displayName;
 
-    FieldType(String displayName){
+    FieldDataType(String displayName){
         this.displayName = displayName;
     }
 

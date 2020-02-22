@@ -40,7 +40,7 @@ public class FieldDefinitionCache {
     }
 
     public List<FieldDefinition> getExtendField(String partnerCode, String appName, String eventType){
-        String key = getExtendFieldKey(eventType,appName,eventType);
+        String key = getExtendFieldKey(partnerCode,appName,eventType);
 
         return extendFieldMap.get(key);
     }

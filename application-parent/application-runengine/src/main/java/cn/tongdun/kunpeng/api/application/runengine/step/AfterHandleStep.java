@@ -25,7 +25,7 @@ import java.util.*;
  * @Date: 2020/2/20 下午5:54
  */
 @Component
-@Step(pipeline = Risk.NAME,phase = Risk.RUN_ENGINE)
+@Step(pipeline = Risk.NAME,phase = Risk.RUN_ENGINE,order = 1100)
 public class AfterHandleStep implements IRiskStep {
 
     @Override
