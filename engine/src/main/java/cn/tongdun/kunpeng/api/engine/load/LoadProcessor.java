@@ -59,13 +59,13 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
         logger.info("LoadManager load result:"+result);
 
         //根据单个合作方加载数据，暂放在这调用，供测试。后面去除
-        Response result2 = pipelineExecutor.execute(LoadByPartnerPipeline.NAME, ILoadByPartner.class, step -> step.loadByPartner("demo"),(isLoad, e)->{
-            return e !=null|| (isLoad!=null && !isLoad);
-        });
-
-        if(!result2.isSuccess()){
-            throw new SysException("按合作方加载失败");
-        }
+//        Response result2 = pipelineExecutor.execute(LoadByPartnerPipeline.NAME, ILoadByPartner.class, step -> step.loadByPartner("demo"),(isLoad, e)->{
+//            return e !=null|| (isLoad!=null && !isLoad);
+//        });
+//
+//        if(!result2.isSuccess()){
+//            throw new SysException("按合作方加载失败");
+//        }
         logger.info("LoadByPartnerManager load result:"+result);
     }
 
