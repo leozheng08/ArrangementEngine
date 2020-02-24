@@ -20,7 +20,7 @@
     <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, uuid, gmt_create, gmt_modify, creator, operator, name, template, params, description, sub_policy_uuid
+    id, uuid, gmt_create, gmt_modify, creator, operator, name, template, params, description, sub_policy_uuid,
     status, concurrency_version, is_deleted, gmt_delete
   </sql>
 

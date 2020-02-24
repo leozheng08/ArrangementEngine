@@ -7,12 +7,16 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.AbstractCalculateFunction;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @Author: liuq
  * @Date: 2020/2/12 5:27 PM
  */
 public class WeightFunction extends AbstractCalculateFunction {
+
+    private static Logger logger = LoggerFactory.getLogger(WeightFunction.class);
 
     private double baseWeight = 0;
     private double weightRatio = 0;
@@ -28,7 +32,12 @@ public class WeightFunction extends AbstractCalculateFunction {
 
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
-        Double weight = (Double) weightIndex.eval(executeContext);
+        Double weight = null;
+        try {
+            weight = (Double) weightIndex.eval(executeContext);
+        } catch (Exception e){
+            logger.warn("WeightFunction weightIndex eval error",e);
+        }
         if (null == weight) {
             weight = 0D;
         }
