@@ -20,7 +20,7 @@ public abstract class AbstractCalculateFunction extends AbstractFunction {
         if (null == functionParam) {
             return null;
         }
-        FieldTypeEnum fieldTypeEnum = FieldTypeEnum.valueOf(functionParam.getType());
+        FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(functionParam.getType());
         switch (fieldTypeEnum) {
             case INPUT:
                 return new Literal(functionParam.getValue(), dataType);
