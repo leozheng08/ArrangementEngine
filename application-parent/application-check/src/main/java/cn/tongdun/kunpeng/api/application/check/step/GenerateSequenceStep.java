@@ -29,13 +29,21 @@ public class GenerateSequenceStep implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
 
+        //seq_id
         String seqId = request.get("seq_id");
+        if (StringUtils.isBlank(seqId)){
+            seqId = request.get("x-sequence-id");
+        }
+
         if (StringUtils.isBlank(seqId)) {
             seqId = GenerateSeqIdUtil.generateSeqId();
         }
         response.setSeq_id(seqId);
         context.setSequenceId(seqId);
-        context.setRequestId(request.get("requestId"));
+
+        //requestId
+        String requestId = request.get("x-request-id");
+        context.setRequestId(requestId);
 
         //事件发生时间，默认取seqId中的时间戳，如果客户有传event_occur_time则会覆盖
         try {

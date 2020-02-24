@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine;
 
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
-import cn.tongdun.kunpeng.client.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 
 

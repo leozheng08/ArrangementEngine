@@ -1,12 +1,16 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * 自定义列表详情
+ *
  * @Author: liang.chen
  * @Date: 2020/2/6 下午4:37
  */
+@Data
 public class CustomListDetail extends ConditionDetail {
 
     //匹配上的列表值
@@ -18,7 +22,7 @@ public class CustomListDetail extends ConditionDetail {
     //匹配字段值
     private String dimValue;
 
-    public CustomListDetail(){
+    public CustomListDetail() {
         super("custom_list");
     }
 }

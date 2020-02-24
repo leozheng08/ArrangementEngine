@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.common.data;
 
-import cn.tongdun.kunpeng.client.data.Response;
 import lombok.Data;
 
 /**

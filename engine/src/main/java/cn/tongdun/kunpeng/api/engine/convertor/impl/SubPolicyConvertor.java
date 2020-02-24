@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.client.data.PolicyMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -96,12 +97,12 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
          * }
          */
         String attribute = t.getAttribute();
-        if( attribute == null){
+        if(StringUtils.isBlank(attribute)){
             return;
         }
 
         JSONObject json = JSONObject.parseObject(attribute);
-        JSONArray riskThresholdArray = json.getJSONArray("riskThreshold");
+        JSONArray riskThresholdArray = json.getJSONArray("riskThresholds");
 
         if(riskThresholdArray == null){
             return;

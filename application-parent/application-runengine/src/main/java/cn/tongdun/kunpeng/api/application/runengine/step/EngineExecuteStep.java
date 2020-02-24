@@ -6,7 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.DecisionTool;
 import cn.tongdun.kunpeng.api.engine.DecisionToolFactory;
-import cn.tongdun.kunpeng.client.data.PolicyResponse;
+import cn.tongdun.kunpeng.common.data.PolicyResponse;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
@@ -40,7 +40,7 @@ public class EngineExecuteStep implements IRiskStep {
         DecisionTool decisionTool = decisionToolFactory.getDecisionTool(decisionMode);
         PolicyResponse policyResponse = decisionTool.execute(decisionMode,context);
         context.setPolicyResponse(policyResponse);
-        response.setSuccess(true);
+        response.setSuccess(policyResponse.isSuccess());
         return true;
     }
 

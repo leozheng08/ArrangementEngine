@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.client.data;
+package cn.tongdun.kunpeng.common.data;
 
 import lombok.Data;
 

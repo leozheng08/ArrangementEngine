@@ -88,60 +88,16 @@ public class RuleDTO extends CommonDTO {
      */
     private String bizType;
 
-
+    private String mode;                                    //FirstMatch,WorstMatch,Weighted
+    private String riskDecision;                            //风险决策结果
     /**
-     * 风险配置
+     * 风险权重配置
      */
-    private String riskConfig;
-    /**
-     * 风险配置
-     * {
-     * "mode":"WorstMatch"
-     * "riskDecision":"Accept"
-     * }
-     * 或者
-     * {
-     * "mode":"Weighted",
-     * "riskWeight":10,
-     * "weightRatio":20.33,
-     * "op":"+",
-     * "property":{
-     * "type":"indicatrix/field",
-     * "name":"指标/字段"
-     * },
-     * "propertyValue":{
-     * "value":"3333333333"
-     * },
-     * "upperLimitScore":-30,
-     * "lowerLimitScore":30
-     * }
-     */
-    private String mode;                                    //WorstMatch,Weighted
-    private String riskDecision;                            // 风险决策结果
+    private WeightedRiskConfigDTO weightedRiskConfigDTO;
 
-    private double baseWeight = 0;                          // 风险权重基线
-    private double weightRatio = 0;                         // 风险权重比例
-    private String weightIndex;                             // 风险权重指标　
-    private String indexType;                               // 指标类型    旧的为空,新的GAEA_INDICATRIX　
-    private Double downLimitScore;                          // 权重计算分数右值下限
-    private Double upLimitScore;                            // 权重计算分数右值上限
 
 
     private List<RuleConditionElementDTO> ruleConditionElements;
     private List<RuleActionElementDTO> ruleActionElements;
 
-
-    public Double getDownLimitScore() {
-        if (downLimitScore == null) {
-            return -30d;
-        }
-        return downLimitScore;
-    }
-
-    public Double getUpLimitScore() {
-        if (upLimitScore == null) {
-            return 30d;
-        }
-        return upLimitScore;
-    }
 }

@@ -11,9 +11,7 @@ import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.Condition;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.fraudmetrix.module.tdrule.util.RuleCreateFactory;
-import cn.tongdun.kunpeng.api.engine.dto.RuleActionElementDTO;
-import cn.tongdun.kunpeng.api.engine.dto.RuleConditionElementDTO;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
 import cn.tongdun.kunpeng.api.engine.util.TdRuleOperatorMapUtils;
@@ -56,7 +54,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         Rule rule = buildRuleWithBasicInfo(ruleDTO);
         rule.setEval(evalRule);
         //2.3把权重转为Function
-        if (StringUtils.equalsIgnoreCase(ruleDTO.getMode(), PolicyMode.Weighted.name())) {
+        if (ruleDTO.getWeightedRiskConfigDTO()!= null && StringUtils.equalsIgnoreCase( ruleDTO.getMode(), PolicyMode.Weighted.name())) {
             WeightFunction weightFunction = getWeightFunctionFromDTO(ruleDTO);
             rule.setWeightFunction(weightFunction);
         }
@@ -64,9 +62,10 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
     }
 
     private WeightFunction getWeightFunctionFromDTO(RuleDTO ruleDTO) {
-        if (null == ruleDTO) {
+        if (null == ruleDTO || ruleDTO.getWeightedRiskConfigDTO()== null) {
             return null;
         }
+        WeightedRiskConfigDTO riskConfigDTO = ruleDTO.getWeightedRiskConfigDTO();
         FunctionDesc functionDesc = new FunctionDesc();
         functionDesc.setId(ruleDTO.getId().intValue());
         functionDesc.setRuleUuid(ruleDTO.getUuid());
@@ -76,36 +75,39 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
 
         FunctionParam baseWeight = new FunctionParam();
         baseWeight.setType(FieldTypeEnum.INPUT.name());
-        baseWeight.setValue(Double.valueOf(ruleDTO.getBaseWeight()).toString());
+        baseWeight.setValue(Double.valueOf(riskConfigDTO.getBaseWeight()).toString());
         baseWeight.setName("baseWeight");
         paramList.add(baseWeight);
 
         FunctionParam weightRatio = new FunctionParam();
         weightRatio.setType(FieldTypeEnum.INPUT.name());
-        baseWeight.setValue(Double.valueOf(ruleDTO.getWeightRatio()).toString());
+        weightRatio.setValue(Double.valueOf(riskConfigDTO.getWeightRatio()).toString());
         weightRatio.setName("weightRatio");
         paramList.add(weightRatio);
 
         FunctionParam weightIndex = new FunctionParam();
-        weightIndex.setType(ruleDTO.getIndexType());
-        weightIndex.setValue(ruleDTO.getWeightIndex());
+        weightIndex.setType(riskConfigDTO.getPropertyType());
+        weightIndex.setValue(riskConfigDTO.getProperty());
         weightIndex.setName("weightIndex");
         paramList.add(weightIndex);
 
-        FunctionParam downLimitScore = new FunctionParam();
-        downLimitScore.setType(FieldTypeEnum.INPUT.name());
-        downLimitScore.setValue(ruleDTO.getDownLimitScore().toString());
-        downLimitScore.setName("downLimitScore");
-        paramList.add(downLimitScore);
+        if(riskConfigDTO.getLowerLimitScore() != null) {
+            FunctionParam lowerLimitScore = new FunctionParam();
+            lowerLimitScore.setType(FieldTypeEnum.INPUT.name());
+            lowerLimitScore.setValue(riskConfigDTO.getLowerLimitScore().toString());
+            lowerLimitScore.setName("lowerLimitScore");
+            paramList.add(lowerLimitScore);
+        }
 
-        FunctionParam upLimitScore = new FunctionParam();
-        upLimitScore.setType(FieldTypeEnum.INPUT.name());
-        upLimitScore.setValue(ruleDTO.getUpLimitScore().toString());
-        upLimitScore.setName("upLimitScore");
-        paramList.add(upLimitScore);
+        if(riskConfigDTO.getUpperLimitScore() != null) {
+            FunctionParam upperLimitScore = new FunctionParam();
+            upperLimitScore.setType(FieldTypeEnum.INPUT.name());
+            upperLimitScore.setValue(riskConfigDTO.getUpperLimitScore().toString());
+            upperLimitScore.setName("upperLimitScore");
+            paramList.add(upperLimitScore);
+        }
 
         functionDesc.setParamList(paramList);
-
         return (WeightFunction) FunctionLoader.getFunction(functionDesc);
     }
 
@@ -119,6 +121,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         rule.setParentUuid(ruleDTO.getParentUuid());
         rule.setSubPolicyUuid(ruleDTO.getPolicyUuid());
         rule.setTemplate(ruleDTO.getTemplate());
+        rule.setMode(ruleDTO.getMode());
         rule.setDecision(ruleDTO.getRiskDecision());
         return rule;
     }

@@ -64,7 +64,7 @@
         </triggeringPolicy>
     </appender>
 
-
+    <logger name="cn.tongdun.tdframework" level="DEBUG"/>
 
     <if condition='p("CONSOLE_LEVEL").equals("OFF")'>
         <then>

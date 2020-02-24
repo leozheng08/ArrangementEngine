@@ -29,7 +29,8 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
 
         Rule rule = ruleCache.get(uuid);
         if (rule == null || rule.getEval() == null) {
-            context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_NOT_FIND.getCode(), ReasonCode.RULE_NOT_FIND.getDescription(), "决策引擎执行"));
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));
+            return ruleResponse;
         }
 
         RuleResult ruleResult = rule.getEval().eval(context);
@@ -59,6 +60,7 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
         ruleResponse.setUuid(rule.getUuid());
         ruleResponse.setParentUuid(rule.getParentUuid());
         ruleResponse.setCostTime(ruleResult.getCost());
+        ruleResponse.setSuccess(true);
 
         return ruleResponse;
     }

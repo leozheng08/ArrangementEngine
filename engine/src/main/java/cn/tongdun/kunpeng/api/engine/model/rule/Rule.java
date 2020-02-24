@@ -22,6 +22,7 @@ public class Rule extends VersionedEntity {
     private String subPolicyUuid;
 
     private String name;
+    private String mode;
     //决策结果
     private String decision;
     private Integer displayOrder;

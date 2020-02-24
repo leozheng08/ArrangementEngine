@@ -6,9 +6,17 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.InterruptibleCharSequence;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +24,15 @@ import java.util.regex.Pattern;
  * @Author: liuq
  * @Date: 2019/12/5 8:57 PM
  */
-public class LocalRegexFunction extends AbstractFunction {
+public class RegexFunction extends AbstractFunction {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegexFunction.class);
+    private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() + 1;
+    private static final int QUEUE_SIZE = 10_000;
+
+    private static ThreadPoolExecutor regexThreadPool = new ThreadPoolExecutor(THREAD_NUM, THREAD_NUM, 10,
+            TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_SIZE),
+            new ThreadFactoryBuilder().setNameFormat("regex-function-thread-%d").build());
 
     private String property;
     /**
@@ -75,7 +91,24 @@ public class LocalRegexFunction extends AbstractFunction {
             return new FunctionResult(false);
         }
         String propertyString = propertyField.toString();
-        Matcher matcher = regexPattern.matcher(propertyString);
-        return new FunctionResult(matcher.matches());
+        Future<Boolean> future = regexThreadPool.submit(() -> {
+            Matcher matcher = regexPattern.matcher(new InterruptibleCharSequence(propertyString));
+            return matcher.matches();
+        });
+        Boolean ret = null;
+        try {
+            ret = future.get(100, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            future.cancel(true);
+        }
+        if (ret == null) {
+            ret = false;
+        }
+        if (!isMatch) {
+            //如果是不匹配
+            return new FunctionResult(!ret);
+        }
+        return new FunctionResult(ret);
     }
 }

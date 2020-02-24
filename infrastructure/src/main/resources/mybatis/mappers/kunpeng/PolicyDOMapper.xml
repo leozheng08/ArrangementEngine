@@ -76,7 +76,7 @@
   </select>
 
   <select id="selectPolicyByUuids" resultMap="PolicyModifiedResultMap" parameterType="java.util.List" >
-    select <include refid="Base_Column_List"/>
+    select <include refid="Modified_Column_List"/>
     from policy a,policy_definition b
     where a.policy_definition_uuid=b.uuid and a.is_default_version=1
     and a.uuid in

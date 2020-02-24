@@ -27,7 +27,7 @@
     select
     <include refid="Base_Column_List" />
     from decision_custom_output
-    where policy_uuid = #{policyUuid} and is_deleted = 0
+    where policy_uuid = #{policyUuid} and is_deleted = 0 and status=1
   </select>
 
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="java.lang.String" >

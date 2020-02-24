@@ -16,8 +16,8 @@ public class WeightFunction extends AbstractCalculateFunction {
 
     private double baseWeight = 0;
     private double weightRatio = 0;
-    private Double downLimitScore = -30D;
-    private Double upLimitScore = 30D;
+    private Double lowerLimitScore = -30D;
+    private Double upperLimitScore = 30D;
 
     private Variable weightIndex;
 
@@ -33,11 +33,11 @@ public class WeightFunction extends AbstractCalculateFunction {
             weight = 0D;
         }
         Double total = baseWeight + weight * weightRatio;
-        if (total > upLimitScore) {
-            total = upLimitScore;
+        if (total > upperLimitScore) {
+            total = upperLimitScore;
         }
-        if (total < downLimitScore) {
-            total = downLimitScore;
+        if (total < lowerLimitScore) {
+            total = lowerLimitScore;
         }
         return new FunctionResult(total.intValue());
     }
@@ -55,11 +55,11 @@ public class WeightFunction extends AbstractCalculateFunction {
                 case "weightRatio":
                     weightRatio = Double.valueOf(functionParam.getValue());
                     break;
-                case "downLimitScore":
-                    downLimitScore = Double.valueOf(functionParam.getValue());
+                case "lowerLimitScore":
+                    lowerLimitScore = Double.valueOf(functionParam.getValue());
                     break;
-                case "upLimitScore":
-                    upLimitScore = Double.valueOf(functionParam.getValue());
+                case "upperLimitScore":
+                    upperLimitScore = Double.valueOf(functionParam.getValue());
                     break;
                 case "weightIndex":
                     weightIndex = buildVariable(functionParam, null);

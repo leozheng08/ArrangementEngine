@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -32,12 +33,7 @@ public class PolicyConvertor implements IConvertor<PolicyDTO,Policy> {
     @Override
     public Policy convert(PolicyDTO t){
         Policy policy = new Policy();
-        policy.setUuid(t.getUuid());
-        policy.setPartnerCode(t.getPartnerCode());
-        policy.setEventType(t.getEventType());
-        policy.setEventId(t.getEventId());
-        policy.setAppType(t.getAppType());
-        policy.setName(t.getName());
+        BeanUtils.copyProperties(t,policy);
 
         //子策略
         List<String> subPolicyList = new ArrayList<>();

@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldType;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
@@ -42,6 +42,7 @@ public class AssignFieldValueStep implements IRiskStep {
         private static final long serialVersionUID = 1L;
 
         {
+            add("seq_id");
             add("sequenceId");
             add("appName");
             add("appType");
@@ -79,6 +80,20 @@ public class AssignFieldValueStep implements IRiskStep {
 
 
         /*************决策引擎除字段以外其他参数的获取**********************/
+        //service-type=creditcloud时决策接口直接返回详情
+        String serviceType = request.get("service-type");
+        if (StringUtils.isBlank(serviceType)) {
+            serviceType = "professional";
+            context.setServiceType(serviceType);
+        }
+
+
+        //判断是否测试数据
+        boolean testFlag = StringUtils.equalsIgnoreCase(request.get("test-flag"), "true");
+
+        context.setTestFlag(testFlag);
+
+
         // 设置合作方的行业信息
         if(partner != null) {
             context.set("firstIndustryType", partner.getIndustryType());
@@ -107,80 +122,79 @@ public class AssignFieldValueStep implements IRiskStep {
         if (ctx != null && request != null && systemFields != null) {
             // set system fields
             for (FieldDefinition field : systemFields) {
-                String fieldName = field.getFieldName();
-                if (excludeFieldName.contains(fieldName)) {
+                String fieldCode = field.getFieldCode();
+                if (excludeFieldName.contains(fieldCode)) {
                     continue;
                 }
-                String fieldType = field.getFieldType();
+                String dataType = field.getDataType();
 
-                String underlineStr = KunpengStringUtils.camel2underline(fieldName);
+                String underlineStr = KunpengStringUtils.camel2underline(fieldCode);
                 String fieldValue = request.get(underlineStr);
                 if (StringUtils.isNotBlank(fieldValue)) {
                     try {
-                        if (FieldType.STRING.name().equals(fieldType)) {
-                            ctx.set(fieldName, fieldValue);
-                        } else if (FieldType.INT.name().equals(fieldType)) {
-                            ctx.set(fieldName, new Integer(fieldValue));
-                        } else if (FieldType.DOUBLE.name().equals(fieldType)) {
-                            ctx.set(fieldName, new Double(fieldValue));
-                        } else if (FieldType.DATETIME.name().equals(fieldType)) {
-                            ctx.set(fieldName, DateUtil.parseDateTime(fieldValue));
-                        } else if (FieldType.BOOLEAN.name().equals(fieldType)) {
-                            ctx.getSystemFiels().put(fieldName, "true".equalsIgnoreCase(fieldValue) ? true : false);
-                        } else if (FieldType.ARRAY.name().equals(fieldType)) {
+                        if (FieldDataType.STRING.name().equals(dataType)) {
+                            ctx.set(fieldCode, fieldValue);
+                        } else if (FieldDataType.INT.name().equals(dataType)) {
+                            ctx.set(fieldCode, new Integer(fieldValue));
+                        } else if (FieldDataType.DOUBLE.name().equals(dataType)) {
+                            ctx.set(fieldCode, new Double(fieldValue));
+                        } else if (FieldDataType.DATETIME.name().equals(dataType)) {
+                            ctx.set(fieldCode, DateUtil.parseDateTime(fieldValue));
+                        } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
+                            ctx.getSystemFiels().put(fieldCode, "true".equalsIgnoreCase(fieldValue) ? true : false);
+                        } else if (FieldDataType.ARRAY.name().equals(dataType)) {
                             fieldValue = fieldValue.replaceAll("，", ",");
-                            ctx.set(fieldName, Arrays.asList(fieldValue.split(",")));
-                        } else if (FieldType.OBJECT.name().equals(fieldType)) {
+                            ctx.set(fieldCode, Arrays.asList(fieldValue.split(",")));
+                        } else if (FieldDataType.OBJECT.name().equals(dataType)) {
                             try {
                                 // 把系统对象的名称加进来，整体组装成大JSON
                                 JSONObject fieldInfo = new JSONObject();
                                 JSONObject fieldValueJson = JSONObject.parseObject(fieldValue);
-                                fieldInfo.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldName), fieldValueJson);
+                                fieldInfo.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldCode), fieldValueJson);
                                 // 拍平入参JSON
                                 Map<String, Object> flattenedJsonInfo = JsonUtil.getFlattenedInfo(fieldInfo.toJSONString());
                                 ctx.getSystemFiels().putAll(flattenedJsonInfo);
                                 ctx.setObject(true);
                                 // 原始JSON也保存一份
-                                ctx.getSystemFiels().put(fieldName, camelJson(fieldValueJson));
+                                ctx.getSystemFiels().put(fieldCode, camelJson(fieldValueJson));
                             } catch (Exception e) {
-                                logger.warn("复杂入参 Invalid JSON error:"+e.getMessage());
+                                logger.warn("复杂入参 Invalid JSON error:" + e.getMessage());
                             }
                         }
                     } catch (Exception e) {
                         logger.warn("决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
-                                fieldName,fieldValue,e.getMessage());
+                                fieldCode, fieldValue, e.getMessage());
                     }
                 }
             }
-
+        }
+        if (ctx != null && request != null && extendFields != null) {
             // set extend fields
-            if (extendFields != null) {
-                for (FieldDefinition field : extendFields) {
-                    String name = field.getFieldName();
-                    String type = field.getFieldType();
-                    String value = request.get(name);
-                    if (StringUtils.isBlank(value)) {
-                        continue;
-                    }
+            for (FieldDefinition field : extendFields) {
+                String fieldCode = field.getFieldCode();
+                String dataType = field.getDataType();
+                String fieldValue = request.get(fieldCode);
+                if (StringUtils.isBlank(fieldValue)) {
+                    continue;
+                }
 
-                    try {
-                        if (FieldType.STRING.name().equals(type)) {
-                            ctx.getCustomFields().put(name, value);
-                        } else if (FieldType.INT.name().equals(type)) {
-                            ctx.getCustomFields().put(name, (int) Double.parseDouble(value));
-                        } else if (FieldType.DOUBLE.name().equals(type)) {
-                            ctx.getCustomFields().put(name, Double.parseDouble(value));
-                        } else if (FieldType.DATETIME.name().equals(type)) {
-                            ctx.getCustomFields().put(name, DateUtil.parseDateTime(value));
-                        } else if (FieldType.BOOLEAN.name().equals(type)) {
-                            ctx.getCustomFields().put(name, "true".equalsIgnoreCase(value) ? true : false);
-                        } else if (FieldType.ARRAY.name().equals(type)) {
-                            ctx.getCustomFields().put(name, Arrays.asList(value.replaceAll("，", ",").split(",")));
-                        }
-                    } catch (Exception e) {
-                        logger.warn("决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
-                                name,value,e.getMessage());
+                try {
+                    if (FieldDataType.STRING.name().equals(dataType)) {
+                        ctx.getCustomFields().put(fieldCode, fieldValue);
+                    } else if (FieldDataType.INT.name().equals(dataType)) {
+                        ctx.getCustomFields().put(fieldCode, (int) Double.parseDouble(fieldValue));
+                    } else if (FieldDataType.DOUBLE.name().equals(dataType)) {
+                        ctx.getCustomFields().put(fieldCode, Double.parseDouble(fieldValue));
+                    } else if (FieldDataType.DATETIME.name().equals(dataType)) {
+                        ctx.getCustomFields().put(fieldCode, DateUtil.parseDateTime(fieldValue));
+                    } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
+                        ctx.getCustomFields().put(fieldCode, "true".equalsIgnoreCase(fieldValue) ? true : false);
+                    } else if (FieldDataType.ARRAY.name().equals(dataType)) {
+                        ctx.getCustomFields().put(fieldCode, Arrays.asList(fieldValue.replaceAll("，", ",").split(",")));
                     }
+                } catch (Exception e) {
+                    logger.warn("决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
+                            fieldCode,fieldValue,e.getMessage());
                 }
             }
         }

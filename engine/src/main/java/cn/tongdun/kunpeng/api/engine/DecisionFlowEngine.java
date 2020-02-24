@@ -7,8 +7,8 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
-import cn.tongdun.kunpeng.client.data.PolicyResponse;
-import cn.tongdun.kunpeng.client.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.common.data.PolicyResponse;
+import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class DecisionFlowEngine extends DecisionTool {
         }
 
 
-        policyResponse.setSubPolicyList(subPolicyResponseList);
+        policyResponse.setSubPolicyResponses(subPolicyResponseList);
 
 
         policyResponse.setPolicyUuid(policy.getUuid());

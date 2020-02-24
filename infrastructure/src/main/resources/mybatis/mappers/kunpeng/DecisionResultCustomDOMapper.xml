@@ -28,6 +28,7 @@
   <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
-    from decision_custom_output where policy_uuid = #{policyUuid}
+    from decision_custom_output
+    where policy_uuid = #{policyUuid} and status=1
   </select>
 </mapper>

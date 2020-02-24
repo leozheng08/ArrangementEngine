@@ -2,6 +2,8 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplication;
+import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplicationCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.api.infrastructure.config.ConfigManager;
@@ -25,12 +27,11 @@ import java.util.Map;
 @Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 200)
 public class AuthStep implements IRiskStep {
 
-    @Autowired
-    private PolicyDefinitionCache policyDefinitionCache;
 
     @Autowired
-    private PolicyCache policyCache;
+    private AdminApplicationCache adminApplicationCache;
 
+    @Autowired
     private ConfigManager configManager;
 
     @Override
@@ -45,12 +46,14 @@ public class AuthStep implements IRiskStep {
             return false;
         }
 
-        boolean enableAuth = configManager.isConfig("riskService.auth.enable",false);
-        if(enableAuth){
-            //todo 验证secretKey是否正确
+        AdminApplication adminApplication = adminApplicationCache.getBySecretKey(secretKey);
+
+        if(adminApplication == null){
+            response.setReason_code(ReasonCode.AUTH_FAILED.toString());
+            return false;
         }
-
-
+        context.setAppName(adminApplication.getName());
+        context.setAppType(adminApplication.getAppType());
         context.setPartnerCode(partnerCode);
         context.setSecretKey(secretKey);
         return true;

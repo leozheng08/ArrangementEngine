@@ -8,12 +8,12 @@ import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
 import cn.tongdun.kunpeng.client.data.HitRule;
-import cn.tongdun.kunpeng.client.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +46,13 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
         SubPolicy subPolicy = subPolicyCache.get(uuid);
         if (subPolicy == null) {
-            context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_FIND.getCode(), ReasonCode.SUB_POLICY_NOT_FIND.getDescription(), "决策引擎执行"));
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
             return subPolicyResponse;
         }
+
+
         long start = System.currentTimeMillis();
-        if (subPolicy.getPolicyMode() == null) {
+        if (subPolicy.getPolicyMode() != null) {
             switch (subPolicy.getPolicyMode()) {
                 case FirstMatch: //首次匹配
                     firstMatch(subPolicy, context, subPolicyResponse);
@@ -147,9 +149,11 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
         List<DecisionResultThreshold>  decisionResultTypeList = subPolicy.getRiskThresholds();
         DecisionResultType decisionResult = decisionResultTypeCache.getDefaultType();
-        for (DecisionResultThreshold threshold : decisionResultTypeList) {
-            if (score >= threshold.getStartThreshold() && score < threshold.getEndThreshold()) {
-                decisionResult = threshold.getDecisionResultType();
+        if(decisionResultTypeList != null) {
+            for (DecisionResultThreshold threshold : decisionResultTypeList) {
+                if (score >= threshold.getStartThreshold() && score < threshold.getEndThreshold()) {
+                    decisionResult = threshold.getDecisionResultType();
+                }
             }
         }
 
@@ -170,7 +174,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
         for (String ruleUuid : subPolicy.getRuleUuidList()) {
             //子规则在上级规则命中情况下才能运行，
             Rule rule = ruleCache.get(ruleUuid);
-            if (rule.getParentUuid() != null) {
+            if (StringUtils.isNotBlank(rule.getParentUuid() )) {
                 Boolean parentHit = hitMap.get(rule.getParentUuid());
                 if (parentHit == null || !parentHit) {
                     break;
@@ -179,6 +183,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
             //执行此规则
             RuleResponse ruleResponse = ruleManager.execute(ruleUuid, context);
+            subPolicyResponse.addRuleResponse(ruleResponse);
 
             //命中中断规则，则中断退出，不再运行后继规则
             if (ruleResponse.isTerminate()) {

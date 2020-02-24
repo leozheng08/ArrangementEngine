@@ -5,9 +5,8 @@ import cn.fraudmetrix.module.tdrule.eval.EvalResult;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
-import cn.fraudmetrix.module.tdrule.rule.EvalDetailResult;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.engine.model.rule.function.LocalRegexFunction;
+import cn.tongdun.kunpeng.api.engine.model.rule.function.RegexFunction;
 
 /**
  * @Author: liuq
@@ -15,7 +14,7 @@ import cn.tongdun.kunpeng.api.engine.model.rule.function.LocalRegexFunction;
  */
 public class LocalRegexRule extends AbstractRule {
 
-    private LocalRegexFunction function;
+    private RegexFunction function;
 
     @Override
     public EvalResult run(ExecuteContext executeContext) {
@@ -32,6 +31,6 @@ public class LocalRegexRule extends AbstractRule {
         if (rawRule.getFunctionDescList().size() > 1) {
             throw new ParseException("LocalRegexRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
-        function = (LocalRegexFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (RegexFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }
