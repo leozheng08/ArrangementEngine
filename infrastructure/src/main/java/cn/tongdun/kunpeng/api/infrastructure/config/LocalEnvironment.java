@@ -28,6 +28,10 @@ public class LocalEnvironment implements ILocalEnvironment{
     @Value("${DC}")
     private String dc;
 
+    //当前租户名称
+    @Value("${tenant}")
+    private String tenant;
+
     private String ip;
 
     @Value("${cluster.poc.name}")
@@ -77,6 +81,14 @@ public class LocalEnvironment implements ILocalEnvironment{
         this.dc = dc;
     }
 
+    @Override
+    public String getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
+    }
 
     @Override
     public String getIp() {
@@ -92,6 +104,13 @@ public class LocalEnvironment implements ILocalEnvironment{
         return StringUtils.equals(cluster,pocClusterName);
     }
 
+    public String getPocClusterName() {
+        return pocClusterName;
+    }
+
+    public void setPocClusterName(String pocClusterName) {
+        this.pocClusterName = pocClusterName;
+    }
 
     public void init() {
         try {

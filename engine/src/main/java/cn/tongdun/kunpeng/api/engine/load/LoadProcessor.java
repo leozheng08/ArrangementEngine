@@ -7,6 +7,7 @@ import cn.tongdun.tdframework.core.exception.SysException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -22,6 +23,8 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
 
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
+    @Value("${tenant}")
+    private String tenant;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -48,6 +51,8 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
 
 
     public void load(PipelineExecutor pipelineExecutor){
+        logger.info("mytest tenant:{}",tenant);
+
         //当加载不成功或失败时停止加载
         Response result = pipelineExecutor.execute(LoadPipeline.NAME, ILoad.class, step -> step.load(),(isLoad,e)->{
             return e !=null|| (isLoad!=null && !isLoad);

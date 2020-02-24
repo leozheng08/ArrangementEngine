@@ -4,9 +4,6 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplication;
 import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplicationCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
-import cn.tongdun.kunpeng.api.infrastructure.config.ConfigManager;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
@@ -30,9 +27,6 @@ public class AuthStep implements IRiskStep {
 
     @Autowired
     private AdminApplicationCache adminApplicationCache;
-
-    @Autowired
-    private ConfigManager configManager;
 
     @Override
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {

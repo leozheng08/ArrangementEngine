@@ -36,15 +36,16 @@ public class NetWorkUtil {
                 if (ni.isVirtual()) {
                     continue;
                 }
+                String hostAddress = null;
                 while (ips.hasMoreElements()) {
                     InetAddress inetAddress = ips.nextElement();
-                    String hostAddress = inetAddress.getHostAddress();
+                    hostAddress = inetAddress.getHostAddress();
                     if (IPAddressUtil.isIPv6LiteralAddress(hostAddress)) {
                         continue;
                     }
-
-                    return hostAddress;
+                    break;
                 }
+                return hostAddress;
             }
         } catch (SocketException e) {
             logger.error(e.getMessage());
