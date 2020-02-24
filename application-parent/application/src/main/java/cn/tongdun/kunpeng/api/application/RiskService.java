@@ -52,7 +52,7 @@ public class RiskService implements IRiskService {
                     {
 
                         //如果调用不成功时退出，不再执行后继步骤
-                        return isSuccess == null || !isSuccess;
+                        return isSuccess != null && !isSuccess;
                     }
             );
         }catch (Exception e){

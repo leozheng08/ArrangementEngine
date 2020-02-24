@@ -48,7 +48,7 @@
     <include refid="Blob_Column_List" />
     from dynamic_script
     where
-    is_deleted = 0 and script_type='groovy'
+    is_deleted = 0 and status=1 and script_type='groovy'
     and partner_code in
     <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
       #{partner}

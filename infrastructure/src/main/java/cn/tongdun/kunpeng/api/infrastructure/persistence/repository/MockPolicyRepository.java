@@ -119,11 +119,15 @@ public class MockPolicyRepository implements IPolicyRepository{
         ruleDO.setTemplate("pattern/regex");
 //        ruleDO.setTemplate("regex");
         ruleDO.setRuleCustomId("56935914");
-        ruleDO.setDownLimitScore(-30D);
-        ruleDO.setUpLimitScore(30D);
-        ruleDO.setBaseWeight(10);
-        ruleDO.setWeightRatio(5);
-        ruleDO.setWeightIndex("123456");
+
+        WeightedRiskConfigDTO weightedRiskConfigDTO = new WeightedRiskConfigDTO();
+        weightedRiskConfigDTO.setLowerLimitScore(-30D);
+        weightedRiskConfigDTO.setUpperLimitScore(30D);
+        weightedRiskConfigDTO.setBaseWeight(10);
+        weightedRiskConfigDTO.setWeightRatio(5);
+        weightedRiskConfigDTO.setPropertyType("index");
+        weightedRiskConfigDTO.setProperty("123456");
+        ruleDO.setWeightedRiskConfigDTO(weightedRiskConfigDTO);
 
         //规则条件
         List<RuleConditionElementDTO> ruleConditionElementDOList = new ArrayList<>();

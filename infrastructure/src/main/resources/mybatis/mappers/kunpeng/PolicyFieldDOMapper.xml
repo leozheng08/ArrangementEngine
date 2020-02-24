@@ -20,6 +20,6 @@
     select 
     <include refid="Base_Column_List" />
     from policy_field
-    where status =1 and policy_uuid = #{policyUuid}
+    where  status =1 and policy_uuid = #{policyUuid}
   </select>
 </mapper>

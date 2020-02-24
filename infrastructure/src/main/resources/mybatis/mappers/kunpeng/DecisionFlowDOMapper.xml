@@ -29,7 +29,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap"  >
     select
     <include refid="Base_Column_List" />
-    from decision_flow where uuid = #{uuid} and is_deleted = 0 limit 1
+    from decision_flow where uuid = #{uuid} and is_deleted = 0 and status=1 limit 1
   </select>
 
 </mapper>

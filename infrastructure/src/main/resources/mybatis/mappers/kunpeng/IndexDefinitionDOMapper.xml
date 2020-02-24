@@ -25,7 +25,10 @@
   </sql>
 
   <select id="getEnabledIndexesBySubPolicyUuid" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/> from index_definition where is_deleted = 0 and status = 1 and sub_policy_uuid = #{subPolicyUuid}
+    select <include refid="Base_Column_List"/>
+    from index_definition
+    where is_deleted = 0 and status = 1
+    and sub_policy_uuid = #{subPolicyUuid}
   </select>
 
 

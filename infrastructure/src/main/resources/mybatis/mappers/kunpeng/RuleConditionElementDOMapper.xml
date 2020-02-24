@@ -24,7 +24,7 @@
     <result column="attribute" property="attribute" jdbcType="VARCHAR" />
     <result column="biz_uuid" property="bizUuid" jdbcType="CHAR" />
     <result column="biz_type" property="bizType" jdbcType="VARCHAR" />
-    <result column="params" property="params"  />
+    <result column="params" property="params" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, uuid, parent_uuid, logic_operator, left_property, left_property_type, left_property_data_type, 

@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng
 import cn.tongdun.kunpeng.share.dataobject.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,6 +168,7 @@ public class PolicyRepository implements IPolicyRepository{
         result = ruleDOList.stream().map(ruleDO->{
             RuleDTO ruleDTO = new RuleDTO();
             BeanUtils.copyProperties(ruleDO,ruleDTO);
+            parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());
             return ruleDTO;
         }).collect(Collectors.toList());
 
@@ -176,6 +178,67 @@ public class PolicyRepository implements IPolicyRepository{
         }
 
         return result;
+    }
+
+    /**
+     * 风险配置
+     * {
+     * "mode":"WorstMatch"
+     * "riskDecision":"Accept"
+     * }
+     * 或者
+     * {
+     * "mode":"Weighted",
+     * "riskWeight":10,
+     * "weightRatio":20.33,
+     * "op":"+",
+     * "property":{
+     * "type":"indicatrix/field",
+     * "name":"指标/字段"
+     * },
+     * "propertyValue":{
+     * "value":"3333333333"
+     * },
+     * "upperLimitScore":-30,
+     * "lowerLimitScore":30
+     * }
+     */
+    private void parseRiskConfig(RuleDTO ruleDTO,String riskConfig){
+        if(StringUtils.isBlank(riskConfig)) {
+            return;
+        }
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(riskConfig);
+            String mode = jsonObject.getString("mode");
+            if(StringUtils.isBlank(mode)) {
+                return;
+            }
+            ruleDTO.setMode(mode);
+            switch (mode){
+                case "FirstMatch":
+                case "WorstMatch":
+                    ruleDTO.setRiskDecision(jsonObject.getString("riskDecision"));
+                    break;
+                case "Weighted":
+                    WeightedRiskConfigDTO weighted = new WeightedRiskConfigDTO();
+                    weighted.setBaseWeight(jsonObject.getDouble("riskWeight"));
+                    weighted.setWeightRatio(jsonObject.getDouble("weightRatio"));
+                    weighted.setOp(jsonObject.getString("op"));
+
+                    weighted.setProperty((String) JSONPath.eval(jsonObject, "$.propertyValue.value"));
+                    weighted.setPropertyType((String) JSONPath.eval(jsonObject, "$.property.type"));
+                    weighted.setPropertyTypeName((String) JSONPath.eval(jsonObject, "$.property.name"));
+
+                    weighted.setLowerLimitScore(jsonObject.getDouble("lowerLimitScore"));
+                    weighted.setUpperLimitScore(jsonObject.getDouble("upperLimitScore"));
+                    ruleDTO.setWeightedRiskConfigDTO(weighted);
+                    break;
+                default:
+                    logger.warn("buildRiskConfig mode error, riskConfig:{}",riskConfig);
+            }
+        } catch (Exception e){
+            logger.error("buildRiskConfig error,riskConfig:{}",riskConfig,e);
+        }
     }
 
 

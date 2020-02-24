@@ -42,7 +42,7 @@
     select
     <include refid="Base_Column_List" />
     from sub_policy t
-    where t.policy_uuid = #{policyUuid} and t.is_deleted = 0
+    where t.policy_uuid = #{policyUuid} and t.is_deleted = 0 and status=1
   </select>
 
 </mapper>
