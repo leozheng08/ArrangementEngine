@@ -1,0 +1,39 @@
+package cn.tongdun.kunpeng.api.infrastructure.config;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.scheduling.annotation.Scheduled;
+
+/**
+ * @Author: liang.chen
+ * @Date: 2020/2/25 下午3:38
+ */
+@Configuration
+public class DynamicConfig {
+    //资源信息元数据:PropertySource包含name和泛型，一份资源信息存在唯一的name以及对应泛型数据，在这里设计为泛型表明可拓展自定.PropertySource在集合中的唯一性只能去看name
+    public static final String DYNAMIC_CONFIG_NAME = "dynamic_config";
+    @Autowired
+    AbstractEnvironment environment;
+
+    @Value("${configmap.path}")
+    private String configmapPath;
+
+    private DynamicLoadPropertySource propertySource;
+
+    @PostConstruct
+    public void init() {
+        propertySource = new DynamicLoadPropertySource(DYNAMIC_CONFIG_NAME,configmapPath+"/app.properties");
+        environment.getPropertySources().addFirst(propertySource);
+    }
+
+
+
+    @Scheduled(cron = "*/10 * * * * ?")
+    public void scheduling() {
+        propertySource.refresh();
+    }
+}

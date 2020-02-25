@@ -21,42 +21,44 @@ import java.util.Map;
  */
 
 @Component
-@ShutterObservable(filenames = "kunpeng-api-observe.properties")
-@ShutterFile(filename = "kunpeng-api-observe.properties", observable = true,cluster = "DEFAULT_GROUP", group = "DEFAULT_GROUP") // 支持改变监听
-public class DynamicConfigRepository extends AbstractConfigRepository implements InitializingBean, ShutterObserver,IConfigRepository{
+//@ShutterObservable(filenames = "kunpeng-api-observe.properties")
+//@ShutterFile(filename = "kunpeng-api-observe.properties", observable = true,cluster = "DEFAULT_GROUP", group = "DEFAULT_GROUP") // 支持改变监听
+//public class DynamicConfigRepository extends AbstractConfigRepository implements InitializingBean, ShutterObserver,IConfigRepository{
+public class DynamicConfigRepository extends AbstractConfigRepository implements IConfigRepository{
 
     public final static Logger logger = LoggerFactory.getLogger(DynamicConfigRepository.class);
 
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        setConfig();
-    }
+//
+//    @Override
+//    public void afterPropertiesSet() throws Exception {
+//        setConfig();
+//    }
+//
+//    @Override
+//    public void update(String fileName, Object oldValue, Object newValue) throws Exception {
+//        setConfig();
+//    }
 
-    @Override
-    public void update(String fileName, Object oldValue, Object newValue) throws Exception {
-        setConfig();
-    }
 
+//    public String getPropertiesFileName() {
+//        return "kunpeng-api-observe.properties";
+//    }
 
-    public String getPropertiesFileName() {
-        return "kunpeng-api-observe.properties";
-    }
-
-    public void setConfig() {
-        logger.info("emit update shutter observe");
-        try {
-            ShutterConfig shutterConfig = ShutterClient.getConfig();
-            String appName = System.getenv("APPNAME");
-            logger.info("ShutterMonitor.setConfig.appName={}", appName);
-            Map<String, Object> newConfig = shutterConfig.getFileConfig(appName, "DEFAULT_GROUP")
-                    .getProperties(getPropertiesFileName());
-            if (newConfig == null) {
-                newConfig = new HashMap<>();
-            }
-            setConfig(newConfig);
-        } catch (Exception e) {
-            logger.error("拉取配置时出现异常", e);
-        }
-    }
+//    public void setConfig() {
+//        logger.info("emit update shutter observe");
+//        try {
+//            ShutterConfig shutterConfig = ShutterClient.getConfig();
+//            String appName = System.getenv("APPNAME");
+//            logger.info("ShutterMonitor.setConfig.appName={}", appName);
+//            Map<String, Object> newConfig = shutterConfig.getFileConfig(appName, "DEFAULT_GROUP")
+//                    .getProperties(getPropertiesFileName());
+//            if (newConfig == null) {
+//                newConfig = new HashMap<>();
+//            }
+//            setConfig(newConfig);
+//        } catch (Exception e) {
+//            logger.error("拉取配置时出现异常", e);
+//        }
+//    }
 }
