@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine;
 
 
+import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
@@ -64,7 +65,7 @@ public class ParallelEngine extends DecisionTool {
     @Autowired
     private SubPolicyManager subPolicyManager;
 
-    @Resource(name = "dynamicLoadPropertySource")
+
     private IConfigRepository configRepository;
 
 
@@ -87,6 +88,13 @@ public class ParallelEngine extends DecisionTool {
         }
     }
 
+    private IConfigRepository getConfigRepository(){
+        if(configRepository == null) {
+            configRepository = SpringContextHolder.getBean("dynamicLoadPropertySource", IConfigRepository.class);
+        }
+        return configRepository;
+    }
+
     /**
      * 根据事件类型确认规则引擎执行超时时间，单位ms 默认800ms
      *
@@ -94,8 +102,8 @@ public class ParallelEngine extends DecisionTool {
      */
     private long resolveExecuteTimeout(AbstractFraudContext context) {
         String eventType = context.getEventType();
-        long timeout = configRepository.getLongProperty("rule.engine.execute.credit.timeout",
-                configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT));
+        long timeout = getConfigRepository().getLongProperty("rule.engine.execute.credit.timeout",
+                getConfigRepository().getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT));
         if (timeout < DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT) {
             timeout = DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT;
         }

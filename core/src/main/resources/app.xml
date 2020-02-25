@@ -14,6 +14,8 @@
     <context:component-scan base-package="cn.tongdun.kunpeng.api"/>
     <context:component-scan base-package="cn.tongdun.tdframework"/>
 
+    <bean class="cn.fraudmetrix.module.tdrule.spring.SpringContextHolder"/>
+
     <bean id="tdframework-bootstrap" class="cn.tongdun.tdframework.core.boot.Bootstrap" init-method="init">
         <property name="packages">
             <list>
@@ -21,4 +23,5 @@
             </list>
         </property>
     </bean>
+
 </beans>
