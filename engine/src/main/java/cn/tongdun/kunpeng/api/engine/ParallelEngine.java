@@ -64,7 +64,7 @@ public class ParallelEngine extends DecisionTool {
     @Autowired
     private SubPolicyManager subPolicyManager;
 
-//    @Autowired
+    @Resource(name = "dynamicLoadPropertySource")
     private IConfigRepository configRepository;
 
 

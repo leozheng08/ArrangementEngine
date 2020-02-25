@@ -27,7 +27,7 @@ public class DynamicConfig  {
     private DynamicLoadPropertySource propertySource;
 
 
-    @Bean
+    @Bean(name = "dynamicLoadPropertySource")
     public DynamicLoadPropertySource createDynamicLoadPropertySource(){
         return new DynamicLoadPropertySource(DYNAMIC_CONFIG_NAME,configmapPath+"/app.properties");
     }
