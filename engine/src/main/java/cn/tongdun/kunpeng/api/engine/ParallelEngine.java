@@ -66,6 +66,7 @@ public class ParallelEngine extends DecisionTool {
     private SubPolicyManager subPolicyManager;
 
 
+    @Autowired
     private IConfigRepository configRepository;
 
 
@@ -102,8 +103,8 @@ public class ParallelEngine extends DecisionTool {
      */
     private long resolveExecuteTimeout(AbstractFraudContext context) {
         String eventType = context.getEventType();
-        long timeout = getConfigRepository().getLongProperty("rule.engine.execute.credit.timeout",
-                getConfigRepository().getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT));
+        long timeout = configRepository.getLongProperty("rule.engine.execute.credit.timeout",
+                configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT));
         if (timeout < DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT) {
             timeout = DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT;
         }
