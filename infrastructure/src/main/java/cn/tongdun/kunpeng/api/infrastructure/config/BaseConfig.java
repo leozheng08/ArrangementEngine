@@ -23,7 +23,7 @@ public class BaseConfig implements IBaseConfig{
 
     // 配置内容为json,例：
     // {"credit":["PreFilter","PreCredit","Loan","LoaningQuery"],"anti_fraud":[]}
-    @Value("business.event.type")
+    @Value("${business.event.type}")
     private String businessEventTypeJson;
     //eventType->businussType
     private Map<String,String> eventType2BusinussMap = new HashMap<>();

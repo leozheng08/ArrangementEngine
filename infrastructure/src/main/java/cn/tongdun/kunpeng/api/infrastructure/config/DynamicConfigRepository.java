@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 /**
+ * 提供各方法以方便获取动态配置属性
  * @Author: liang.chen
  * @Date: 2020/2/25 下午10:47
  */
@@ -199,6 +200,7 @@ public class DynamicConfigRepository implements IConfigRepository {
     }
 
 
+    //定时刷新动态配置
     @Scheduled(cron = "*/10 * * * * ?")
     public void scheduling() {
 

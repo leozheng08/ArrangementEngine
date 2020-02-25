@@ -10,27 +10,25 @@ import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
+ * 动态配置类DynamicLoadPropertySource初始化
  * @Author: liang.chen
  * @Date: 2020/2/25 下午3:38
  */
 @Configuration
 public class DynamicConfigInit {
-    //资源信息元数据:PropertySource包含name和泛型，一份资源信息存在唯一的name以及对应泛型数据，在这里设计为泛型表明可拓展自定.PropertySource在集合中的唯一性只能去看name
+
+    //资源信息元数据:PropertySource包含name和泛型，一份资源信息存在唯一的name以及对应泛型数据
     public static final String DYNAMIC_CONFIG_NAME = "dynamic_config";
+
     @Autowired
     AbstractEnvironment environment;
 
+    //k8s configmap 配置文件保存路径
     @Value("${configmap.path}")
     private String configmapPath;
 
-//    @Autowired
     private DynamicLoadPropertySource propertySource;
 
-
-//    @Bean(name = "dynamicLoadPropertySource")
-//    public DynamicLoadPropertySource createDynamicLoadPropertySource(){
-//        return new DynamicLoadPropertySource(DYNAMIC_CONFIG_NAME,configmapPath+"/app.properties");
-//    }
 
     @PostConstruct
     public void init() {
@@ -42,8 +40,4 @@ public class DynamicConfigInit {
         return propertySource;
     }
 
-    //    @Scheduled(cron = "*/10 * * * * ?")
-//    public void scheduling() {
-//        propertySource.refresh();
-//    }
 }

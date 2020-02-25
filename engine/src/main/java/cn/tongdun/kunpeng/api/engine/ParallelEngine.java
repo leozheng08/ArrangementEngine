@@ -89,12 +89,6 @@ public class ParallelEngine extends DecisionTool {
         }
     }
 
-    private IConfigRepository getConfigRepository(){
-        if(configRepository == null) {
-            configRepository = SpringContextHolder.getBean("dynamicLoadPropertySource", IConfigRepository.class);
-        }
-        return configRepository;
-    }
 
     /**
      * 根据事件类型确认规则引擎执行超时时间，单位ms 默认800ms
