@@ -64,7 +64,7 @@ public class ParallelEngine extends DecisionTool {
     @Autowired
     private SubPolicyManager subPolicyManager;
 
-    @Autowired
+//    @Autowired
     private IConfigRepository configRepository;
 
 
