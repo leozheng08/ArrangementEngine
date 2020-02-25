@@ -90,7 +90,7 @@ public class DynamicLoadPropertySource extends MapPropertySource implements ICon
                 map.put(key, property);
             }
             lastModified = file.lastModified();
-            logger.info("load app.properties:{}",map);
+            logger.info("load {fileName}:{}",fileName,map);
         } catch (Exception e) {
             logger.error("getProperties error",e);
         } finally {
