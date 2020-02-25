@@ -12,9 +12,6 @@
 
     <shutter:annotation-scan base-package="cn.tongdun.kunpeng.api.infrastructure.config"/>
 
-
-    <shutter:property-placeholder location="classpath*:kunpeng-api.properties" application="kunpeng-api" ignore-unresolvable="true" group="DEFAULT_GROUP"/>
-
     <!-- 依赖其他配置文件注意加  group -->
     <shutter:property-placeholder location="classpath*:dubbo.properties" application="dubbo" ignore-unresolvable="true" group="DEFAULT_GROUP"/>
     <shutter:property-placeholder location="classpath*:zookeeper.properties" application="zookeeper" ignore-unresolvable="true" group="DEFAULT_GROUP"/>

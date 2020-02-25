@@ -5,7 +5,6 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.api.infrastructure.config.ConfigManager;
 import cn.tongdun.kunpeng.client.api.IRiskService;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
@@ -31,10 +30,7 @@ public class RiskService implements IRiskService {
     private PipelineExecutor pipelineExecutor;
     @Autowired
     private DecisionResultTypeCache decisionResultTypeCache;
-
-
-    @Resource(name = "configManager")
-    private ConfigManager configManager;
+    
 
     @Override
     public RiskResponse riskService(Map<String, String> request) {

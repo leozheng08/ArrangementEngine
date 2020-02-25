@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.common.config;
 
 /**
- * 当前环境信息
+ * 当前环境信息配置信息
  */
 public interface ILocalEnvironment {
 

@@ -5,8 +5,8 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
-import cn.tongdun.kunpeng.api.infrastructure.config.ConfigManager;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.tdframework.core.pipeline.Step;
@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -37,8 +36,8 @@ public class GetPolicyUuidStep implements IRiskStep {
     private PolicyCache policyCache;
 
 
-    @Resource(name="configManager")
-    private ConfigManager configManager;
+    @Autowired
+    private IBaseConfig baseConfig;
 
     @Override
     public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
@@ -88,7 +87,7 @@ public class GetPolicyUuidStep implements IRiskStep {
         bizScenario.setTenant(localEnvironment.getTenant());
         bizScenario.setPartner(context.getPartnerCode());
         //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
-        String businessType = configManager.getBusinessByEventType(context.getEventType());
+        String businessType = baseConfig.getBusinessByEventType(context.getEventType());
         bizScenario.setBusiness(businessType);
         return bizScenario;
     }
