@@ -17,7 +17,7 @@ public class TimePointComparisonDetail extends ConditionDetail {
     private Double result;
 
     //时间
-    private Date date;
+    private Date time;
 
     //时间片，如周、小时、分钟
     private String timeSlice;
