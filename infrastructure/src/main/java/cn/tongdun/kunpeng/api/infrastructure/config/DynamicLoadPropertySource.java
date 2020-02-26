@@ -83,7 +83,7 @@ public class DynamicLoadPropertySource extends MapPropertySource {
                 map.put(key, property);
             }
             lastModified = file.lastModified();
-            logger.info("load {fileName}:{}",fileName,map);
+            logger.info("load {}:{}",fileName,map);
         } catch (Exception e) {
             logger.error("getProperties error",e);
         } finally {
