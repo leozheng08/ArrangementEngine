@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,8 @@ public class BaseConfig implements IBaseConfig{
     //eventType->businussType
     private Map<String,String> eventType2BusinussMap = new HashMap<>();
 
+    @Autowired
+    private DynamicConfigRepository dynamicConfig;
 
     //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
     @Override
