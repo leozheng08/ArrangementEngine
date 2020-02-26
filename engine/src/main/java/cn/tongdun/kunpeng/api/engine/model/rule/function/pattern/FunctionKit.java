@@ -8,7 +8,6 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.VelocityFuncType;
-import cn.tongdun.kunpeng.api.ruledetail.FourCalculationDetail;
 import cn.tongdun.kunpeng.api.ruledetail.FunctionKitDetail;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;

@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.step.geoIp.ext;
+package cn.tongdun.kunpeng.api.basedata.step.geoip.ext;
 
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 

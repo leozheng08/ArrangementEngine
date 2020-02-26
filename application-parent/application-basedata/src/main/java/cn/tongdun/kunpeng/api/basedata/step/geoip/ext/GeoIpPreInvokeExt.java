@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.step.geoIp.ext;
+package cn.tongdun.kunpeng.api.basedata.step.geoip.ext;
 
 import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -8,6 +8,6 @@ import cn.tongdun.tdframework.core.extension.Extension;
  * @Date: 2020/2/10 下午9:44
  */
 @Extension(business = BizScenario.DEFAULT,tenant = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
-public class GeoIpHandleExt implements IGeoIpHandleExtPt {
-
+public class GeoIpPreInvokeExt implements IGeoIpPreInvokeExtPt {
+    
 }
