@@ -159,7 +159,7 @@ public class AddressMatchFunction extends AbstractFunction {
         else if ("mobileAddress".equalsIgnoreCase(address)) {// 手机归属地
             MobileInfoDO mobileInfo = null;
             if (StringUtils.isBlank((String) context.get("accountMobileArea"))) {
-                mobileInfo = elfinBaseDataService.getMobileInfo(context.getAccountMobile());
+                mobileInfo = elfinBaseDataService.getMobileInfo((String) context.get("accountMobile"));
             }
             else {
                 mobileInfo = elfinBaseDataService.getMobileInfo((String) context.get("accountMobileArea"));
@@ -195,7 +195,7 @@ public class AddressMatchFunction extends AbstractFunction {
 
         }
         else if ("snAddress".equalsIgnoreCase(address)) {// 身份证归属地
-            if (StringUtils.isBlank(context.getIdNumber())) {
+            if (StringUtils.isBlank(context.getFieldToString("IdNumber"))) {
                 return null;
             }
             IdInfo idInfo = null;
@@ -203,7 +203,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 return "中国";
             }
             else if ("province".equalsIgnoreCase(scope)) {
-                String provinceCode = getDiffCode(scope, context.getIdNumber());
+                String provinceCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
                 idInfo = idInfoQueryService.getIdInfo(provinceCode);
                 if (null == idInfo) {
                     return null;
@@ -219,7 +219,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 return province;
             }
             else { // city
-                String cityCode = getDiffCode(scope, context.getIdNumber());
+                String cityCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
                 idInfo = idInfoQueryService.getIdInfo(cityCode);
                 if (null == idInfo) {
                     return null;

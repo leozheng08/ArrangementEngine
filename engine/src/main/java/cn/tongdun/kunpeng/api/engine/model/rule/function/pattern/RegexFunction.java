@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function;
+package cn.tongdun.kunpeng.api.engine.model.rule.function.pattern;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.InterruptibleCharSequence;
+import cn.tongdun.kunpeng.common.Constant;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +48,7 @@ public class RegexFunction extends AbstractFunction {
 
     @Override
     public String getName() {
-        return "localRegex";
+        return Constant.Function.PATTERN_REGEX;
     }
 
     @Override

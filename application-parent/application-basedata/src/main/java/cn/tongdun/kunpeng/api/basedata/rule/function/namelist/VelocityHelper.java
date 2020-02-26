@@ -1,6 +1,10 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
 
+import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
+import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,19 +53,9 @@ public class VelocityHelper {
     /**
      * 获取主属性维度值
      */
-    public static Object getDimensionValue(BaseDataContext context, String dimType) {
+    public static Object getDimensionValue(FraudContext context, String dimType) {
         Object dimValue = null;
         switch (dimType) {
-            case "deviceId":// DEVICE_ID:
-            case "smartId":// SMART_ID:
-            case "accountEmail":// EMAIL:
-            case "ipAddress":// IP_ADDRESS:
-            case "accountPhone":// PHONE:
-                dimValue = context.get(dimType);
-                break;
-            case "accountLogin":// USER:
-                dimValue = context.getAccountLogin();
-                break;
             case "eventOccurTime":// 事件发生时间
                 Date occurTime = context.getEventOccurTime();
                 if (null == occurTime) {
@@ -71,8 +65,9 @@ public class VelocityHelper {
                 break;
             case "location":
             case "city":
-                if (null != context.getGeoipEntity()) {
-                    dimValue = context.getGeoipEntity().getCity();
+                GeoipEntity geoipEntity = context.getExternalObj("geoipEntity", GeoipEntity.class);
+                if (null != geoipEntity) {
+                    dimValue = geoipEntity.getCity();
                 }
                 break;
             case "browser":
@@ -81,7 +76,7 @@ public class VelocityHelper {
                 }
                 break;
             default:// CUSTOM:
-                if (IDCardUtil.containIdKey(dimType)) {
+                if(isIdNumber(context,dimType)){//为身份证字段,转为小字
                     Object tempIdNumber = context.get(dimType);
                     if (null != tempIdNumber) {
                         if (tempIdNumber instanceof List) {
@@ -98,6 +93,22 @@ public class VelocityHelper {
                 break;
         }
         return dimValue;
+    }
+
+
+    //判断是否为身份证字段
+    private static boolean isIdNumber(FraudContext context, String dimType){
+        List<IFieldDefinition> fieldDefinitions =  context.getFieldDefinitions();
+        if(fieldDefinitions == null){
+            return false;
+        }
+
+        for(IFieldDefinition fieldDefinition:fieldDefinitions){
+            if("idNumber".equals(fieldDefinition.getProperty())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

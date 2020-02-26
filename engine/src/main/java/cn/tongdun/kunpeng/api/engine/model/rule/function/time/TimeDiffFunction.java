@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
 import cn.tongdun.kunpeng.api.ruledetail.TimeDiffDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -87,10 +88,12 @@ public class TimeDiffFunction extends AbstractFunction {
                 TimeDiffDetail detail = new TimeDiffDetail();
                 detail.setConditionUuid(conditionUuid);
                 detail.setRuleUuid(ruleUuid);
+                detail.setDescription(description);
+
                 detail.setDateA(dateA);
                 detail.setDateB(dateB);
                 detail.setResult((double) finalDiffMs);
-                String diffDisplay = finalDiff + getTimeSliceUnitDisplayName(timeunit);
+                String diffDisplay = finalDiff + TimeSlice.getTimeSliceUnitDisplayName(timeunit);
                 detail.setDiffDisplay(diffDisplay);
                 return detail;
             };
@@ -122,27 +125,5 @@ public class TimeDiffFunction extends AbstractFunction {
         return result;
     }
 
-
-    private String getTimeSliceUnitDisplayName(String timeSliceUnit) {
-        if (null == timeSliceUnit) {
-            return null;
-        }
-        switch (timeSliceUnit) {
-            case "y":
-                return "年";
-            case "M":
-                return "月";
-            case "d":
-                return "天";
-            case "h":
-                return "小时";
-            case "m":
-                return "分钟";
-            case "s":
-                return "秒";
-            default:
-                return timeSliceUnit;
-        }
-    }
 
 }

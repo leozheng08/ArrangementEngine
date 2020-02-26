@@ -143,7 +143,7 @@ public class GroovyCompileManager {
         };
         context.setPartnerCode("demo");
         context.setAppName("test");
-        context.setAccountMobile("13712341234");
+        context.set("accountMobile","13712341234");
         context.set("accountEmail", "hello@world.com");
         context.setEventId("login");
         context.setEventType("Login");
@@ -170,7 +170,7 @@ public class GroovyCompileManager {
                     logger.warn("动态脚本执行时间过长,fieldName:{},methodName:{}", fieldName, methodName);
                 }
 
-                context.setFieldValue(fieldName, value);
+                context.setField(fieldName, value);
             } catch(Throwable ex) {
                 logger.error("动态脚本执行失败,fieldName:{},methodName:{}", fieldName, methodName,ex);
                 failedCnt++;

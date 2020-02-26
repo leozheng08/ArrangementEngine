@@ -451,7 +451,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                 String key = entry.getKey();
                 Object value = entry.getValue();
                 if (value != null && !(value instanceof Map)) {
-                    fraudContext.setFieldValue(key, value);
+                    fraudContext.setField(key, value);
                 }
                 String[] interfaceParams = key.split("\\.");
 
@@ -459,7 +459,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                     fraudContext.setObject(true);
 
                     Object bomObj = reflectOutputMap.get(interfaceParams[0]);
-                    fraudContext.setFieldValue(interfaceParams[0], bomObj);
+                    fraudContext.setField(interfaceParams[0], bomObj);
                 }
             }
 

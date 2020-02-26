@@ -137,7 +137,7 @@ public class DynamicScriptManager {
                 if(t2 - t1 > 30){
                     logger.warn("动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
                 }
-                context.setFieldValue(fieldName, value);
+                context.setField(fieldName, value);
             } catch(Throwable ex) {
                 failedCnt++;
             }

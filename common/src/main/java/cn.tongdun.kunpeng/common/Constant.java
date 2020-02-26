@@ -35,7 +35,7 @@ public class Constant {
         public static final String LOCATION_PROXY = "location/proxy";
         public static final String LOCATION_GPS_DISTANCE = "location/gpsDistance";
 
-
+        public static final String PATTERN_REGEX = "pattern/regex";
         public static final String PATTERN_FUNCTION_KIT = "pattern/functionKit";
         public static final String PATTERN_FOUR_CALCULATION = "pattern/fourCalculation";
 
