@@ -12,7 +12,9 @@ APP_EXT_PARAM=''
 JVM_EXT_PARAM=''
 
 # custom logic starts
-JAVA_DEBUG_OPT=" -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8090,server=y,suspend=n "
+#JAVA_DEBUG_OPT=" -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8090,server=y,suspend=n "
+
+JAVA_DEBUG_OPT=" -agentlib:jdwp=transport=dt_socket,address=8090,server=y,suspend=n"
 
 APP_EXT_PARAM=" $APP_EXT_PARAM $JAVA_DEBUG_OPT"
 JVM_EXT_PARAM=" $JVM_EXT_PARAM "
