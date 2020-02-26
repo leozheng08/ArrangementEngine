@@ -3,3 +3,5 @@ common/custom=cn.fraudmetrix.module.tdrule.rule.CustomRule
 time/timediffer=cn.tongdun.kunpeng.api.engine.model.rule.template.TimeDiffRule
 time/timePointComparison=cn.tongdun.kunpeng.api.engine.model.rule.template.TimePointComparisonRule
 location/gpsDistance=cn.tongdun.kunpeng.api.engine.model.rule.template.GpsDistanceRule
+pattern/functionKit=cn.tongdun.kunpeng.api.engine.model.rule.template.FunctionKitRule
+pattern/fourCalculation=cn.tongdun.kunpeng.api.engine.model.rule.template.FourCalculationRule

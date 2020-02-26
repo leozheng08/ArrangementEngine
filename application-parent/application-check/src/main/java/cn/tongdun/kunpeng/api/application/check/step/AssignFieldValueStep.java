@@ -101,8 +101,6 @@ public class AssignFieldValueStep implements IRiskStep {
         }
         //调用async,如果async=true，则没有800ms规则引擎超时
         writeSyncInfoToContext(context, request);
-        //仿真专用
-        writeSimulationArgs(context, request);
 
         return true;
     }
@@ -253,25 +251,6 @@ public class AssignFieldValueStep implements IRiskStep {
             }
         } catch (Exception e){
             logger.warn("writeSyncInfoToContext error",e);
-        }
-    }
-
-    /**
-     * 将仿真调用的参数写入
-     */
-    private void writeSimulationArgs(AbstractFraudContext context, Map<String, String> request) {
-        if(StringUtils.isNotBlank(request.get("simulation_uuid")) && StringUtils.equalsIgnoreCase(request.get("td_td_simulation"), "1")) {
-            context.set("simulationUuid", request.get("simulation_uuid"));
-            if(!StringUtils.equalsIgnoreCase("all", request.get("simulation_partner"))) {
-                context.setSimulatePartnerCode(request.get("simulation_partner"));
-                context.setSimulateAppName(request.get("simulation_app"));
-            }
-
-            if(StringUtils.isNotBlank(request.get("td_sample_data_id"))) {
-                context.set("td_sample_data_id", request.get("td_sample_data_id"));
-            }
-            context.setSimulateSequenceId(request.get("simulation_seqid"));
-            context.setSimulation(true);
         }
     }
 }
