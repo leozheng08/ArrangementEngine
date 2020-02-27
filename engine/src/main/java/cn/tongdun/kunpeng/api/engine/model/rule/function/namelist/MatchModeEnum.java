@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
+package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
 /**
  * Created by lvyadong on 2020/01/17.

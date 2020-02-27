@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
+package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
 import org.apache.commons.lang3.StringUtils;
 

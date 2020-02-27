@@ -5,3 +5,6 @@ time/timePointComparison=cn.tongdun.kunpeng.api.engine.model.rule.template.TimeP
 location/gpsDistance=cn.tongdun.kunpeng.api.engine.model.rule.template.GpsDistanceRule
 pattern/functionKit=cn.tongdun.kunpeng.api.engine.model.rule.template.FunctionKitRule
 pattern/fourCalculation=cn.tongdun.kunpeng.api.engine.model.rule.template.FourCalculationRule
+watchlist/customList=cn.tongdun.kunpeng.api.engine.model.rule.template.CustomListRule
+watchlist/complexCustomList=cn.tongdun.kunpeng.api.engine.model.rule.template.ComplexCustomListRule
+pattern/terminated=cn.fraudmetrix.module.tdrule.rule.TerminatedRule

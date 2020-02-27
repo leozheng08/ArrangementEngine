@@ -1,6 +1,7 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
+package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
-import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
+
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,7 @@ public class VelocityHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(VelocityHelper.class);
 
-    public static List<String> getDimensionValues(BaseDataContext context, final String dimType) {
+    public static List<String> getDimensionValues(AbstractFraudContext context, final String dimType) {
         Object tmpValue = getDimensionValue(context, dimType);
         String dimValue = null;
         if (tmpValue != null) {
@@ -49,7 +50,7 @@ public class VelocityHelper {
     /**
      * 获取主属性维度值
      */
-    public static Object getDimensionValue(BaseDataContext context, String dimType) {
+    public static Object getDimensionValue(AbstractFraudContext context, String dimType) {
         Object dimValue = null;
         switch (dimType) {
             case "deviceId":// DEVICE_ID:
@@ -70,11 +71,11 @@ public class VelocityHelper {
                 dimValue = formatDateTime(occurTime);
                 break;
             case "location":
-            case "city":
-                if (null != context.getGeoipEntity()) {
-                    dimValue = context.getGeoipEntity().getCity();
-                }
-                break;
+//            case "city":
+//                if (null != context.getGeoipEntity()) {
+//                    dimValue = context.getGeoipEntity().getCity();
+//                }
+//                break;
             case "browser":
                 if (null != context.getDeviceInfo()) {
                     dimValue = context.getDeviceInfo().get("browser");
