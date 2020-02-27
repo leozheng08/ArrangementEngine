@@ -1,10 +1,8 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
+package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

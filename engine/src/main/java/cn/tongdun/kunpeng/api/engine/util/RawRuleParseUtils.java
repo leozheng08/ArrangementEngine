@@ -40,7 +40,7 @@ public class RawRuleParseUtils {
 
         Condition condition = rawRule.getConditionList().get(0);
         if (condition.getLeft().getFieldType() != FieldTypeEnum.FUNC ||
-                !condition.getId().equals(functionDesc.getId())) {
+                !condition.getLeft().getValue().equals(functionDesc.getId().toString())) {
             throw new ParseException("RawRuleParseUtils condition not match function error,ruleUuid:" + fourCalculation.getRuleUuid() + ",conditionUuid:" + fourCalculation.getConditionUuid());
         }
 

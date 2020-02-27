@@ -221,8 +221,9 @@ public class PolicyRepository implements IPolicyRepository{
                     break;
                 case "Weighted":
                     WeightedRiskConfigDTO weighted = new WeightedRiskConfigDTO();
-                    weighted.setBaseWeight(jsonObject.getDouble("riskWeight"));
+                    weighted.setBaseWeight(jsonObject.getDouble("baseWeight"));
                     weighted.setWeightRatio(jsonObject.getDouble("weightRatio"));
+
                     weighted.setOp(jsonObject.getString("op"));
 
                     weighted.setProperty((String) JSONPath.eval(jsonObject, "$.propertyValue.value"));
