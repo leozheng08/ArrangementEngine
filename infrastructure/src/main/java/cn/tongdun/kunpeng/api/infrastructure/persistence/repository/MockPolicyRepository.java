@@ -121,12 +121,12 @@ public class MockPolicyRepository implements IPolicyRepository{
         ruleDO.setRuleCustomId("56935914");
 
         WeightedRiskConfigDTO weightedRiskConfigDTO = new WeightedRiskConfigDTO();
-        weightedRiskConfigDTO.setLowerLimitScore(-30D);
-        weightedRiskConfigDTO.setUpperLimitScore(30D);
-        weightedRiskConfigDTO.setBaseWeight(10);
-        weightedRiskConfigDTO.setWeightRatio(5);
-        weightedRiskConfigDTO.setPropertyType("index");
-        weightedRiskConfigDTO.setProperty("123456");
+        weightedRiskConfigDTO.setLowerLimitScore(-30);
+        weightedRiskConfigDTO.setUpperLimitScore(30);
+        weightedRiskConfigDTO.setBaseWeight(10D);
+        weightedRiskConfigDTO.setWeightRatio(5D);
+        weightedRiskConfigDTO.setWeightProperty("index");
+        weightedRiskConfigDTO.setWeightPropertyValue("123456");
         ruleDO.setWeightedRiskConfigDTO(weightedRiskConfigDTO);
 
         //规则条件

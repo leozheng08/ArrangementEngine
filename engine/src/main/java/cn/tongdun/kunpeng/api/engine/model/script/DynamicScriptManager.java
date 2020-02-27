@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.script;
 
+import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.client.data.RiskResponse;

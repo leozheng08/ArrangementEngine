@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.AbstractCalculateFunction;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class WeightFunction extends AbstractCalculateFunction {
     private Double lowerLimitScore = -30D;
     private Double upperLimitScore = 30D;
 
-    private Variable weightIndex;
+    private Variable weightProperty;
 
     @Override
     public String getName() {
@@ -34,7 +35,7 @@ public class WeightFunction extends AbstractCalculateFunction {
     protected FunctionResult run(ExecuteContext executeContext) {
         Double weight = null;
         try {
-            weight = (Double) weightIndex.eval(executeContext);
+            weight = DataUtil.toDouble(weightProperty.eval(executeContext));
         } catch (Exception e){
             logger.warn("WeightFunction weightIndex eval error",e);
         }
@@ -70,8 +71,8 @@ public class WeightFunction extends AbstractCalculateFunction {
                 case "upperLimitScore":
                     upperLimitScore = Double.valueOf(functionParam.getValue());
                     break;
-                case "weightIndex":
-                    weightIndex = buildVariable(functionParam, null);
+                case "weightProperty":
+                    weightProperty = buildVariable(functionParam, null);
                     break;
                 default:
             }

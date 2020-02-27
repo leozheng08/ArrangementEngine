@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;

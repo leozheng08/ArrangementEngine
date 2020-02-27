@@ -60,8 +60,7 @@ public class PolicyIndexConvertor implements IConvertor<List<IndexDefinitionDTO>
         //2.找出所有有嵌套递归计算的FunctionDesc，并把嵌套的逻辑放好
         for (Map.Entry<String, FunctionDesc> entry : functionDescMap.entrySet()) {
             for (FunctionParam functionParam : entry.getValue().getParamList()) {
-                if (StringUtils.equalsIgnoreCase(functionParam.getType(), FieldTypeEnum.POLICY_INDEX.getCode()) ||
-                        StringUtils.equalsIgnoreCase(functionParam.getType(), FieldTypeEnum.POLICY_INDEX.getAlias())) {
+                if (FieldTypeEnum.POLICY_INDEX.equalsForType(functionParam.getType())) {
                     FunctionDesc functionDesc = functionDescMap.get(functionParam.getValue());
                     if (null == functionDesc) {
                         throw new ParseException("PolicyIndexConvertor convert error,the Index param is function,but not found functionDesc,policyIndexUuid:" + entry.getKey());

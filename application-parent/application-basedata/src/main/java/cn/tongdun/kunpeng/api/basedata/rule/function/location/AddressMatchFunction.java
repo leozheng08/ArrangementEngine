@@ -87,7 +87,7 @@ public class AddressMatchFunction extends AbstractFunction {
         BinInfoQueryService binInfoQueryService = SpringContextHolder.getBean("binInfoQueryService", BinInfoQueryService.class);
 
         if ("ipAddress".equalsIgnoreCase(address)) {// IP地理位置
-            GeoipEntity geoInfo = context.getExternalObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY,GeoipEntity.class);         // FIXME: 2/13/20 hanle geoip
+            GeoipEntity geoInfo = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY,GeoipEntity.class);         // FIXME: 2/13/20 hanle geoip
             if (null == geoInfo) {
                 return null;
             }

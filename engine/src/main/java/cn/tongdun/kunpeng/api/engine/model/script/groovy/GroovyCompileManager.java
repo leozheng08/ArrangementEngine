@@ -1,7 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import groovy.lang.GroovyObject;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -55,7 +57,7 @@ public class GroovyCompileManager {
         WrappedGroovyObject groovyField = new WrappedGroovyObject();
         GroovyClassGenerator generator = new GroovyClassGenerator(key);
         generator.init();
-        String methodName = replaceJavaVarNameNotSupportChar(field);
+        String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(field);
         generator.appendMethod(methodName, methodBody);
 
         GroovyObject groovyObject = generator.compileGroovySource();
@@ -94,17 +96,6 @@ public class GroovyCompileManager {
         groovyFieldCache.remove(key);
     }
 
-
-    /**
-     * 替换掉java变量名不支持的字符(允许的是: 下划线或者字母开头,后边允许加数字)<br>
-     * 并加 m_ 开头
-     *
-     * @param fieldName
-     * @return
-     */
-    public static String replaceJavaVarNameNotSupportChar(String fieldName) {
-        return ("m_" + fieldName).replaceAll("[^a-zA-Z0-9_]", "");
-    }
 
 
     public void warmAllGroovyFields() {
@@ -158,7 +149,7 @@ public class GroovyCompileManager {
         for (String fieldName : field.getFieldMethods().keySet()) {
 
 
-            String methodName = replaceJavaVarNameNotSupportChar(fieldName);
+            String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(fieldName);
             Object value;
 
 

@@ -86,9 +86,9 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         paramList.add(weightRatio);
 
         FunctionParam weightIndex = new FunctionParam();
-        weightIndex.setType(riskConfigDTO.getPropertyType());
-        weightIndex.setValue(riskConfigDTO.getProperty());
-        weightIndex.setName("weightIndex");
+        weightIndex.setType(riskConfigDTO.getWeightProperty());
+        weightIndex.setValue(riskConfigDTO.getWeightPropertyValue());
+        weightIndex.setName("weightProperty");
         paramList.add(weightIndex);
 
         if(riskConfigDTO.getLowerLimitScore() != null) {
