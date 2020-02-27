@@ -17,12 +17,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimePointComparisonFunction extends AbstractFunction {
+public class TimePointFunction extends AbstractFunction {
 
     private String calcField;
     private String timeunit;
-    private String lowerLimit;
-    private String upperLimit;
 
     @Override
     public String getName() {
@@ -39,21 +37,10 @@ public class TimePointComparisonFunction extends AbstractFunction {
         functionDesc.getParamList().forEach(param -> {
             if (StringUtils.equals("calcField", param.getName())) {
                 calcField = param.getValue();
-            }
-            else if (StringUtils.equals("timeunit", param.getName())) {
+            } else if (StringUtils.equals("timeunit", param.getName())) {
                 timeunit = param.getValue();
             }
-            else if (StringUtils.equals("lowerLimit", param.getName())) {
-                lowerLimit = param.getValue();
-            }
-            else if (StringUtils.equals("upperLimit", param.getName())) {
-                upperLimit = param.getValue();
-            }
         });
-
-        if (StringUtils.isAnyBlank(lowerLimit, upperLimit)) {
-            throw new ParseException("TimePointComparison function lowerLimit or upperLimit error");
-        }
     }
 
     @Override
@@ -62,7 +49,7 @@ public class TimePointComparisonFunction extends AbstractFunction {
 
         Date date = DateUtil.getDateValue(context.get(calcField));
         if (null == date) {
-            return new FunctionResult(false);
+            return new FunctionResult(Double.NaN);
         }
 
         int dateValue = 0;
@@ -70,59 +57,34 @@ public class TimePointComparisonFunction extends AbstractFunction {
         calendar.setTime(date);
         if (TimeSlice.YEAR.equals(timeunit)) {
             dateValue = calendar.get(Calendar.YEAR);
-        }
-        else if (TimeSlice.MONTH.equals(timeunit)) {
+        } else if (TimeSlice.MONTH.equals(timeunit)) {
             dateValue = calendar.get(Calendar.MONTH);
-        }
-        else if (TimeSlice.WEEK.equals(timeunit)) {
+        } else if (TimeSlice.WEEK.equals(timeunit)) {
             dateValue = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        }
-        else if (TimeSlice.DAY.equals(timeunit)) {
+        } else if (TimeSlice.DAY.equals(timeunit)) {
             dateValue = calendar.get(Calendar.DAY_OF_MONTH);
-        }
-        else if (TimeSlice.HOUR.equals(timeunit)) {
+        } else if (TimeSlice.HOUR.equals(timeunit)) {
             dateValue = calendar.get(Calendar.HOUR_OF_DAY);
-        }
-        else if (TimeSlice.MINUTE.equals(timeunit)) {
+        } else if (TimeSlice.MINUTE.equals(timeunit)) {
             dateValue = calendar.get(Calendar.MINUTE);
-        }
-        else if (TimeSlice.SECOND.equals(timeunit)) {
+        } else if (TimeSlice.SECOND.equals(timeunit)) {
             dateValue = calendar.get(Calendar.SECOND);
         }
 
-        boolean result = false;
-        if (StringUtils.isNotBlank(upperLimit) && StringUtils.isNotBlank(lowerLimit)) {
-            result = isInTimeRange(dateValue, lowerLimit, upperLimit);
-        }
 
+        double finalDateValue = Integer.valueOf(dateValue).doubleValue();
+        DetailCallable detailCallable = () -> {
+            TimePointComparisonDetail detail = null;
+            detail = new TimePointComparisonDetail();
+            detail.setConditionUuid(conditionUuid);
+            detail.setRuleUuid(ruleUuid);
+            detail.setDescription(description);
+            detail.setTime(date);
+            detail.setTimeSlice(timeunit);
+            detail.setResult(finalDateValue);
+            return detail;
+        };
 
-        DetailCallable detailCallable = null;
-        if (result) {
-            int finalDateValue = dateValue;
-            detailCallable = () -> {
-                TimePointComparisonDetail detail = null;
-                detail = new TimePointComparisonDetail();
-                detail.setConditionUuid(conditionUuid);
-                detail.setRuleUuid(ruleUuid);
-                detail.setDescription(description);
-                detail.setTime(date);
-                detail.setTimeSlice(timeunit);
-                detail.setResult((double) finalDateValue);
-                return detail;
-            };
-        }
-
-        return new FunctionResult(result, detailCallable);
-    }
-
-
-    private boolean isInTimeRange(int dateValue, String lowerLimit, String upperLimit) {
-        boolean result = false;
-        int lowerLimitVal = Integer.parseInt(lowerLimit);
-        int upperLimitVal = Integer.parseInt(upperLimit);
-        if ((dateValue >= lowerLimitVal) && (dateValue <= upperLimitVal)) {
-            result = true;
-        }
-        return result;
+        return new FunctionResult(finalDateValue, detailCallable);
     }
 }

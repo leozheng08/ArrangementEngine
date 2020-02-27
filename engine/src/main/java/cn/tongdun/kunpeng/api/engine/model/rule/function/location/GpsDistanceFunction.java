@@ -19,7 +19,6 @@ public class GpsDistanceFunction extends AbstractFunction {
 
     private String gpsA;
     private String gpsB;
-    private String distanceOperator;
     private String distanceSlice;
 
     @Override
@@ -37,21 +36,12 @@ public class GpsDistanceFunction extends AbstractFunction {
         functionDesc.getParamList().forEach(param -> {
             if (StringUtils.equals("gpsA", param.getName())) {
                 gpsA = param.getValue();
-            }
-            else if (StringUtils.equals("gpsB", param.getName())) {
+            } else if (StringUtils.equals("gpsB", param.getName())) {
                 gpsB = param.getValue();
-            }
-            else if (StringUtils.equals("distanceOperator", param.getName())) {
-                distanceOperator = param.getValue();
-            }
-            else if (StringUtils.equals("distanceSlice", param.getName())) {
+            } else if (StringUtils.equals("distanceSlice", param.getName())) {
                 distanceSlice = param.getValue();
             }
         });
-
-        if (StringUtils.isBlank(distanceOperator) || "none".equals(distanceOperator)) {
-            throw new ParseException(("GpsDistance function parse error, distanceOperator error"));
-        }
 
     }
 
@@ -59,40 +49,36 @@ public class GpsDistanceFunction extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
+        double result = Double.NaN;
         GpsEntity gps1 = getGpsEntity(context.getField(gpsA));
         GpsEntity gps2 = getGpsEntity(context.getField(gpsB));
-        if (null == gps1 || null == gps2 || null == distanceOperator) {
-            return new FunctionResult(false);
+        if (null == gps1 || null == gps2) {
+            return new FunctionResult(result);
         }
 
         int difference = 0;
         if (null != distanceSlice) {
             try {
                 difference = Integer.parseInt(distanceSlice);
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 logger.error("distanceSlice {} 格式错误", distanceSlice, e);
             }
         }
 
-        double distance = getDistance(gps1, gps2, false);
-        boolean result = distanceDiffResult(distanceOperator, difference, distance);
-
-        DetailCallable detailCallable = null;
-        if (result) {
-            detailCallable = () -> {
-                GpsDistanceDetail detail = null;
-                detail = new GpsDistanceDetail();
-                detail.setConditionUuid(conditionUuid);
-                detail.setRuleUuid(ruleUuid);
-                detail.setDescription(description);
-                detail.setGpsA(gpsA);
-                detail.setGpsB(gpsB);
-                detail.setResult(distance);
-                detail.setUnit("m");
-                return detail;
-            };
-        }
+        result = getDistance(gps1, gps2, false);
+        double ret = result;
+        DetailCallable detailCallable = () -> {
+            GpsDistanceDetail detail = null;
+            detail = new GpsDistanceDetail();
+            detail.setConditionUuid(conditionUuid);
+            detail.setRuleUuid(ruleUuid);
+            detail.setDescription(description);
+            detail.setGpsA(gpsA);
+            detail.setGpsB(gpsB);
+            detail.setResult(ret);
+            detail.setUnit("m");
+            return detail;
+        };
         return new FunctionResult(result, detailCallable);
     }
 
@@ -114,8 +100,7 @@ public class GpsDistanceFunction extends AbstractFunction {
 
             latitudeNLongitude = gpsAddress.split(",");
             return getGpsEntity(latitudeNLongitude);
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             logger.error("getGpsEntity class cast error {}", obj, e);
             return null;
         }
@@ -131,8 +116,7 @@ public class GpsDistanceFunction extends AbstractFunction {
             double latitude = Double.parseDouble(latitudeNLongitude[0].trim());
             double longitude = Double.parseDouble(latitudeNLongitude[1].trim());
             gps = new GpsEntity(longitude, latitude);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("经纬度格式转换错误, lat-lon {}", latitudeNLongitude, e);
         }
         return gps;
@@ -162,27 +146,6 @@ public class GpsDistanceFunction extends AbstractFunction {
 
     private static double rad(double d) {
         return d * Math.PI / 180.0;
-    }
-
-    private boolean distanceDiffResult(String distanceOperator, int difference, double distance) {
-        boolean ret = false;
-
-        if (">".equals(distanceOperator)) {
-            ret = distance > difference;
-        }
-        else if (">=".equals(distanceOperator)) {
-            ret = distance >= difference;
-        }
-        else if ("<".equals(distanceOperator)) {
-            ret = distance < difference;
-        }
-        else if ("<=".equals(distanceOperator)) {
-            ret = distance <= difference;
-        }
-        else if ("==".equals(distanceOperator)) {
-            ret = distance == difference;
-        }
-        return ret;
     }
 
 
