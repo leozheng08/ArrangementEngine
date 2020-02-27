@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Sets;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +91,6 @@ public class AssignFieldValueStep implements IRiskStep {
 
         //判断是否测试数据
         boolean testFlag = StringUtils.equalsIgnoreCase(request.get("test-flag"), "true");
-
         context.setTestFlag(testFlag);
 
 
@@ -99,6 +99,7 @@ public class AssignFieldValueStep implements IRiskStep {
             context.set("firstIndustryType", partner.getIndustryType());
             context.set("secondIndustryType", partner.getSecondIndustryType());
         }
+
         //调用async,如果async=true，则没有800ms规则引擎超时
         writeSyncInfoToContext(context, request);
 
@@ -119,81 +120,28 @@ public class AssignFieldValueStep implements IRiskStep {
                                        List<FieldDefinition> extendFields) {
         if (ctx != null && request != null && systemFields != null) {
             // set system fields
-            for (FieldDefinition field : systemFields) {
-                String fieldCode = field.getFieldCode();
+            for (FieldDefinition fieldDefinition : systemFields) {
+                String fieldCode = fieldDefinition.getFieldCode();
                 if (excludeFieldName.contains(fieldCode)) {
                     continue;
                 }
-                String dataType = field.getDataType();
-
                 String underlineStr = KunpengStringUtils.camel2underline(fieldCode);
-                String fieldValue = request.get(underlineStr);
-                if (StringUtils.isNotBlank(fieldValue)) {
-                    try {
-                        if (FieldDataType.STRING.name().equals(dataType)) {
-                            ctx.set(fieldCode, fieldValue);
-                        } else if (FieldDataType.INT.name().equals(dataType)) {
-                            ctx.set(fieldCode, new Integer(fieldValue));
-                        } else if (FieldDataType.DOUBLE.name().equals(dataType)) {
-                            ctx.set(fieldCode, new Double(fieldValue));
-                        } else if (FieldDataType.DATETIME.name().equals(dataType)) {
-                            ctx.set(fieldCode, DateUtil.parseDateTime(fieldValue));
-                        } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
-                            ctx.getSystemFiels().put(fieldCode, "true".equalsIgnoreCase(fieldValue) ? true : false);
-                        } else if (FieldDataType.ARRAY.name().equals(dataType)) {
-                            fieldValue = fieldValue.replaceAll("，", ",");
-                            ctx.set(fieldCode, Arrays.asList(fieldValue.split(",")));
-                        } else if (FieldDataType.OBJECT.name().equals(dataType)) {
-                            try {
-                                // 把系统对象的名称加进来，整体组装成大JSON
-                                JSONObject fieldInfo = new JSONObject();
-                                JSONObject fieldValueJson = JSONObject.parseObject(fieldValue);
-                                fieldInfo.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldCode), fieldValueJson);
-                                // 拍平入参JSON
-                                Map<String, Object> flattenedJsonInfo = JsonUtil.getFlattenedInfo(fieldInfo.toJSONString());
-                                ctx.getSystemFiels().putAll(flattenedJsonInfo);
-                                ctx.setObject(true);
-                                // 原始JSON也保存一份
-                                ctx.getSystemFiels().put(fieldCode, camelJson(fieldValueJson));
-                            } catch (Exception e) {
-                                logger.warn("复杂入参 Invalid JSON error:" + e.getMessage());
-                            }
-                        }
-                    } catch (Exception e) {
-                        logger.warn("决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
-                                fieldCode, fieldValue, e.getMessage());
-                    }
-                }
-            }
-        }
-        if (ctx != null && request != null && extendFields != null) {
-            // set extend fields
-            for (FieldDefinition field : extendFields) {
-                String fieldCode = field.getFieldCode();
-                String dataType = field.getDataType();
-                String fieldValue = request.get(fieldCode);
-                if (StringUtils.isBlank(fieldValue)) {
+                String requestValue = request.get(underlineStr);
+                if (StringUtils.isBlank(requestValue)) {
                     continue;
                 }
+                putValueByFieldDefinition(ctx.getCustomFields(),fieldDefinition,requestValue);
+            }
+        }
 
-                try {
-                    if (FieldDataType.STRING.name().equals(dataType)) {
-                        ctx.getCustomFields().put(fieldCode, fieldValue);
-                    } else if (FieldDataType.INT.name().equals(dataType)) {
-                        ctx.getCustomFields().put(fieldCode, (int) Double.parseDouble(fieldValue));
-                    } else if (FieldDataType.DOUBLE.name().equals(dataType)) {
-                        ctx.getCustomFields().put(fieldCode, Double.parseDouble(fieldValue));
-                    } else if (FieldDataType.DATETIME.name().equals(dataType)) {
-                        ctx.getCustomFields().put(fieldCode, DateUtil.parseDateTime(fieldValue));
-                    } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
-                        ctx.getCustomFields().put(fieldCode, "true".equalsIgnoreCase(fieldValue) ? true : false);
-                    } else if (FieldDataType.ARRAY.name().equals(dataType)) {
-                        ctx.getCustomFields().put(fieldCode, Arrays.asList(fieldValue.replaceAll("，", ",").split(",")));
-                    }
-                } catch (Exception e) {
-                    logger.warn("决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
-                            fieldCode,fieldValue,e.getMessage());
+        if (ctx != null && request != null && extendFields != null) {
+            // set extend fields
+            for (FieldDefinition fieldDefinition : extendFields) {
+                String requestValue = request.get(fieldDefinition.getFieldCode());
+                if (StringUtils.isBlank(requestValue)) {
+                    continue;
                 }
+                putValueByFieldDefinition(ctx.getCustomFields(),fieldDefinition,requestValue);
             }
         }
     }
@@ -253,4 +201,86 @@ public class AssignFieldValueStep implements IRiskStep {
             logger.warn("writeSyncInfoToContext error",e);
         }
     }
+
+
+    /**
+     * 将合作方请求的值，根据字段定义做转换后设置到上下文
+     * @param fieldDefinition
+     * @param requestValue
+     * @return
+     */
+    private void putValueByFieldDefinition(Map<String, Object> fields,FieldDefinition fieldDefinition,String requestValue){
+
+        String dataType = fieldDefinition.getDataType();
+        String fieldCode = fieldDefinition.getFieldCode();
+        try {
+            if(!FieldDataType.OBJECT.name().equals(dataType)){
+                Object fieldValue = null;
+                if (FieldDataType.STRING.name().equals(dataType)) {
+                    fieldValue = requestValue;
+                } else if (FieldDataType.INT.name().equals(dataType)) {
+                    fieldValue = new Integer(requestValue);
+                } else if (FieldDataType.DOUBLE.name().equals(dataType)) {
+                    fieldValue = new Double(requestValue);
+                } else if (FieldDataType.DATETIME.name().equals(dataType)) {
+                    fieldValue = DateUtil.parseDateTime(requestValue);
+                } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
+                    fieldValue = "true".equalsIgnoreCase(requestValue) ? true : false;
+                } else if (FieldDataType.ARRAY.name().equals(dataType)) {
+                    fieldValue = Arrays.asList(requestValue.replaceAll("，", ",").split(","));
+                }
+                fieldValue = getValueByPropertyType(fieldDefinition,fieldValue);
+                fields.put(fieldCode,fieldValue);
+            } else  {
+                //对象类型
+                try {
+                    // 把系统对象的名称加进来，整体组装成大JSON
+                    JSONObject fieldInfo = new JSONObject();
+                    JSONObject fieldValueJson = JSONObject.parseObject(requestValue);
+                    fieldInfo.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldCode), fieldValueJson);
+                    // 拍平入参JSON
+                    Map<String, Object> flattenedJsonInfo = JsonUtil.getFlattenedInfo(fieldInfo.toJSONString());
+                    fields.putAll(flattenedJsonInfo);
+                    // 原始JSON也保存一份
+                    fields.put(fieldCode, camelJson(fieldValueJson));
+                } catch (Exception e) {
+                    logger.warn("复杂入参 Invalid JSON error:" + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
+                    fieldCode, requestValue, e.getMessage());
+        }
+    }
+
+    /**
+     * 根据所属类型（idNumber:身份证 mobile:手机号 email:邮箱）对值做处理
+     * @param fieldDefinition
+     * @param fieldValue
+     * @return
+     */
+    private Object getValueByPropertyType(FieldDefinition fieldDefinition,Object fieldValue){
+        if(fieldValue == null){
+            return fieldValue;
+        }
+
+        //所属类型idNumber:身份证 mobile:手机号 email:邮箱
+        String property = fieldDefinition.getProperty();
+        if(property == null){
+            return fieldValue;
+        }
+
+        //身份证做小写处理
+        if("idNumber".equals(property)){
+            if (fieldValue instanceof List) {
+                List<?> list = (List<?>) fieldValue;
+                CollectionUtils.transform(list, input -> input.toString().toUpperCase());
+            } else {
+                fieldValue = fieldValue.toString().toUpperCase();
+            }
+        }
+
+        return fieldValue;
+    }
+
 }

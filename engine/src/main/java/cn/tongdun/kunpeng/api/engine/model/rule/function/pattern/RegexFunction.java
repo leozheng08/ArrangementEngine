@@ -7,13 +7,18 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.InterruptibleCharSequence;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -86,6 +91,46 @@ public class RegexFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
+
+//        List<String> dimValues = VelocityHelper.getDimensionValues((AbstractFraudContext)executeContext, property);
+//        if (null == dimValues || dimValues.isEmpty()) {
+//            return new FunctionResult(false);
+//        }
+//
+//        List<Future<RegularMatchData>> futures = new ArrayList<>();
+//        for(String dimValue :dimValues){
+//            if(StringUtils.isBlank(dimValue)){
+//                continue;
+//            }
+//
+//            Future<RegularMatchData> future = regexThreadPool.submit(() -> {
+//                RegularMatchData regularMatchData = new RegularMatchData();
+//                Matcher matcher = regexPattern.matcher(new InterruptibleCharSequence(dimValue));
+//                Boolean result = matcher.matches();
+//                regularMatchData.setDimValue(dimValue);
+//                regularMatchData.setResult(result);
+//                return regularMatchData;
+//            });
+//            futures.add(future);
+//        }
+//
+//
+//        Boolean ret = false;
+//
+//            for(Future<RegularMatchData> future : futures) {
+//                try {
+//                    RegularMatchData regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
+//                } catch (Exception e) {
+//                    logger.error(e.getMessage(), e);
+//                    future.cancel(true);
+//                }
+//
+//            }
+//
+//        if (ret == null) {
+//            ret = false;
+//        }
+
 
         Object propertyField = executeContext.getField(property);
         if (propertyField == null) {

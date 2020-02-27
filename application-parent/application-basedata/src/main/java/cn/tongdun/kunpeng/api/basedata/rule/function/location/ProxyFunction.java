@@ -55,7 +55,7 @@ public class ProxyFunction extends AbstractFunction {
             boolean isProxyIp = false;
             boolean switchCfg = true;               // FIXME: 2/7/20 shutter switch
             if (switchCfg) {
-                IpReputationRulesObj ipReputationRulesObj = context.getExternalObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION,IpReputationRulesObj.class);
+                IpReputationRulesObj ipReputationRulesObj = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION,IpReputationRulesObj.class);
                 // IP画像只处理VPN、HTTP、SOCKS三种，为了兼容历史，转一下再调IP画像的方法
                 String proxyType = getProxyTypeByProtocol(proxyIpType);
                 if (ipReputationRulesObj != null && StringUtils.isNotBlank(proxyType)) {

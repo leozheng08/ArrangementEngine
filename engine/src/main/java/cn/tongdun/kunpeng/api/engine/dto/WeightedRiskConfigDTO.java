@@ -9,15 +9,29 @@ import lombok.Data;
  */
 @Data
 public class WeightedRiskConfigDTO{
-    private double baseWeight = 0;                          // 风险权重基线
-    private double weightRatio = 0;                         // 风险权重比例
-    private String op;                                      // 四则运行操作符
 
-    private String propertyType;                            // 变量类型类型 PLATFORM_INDEX/POLICY_INDEX/field
-    private String propertyTypeName;                        // 变量名称
-    private String property;                                // 变量值
+    /**
+     * 权重模式有下面的值
+     */
+    private Double baseWeight;
 
-    private Double upperLimitScore;                         // 权重计算分数右值上限
-    private Double lowerLimitScore;                         // 权重计算分数右值下限
+    /**
+     * 权重比重
+     */
+    private Double weightRatio;
+
+    /**
+     * 权重属性
+     *
+     * @see cn.tongdun.kunpeng.admin.domain.constant.PropertyTypeEnum
+     */
+    private String weightProperty;
+
+    /**
+     * 权重属性值
+     */
+    private String weightPropertyValue;
+    private Integer lowerLimitScore;
+    private Integer upperLimitScore;
 
 }

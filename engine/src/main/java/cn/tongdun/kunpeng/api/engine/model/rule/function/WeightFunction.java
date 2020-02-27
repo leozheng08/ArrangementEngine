@@ -23,7 +23,7 @@ public class WeightFunction extends AbstractCalculateFunction {
     private Double lowerLimitScore = -30D;
     private Double upperLimitScore = 30D;
 
-    private Variable weightIndex;
+    private Variable weightProperty;
 
     @Override
     public String getName() {
@@ -34,7 +34,7 @@ public class WeightFunction extends AbstractCalculateFunction {
     protected FunctionResult run(ExecuteContext executeContext) {
         Double weight = null;
         try {
-            weight = (Double) weightIndex.eval(executeContext);
+            weight = (Double) weightProperty.eval(executeContext);
         } catch (Exception e){
             logger.warn("WeightFunction weightIndex eval error",e);
         }
@@ -70,8 +70,8 @@ public class WeightFunction extends AbstractCalculateFunction {
                 case "upperLimitScore":
                     upperLimitScore = Double.valueOf(functionParam.getValue());
                     break;
-                case "weightIndex":
-                    weightIndex = buildVariable(functionParam, null);
+                case "weightProperty":
+                    weightProperty = buildVariable(functionParam, null);
                     break;
                 default:
             }

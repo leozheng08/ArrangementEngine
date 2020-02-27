@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 
 @Data
 public abstract class AbstractFraudContext implements Serializable, ExecuteContext {
@@ -213,7 +213,9 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 调外部接口返回的结果
      */
-    private Map<String,Object> externalObj = new ConcurrentHashMap<>() ;
+    private Map<String,Object> externalReturnObj = new ConcurrentHashMap<>() ;
+
+    private Map<String,Supplier> externalFieldValues = new ConcurrentHashMap<>();
 
     /**
      * 外部的服务实例
@@ -358,7 +360,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             }
         }
 
-        return null;
+        return getExternalFieldValues(key);
     }
 
     public String getFieldToString(String key){
@@ -462,11 +464,19 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
 
     public void addExternalObj(String key,Object obj){
-        externalObj.put(key,obj);
+        externalReturnObj.put(key,obj);
     }
 
-    public <T> T getExternalObj(String key,Class<T> calss){
-        return (T)externalObj.get(key);
+    public <T> T getExternalReturnObj(String key, Class<T> calss){
+        return (T) externalReturnObj.get(key);
+    }
+
+    public Object getExternalFieldValues(String key){
+        Supplier supplier = externalFieldValues.get(key);
+        if(supplier == null){
+            return null;
+        }
+        return supplier.get();
     }
 
     public void addExternalService(String key,Object obj){

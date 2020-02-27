@@ -45,7 +45,7 @@ public class FieldDefinition extends VersionedEntity implements IFieldDefinition
     private String displayName;
 
     /**
-     * 字段属性列，用于追加字段所属类型idNumber:身份证 mobile:手机号 email:邮箱 property
+     * 字段属性列，用于追加字段所属类型idNumber:身份证 mobile:手机号 email:邮箱
      */
     private String property;
 
