@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.util;
 
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -60,6 +61,33 @@ public class VelocityHelper {
         }
         return dimValue;
     }
+
+    /**
+     * 根据字段的内部标识名字和事件类型获取其显示名字
+     *
+     * @param fieldCode
+     * @param context
+     * @return null fieldName 或者查询不到，否则返回查询到的显示名
+     */
+    public static String getFieldDisplayName(String fieldCode, AbstractFraudContext context) {
+        if (StringUtils.isBlank(fieldCode)) {
+            return fieldCode;
+        }
+
+        List<IFieldDefinition> fieldDefinitions = context.getFieldDefinitions();
+        if (null == fieldDefinitions || fieldDefinitions.isEmpty()) {
+            return fieldCode;
+        }
+
+        for (IFieldDefinition fieldDefinition : fieldDefinitions) {
+            if (fieldCode.equals(fieldDefinition.getFieldCode())) {
+                return fieldDefinition.getDisplayName();
+            }
+        }
+
+        return fieldCode;
+    }
+
 
 }
 

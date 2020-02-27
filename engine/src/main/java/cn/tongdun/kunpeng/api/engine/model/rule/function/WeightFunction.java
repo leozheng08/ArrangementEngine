@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.AbstractCalculateFunction;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class WeightFunction extends AbstractCalculateFunction {
     protected FunctionResult run(ExecuteContext executeContext) {
         Double weight = null;
         try {
-            weight = (Double) weightProperty.eval(executeContext);
+            weight = DataUtil.toDouble(weightProperty.eval(executeContext));
         } catch (Exception e){
             logger.warn("WeightFunction weightIndex eval error",e);
         }

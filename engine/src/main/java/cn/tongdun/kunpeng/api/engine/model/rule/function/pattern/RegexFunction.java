@@ -6,8 +6,12 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.InterruptibleCharSequence;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
+import cn.tongdun.kunpeng.api.ruledetail.RegexDetail;
+import cn.tongdun.kunpeng.api.ruledetail.TimeDiffDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -19,10 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,7 +92,7 @@ public class RegexFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
-
+//
 //        List<String> dimValues = VelocityHelper.getDimensionValues((AbstractFraudContext)executeContext, property);
 //        if (null == dimValues || dimValues.isEmpty()) {
 //            return new FunctionResult(false);
@@ -119,7 +120,43 @@ public class RegexFunction extends AbstractFunction {
 //
 //            for(Future<RegularMatchData> future : futures) {
 //                try {
-//                    RegularMatchData regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
+//                    RegularMatchData regularMatchData = null;
+//                    try {
+//                        regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
+//                        Boolean matchResult = regularMatchData.getResult();
+//
+//                        DetailCallable detailCallable = null;
+//                        if (matchResult) {
+//                            String finalDimValue= regularMatchData.getDimValue();
+//                            String propertyDisplayName = VelocityHelper.getFieldDisplayName(property,(AbstractFraudContext) executeContext);
+//                            detailCallable = () -> {
+//                                RegexDetail detail = new RegexDetail();
+//                                detail.setRuleUuid(ruleUuid);
+//                                detail.setConditionUuid(conditionUuid);
+//                                detail.setDescription(description);
+//                                detail.setDimType(property);
+//                                detail.setDimTypeDisplayName(propertyDisplayName);
+//                                detail.setValue(finalDimValue);
+//                                return detail;
+//                            };
+//                        }
+//
+//
+//                        result.add((double) matchResult);
+//                        // 不管命不命中都放入详情
+//                        RegexDetail detail = new RegexDetail();
+//                        detail.setRuleUuid(ruleUuid);
+//                        detail.setConditionUuid(conditionUuid);
+//                        detail.setDescription(description);
+//                        detail.setDimType(property);
+//                        detail.setDimTypeDisplayName(propertyDisplayName);
+//                        detail.setValue(regularMatchData.getDimValue());
+//                        context.putRuleDetail(detail);
+//                    } catch (InterruptedException | ExecutionException e) {
+//                        log.error(e.getMessage(), e);
+//                    } finally {
+//                        RuleTracingUtil.log(context, policySetName, policyName, ruleName, ruleUuid, "RegularMatch", regularMatchData.getDimValue(), regularMatchData.getResult(), property, regex, ignoreCase);
+//                    }
 //                } catch (Exception e) {
 //                    logger.error(e.getMessage(), e);
 //                    future.cancel(true);
