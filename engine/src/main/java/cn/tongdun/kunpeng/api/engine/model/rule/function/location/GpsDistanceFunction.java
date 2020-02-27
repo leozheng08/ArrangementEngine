@@ -85,6 +85,7 @@ public class GpsDistanceFunction extends AbstractFunction {
                 detail = new GpsDistanceDetail();
                 detail.setConditionUuid(conditionUuid);
                 detail.setRuleUuid(ruleUuid);
+                detail.setDescription(description);
                 detail.setGpsA(gpsA);
                 detail.setGpsB(gpsB);
                 detail.setResult(distance);

@@ -104,6 +104,7 @@ public class TimePointComparisonFunction extends AbstractFunction {
                 detail = new TimePointComparisonDetail();
                 detail.setConditionUuid(conditionUuid);
                 detail.setRuleUuid(ruleUuid);
+                detail.setDescription(description);
                 detail.setTime(date);
                 detail.setTimeSlice(timeunit);
                 detail.setResult((double) finalDateValue);

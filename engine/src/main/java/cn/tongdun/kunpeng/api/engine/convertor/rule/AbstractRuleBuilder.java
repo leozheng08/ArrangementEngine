@@ -174,6 +174,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             functionDesc.setId(num.intValue());
             functionDesc.setType(elementDTO.getLeftProperty());
             functionDesc.setConditionUuid(elementDTO.getUuid());
+            functionDesc.setDescription(elementDTO.getDescription());
             functionDesc.setRuleUuid(elementDTO.getBizUuid());
             List<FunctionParam> paramList = JSONArray.parseArray(elementDTO.getParams(), FunctionParam.class);
             functionDesc.setParamList(paramList);

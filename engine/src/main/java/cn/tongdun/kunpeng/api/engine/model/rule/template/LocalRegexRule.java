@@ -6,7 +6,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.engine.model.rule.function.RegexFunction;
+import cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.RegexFunction;
 
 /**
  * @Author: liuq

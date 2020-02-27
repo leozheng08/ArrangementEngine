@@ -12,9 +12,10 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
-import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
+import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
 import cn.tongdun.kunpeng.api.basedata.service.elfin.ElfinBaseDataService;
 import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class AddressMatchFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
-        BaseDataContext context = (BaseDataContext) executeContext;
+        AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         String addrOne = getAddress(context, addressA, scope);
         String addrTwo = getAddress(context, addressB, scope);
@@ -80,13 +81,13 @@ public class AddressMatchFunction extends AbstractFunction {
     }
 
 
-    private String getAddress(BaseDataContext context, String address, String scope) {
+    private String getAddress(AbstractFraudContext context, String address, String scope) {
         ElfinBaseDataService elfinBaseDataService = SpringContextHolder.getBean("elfinBaseDataService", ElfinBaseDataService.class);
         IdInfoQueryService idInfoQueryService = SpringContextHolder.getBean("idInfoQueryService", IdInfoQueryService.class);
         BinInfoQueryService binInfoQueryService = SpringContextHolder.getBean("binInfoQueryService", BinInfoQueryService.class);
 
         if ("ipAddress".equalsIgnoreCase(address)) {// IP地理位置
-            GeoipEntity geoInfo = context.getGeoipEntity();         // FIXME: 2/13/20 hanle geoip
+            GeoipEntity geoInfo = context.getExternalObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY,GeoipEntity.class);         // FIXME: 2/13/20 hanle geoip
             if (null == geoInfo) {
                 return null;
             }
@@ -159,7 +160,7 @@ public class AddressMatchFunction extends AbstractFunction {
         else if ("mobileAddress".equalsIgnoreCase(address)) {// 手机归属地
             MobileInfoDO mobileInfo = null;
             if (StringUtils.isBlank((String) context.get("accountMobileArea"))) {
-                mobileInfo = elfinBaseDataService.getMobileInfo(context.getAccountMobile());
+                mobileInfo = elfinBaseDataService.getMobileInfo((String) context.get("accountMobile"));
             }
             else {
                 mobileInfo = elfinBaseDataService.getMobileInfo((String) context.get("accountMobileArea"));
@@ -195,7 +196,7 @@ public class AddressMatchFunction extends AbstractFunction {
 
         }
         else if ("snAddress".equalsIgnoreCase(address)) {// 身份证归属地
-            if (StringUtils.isBlank(context.getIdNumber())) {
+            if (StringUtils.isBlank(context.getFieldToString("IdNumber"))) {
                 return null;
             }
             IdInfo idInfo = null;
@@ -203,7 +204,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 return "中国";
             }
             else if ("province".equalsIgnoreCase(scope)) {
-                String provinceCode = getDiffCode(scope, context.getIdNumber());
+                String provinceCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
                 idInfo = idInfoQueryService.getIdInfo(provinceCode);
                 if (null == idInfo) {
                     return null;
@@ -219,7 +220,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 return province;
             }
             else { // city
-                String cityCode = getDiffCode(scope, context.getIdNumber());
+                String cityCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
                 idInfo = idInfoQueryService.getIdInfo(cityCode);
                 if (null == idInfo) {
                     return null;

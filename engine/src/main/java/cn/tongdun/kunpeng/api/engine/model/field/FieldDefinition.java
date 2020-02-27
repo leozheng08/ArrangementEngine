@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.field;
 
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
+import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 import cn.tongdun.tdframework.core.domain.EntityObject;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.util.Date;
  *
  */
 @Data
-public class FieldDefinition extends VersionedEntity {
+public class FieldDefinition extends VersionedEntity implements IFieldDefinition {
     private static final long serialVersionUID = 8963907847949013871L;
 
     /**
@@ -94,7 +95,8 @@ public class FieldDefinition extends VersionedEntity {
     private boolean deleted;
 
 
-    public boolean isCustomField() {
+    @Override
+    public boolean isExtField() {
         return "ext".equals(fieldType);
     }
 

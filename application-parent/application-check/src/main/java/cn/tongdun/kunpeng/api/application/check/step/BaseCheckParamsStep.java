@@ -39,6 +39,10 @@ public class BaseCheckParamsStep implements IRiskStep {
         StringBuilder sbOvermax = new StringBuilder();
         List<FieldDefinition> sysFields = fieldDefinitionCache.getSystemField(context.getEventType(),context.getAppType());
         List<FieldDefinition> extFields = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getAppName(),context.getEventType());
+
+        context.getFieldDefinitions().addAll(sysFields);
+        context.getFieldDefinitions().addAll(extFields);
+
         if (sysFields != null) {
             checkParams(request,sysFields,sbType,sbFormat,sbOvermax);
         }

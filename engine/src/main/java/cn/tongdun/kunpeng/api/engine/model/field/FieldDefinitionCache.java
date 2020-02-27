@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.model.field;
 
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -32,11 +33,18 @@ public class FieldDefinitionCache {
     private Map<String, List<FieldDefinition>> extendFieldMap = new ConcurrentHashMap<>(200);
 
 
+    public List<FieldDefinition> getSystemField(AbstractFraudContext context){
+        return getSystemField(context.getEventType(),context.getAppType());
+    }
 
     public List<FieldDefinition> getSystemField(String eventType, String appType){
         String key = getSystemFieldKey(eventType,appType);
 
         return systemFieldMap.get(key);
+    }
+
+    public List<FieldDefinition> getExtendField(AbstractFraudContext context){
+        return getExtendField(context.getPartnerCode(),context.getAppName(),context.getEventType());
     }
 
     public List<FieldDefinition> getExtendField(String partnerCode, String appName, String eventType){

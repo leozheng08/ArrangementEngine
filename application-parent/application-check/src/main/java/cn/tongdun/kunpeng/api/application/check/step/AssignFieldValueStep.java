@@ -71,10 +71,10 @@ public class AssignFieldValueStep implements IRiskStep {
 
         /*************根据字段的定义，将请求参数设置到上下文中 start**********************/
         //系统字段
-        List<FieldDefinition> systemFields = fieldDefinitionCache.getSystemField(context.getEventType(),context.getAppType());
+        List<FieldDefinition> systemFields = fieldDefinitionCache.getSystemField(context);
         //扩展字段
-        List<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context.getPartnerCode(),
-                context.getAppName(),context.getEventType());
+        List<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context);
+
         setFraudContext(context, request, systemFields, extendFields);
         /*************根据字段的定义，将请求参数设置到上下文中 end**********************/
 

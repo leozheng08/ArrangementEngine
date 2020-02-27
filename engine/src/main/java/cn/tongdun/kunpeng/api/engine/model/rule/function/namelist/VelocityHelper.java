@@ -1,5 +1,8 @@
-package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
+package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
 
+import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.google.common.collect.Lists;
@@ -53,16 +56,6 @@ public class VelocityHelper {
     public static Object getDimensionValue(AbstractFraudContext context, String dimType) {
         Object dimValue = null;
         switch (dimType) {
-            case "deviceId":// DEVICE_ID:
-            case "smartId":// SMART_ID:
-            case "accountEmail":// EMAIL:
-            case "ipAddress":// IP_ADDRESS:
-            case "accountPhone":// PHONE:
-                dimValue = context.get(dimType);
-                break;
-            case "accountLogin":// USER:
-                dimValue = context.getAccountLogin();
-                break;
             case "eventOccurTime":// 事件发生时间
                 Date occurTime = context.getEventOccurTime();
                 if (null == occurTime) {
@@ -70,7 +63,7 @@ public class VelocityHelper {
                 }
                 dimValue = formatDateTime(occurTime);
                 break;
-            case "location":
+//            case "location":
 //            case "city":
 //                if (null != context.getGeoipEntity()) {
 //                    dimValue = context.getGeoipEntity().getCity();
@@ -82,7 +75,7 @@ public class VelocityHelper {
                 }
                 break;
             default:// CUSTOM:
-                if (IDCardUtil.containIdKey(dimType)) {
+                if(isIdNumber(context,dimType)){//为身份证字段,转为小字
                     Object tempIdNumber = context.get(dimType);
                     if (null != tempIdNumber) {
                         if (tempIdNumber instanceof List) {
@@ -99,6 +92,22 @@ public class VelocityHelper {
                 break;
         }
         return dimValue;
+    }
+
+
+    //判断是否为身份证字段
+    private static boolean isIdNumber(AbstractFraudContext context, String dimType){
+        List<IFieldDefinition> fieldDefinitions =  context.getFieldDefinitions();
+        if(fieldDefinitions == null){
+            return false;
+        }
+
+        for(IFieldDefinition fieldDefinition:fieldDefinitions){
+            if("idNumber".equals(fieldDefinition.getProperty())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
