@@ -148,13 +148,28 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
         }
 
         List<DecisionResultThreshold>  decisionResultTypeList = subPolicy.getRiskThresholds();
-        DecisionResultType decisionResult = decisionResultTypeCache.getDefaultType();
-        if(decisionResultTypeList != null) {
+        DecisionResultType decisionResult = null;
+        if(decisionResultTypeList != null && !decisionResultTypeList.isEmpty()) {
+            int count = 0;
+            int size = decisionResultTypeList.size();
             for (DecisionResultThreshold threshold : decisionResultTypeList) {
+                if(count == 0 && score < threshold.getEndThreshold()){
+                    decisionResult = threshold.getDecisionResultType();
+                    break;
+                }
+                if(count == size-1 || score > threshold.getStartThreshold()){
+                    decisionResult = threshold.getDecisionResultType();
+                    break;
+                }
                 if (score >= threshold.getStartThreshold() && score < threshold.getEndThreshold()) {
                     decisionResult = threshold.getDecisionResultType();
+                    break;
                 }
+                count++;
             }
+        }
+        if(decisionResult == null){
+            decisionResult = decisionResultTypeCache.getDefaultType();
         }
 
         subPolicyResponse.setDecision(decisionResult.getCode());
