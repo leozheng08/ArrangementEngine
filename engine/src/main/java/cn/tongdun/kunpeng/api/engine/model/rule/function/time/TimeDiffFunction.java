@@ -20,10 +20,8 @@ public class TimeDiffFunction extends AbstractFunction {
 
     private String timeA;
     private String timeB;
-    private String timeOperator;
     private String timeslice;
     private String timeunit;
-
 
     @Override
     public String getName() {
@@ -39,24 +37,14 @@ public class TimeDiffFunction extends AbstractFunction {
         functionDesc.getParamList().forEach(param -> {
             if (StringUtils.equals("timeA", param.getName())) {
                 timeA = param.getValue();
-            }
-            else if (StringUtils.equals("timeB", param.getName())) {
+            } else if (StringUtils.equals("timeB", param.getName())) {
                 timeB = param.getValue();
-            }
-            else if (StringUtils.equals("timeOperator", param.getName())) {
-                timeOperator = param.getValue();
-            }
-            else if (StringUtils.equals("timeslice", param.getName())) {
+            } else if (StringUtils.equals("timeslice", param.getName())) {
                 timeslice = param.getValue();
-            }
-            else if (StringUtils.equals("timeunit", param.getName())) {
+            } else if (StringUtils.equals("timeunit", param.getName())) {
                 timeunit = param.getValue();
             }
         });
-
-        if (StringUtils.isBlank(timeOperator) || "none".equals(timeOperator)) {
-            throw new ParseException("TimeDiff function timeOperator illegal");
-        }
     }
 
 
@@ -64,66 +52,30 @@ public class TimeDiffFunction extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
+        double result=Double.NaN;
         Date dateA = DateUtil.getDateValue(context.get(timeA));
         Date dateB = DateUtil.getDateValue(context.get(timeB));
         if (null == dateA || null == dateB) {
-            return new FunctionResult(false);
+            return new FunctionResult(result);
         }
 
-        boolean result = false;
-        long diffMs = 0;
-        long diff = 0;
-        if (null != timeOperator && null != timeunit) {
-            int value = null == timeslice ? 0 : Integer.parseInt(timeslice);
-            diffMs = dateA.getTime() - dateB.getTime();
-            diff = DateUtil.getValueByTimeSlice(timeunit, diffMs, "ceil");
-            result = timeDiffResult(timeOperator, value, diff);
-        }
+        long diffMs = dateA.getTime() - dateB.getTime();
+        result = DateUtil.getValueByTimeSlice(timeunit, diffMs, "ceil");
 
-        DetailCallable detailCallable = null;
-        if (result) {
-            long finalDiffMs = diffMs;
-            long finalDiff = diff;
-            detailCallable = () -> {
-                TimeDiffDetail detail = new TimeDiffDetail();
-                detail.setConditionUuid(conditionUuid);
-                detail.setRuleUuid(ruleUuid);
-                detail.setDescription(description);
+        final double ret = result;
+        DetailCallable detailCallable = () -> {
+            TimeDiffDetail detail = new TimeDiffDetail();
+            detail.setConditionUuid(conditionUuid);
+            detail.setRuleUuid(ruleUuid);
+            detail.setDescription(description);
 
-                detail.setDateA(dateA);
-                detail.setDateB(dateB);
-                detail.setResult((double) finalDiffMs);
-                String diffDisplay = finalDiff + TimeSlice.getTimeSliceUnitDisplayName(timeunit);
-                detail.setDiffDisplay(diffDisplay);
-                return detail;
-            };
-        }
-
+            detail.setDateA(dateA);
+            detail.setDateB(dateB);
+            detail.setResult(ret);
+            String diffDisplay = ret + TimeSlice.getTimeSliceUnitDisplayName(timeunit);
+            detail.setDiffDisplay(diffDisplay);
+            return detail;
+        };
         return new FunctionResult(result, detailCallable);
     }
-
-
-    private boolean timeDiffResult(String operator, int value, long diff) {
-        boolean result = false;
-
-        if (">".equals(operator)) {
-            result = diff > value;
-        }
-        else if (">=".equals(operator)) {
-            result = diff >= value;
-        }
-        else if ("<".equals(operator)) {
-            result = diff < value;
-        }
-        else if ("<=".equals(operator)) {
-            result = diff <= value;
-        }
-        else if ("==".equals(operator)) {
-            result = diff == value;
-        }
-
-        return result;
-    }
-
-
 }
