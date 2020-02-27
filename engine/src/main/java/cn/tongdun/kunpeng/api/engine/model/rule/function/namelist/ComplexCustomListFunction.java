@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
+package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
