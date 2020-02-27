@@ -1,9 +1,7 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function.namelist;
 
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
-import cn.tongdun.kunpeng.api.application.context.FraudContext;
-import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -21,7 +19,7 @@ public class VelocityHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(VelocityHelper.class);
 
-    public static List<String> getDimensionValues(BaseDataContext context, final String dimType) {
+    public static List<String> getDimensionValues(AbstractFraudContext context, final String dimType) {
         Object tmpValue = getDimensionValue(context, dimType);
         String dimValue = null;
         if (tmpValue != null) {
@@ -53,7 +51,7 @@ public class VelocityHelper {
     /**
      * 获取主属性维度值
      */
-    public static Object getDimensionValue(FraudContext context, String dimType) {
+    public static Object getDimensionValue(AbstractFraudContext context, String dimType) {
         Object dimValue = null;
         switch (dimType) {
             case "eventOccurTime":// 事件发生时间
@@ -97,7 +95,7 @@ public class VelocityHelper {
 
 
     //判断是否为身份证字段
-    private static boolean isIdNumber(FraudContext context, String dimType){
+    private static boolean isIdNumber(AbstractFraudContext context, String dimType){
         List<IFieldDefinition> fieldDefinitions =  context.getFieldDefinitions();
         if(fieldDefinitions == null){
             return false;

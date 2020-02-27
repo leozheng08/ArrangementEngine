@@ -7,9 +7,9 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
 import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
 import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -57,7 +57,7 @@ public class CustomListFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext context) {
-        List<String> dimValueList = VelocityHelper.getDimensionValues((BaseDataContext) context, calcField);
+        List<String> dimValueList = VelocityHelper.getDimensionValues((AbstractFraudContext) context, calcField);
         if (CollectionUtils.isNotEmpty(dimValueList)) {
             for (String dim : dimValueList) {
                 List<String> dims = Lists.newArrayList(dim.split(","));

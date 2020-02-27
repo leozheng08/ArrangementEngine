@@ -7,9 +7,9 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
 import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
 import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,7 +63,7 @@ public class ComplexCustomListFunction extends AbstractFunction {
             return new FunctionResult(false, null);
         }
         Map<Integer, List<String>> rowValues = new HashMap<>();
-        List<String> dimValueList = getDimValues((BaseDataContext) context, calcField, rowValues);
+        List<String> dimValueList = getDimValues((AbstractFraudContext) context, calcField, rowValues);
         if (CollectionUtils.isEmpty(dimValueList)) {
             return new FunctionResult(false, null);
         }
@@ -108,7 +108,7 @@ public class ComplexCustomListFunction extends AbstractFunction {
         };
     }
 
-    private List<String> getDimValues(BaseDataContext context, String calcField, Map<Integer, List<String>> dims) {
+    private List<String> getDimValues(AbstractFraudContext context, String calcField, Map<Integer, List<String>> dims) {
         String[] calcFields = calcField.split(COMMA_SEPARATOR);
         Map<Integer, Set<String>> rowValues = new HashMap<>();
         int i = 0;

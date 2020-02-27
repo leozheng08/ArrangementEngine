@@ -10,8 +10,9 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
-import cn.tongdun.kunpeng.api.basedata.BaseDataContext;
+import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
 import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class ProxyFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
-        BaseDataContext context = (BaseDataContext) executeContext;
+        AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         ProxyIpService proxyIpService = SpringContextHolder.getBean("proxyIpService", ProxyIpService.class);
         String ip = context.getIpAddress();
@@ -54,7 +55,7 @@ public class ProxyFunction extends AbstractFunction {
             boolean isProxyIp = false;
             boolean switchCfg = true;               // FIXME: 2/7/20 shutter switch
             if (switchCfg) {
-                IpReputationRulesObj ipReputationRulesObj = context.getIpReputationRulesObj();
+                IpReputationRulesObj ipReputationRulesObj = context.getExternalObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION,IpReputationRulesObj.class);
                 // IP画像只处理VPN、HTTP、SOCKS三种，为了兼容历史，转一下再调IP画像的方法
                 String proxyType = getProxyTypeByProtocol(proxyIpType);
                 if (ipReputationRulesObj != null && StringUtils.isNotBlank(proxyType)) {
