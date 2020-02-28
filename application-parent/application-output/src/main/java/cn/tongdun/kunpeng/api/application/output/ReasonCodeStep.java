@@ -26,7 +26,7 @@ import java.util.Set;
  * @Date: 2020/2/20 下午5:54
  */
 @Component
-@Step(pipeline = Risk.NAME,phase = Risk.OUTPUT,order = 1200)
+@Step(pipeline = Risk.NAME,phase = Risk.OUTPUT,order = 1100)
 public class ReasonCodeStep implements IRiskStep {
 
     @Autowired

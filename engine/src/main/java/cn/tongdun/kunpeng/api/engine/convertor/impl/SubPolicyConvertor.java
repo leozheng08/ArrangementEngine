@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCach
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
+import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -17,10 +18,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: liang.chen
@@ -123,6 +121,14 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
             decisionResultThreshold.setEndThreshold(end);
             riskThresholds.add(decisionResultThreshold);
         }
+
+        //按分数从小到大排序
+        Collections.sort(riskThresholds, new Comparator<DecisionResultThreshold>() {
+            @Override
+            public int compare(DecisionResultThreshold threshold1, DecisionResultThreshold threshold2) {
+                return threshold1.getStartThreshold() - threshold2.getStartThreshold();
+            }
+        });
         subPolicy.setRiskThresholds(riskThresholds);
     }
 }

@@ -14,11 +14,16 @@ import cn.tongdun.kunpeng.api.ruledetail.RegexDetail;
 import cn.tongdun.kunpeng.api.ruledetail.TimeDiffDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.tdframework.core.concurrent.IThreadService;
+import cn.tongdun.tdframework.core.concurrent.MDCUtil;
+import cn.tongdun.tdframework.core.config.IConfigRepository;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +39,9 @@ import java.util.regex.Pattern;
 public class RegexFunction extends AbstractFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(RegexFunction.class);
-    private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() + 1;
-    private static final int QUEUE_SIZE = 10_000;
 
+    private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() + 1;
+    private static final int QUEUE_SIZE = 100;
     private static ThreadPoolExecutor regexThreadPool = new ThreadPoolExecutor(THREAD_NUM, THREAD_NUM, 10,
             TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_SIZE),
             new ThreadFactoryBuilder().setNameFormat("regex-function-thread-%d").build());
@@ -92,106 +97,88 @@ public class RegexFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
-//
-//        List<String> dimValues = VelocityHelper.getDimensionValues((AbstractFraudContext)executeContext, property);
-//        if (null == dimValues || dimValues.isEmpty()) {
-//            return new FunctionResult(false);
-//        }
-//
-//        List<Future<RegularMatchData>> futures = new ArrayList<>();
-//        for(String dimValue :dimValues){
-//            if(StringUtils.isBlank(dimValue)){
-//                continue;
-//            }
-//
-//            Future<RegularMatchData> future = regexThreadPool.submit(() -> {
-//                RegularMatchData regularMatchData = new RegularMatchData();
-//                Matcher matcher = regexPattern.matcher(new InterruptibleCharSequence(dimValue));
-//                Boolean result = matcher.matches();
-//                regularMatchData.setDimValue(dimValue);
-//                regularMatchData.setResult(result);
-//                return regularMatchData;
-//            });
-//            futures.add(future);
-//        }
-//
-//
-//        Boolean ret = false;
-//
-//            for(Future<RegularMatchData> future : futures) {
-//                try {
-//                    RegularMatchData regularMatchData = null;
-//                    try {
-//                        regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
-//                        Boolean matchResult = regularMatchData.getResult();
-//
-//                        DetailCallable detailCallable = null;
-//                        if (matchResult) {
-//                            String finalDimValue= regularMatchData.getDimValue();
-//                            String propertyDisplayName = VelocityHelper.getFieldDisplayName(property,(AbstractFraudContext) executeContext);
-//                            detailCallable = () -> {
-//                                RegexDetail detail = new RegexDetail();
-//                                detail.setRuleUuid(ruleUuid);
-//                                detail.setConditionUuid(conditionUuid);
-//                                detail.setDescription(description);
-//                                detail.setDimType(property);
-//                                detail.setDimTypeDisplayName(propertyDisplayName);
-//                                detail.setValue(finalDimValue);
-//                                return detail;
-//                            };
-//                        }
-//
-//
-//                        result.add((double) matchResult);
-//                        // 不管命不命中都放入详情
-//                        RegexDetail detail = new RegexDetail();
-//                        detail.setRuleUuid(ruleUuid);
-//                        detail.setConditionUuid(conditionUuid);
-//                        detail.setDescription(description);
-//                        detail.setDimType(property);
-//                        detail.setDimTypeDisplayName(propertyDisplayName);
-//                        detail.setValue(regularMatchData.getDimValue());
-//                        context.putRuleDetail(detail);
-//                    } catch (InterruptedException | ExecutionException e) {
-//                        log.error(e.getMessage(), e);
-//                    } finally {
-//                        RuleTracingUtil.log(context, policySetName, policyName, ruleName, ruleUuid, "RegularMatch", regularMatchData.getDimValue(), regularMatchData.getResult(), property, regex, ignoreCase);
-//                    }
-//                } catch (Exception e) {
-//                    logger.error(e.getMessage(), e);
-//                    future.cancel(true);
-//                }
-//
-//            }
-//
-//        if (ret == null) {
-//            ret = false;
-//        }
 
-
-        Object propertyField = executeContext.getField(property);
-        if (propertyField == null) {
+        List<String> dimValues = VelocityHelper.getDimensionValues((AbstractFraudContext)executeContext, property);
+        if (null == dimValues || dimValues.isEmpty()) {
             return new FunctionResult(false);
         }
-        String propertyString = propertyField.toString();
-        Future<Boolean> future = regexThreadPool.submit(() -> {
-            Matcher matcher = regexPattern.matcher(new InterruptibleCharSequence(propertyString));
-            return matcher.matches();
-        });
-        Boolean ret = null;
-        try {
-            ret = future.get(100, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            future.cancel(true);
+
+        // 匹配字段可选数组，采用多线程
+        List<Callable<RegularMatchData>> tasks = Lists.newArrayListWithCapacity(dimValues.size());
+        for (String dimValue : dimValues) {
+            if(StringUtils.isBlank(dimValue)){
+                continue;
+            }
+            tasks.add(MDCUtil.wrap(new AsynRegularMatch(dimValue)));
         }
+
+        List<Future<RegularMatchData>> futures = null;
+        try {
+            futures = regexThreadPool.invokeAll(tasks, 100, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            logger.error("RegexFunction error", e);
+        }
+        if (null == futures || futures.isEmpty()) {
+            return new FunctionResult(false);
+        }
+
+        Boolean ret = false;
+        DetailCallable detailCallable = null;
+        for(Future<RegularMatchData> future : futures) {
+            RegularMatchData regularMatchData = null;
+            try {
+                regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
+                Boolean matchResult = regularMatchData.getResult();
+                if (matchResult) {
+                    String finalDimValue= regularMatchData.getDimValue();
+                    String propertyDisplayName = VelocityHelper.getFieldDisplayName(property,(AbstractFraudContext) executeContext);
+                    detailCallable = () -> {
+                        RegexDetail detail = new RegexDetail();
+                        detail.setRuleUuid(ruleUuid);
+                        detail.setConditionUuid(conditionUuid);
+                        detail.setDescription(description);
+                        detail.setDimType(property);
+                        detail.setDimTypeDisplayName(propertyDisplayName);
+                        detail.setValue(finalDimValue);
+                        return detail;
+                    };
+                    ret = true;
+                    break;
+                }
+            } catch (Exception e) {
+                logger.error("RegexFunction error", e);
+                future.cancel(true);
+            }
+        }
+
         if (ret == null) {
             ret = false;
         }
         if (!isMatch) {
             //如果是不匹配
-            return new FunctionResult(!ret);
+            return new FunctionResult(!ret, detailCallable);
         }
-        return new FunctionResult(ret);
+        return new FunctionResult(ret, detailCallable);
+    }
+
+
+
+    private class AsynRegularMatch implements Callable {
+
+        private String dimValue;
+
+        public AsynRegularMatch(String dimValue) {
+            this.dimValue = dimValue;
+        }
+
+        @Override
+        public RegularMatchData call() throws Exception {
+            RegularMatchData regularMatchData = new RegularMatchData();
+            Matcher matcher = regexPattern.matcher(new InterruptibleCharSequence(dimValue));
+            Boolean result = matcher.matches();
+            regularMatchData.setDimValue(dimValue);
+            regularMatchData.setResult(result);
+            return regularMatchData;
+        }
     }
 }
