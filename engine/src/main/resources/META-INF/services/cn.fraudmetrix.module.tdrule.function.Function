@@ -3,6 +3,7 @@ ruleWeight=cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction
 watchlist/complexCustomList=cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ComplexCustomListFunction
 watchlist/customList=cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListFunction
 time/timediffer=cn.tongdun.kunpeng.api.engine.model.rule.function.time.TimeDiffFunction
+time/eventTimeDf=cn.tongdun.kunpeng.api.engine.model.rule.function.time.TimeDiffFunction
 time/timePointComparison=cn.tongdun.kunpeng.api.engine.model.rule.function.time.TimePointFunction
 pattern/regex=cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.RegexFunction
 pattern/fourCalculation=cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.FourCalculation
