@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListDOMapper" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.CustomListDO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="uuid" property="uuid" jdbcType="CHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="list_name" property="listName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+    <result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
+    <result column="column_type" property="columnType" jdbcType="TINYINT" />
+    <result column="column_names" property="columnNames" jdbcType="VARCHAR" />
+    <result column="list_type" property="listType" jdbcType="VARCHAR" />
+    <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER" />
+    <result column="is_deleted" property="deleted" jdbcType="BIT" />
+    <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uuid, gmt_create, gmt_modify, creator, operator, list_name, description, app_name, 
+    partner_code, column_type, column_names, list_type, concurrency_version, is_deleted, 
+    gmt_delete
+  </sql>
+
+  <select id="selectAllAvailable" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from custom_list
+    where
+    is_deleted = 0
+  </select>
+
+
+  <select id="selectByUuid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from custom_list
+    where uuid = #{uuid,jdbcType=CHAR}
+  </select>
+</mapper>
