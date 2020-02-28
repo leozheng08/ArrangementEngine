@@ -2,6 +2,8 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValueManager;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListValueDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -13,8 +15,8 @@ import org.springframework.stereotype.Repository;
 public class CustomListValueRepository implements ICustomListValueRepository {
 
     @Autowired
-    CustomListManager customListManager;
+    CustomListDOMapper customListDOMapper;
 
     @Autowired
-    CustomListValueManager customListValueManager;
+    CustomListValueDOMapper customListValueDOMapper;
 }
