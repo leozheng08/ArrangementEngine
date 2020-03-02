@@ -22,14 +22,14 @@ import java.util.List;
 public class CustomRuleBuilder extends AbstractRuleBuilder {
 
     @Override
-    protected void convertRuleCondtionElement2RawRule(List<RuleConditionElementDTO> ruleConditionElements, RawRule rawRule){
+    protected void convertRuleCondtionElement2RawRule(List<RuleConditionElementDTO> ruleConditionElements, RawRule rawRule) {
 
         if (null == ruleConditionElements || ruleConditionElements.isEmpty() || null == rawRule) {
             return;
         }
         //自定义规则第一层只有1个RuleConditionElementDTO
         if (ruleConditionElements.size() != 1) {
-            throw new ParseException("customRule formate error,first layer don't have one elemvent!ruleId:"+rawRule.getId());
+            throw new ParseException("customRule formate error,first layer don't have one elemvent!ruleId:" + rawRule.getId());
         }
 
         List<Condition> conditionList = Lists.newArrayList();
@@ -71,6 +71,16 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
         if (StringUtils.isBlank(logic)) {
             throw new ParseException("CustomRuleBuilder logic error,conditionUuid:" + elementDTO.getUuid() + ",logic:" + elementDTO.getLogicOperator());
         }
+        //处理notAnd、notOr
+        boolean needNot = false;
+        if (StringUtils.equalsIgnoreCase(logic, "notOr")) {
+            logic = "|";
+            needNot = true;
+        } else if (StringUtils.equalsIgnoreCase(logic, "notAnd")) {
+            logic = "&";
+            needNot = true;
+        }
+
 
         List<RuleConditionElementDTO> subConditions = elementDTO.getSubConditions();
         for (RuleConditionElementDTO ruleConditionElementDTO : subConditions) {
@@ -84,7 +94,12 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
                 processOneElement(ruleConditionElementDTO, conditionList, functionDescList, num);
             }
         }
-        return sb.substring(1);
+        if (needNot) {
+            return "!(" + sb.substring(1) + ")";
+        } else {
+            return sb.substring(1);
+        }
+
     }
 
 
