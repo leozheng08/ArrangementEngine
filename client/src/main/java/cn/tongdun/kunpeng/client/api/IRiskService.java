@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.client.api;
 
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 
 import java.util.Map;
 
@@ -10,4 +11,6 @@ import java.util.Map;
 public interface IRiskService {
 
     IRiskResponse riskService(Map<String, String> request);
+
+    IRiskResponse riskService(RiskRequest request);
 }

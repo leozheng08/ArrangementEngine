@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.basedata.step.mobile;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
@@ -24,7 +25,7 @@ public class MobilePhoneStep implements IRiskStep{
     private ExtensionExecutor extensionExecutor;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request){
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
 
         //调用手机画像之前，调用参数的组织
 

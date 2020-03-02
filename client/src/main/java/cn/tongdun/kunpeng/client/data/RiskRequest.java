@@ -1,15 +1,38 @@
 package cn.tongdun.kunpeng.client.data;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.ValueFilter;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * @Author: liang.chen
  * @Date: 2020/2/28 下午5:43
  */
 public class RiskRequest implements Serializable {
+
+    private static final Field[] fields = RiskRequest.class.getDeclaredFields();
+    private static final Set<String> fieldNames = new HashSet<>(fields.length);
+    static {
+        Set<String> includeTypes = new HashSet<>();
+        includeTypes.add("int");
+        includeTypes.add("integer");
+        includeTypes.add("string");
+        includeTypes.add("double");
+        includeTypes.add("long");
+        includeTypes.add("float");
+        includeTypes.add("boolean");
+        for (Field field : fields) {
+            String simTypeName = field.getType().getSimpleName();
+            if (includeTypes.contains(simTypeName.toLowerCase())) {
+                fieldNames.add(field.getName());
+            }
+        }
+    }
 
     /**
      * 合作方编码，必传
@@ -29,7 +52,7 @@ public class RiskRequest implements Serializable {
     /**
      * 策略版本号，非必填，如果不传则根据合作方、应用、eventId取得默认的决策版本号来运行。
      */
-    String policyVersion;
+    private String policyVersion;
 
 
     /**
@@ -66,13 +89,13 @@ public class RiskRequest implements Serializable {
     /**
      * web的设备指纹会话id
      */
-    String tokenId;
+    private String tokenId;
 
 
     /**
      * 手机的设备指纹
      */
-    String blackBox;
+    private String blackBox;
 
     /**
      * 返回详细类型，包含有：application_id,geoip,device,device_all,attribution,hit_rule_detail,hit_rule_detail_v3,credit_score。可以指定去掉不需要返回的内容：-hit_rules,-policy_set_name,-policy_set,-policy_name,-output_fields
@@ -89,27 +112,34 @@ public class RiskRequest implements Serializable {
      */
     private String recallSequenceId;
 
+
     /**
      *  仿真的合作方编码
      */
-    private String simulatePartnerCode;
+    private String simulationPartner;
 
     /**
      * 仿真的appName
      */
-    private String simulateAppName;
+    private String simulationApp;
 
     /**
      * 仿真的seqId
      */
-    private String simulateSequenceId;
+    private String simulationSeqId;
+    private String simulationUuid;
     private String tdSampleDataId;
-
 
     /**
      * 按字段管理中定义的field_code传的字段值
      */
-    private Map<String, Object> fieldValues = new ConcurrentHashMap<>();
+    private Map<String, Object> fieldValues = new HashMap<>();
+
+    /**
+     * 扩展属性
+     */
+    private Map<String, Object> extAttrs = new HashMap<>();
+
 
 
     public String getPartnerCode() {
@@ -232,28 +262,28 @@ public class RiskRequest implements Serializable {
         this.recallSequenceId = recallSequenceId;
     }
 
-    public String getSimulatePartnerCode() {
-        return simulatePartnerCode;
+    public String getSimulationPartner() {
+        return simulationPartner;
     }
 
-    public void setSimulatePartnerCode(String simulatePartnerCode) {
-        this.simulatePartnerCode = simulatePartnerCode;
+    public void setSimulationPartner(String simulationPartner) {
+        this.simulationPartner = simulationPartner;
     }
 
-    public String getSimulateAppName() {
-        return simulateAppName;
+    public String getSimulationApp() {
+        return simulationApp;
     }
 
-    public void setSimulateAppName(String simulateAppName) {
-        this.simulateAppName = simulateAppName;
+    public void setSimulationApp(String simulationApp) {
+        this.simulationApp = simulationApp;
     }
 
-    public String getSimulateSequenceId() {
-        return simulateSequenceId;
+    public String getSimulationSeqId() {
+        return simulationSeqId;
     }
 
-    public void setSimulateSequenceId(String simulateSequenceId) {
-        this.simulateSequenceId = simulateSequenceId;
+    public void setSimulationSeqId(String simulationSeqId) {
+        this.simulationSeqId = simulationSeqId;
     }
 
     public String getTdSampleDataId() {
@@ -275,4 +305,90 @@ public class RiskRequest implements Serializable {
     public void setFieldValue(String fieldCode, Object value){
         fieldValues.put(fieldCode,value);
     }
+
+
+    public Map<String, Object> getExtAttrs() {
+        return extAttrs;
+    }
+
+    public void setExtAttrs(Map<String, Object> extAttrs) {
+        this.extAttrs = extAttrs;
+    }
+
+    public void addExtAttrs(String attrName,Object value){
+        this.extAttrs.put(attrName,value);
+    }
+
+    private String upperCaseFirstChar(String x) {
+        if (x == null) {return null;}
+        if (x.isEmpty()) {return "";}
+        String firstChar = x.substring(0, 1);
+        String exceptFirst = x.substring(1);
+        return firstChar.toUpperCase() + exceptFirst;
+    }
+
+    public Object get(String key) {
+        if (key == null) {
+            return null;
+        }
+
+        if ("null".equals(key)) {
+            return "null";
+        }
+
+        if (fieldNames.contains(key)) {
+            String methodName = "get" + upperCaseFirstChar(key);
+            try {
+                Method method = this.getClass().getMethod(methodName);
+                Object value = method.invoke(this);
+                if (value != null) {
+                    return value;
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+        Object fieldValue = fieldValues.get(key);
+        if (fieldValue != null) {
+            return fieldValue;
+        }
+
+        Object extAttr = extAttrs.get(key);
+        if (extAttr != null) {
+            return extAttr;
+        }
+        return null;
+    }
+
+    public String getSimulationUuid() {
+        return simulationUuid;
+    }
+
+    public void setSimulationUuid(String simulationUuid) {
+        this.simulationUuid = simulationUuid;
+    }
+
+    @Override
+    public String toString(){
+        ValueFilter valueFilter = new ValueFilter(){
+            @Override
+            public Object process(Object object, String name, Object value){
+                if("secretKey".equals(name)){
+                    if(value == null){
+                        return null;
+                    }
+                    if (StringUtils.isBlank(value.toString()) || StringUtils.length(value.toString()) != 32) {
+                        return secretKey;
+                    }
+                    return StringUtils.left(secretKey, 6).concat(
+                            StringUtils.removeStart(StringUtils.leftPad(StringUtils.right(secretKey, 6),
+                                    StringUtils.length(secretKey), "*"), "******"));
+                }
+                return value;
+            }
+        };
+        return JSONObject.toJSONString(this, new ValueFilter[]{valueFilter});
+    }
+
 }

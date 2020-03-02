@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.application.check.step;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,7 @@ public class SimulationParamStep implements IRiskStep {
     private Logger logger = LoggerFactory.getLogger(SimulationParamStep.class);
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         //仿真专用
         writeSimulationArgs(context, request);
@@ -36,18 +37,18 @@ public class SimulationParamStep implements IRiskStep {
     /**
      * 将仿真调用的参数写入
      */
-    private void writeSimulationArgs(AbstractFraudContext context, Map<String, String> request) {
-        if(StringUtils.isNotBlank(request.get("simulation_uuid")) && StringUtils.equalsIgnoreCase(request.get("td_td_simulation"), "1")) {
-            context.set("simulationUuid", request.get("simulation_uuid"));
-            if(!StringUtils.equalsIgnoreCase("all", request.get("simulation_partner"))) {
-                context.setSimulatePartnerCode(request.get("simulation_partner"));
-                context.setSimulateAppName(request.get("simulation_app"));
+    private void writeSimulationArgs(AbstractFraudContext context,RiskRequest request) {
+        if(StringUtils.isNotBlank(request.getSimulationUuid()) && StringUtils.equalsIgnoreCase(request.getSimulationUuid(), "1")) {
+            context.setSimulationUuid(request.getSimulationUuid());
+            if(!StringUtils.equalsIgnoreCase("all", request.getSimulationPartner())) {
+                context.setSimulationPartner(request.getSimulationPartner());
+                context.setSimulationApp(request.getSimulationApp());
             }
 
-            if(StringUtils.isNotBlank(request.get("td_sample_data_id"))) {
-                context.set("td_sample_data_id", request.get("td_sample_data_id"));
+            if(StringUtils.isNotBlank(request.getTdSampleDataId())) {
+                context.setTdSampleDataId(request.getTdSampleDataId());
             }
-            context.setSimulateSequenceId(request.get("simulation_seqid"));
+            context.setSimulationSeqId(request.getSimulationSeqId());
             context.setSimulation(true);
         }
     }

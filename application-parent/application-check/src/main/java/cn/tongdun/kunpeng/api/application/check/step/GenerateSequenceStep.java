@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.application.check.util.GenerateSeqIdUtil;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.RequestParamName;
 import cn.tongdun.kunpeng.api.application.check.util.DesensitizeUtil;
@@ -27,14 +28,10 @@ public class GenerateSequenceStep implements IRiskStep {
     private Logger logger = LoggerFactory.getLogger(GenerateSequenceStep.class);
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         //seq_id
-        String seqId = request.get("seq_id");
-        if (StringUtils.isBlank(seqId)){
-            seqId = request.get("x-sequence-id");
-        }
-
+        String seqId = request.getSequenceId();
         if (StringUtils.isBlank(seqId)) {
             seqId = GenerateSeqIdUtil.generateSeqId();
         }
@@ -42,8 +39,7 @@ public class GenerateSequenceStep implements IRiskStep {
         context.setSequenceId(seqId);
 
         //requestId
-        String requestId = request.get("x-request-id");
-        context.setRequestId(requestId);
+        context.setRequestId(request.getRequestId());
 
         //事件发生时间，默认取seqId中的时间戳，如果客户有传event_occur_time则会覆盖
         try {
@@ -53,13 +49,7 @@ public class GenerateSequenceStep implements IRiskStep {
             context.setEventOccurTime(new Date());
         }
 
-        // secret_key脱敏后再打日志
-        String originalSecretKey = request.get(RequestParamName.SECRET_KEY);
-        request.put(RequestParamName.SECRET_KEY, DesensitizeUtil.secretKey(originalSecretKey));
         logger.info("REQ: seq_id: {}, request: {}", seqId, request);
-        // 日志打完，恢复回客户的原始值，后面需要使用
-        request.put(RequestParamName.SECRET_KEY, originalSecretKey);
-
         return true;
     }
 }

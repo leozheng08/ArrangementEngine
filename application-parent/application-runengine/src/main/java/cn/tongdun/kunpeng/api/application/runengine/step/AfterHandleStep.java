@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.application.runengine.step;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ import java.util.*;
 public class AfterHandleStep implements IRiskStep {
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request){
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
         response.setSuccess(true);
         return true;
     }

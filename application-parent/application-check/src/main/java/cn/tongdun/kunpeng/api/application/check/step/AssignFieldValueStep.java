@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.util.DateUtil;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
@@ -66,7 +67,7 @@ public class AssignFieldValueStep implements IRiskStep {
     private FieldDefinitionCache fieldDefinitionCache;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         Partner partner = partnerCache.get(context.getPartnerCode());
 
@@ -76,23 +77,21 @@ public class AssignFieldValueStep implements IRiskStep {
         //扩展字段
         List<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context);
 
-        setFraudContext(context, request, systemFields, extendFields);
+        setFraudContext(context, request, systemFields);
+        setFraudContext(context, request, extendFields);
         /*************根据字段的定义，将请求参数设置到上下文中 end**********************/
 
 
         /*************决策引擎除字段以外其他参数的获取**********************/
         //service-type=creditcloud时决策接口直接返回详情
-        String serviceType = request.get("service-type");
+        String serviceType = request.getServiceType();
         if (StringUtils.isBlank(serviceType)) {
             serviceType = "professional";
             context.setServiceType(serviceType);
         }
 
-
         //判断是否测试数据
-        boolean testFlag = StringUtils.equalsIgnoreCase(request.get("test-flag"), "true");
-        context.setTestFlag(testFlag);
-
+        context.setTestFlag(request.isTestFlag());
 
         // 设置合作方的行业信息
         if(partner != null) {
@@ -101,7 +100,7 @@ public class AssignFieldValueStep implements IRiskStep {
         }
 
         //调用async,如果async=true，则没有800ms规则引擎超时
-        writeSyncInfoToContext(context, request);
+        context.setAsync(request.isAsync());
 
         return true;
     }
@@ -113,32 +112,22 @@ public class AssignFieldValueStep implements IRiskStep {
      *
      * @param ctx
      * @param request
-     * @param systemFields
-     * @param extendFields
+     * @param fields
      */
-    public void setFraudContext(AbstractFraudContext ctx, Map<String, String> request, List<FieldDefinition> systemFields,
-                                       List<FieldDefinition> extendFields) {
-        if (ctx != null && request != null && systemFields != null) {
-            // set system fields
-            for (FieldDefinition fieldDefinition : systemFields) {
+    public void setFraudContext(AbstractFraudContext ctx, RiskRequest request, List<FieldDefinition> fields) {
+        if (ctx != null && request != null && fields != null) {
+            for (FieldDefinition fieldDefinition : fields) {
                 String fieldCode = fieldDefinition.getFieldCode();
                 if (excludeFieldName.contains(fieldCode)) {
                     continue;
                 }
-                String underlineStr = KunpengStringUtils.camel2underline(fieldCode);
-                String requestValue = request.get(underlineStr);
-                if (StringUtils.isBlank(requestValue)) {
-                    continue;
-                }
-                putValueByFieldDefinition(ctx.getCustomFields(),fieldDefinition,requestValue);
-            }
-        }
 
-        if (ctx != null && request != null && extendFields != null) {
-            // set extend fields
-            for (FieldDefinition fieldDefinition : extendFields) {
-                String requestValue = request.get(fieldDefinition.getFieldCode());
-                if (StringUtils.isBlank(requestValue)) {
+                Object requestValue = request.get(fieldCode);
+                if(requestValue == null) {
+                    String underlineStr = KunpengStringUtils.camel2underline(fieldCode);
+                    requestValue = request.get(underlineStr);
+                }
+                if (requestValue == null) {
                     continue;
                 }
                 putValueByFieldDefinition(ctx.getCustomFields(),fieldDefinition,requestValue);
@@ -187,21 +176,6 @@ public class AssignFieldValueStep implements IRiskStep {
     }
 
 
-    /**
-     * 异步调用信息写入到FraudContext,规则引擎使用
-     * @param context
-     * @param request
-     */
-    private void writeSyncInfoToContext(AbstractFraudContext context, Map<String, String> request){
-        try {
-            if (request.containsKey("async")) {
-                context.setAsync(Boolean.parseBoolean(request.get("async")));
-            }
-        } catch (Exception e){
-            logger.warn("writeSyncInfoToContext error",e);
-        }
-    }
-
 
     /**
      * 将合作方请求的值，根据字段定义做转换后设置到上下文
@@ -209,7 +183,7 @@ public class AssignFieldValueStep implements IRiskStep {
      * @param requestValue
      * @return
      */
-    private void putValueByFieldDefinition(Map<String, Object> fields,FieldDefinition fieldDefinition,String requestValue){
+    private void putValueByFieldDefinition(Map<String, Object> fields,FieldDefinition fieldDefinition,Object requestValue){
 
         String dataType = fieldDefinition.getDataType();
         String fieldCode = fieldDefinition.getFieldCode();
@@ -219,24 +193,62 @@ public class AssignFieldValueStep implements IRiskStep {
                 if (FieldDataType.STRING.name().equals(dataType)) {
                     fieldValue = requestValue;
                 } else if (FieldDataType.INT.name().equals(dataType)) {
-                    fieldValue = new Integer(requestValue);
+                    if(requestValue instanceof Number){
+                        fieldValue = ((Number)fieldValue).intValue();
+                    } else {
+                        if(StringUtils.isBlank(requestValue.toString())){
+                           return;
+                        }
+                        fieldValue = Integer.valueOf(requestValue.toString());
+                    }
                 } else if (FieldDataType.DOUBLE.name().equals(dataType)) {
-                    fieldValue = new Double(requestValue);
+                    if(requestValue instanceof Number){
+                        fieldValue = ((Number)fieldValue).doubleValue();
+                    } else {
+                        if(StringUtils.isBlank(requestValue.toString())){
+                            return;
+                        }
+                        fieldValue = Double.valueOf(requestValue.toString());
+                    }
                 } else if (FieldDataType.DATETIME.name().equals(dataType)) {
-                    fieldValue = DateUtil.parseDateTime(requestValue);
+                    if(!(requestValue instanceof Date)){
+                        if(StringUtils.isBlank(requestValue.toString())){
+                            return;
+                        }
+                        fieldValue = DateUtil.parseDateTime(requestValue.toString());
+                    }
                 } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
-                    fieldValue = "true".equalsIgnoreCase(requestValue) ? true : false;
+                    if(!(requestValue instanceof Boolean)){
+                        if(StringUtils.isBlank(requestValue.toString())){
+                            return;
+                        }
+                        fieldValue = "true".equalsIgnoreCase(requestValue.toString()) ? true : false;
+                    }
                 } else if (FieldDataType.ARRAY.name().equals(dataType)) {
-                    fieldValue = Arrays.asList(requestValue.replaceAll("，", ",").split(","));
+                    if( !(requestValue instanceof List || requestValue instanceof Object[])) {
+                        if(StringUtils.isBlank(requestValue.toString())){
+                            return;
+                        }
+                        fieldValue = Arrays.asList(requestValue.toString().replaceAll("，", ",").split(","));
+                    }
                 }
                 fieldValue = getValueByPropertyType(fieldDefinition,fieldValue);
-                fields.put(fieldCode,fieldValue);
+
+                if(fieldValue == null) {
+                    return;
+                }
+
+                fields.put(fieldCode, fieldValue);
             } else  {
                 //对象类型
                 try {
+                    if(StringUtils.isBlank(requestValue.toString())){
+                        return;
+                    }
+
                     // 把系统对象的名称加进来，整体组装成大JSON
                     JSONObject fieldInfo = new JSONObject();
-                    JSONObject fieldValueJson = JSONObject.parseObject(requestValue);
+                    JSONObject fieldValueJson = JSONObject.parseObject(requestValue.toString());
                     fieldInfo.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldCode), fieldValueJson);
                     // 拍平入参JSON
                     Map<String, Object> flattenedJsonInfo = JsonUtil.getFlattenedInfo(fieldInfo.toJSONString());

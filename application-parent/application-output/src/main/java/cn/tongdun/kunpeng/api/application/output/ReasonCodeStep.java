@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.application.output;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
 import cn.tongdun.kunpeng.common.data.SubReasonCode;
@@ -32,7 +33,7 @@ public class ReasonCodeStep implements IRiskStep {
     private ExtensionExecutor extensionExecutor;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request){
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
 
         dealWithSubReasonCodes(context, response);
         if (!response.isSuccess() && StringUtils.isBlank(response.getReasonCode())) {

@@ -95,18 +95,19 @@ public class RiskRequestBuilder {
         return this;
     }
 
-    public RiskRequestBuilder setSimulatePartnerCode(String simulatePartnerCode) {
-        riskRequest.setSimulatePartnerCode(simulatePartnerCode);
+    public RiskRequestBuilder setSimulationPartner(String simulationPartner) {
+        riskRequest.setSimulationPartner(simulationPartner);
         return this;
     }
 
-    public RiskRequestBuilder setSimulateAppName(String simulateAppName) {
-        riskRequest.setSimulateAppName(simulateAppName);
+    public RiskRequestBuilder setSimulationApp(String simulationApp) {
+        riskRequest.setSimulationApp(simulationApp);
         return this;
     }
 
-    public RiskRequestBuilder setSimulateSequenceId(String simulateSequenceId) {
-        riskRequest.setSimulateSequenceId(simulateSequenceId);
+
+    public RiskRequestBuilder setSimulationSeqId(String simulationSeqId) {
+        riskRequest.setSimulationSeqId(simulationSeqId);
         return this;
     }
 
