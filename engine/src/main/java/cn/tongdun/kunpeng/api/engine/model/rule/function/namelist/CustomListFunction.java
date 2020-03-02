@@ -108,6 +108,7 @@ public class CustomListFunction extends AbstractFunction {
                 detail.setList(Lists.newLinkedList(matchList));
             }
             detail.setDimType(this.calcField);
+            detail.setDescription(description);
             detail.setDimValue(dimValue);
             return detail;
         };
