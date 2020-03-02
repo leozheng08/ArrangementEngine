@@ -34,7 +34,7 @@ public class CheatFunction extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
-        Map<String, Object> systemFields = context.getSystemFiels();
+        Map<String, Object> systemFields = context.getSystemFields();
         Object containsCheatApp = systemFields.get("containsCheatApp");
 
         if (containsCheatApp == null) {

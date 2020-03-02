@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.engine.model.script;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
@@ -46,7 +46,7 @@ public class DynamicScriptManager {
                 "groovyHandler-");
     }
 
-    public boolean execute(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
+    public boolean execute(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
         try {
             handleField(context);
         } catch (Exception e) {

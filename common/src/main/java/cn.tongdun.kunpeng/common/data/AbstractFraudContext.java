@@ -170,7 +170,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 系统字段
      */
-    private Map<String, Object> systemFiels = new ConcurrentHashMap<>();
+    private Map<String, Object> systemFields = new ConcurrentHashMap<>();
 
     /**
      * 扩展字段
@@ -311,7 +311,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         if (key.startsWith("ext_")) {// 扩展字段
             this.customFields.put(key, value);
         } else { // 系统字段
-            this.systemFiels.put(key, value);
+            this.systemFields.put(key, value);
         }
     }
 
@@ -330,7 +330,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             return "null";
         }
 
-        Object sysVal = systemFiels.get(key);
+        Object sysVal = systemFields.get(key);
         if (sysVal != null) {
             return sysVal;
         }

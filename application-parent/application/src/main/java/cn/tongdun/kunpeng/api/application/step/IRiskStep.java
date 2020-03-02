@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.application.step;
 
 
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.IStep;
@@ -30,7 +31,7 @@ public interface IRiskStep extends IStep {
      * @param response
      * @return 执行通过 true,否则false,false会停止继续执行下面的过滤器
      */
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request);
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request);
 
 
     @Override

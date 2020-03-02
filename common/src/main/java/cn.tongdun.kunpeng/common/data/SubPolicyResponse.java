@@ -21,16 +21,29 @@ public class SubPolicyResponse extends Response{
     private String riskType;
     private PolicyMode policyMode;
 
-    private List<RuleResponse> ruleResponses = new ArrayList<>();
+    private boolean hit;
 
-    private List<HitRule> hitRules = new ArrayList<>();
+    private List<RuleResponse> ruleResponses = new ArrayList<>();
+    private List<RuleResponse> hitRules = new ArrayList<>();
+
+//    private List<HitRule> hitRules = new ArrayList<>();
 
     public void addRuleResponse(RuleResponse ruleResponse){
+        if(ruleResponse == null){
+            return;
+        }
         ruleResponses.add(ruleResponse);
+        if(ruleResponse.isHit()){
+            hitRules.add(ruleResponse);
+        }
     }
 
-    public void addHitRule(HitRule hitRule){
-        hitRules.add(hitRule);
-    }
+
+
+//    public void addHitRule(HitRule hitRule){
+//        hitRules.add(hitRule);
+//    }
+
+
 
 }

@@ -43,7 +43,7 @@ public class EmulatorFunction extends AbstractFunction {
         }
 
         // 设备指纹银行基金部署改造需求,客户直接传设备信息参数(device_raw)的话,拷贝fp的代码自己处理模拟器
-        if (context.getSystemFiels().containsKey("deviceRaw")) {
+        if (context.getSystemFields().containsKey("deviceRaw")) {
             int emulatorScore = isEmulator(deviceInfo);
             deviceInfo.put("emulatorProbability", emulatorScore);
             deviceInfo.put("isEmulator", emulatorScore / 200D > 0.5);

@@ -1,6 +1,6 @@
-package cn.tongdun.kunpeng.client.data;
+package cn.tongdun.kunpeng.api.application.step.ext.response;
 
-import lombok.Data;
+import cn.tongdun.kunpeng.client.data.IHitRule;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @Author: liang.chen
  * @Date: 2019/12/13 下午4:44
  */
-public class HitRule implements Serializable {
+public class HitRule implements IHitRule {
 
     private static final long serialVersionUID = 6297666052880082771L;
     private String            id;                                     // 规则编号
@@ -19,50 +19,62 @@ public class HitRule implements Serializable {
 
     private String            parentUuid;
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getDecision() {
         return decision;
     }
 
+    @Override
     public void setDecision(String decision) {
         this.decision = decision;
     }
 
-    public int getScore() {
+    @Override
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    @Override
+    public void setScore(Integer score) {
         this.score = score;
     }
 
+    @Override
     public String getUuid() {
         return uuid;
     }
 
+    @Override
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
+    @Override
     public String getParentUuid() {
         return parentUuid;
     }
 
+    @Override
     public void setParentUuid(String parentUuid) {
         this.parentUuid = parentUuid;
     }

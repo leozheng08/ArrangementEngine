@@ -5,7 +5,7 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.common.data.*;
@@ -40,7 +40,7 @@ public class GetPolicyUuidStep implements IRiskStep {
     private IBaseConfig baseConfig;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
 
         String partnerCode = context.getPartnerCode();
         String appName = context.getAppName();
@@ -48,7 +48,7 @@ public class GetPolicyUuidStep implements IRiskStep {
         String policyVersion = request.get(RequestParamName.POLICY_VERSION);
 
         if(StringUtils.isBlank(eventId)){
-            response.setReason_code(ReasonCode.REQ_DATA_TYPE_ERROR.toString());
+            response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString());
             return false;
         }
 
@@ -60,13 +60,13 @@ public class GetPolicyUuidStep implements IRiskStep {
         }
 
         if(StringUtils.isBlank(policyUuid)){ //todo 增加404子码的细分
-            response.setReason_code(ReasonCode.POLICY_NOT_EXIST.toString());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString());
             return false;
         }
 
         Policy policy = policyCache.get(policyUuid);
         if(policy == null){ //todo 增加404子码的细分
-            response.setReason_code(ReasonCode.POLICY_NOT_EXIST.toString());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString());
             return false;
         }
 

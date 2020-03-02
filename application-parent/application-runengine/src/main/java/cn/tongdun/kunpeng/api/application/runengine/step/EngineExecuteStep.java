@@ -7,7 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.DecisionTool;
 import cn.tongdun.kunpeng.api.engine.DecisionToolFactory;
 import cn.tongdun.kunpeng.common.data.PolicyResponse;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class EngineExecuteStep implements IRiskStep {
 
 
     @Override
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request){
 
         AbstractDecisionMode decisionMode = cecisionModeCache.get(context.getPolicyUuid());
         DecisionTool decisionTool = decisionToolFactory.getDecisionTool(decisionMode);

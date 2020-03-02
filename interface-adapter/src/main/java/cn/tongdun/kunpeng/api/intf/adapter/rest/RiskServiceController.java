@@ -1,9 +1,7 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
 import cn.tongdun.kunpeng.api.application.RiskService;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +34,17 @@ public class RiskServiceController {
                                     HttpServletResponse response) {
 
         request.putAll(header);
-        RiskResponse riskResponse = riskService.riskService(request);
+        IRiskResponse riskResponse = riskService.riskService(request);
 
         response.setHeader("Decision-Type", riskResponse.getDecisionType().getIdentity());
         response.setHeader("Content-type", "application/json;charset=UTF-8");
-        if (StringUtils.isNotBlank(riskResponse.getReason_code())) {
-            response.setHeader("Reason-code", riskResponse.getReason_code().split(":")[0]); // 用于zabbix状态码统计
+        if (StringUtils.isNotBlank(riskResponse.getReasonCode())) {
+            response.setHeader("Reason-code", riskResponse.getReasonCode().split(":")[0]); // 用于zabbix状态码统计
         } else {
             response.setHeader("Reason-code", "200"); // 用于zabbix状态码统计
         }
 
-        String body = JSON.toJSONString(riskResponse, SerializerFeature.DisableCircularReferenceDetect);
+        String body = riskResponse.toJsonString();
         return body;
     }
 }
