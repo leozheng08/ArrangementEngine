@@ -5,7 +5,11 @@ import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: liang.chen
@@ -13,6 +17,20 @@ import java.util.Map;
  */
 @Extension(business = BizScenario.DEFAULT,tenant = "haiwai",partner = BizScenario.DEFAULT)
 public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
+
+    private static final Field[] fields = HaiwaiCreateRiskRequestExtPt.class.getDeclaredFields();
+    private static final Set<String> fieldNames = new HashSet<>(fields.length);
+    static {
+        try {
+            Set<String> includeTypes = new HashSet<String>() {{ add("string"); }};
+            for (Field field : fields) {
+                String simTypeName = field.getType().getSimpleName();
+                if (includeTypes.contains(simTypeName.toLowerCase())) {
+                    fieldNames.add((String)field.get(null));
+                }
+            }
+        } catch (Exception e){}
+    }
 
     public static final String        SERVICE_TYPE           = "service_type";
     public static final String        TEST_FLAG              = "test_flag";
@@ -64,7 +82,21 @@ public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         riskRequest.setSimulationUuid(request.get(SIMULATION_UUID));
         riskRequest.setSimulationSeqId(request.get(SIMULATION_SEQ_ID));
         riskRequest.setTdSampleDataId(request.get(TD_SAMPLE_DATA_ID));
+
+        riskRequest.setFieldValues(createFieldValues(request));
+
         return riskRequest;
+    }
+
+
+    private Map<String,Object> createFieldValues(Map<String, String> request){
+        Map<String,Object> fieldValues =  new HashMap<>();
+        request.forEach((key,value)->{
+            if(!fieldNames.contains(key)){
+                fieldValues.put(key,value);
+            }
+        });
+        return fieldValues;
     }
 
 

@@ -18,14 +18,7 @@ public class RiskRequest implements Serializable {
     private static final Field[] fields = RiskRequest.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length);
     static {
-        Set<String> includeTypes = new HashSet<>();
-        includeTypes.add("int");
-        includeTypes.add("integer");
-        includeTypes.add("string");
-        includeTypes.add("double");
-        includeTypes.add("long");
-        includeTypes.add("float");
-        includeTypes.add("boolean");
+        Set<String> includeTypes =new HashSet<String>(){{add("int");add("integer");add("string");add("double");add("long");add("float");add("boolean");}};
         for (Field field : fields) {
             String simTypeName = field.getType().getSimpleName();
             if (includeTypes.contains(simTypeName.toLowerCase())) {
