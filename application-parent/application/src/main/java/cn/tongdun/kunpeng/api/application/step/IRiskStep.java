@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.application.step;
 
 
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.IStep;
 import org.slf4j.Logger;

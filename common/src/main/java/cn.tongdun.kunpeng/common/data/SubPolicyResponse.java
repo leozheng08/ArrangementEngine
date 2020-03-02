@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.common.data;
 
-import cn.tongdun.kunpeng.client.data.HitRule;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
 import lombok.Data;
 
