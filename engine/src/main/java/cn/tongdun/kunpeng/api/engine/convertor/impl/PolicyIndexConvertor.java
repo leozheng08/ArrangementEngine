@@ -19,6 +19,9 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,16 @@ import java.util.Map;
 @Component
 @DependsOn(value = "defaultConvertorFactory")
 public class PolicyIndexConvertor implements IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> {
+
+    private static BufferedWriter bw;
+
+    static {
+        try {
+            bw = new BufferedWriter(new FileWriter("/Users/liuqiang/work/kunpeng-api/test.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Autowired
     DefaultConvertorFactory convertorFactory;
@@ -63,6 +76,14 @@ public class PolicyIndexConvertor implements IConvertor<List<IndexDefinitionDTO>
                 if (FieldTypeEnum.POLICY_INDEX.equalsForType(functionParam.getType())) {
                     FunctionDesc functionDesc = functionDescMap.get(functionParam.getValue());
                     if (null == functionDesc) {
+                        try {
+                            bw.write(entry.getKey());
+                            bw.newLine();
+                            bw.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         throw new ParseException("PolicyIndexConvertor convert error,the Index param is function,but not found functionDesc,policyIndexUuid:" + entry.getKey());
                     }
 

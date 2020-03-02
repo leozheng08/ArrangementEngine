@@ -18,14 +18,12 @@ public class AssignmentAction implements Action {
 
     @Override
     public void parse(ActionDesc actionDesc) {
-        //{"leftProperty":{"name":"idNumber","type":"context"},"op":"=","rightValue":{"type":"input","value":"333333"}}
+        //[{"leftProperty":"reject3","rightValueType":"input","rightValue":"3","leftPropertyType":"","op":"="}]
         JSONObject json = JSONObject.parseObject(actionDesc.getParams());
-        JSONObject leftProperty = json.getJSONObject("leftProperty");
-        left=leftProperty.getString("name");
+        left= json.getString("leftProperty");
 
-        JSONObject rightValueJson = json.getJSONObject("rightValue");
-        String rightValueType = rightValueJson.getString("type");
-        String rightValue=rightValueJson.getString("value");
+        String rightValueType = json.getString("rightValueType");
+        String rightValue=json.getString("rightValue");
 
         switch (rightValueType) {
             case "input":

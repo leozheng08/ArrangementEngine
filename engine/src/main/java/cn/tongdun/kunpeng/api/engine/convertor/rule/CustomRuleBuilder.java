@@ -9,6 +9,10 @@ import cn.tongdun.kunpeng.api.engine.util.TdRuleOperatorMapUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -18,14 +22,14 @@ import java.util.List;
 public class CustomRuleBuilder extends AbstractRuleBuilder {
 
     @Override
-    protected void convertRuleCondtionElement2RawRule(List<RuleConditionElementDTO> ruleConditionElements, RawRule rawRule) {
+    protected void convertRuleCondtionElement2RawRule(List<RuleConditionElementDTO> ruleConditionElements, RawRule rawRule){
 
         if (null == ruleConditionElements || ruleConditionElements.isEmpty() || null == rawRule) {
             return;
         }
         //自定义规则第一层只有1个RuleConditionElementDTO
         if (ruleConditionElements.size() != 1) {
-            throw new ParseException("customRule formate error,first layer don't have one elemvent!");
+            throw new ParseException("customRule formate error,first layer don't have one elemvent!ruleId:"+rawRule.getId());
         }
 
         List<Condition> conditionList = Lists.newArrayList();
