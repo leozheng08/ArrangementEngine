@@ -19,6 +19,10 @@ public class TdRuleOperatorMapUtils {
         display2Engine.put("==","equals");
         display2Engine.put("=","equals");
         display2Engine.put("!=","notEquals");
+        //至少一个条件不满足
+        display2Engine.put("!&&","notAnd");
+        //均不满足
+        display2Engine.put("!||","notOr");
         display2Engine.put("<","lt");
         display2Engine.put("<=","lte");
         display2Engine.put("isdivisible","isDivisible");
