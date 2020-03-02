@@ -28,17 +28,17 @@ public class RedisValue<T> implements IValue<T> {
 
     @Override
     public String getKey() {
-        return null;
+        return key;
     }
 
     @Override
     public T getValue() {
-        return null;
+        return value;
     }
 
     @Override
     public long getTtl() {
-        return 0;
+        return ttl;
     }
 }
 

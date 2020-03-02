@@ -97,6 +97,7 @@ public class FourCalculation extends AbstractCalculateFunction {
             detail.setLeft(leftVariable);
             detail.setRight(rightVariable);
             detail.setResult(lambdaRet);
+            detail.setDescription(description);
             detail.setConditionUuid(this.getConditionUuid());
             detail.setRuleUuid(this.getRuleUuid());
             return detail;

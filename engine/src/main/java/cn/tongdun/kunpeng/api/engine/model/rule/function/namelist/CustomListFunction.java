@@ -74,6 +74,12 @@ public class CustomListFunction extends AbstractFunction {
                         } else {
                             return new FunctionResult(false, null);
                         }
+                    } else {
+                        if (CollectionUtils.isNotEmpty(matchList)) {
+                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                        } else {
+                            return new FunctionResult(false, null);
+                        }
                     }
                 } else {
                     List<String> listDataList = customListValueCache.get(definitionList);
@@ -89,6 +95,12 @@ public class CustomListFunction extends AbstractFunction {
                     }
                     if (MatchModeEnum.EXCLUDE.equals(matchModeEnum)) {
                         if (CollectionUtils.isEmpty(matchList)) {
+                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                        } else {
+                            return new FunctionResult(false, null);
+                        }
+                    } else {
+                        if (CollectionUtils.isNotEmpty(matchList)) {
                             return new FunctionResult(true, buildConditionDetail(matchList, dim));
                         } else {
                             return new FunctionResult(false, null);
@@ -111,6 +123,7 @@ public class CustomListFunction extends AbstractFunction {
                 detail.setList(Lists.newLinkedList(matchList));
             }
             detail.setDimType(this.calcField);
+            detail.setDescription(description);
             detail.setDimValue(dimValue);
             return detail;
         };

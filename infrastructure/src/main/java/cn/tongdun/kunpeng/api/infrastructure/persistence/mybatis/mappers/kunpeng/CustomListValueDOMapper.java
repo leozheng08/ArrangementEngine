@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
 import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -12,14 +13,14 @@ public interface CustomListValueDOMapper {
      * @param customListUuid
      * @return
      */
-    int selectCountByListUuid(String customListUuid);
+    int selectCountByListUuid(@Param("customListUuid") String customListUuid);
 
     /**
      * 分页加载自定义列表
      * @param customListUuid
      * @return
      */
-    List<CustomListValueDO> selectByListUuid(String customListUuid,Integer offset,Integer size);
+    List<CustomListValueDO> selectByListUuid(@Param("customListUuid") String customListUuid, @Param("offset") Integer offset, @Param("size") Integer size);
 
 
 }

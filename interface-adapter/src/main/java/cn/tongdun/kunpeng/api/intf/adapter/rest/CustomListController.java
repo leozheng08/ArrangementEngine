@@ -30,6 +30,6 @@ public class CustomListController {
                                     HttpServletResponse response) {
 
         customListValueManager.loadDataToRedis();
-        return "";
+        return "success";
     }
 }

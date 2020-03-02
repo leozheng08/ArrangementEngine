@@ -31,7 +31,7 @@
     select count(*) cnt
     from custom_list_value
     where
-    custom_list_uuid = #{custom_list_uuid} and is_deleted = 0
+    custom_list_uuid = #{customListUuid} and is_deleted = 0
   </select>
 
   <select id="selectByListUuid" resultMap="BaseResultMap">
@@ -39,7 +39,7 @@
     <include refid="Base_Column_List"/>
     from custom_list_value
     where
-    custom_list_uuid = #{custom_list_uuid} and is_deleted = 0
+    custom_list_uuid = #{customListUuid} and is_deleted = 0
     limit #{offset},#{size};
   </select>
 

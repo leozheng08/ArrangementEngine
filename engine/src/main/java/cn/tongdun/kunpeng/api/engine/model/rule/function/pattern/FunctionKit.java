@@ -95,6 +95,7 @@ public class FunctionKit extends AbstractCalculateFunction {
             List<Number> vs = new ArrayList<>(values.size());
             vs.addAll(valuesDetail);
             detail.setVariables(vs);
+            detail.setDescription(description);
             detail.setConditionUuid(this.getConditionUuid());
             detail.setRuleUuid(this.getRuleUuid());
             return detail;

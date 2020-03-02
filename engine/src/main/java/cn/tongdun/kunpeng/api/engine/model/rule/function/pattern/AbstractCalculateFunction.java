@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
  * @Author: liuq
  * @Date: 2020/2/11 2:12 PM
  */
+
 public abstract class AbstractCalculateFunction extends AbstractFunction {
 
 
