@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.PolicyResult;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -29,7 +30,7 @@ import java.util.*;
 public class AfterHandleStep implements IRiskStep {
 
     @Override
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request){
         response.setSuccess(true);
         return true;
     }

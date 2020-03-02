@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application.output.ext;
 
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
@@ -10,5 +11,5 @@ import cn.tongdun.tdframework.core.extension.IExtensionPoint;
  * @Date: 2020/2/10 下午3:11
  */
 public interface IGeneralOutputExtPt extends IExtensionPoint {
-    boolean generalOutput(AbstractFraudContext context,RiskResponse response);
+    boolean generalOutput(AbstractFraudContext context,IRiskResponse response);
 }

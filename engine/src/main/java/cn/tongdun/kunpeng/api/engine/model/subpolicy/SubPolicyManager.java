@@ -7,7 +7,6 @@ import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCach
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
-import cn.tongdun.kunpeng.client.data.HitRule;
 import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.*;
 import org.apache.commons.lang3.StringUtils;
@@ -113,9 +112,9 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
         });
 
         //取得最坏决策结果
-        List<HitRule> hitRuleList = subPolicyResponse.getHitRules();
+        List<RuleResponse> hitRuleList = subPolicyResponse.getHitRules();
         DecisionResultType decisionResult = decisionResultTypeCache.getDefaultType();
-        for (HitRule hitRule : hitRuleList) {
+        for (RuleResponse hitRule : hitRuleList) {
             //根据DecisionResultType的order顺序，Pass、Review、Reject顺序为1、2、3, 序号越大，为最坏结果
             DecisionResultType newdecisionResult = decisionResultTypeCache.get(hitRule.getDecision());
             if (newdecisionResult != null) {
@@ -141,9 +140,9 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
         });
 
         //取得权重分数之和
-        List<HitRule> hitRuleList = subPolicyResponse.getHitRules();
+        List<RuleResponse> hitRuleList = subPolicyResponse.getHitRules();
         int score = 0;
-        for (HitRule hitRule : hitRuleList) {
+        for (RuleResponse hitRule : hitRuleList) {
             score += hitRule.getScore();
         }
 
@@ -207,16 +206,16 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
             if (ruleResponse.isHit()) {
                 hitMap.put(ruleUuid, true);
-                HitRule hitRule = new HitRule();
-                hitRule.setId(ruleResponse.getId());
-                hitRule.setName(ruleResponse.getName());
-                hitRule.setUuid(ruleResponse.getUuid());
-                hitRule.setParentUuid(ruleResponse.getParentUuid());
-                hitRule.setScore(ruleResponse.getScore());
-                //决策结果,如Accept、Review、Reject
-                hitRule.setDecision(ruleResponse.getDecision());
-                subPolicyResponse.addHitRule(hitRule);
-
+//                HitRule hitRule = new HitRule();
+//                hitRule.setId(ruleResponse.getId());
+//                hitRule.setName(ruleResponse.getName());
+//                hitRule.setUuid(ruleResponse.getUuid());
+//                hitRule.setParentUuid(ruleResponse.getParentUuid());
+//                hitRule.setScore(ruleResponse.getScore());
+//                //决策结果,如Accept、Review、Reject
+//                hitRule.setDecision(ruleResponse.getDecision());
+//                subPolicyResponse.addHitRule(hitRule);
+                subPolicyResponse.setHit(true);
                 //如果返回true则退出。用于首次匹配模式下，命中第一个即退出。
                 if (breakWhenHitfunc.apply(ruleResponse)) {
                     break;

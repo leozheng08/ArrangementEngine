@@ -1,9 +1,8 @@
 package cn.tongdun.kunpeng.api.application.output;
 
-import cn.tongdun.kunpeng.api.application.output.ext.IGeneralOutputExtPt;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
 import cn.tongdun.kunpeng.common.data.SubReasonCode;
@@ -33,12 +32,12 @@ public class ReasonCodeStep implements IRiskStep {
     private ExtensionExecutor extensionExecutor;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request){
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request){
 
         dealWithSubReasonCodes(context, response);
-        if (!response.isSuccess() && StringUtils.isBlank(response.getReason_code())) {
+        if (!response.isSuccess() && StringUtils.isBlank(response.getReasonCode())) {
             // false的情况下，如果没有状态码，手动设置500。这种情况通常是有未处理的异常
-            response.setReason_code(ReasonCode.INTERNAL_ERROR.toString());
+            response.setReasonCode(ReasonCode.INTERNAL_ERROR.toString());
         }
 
         String respStr = JSON.toJSONString(response, SerializerFeature.DisableCircularReferenceDetect);
@@ -46,7 +45,7 @@ public class ReasonCodeStep implements IRiskStep {
         return true;
     }
 
-    public void dealWithSubReasonCodes(AbstractFraudContext context, RiskResponse response) {
+    public void dealWithSubReasonCodes(AbstractFraudContext context, IRiskResponse response) {
         if (CollectionUtils.isNotEmpty(context.getSubReasonCodes())) {
             Set<String> sub = new HashSet<>();
             for (SubReasonCode subReasonCode : context.getSubReasonCodes()) {
@@ -70,13 +69,13 @@ public class ReasonCodeStep implements IRiskStep {
 
             //reasonCode对外输出有优先级
             if (sub.contains(ReasonCode.POLICY_NOT_EXIST.getCode())) {
-                response.setReason_code(ReasonCode.POLICY_NOT_EXIST.getCode());
+                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode());
             } else if (sub.contains(ReasonCode.SERVICE_FLOW_ERROR.getCode())) {
-                response.setReason_code(ReasonCode.SERVICE_FLOW_ERROR.getCode());
+                response.setReasonCode(ReasonCode.SERVICE_FLOW_ERROR.getCode());
             } else if (sub.contains(ReasonCode.DATA_NOT_READY.getCode())) {
-                response.setReason_code(ReasonCode.DATA_NOT_READY.getCode());
+                response.setReasonCode(ReasonCode.DATA_NOT_READY.getCode());
             }else if(sub.contains(ReasonCode.ENCRYPTION_FIELD_NOT_READY.getCode())){
-                response.setReason_code(ReasonCode.ENCRYPTION_FIELD_NOT_READY.getCode());
+                response.setReasonCode(ReasonCode.ENCRYPTION_FIELD_NOT_READY.getCode());
             }
 
             logger.info("partner:{}, sub_reason_code:{}", context.getPartnerCode(), JSON.toJSONString(context.getSubReasonCodes()));

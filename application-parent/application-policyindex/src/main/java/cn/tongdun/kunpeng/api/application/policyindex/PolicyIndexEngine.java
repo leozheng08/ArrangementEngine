@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.application.policyindex;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexManager;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class PolicyIndexEngine implements IRiskStep {
 
 
     @Override
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
 
         policyIndexManager.execute(context.getPolicyUuid(), context);
         return true;

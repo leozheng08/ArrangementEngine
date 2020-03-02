@@ -35,6 +35,6 @@ public class PolicyEdgeCondition extends EdgeCondition {
         SubPolicyManager subPolicyManager = (SubPolicyManager) SpringContextHolder.getBean("subPolicyManager");
         SubPolicyResponse subPolicyResponse = subPolicyManager.execute(subPolicyUuid, (AbstractFraudContext) executeContext);
 
-        return subPolicyResponse.getHitRules() != null && !subPolicyResponse.getHitRules().isEmpty();
+        return subPolicyResponse.isHit();
     }
 }

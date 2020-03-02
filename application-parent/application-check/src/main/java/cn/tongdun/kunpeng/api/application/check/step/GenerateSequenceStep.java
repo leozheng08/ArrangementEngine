@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.application.check.step;
 import cn.tongdun.kunpeng.api.application.check.util.GenerateSeqIdUtil;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.RequestParamName;
 import cn.tongdun.kunpeng.api.application.check.util.DesensitizeUtil;
@@ -27,7 +27,7 @@ public class GenerateSequenceStep implements IRiskStep {
     private Logger logger = LoggerFactory.getLogger(GenerateSequenceStep.class);
 
     @Override
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
 
         //seq_id
         String seqId = request.get("seq_id");
@@ -38,7 +38,7 @@ public class GenerateSequenceStep implements IRiskStep {
         if (StringUtils.isBlank(seqId)) {
             seqId = GenerateSeqIdUtil.generateSeqId();
         }
-        response.setSeq_id(seqId);
+        response.setSeqId(seqId);
         context.setSequenceId(seqId);
 
         //requestId

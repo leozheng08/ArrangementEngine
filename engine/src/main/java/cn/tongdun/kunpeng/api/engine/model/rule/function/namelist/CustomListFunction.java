@@ -83,6 +83,9 @@ public class CustomListFunction extends AbstractFunction {
                     }
                 } else {
                     List<String> listDataList = customListValueCache.get(definitionList);
+                    if(listDataList == null){
+                        return new FunctionResult(false, null);
+                    }
                     for (String dimValue : dims) {
                         for (String data : listDataList) {
                             if (match(dimValue, data, matchModeEnum)) {

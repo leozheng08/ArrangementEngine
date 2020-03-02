@@ -5,7 +5,7 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
-import cn.tongdun.kunpeng.client.data.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
@@ -29,7 +29,7 @@ public class BaseCheckParamsStep implements IRiskStep {
     FieldDefinitionCache fieldDefinitionCache;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, RiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
 
 
 
@@ -40,8 +40,12 @@ public class BaseCheckParamsStep implements IRiskStep {
         List<FieldDefinition> sysFields = fieldDefinitionCache.getSystemField(context.getEventType(),context.getAppType());
         List<FieldDefinition> extFields = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getAppName(),context.getEventType());
 
-        context.getFieldDefinitions().addAll(sysFields);
-        context.getFieldDefinitions().addAll(extFields);
+        if(sysFields != null) {
+            context.getFieldDefinitions().addAll(sysFields);
+        }
+        if(extFields != null) {
+            context.getFieldDefinitions().addAll(extFields);
+        }
 
         if (sysFields != null) {
             checkParams(request,sysFields,sbType,sbFormat,sbOvermax);
@@ -65,7 +69,7 @@ public class BaseCheckParamsStep implements IRiskStep {
             sb.append(",").append(sbOvermax.toString());
         }
         if (sb.length() > 0) {
-            response.setReason_code(sb.toString());
+            response.setReasonCode(sb.toString());
         } else {
             return true;
         }
