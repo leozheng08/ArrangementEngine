@@ -13,6 +13,8 @@
     <cache:annotation-driven />
     <context:component-scan base-package="cn.tongdun.kunpeng.api"/>
     <context:component-scan base-package="cn.tongdun.tdframework"/>
+    <context:component-scan base-package="cn.tongdun.kunpeng.share.config"/>
+
 
     <bean class="cn.fraudmetrix.module.tdrule.spring.SpringContextHolder"/>
 
