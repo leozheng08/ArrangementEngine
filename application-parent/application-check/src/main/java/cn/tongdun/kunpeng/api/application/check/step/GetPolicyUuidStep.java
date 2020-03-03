@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.common.data.*;
@@ -40,12 +41,12 @@ public class GetPolicyUuidStep implements IRiskStep {
     private IBaseConfig baseConfig;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         String partnerCode = context.getPartnerCode();
         String appName = context.getAppName();
-        String eventId = request.get(RequestParamName.EVENT_ID);
-        String policyVersion = request.get(RequestParamName.POLICY_VERSION);
+        String eventId = request.getEventId();
+        String policyVersion = request.getPolicyVersion();
 
         if(StringUtils.isBlank(eventId)){
             response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString());

@@ -41,9 +41,9 @@ public class NetWorkUtil {
                     String hostAddress = inetAddress.getHostAddress();
                     if (IPAddressUtil.isIPv6LiteralAddress(hostAddress)) {
                         continue;
+                    } else {
+                        return hostAddress;
                     }
-
-                    return hostAddress;
                 }
             }
         } catch (SocketException e) {

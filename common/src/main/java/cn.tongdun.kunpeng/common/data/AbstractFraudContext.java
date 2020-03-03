@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.common.data;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.common.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
@@ -96,20 +97,23 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private String recallSequenceId;
 
+
+
     /**
      *  仿真的合作方编码
      */
-    private String simulatePartnerCode;
+    private String simulationPartner;
 
     /**
      * 仿真的appName
      */
-    private String simulateAppName;
+    private String simulationApp;
 
     /**
      * 仿真的seqId
      */
-    private String simulateSequenceId;
+    private String simulationSeqId;
+    private String simulationUuid;
     private String tdSampleDataId;
 
     /*************系统级入参 end******************/
@@ -161,6 +165,8 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 原始请求入参Map
      */
     private Map<String, String> requestParamsMap;
+
+    private RiskRequest riskRequest;
 
     /**
      * 本次请求适用的字段列表

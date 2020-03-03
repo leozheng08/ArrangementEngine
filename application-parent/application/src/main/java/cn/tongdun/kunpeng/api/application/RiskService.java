@@ -1,12 +1,14 @@
 package cn.tongdun.kunpeng.api.application;
 
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
+import cn.tongdun.kunpeng.api.application.ext.ICreateRiskRequestExtPt;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.application.step.ext.ICreateRiskResponseExtPt;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.client.api.IRiskService;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.BizScenario;
@@ -44,11 +46,27 @@ public class RiskService implements IRiskService {
 
     @Override
     public IRiskResponse riskService(Map<String, String> request) {
-        FraudContext context = new FraudContext();
-        context.setRequestParamsMap(request);
-        BizScenario bizScenario = createBizScenario(context);
-        context.setBizScenario(bizScenario);
 
+        BizScenario bizScenario = createBizScenario(request);
+
+        RiskRequest riskRequest  = extensionExecutor.execute(ICreateRiskRequestExtPt.class,
+                bizScenario,
+                extension -> extension.createRiskRequest(request));
+
+
+        return riskService(riskRequest);
+    }
+
+
+    @Override
+    public IRiskResponse riskService(RiskRequest riskRequest) {
+
+        FraudContext context = new FraudContext();
+        context.setRiskRequest(riskRequest);
+
+        //business 依赖event_id找到对应的event_type再确认，放到GetPolicyUuidStep步骤中实现。
+        BizScenario bizScenario = BizScenario.valueOf(localEnvironment.getTenant(),null,riskRequest.getPartnerCode());
+        context.setBizScenario(bizScenario);
 
         IRiskResponse riskResponse = null;
 
@@ -62,7 +80,7 @@ public class RiskService implements IRiskService {
 
             final IRiskResponse finalRiskResponse = riskResponse;
             Response result = pipelineExecutor.execute(Risk.NAME, IRiskStep.class,
-                    step -> step.invoke(context, finalRiskResponse, request), (isSuccess, e) ->
+                    step -> step.invoke(context, finalRiskResponse, riskRequest), (isSuccess, e) ->
                     {
 
                         //如果调用不成功时退出，不再执行后继步骤
@@ -75,12 +93,14 @@ public class RiskService implements IRiskService {
         }
 
         return riskResponse;
+
     }
 
-    private BizScenario createBizScenario(AbstractFraudContext context){
+
+    private BizScenario createBizScenario(Map<String, String> request){
         BizScenario bizScenario = new BizScenario();
         bizScenario.setTenant(localEnvironment.getTenant());
-        bizScenario.setPartner(context.getPartnerCode());
+        bizScenario.setPartner(request.get("partnerCode") != null ? request.get("partnerCode") :request.get("partner_code"));
         return bizScenario;
     }
 }

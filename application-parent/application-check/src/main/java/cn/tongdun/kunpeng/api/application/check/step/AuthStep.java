@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplication;
 import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplicationCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
 import cn.tongdun.kunpeng.common.data.RequestParamName;
@@ -29,10 +30,10 @@ public class AuthStep implements IRiskStep {
     private AdminApplicationCache adminApplicationCache;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
-        String partnerCode = request.get(RequestParamName.PARTNER_CODE);
-        String secretKey = request.get(RequestParamName.SECRET_KEY);
+        String partnerCode = request.getPartnerCode();
+        String secretKey = request.getSecretKey();
 
 
         if(StringUtils.isAnyBlank(partnerCode,secretKey)){

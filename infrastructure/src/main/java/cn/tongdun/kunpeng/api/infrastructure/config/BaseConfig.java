@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.config;
 
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.config.IBaseConfig;
+import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ public class BaseConfig implements IBaseConfig{
     private Map<String,String> eventType2BusinussMap = new HashMap<>();
 
     @Autowired
-    private DynamicConfigRepository dynamicConfig;
+    private IConfigRepository dynamicConfig;
 
     //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
     @Override

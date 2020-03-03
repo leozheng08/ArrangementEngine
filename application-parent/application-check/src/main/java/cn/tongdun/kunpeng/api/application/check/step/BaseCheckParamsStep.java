@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public class BaseCheckParamsStep implements IRiskStep {
     FieldDefinitionCache fieldDefinitionCache;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, Map<String, String> request) {
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
 
 
@@ -85,43 +87,58 @@ public class BaseCheckParamsStep implements IRiskStep {
      * @param sbFormat
      * @param sbOvermax
      */
-    private void checkParams(Map<String, String> request,List<FieldDefinition> fields,
+    private void checkParams(RiskRequest request,List<FieldDefinition> fields,
                              StringBuilder sbType, StringBuilder sbFormat, StringBuilder sbOvermax){
         for (FieldDefinition fieldDefinition : fields) {
             String fieldCode = fieldDefinition.getFieldCode();
             String dataType = fieldDefinition.getDataType();
 
-            String val = request.get(KunpengStringUtils.camel2underline(fieldCode));
-
-            if (StringUtils.isNotBlank(val)) {
-                if (FieldDataType.INT.name().equals(dataType) || FieldDataType.DOUBLE.name().equals(dataType)) {
-                    if (!KunpengStringUtils.isNumeric(val)) {
-                        if (sbType.length() > 0) {
-                            sbType.append(",");
-                        }
-                        sbType.append(fieldCode);
+            Object val = request.getFieldValues().get(KunpengStringUtils.camel2underline(fieldCode));
+            if(val == null){
+                continue;
+            }
+            if(val instanceof String && StringUtils.isBlank((String)val)){
+                continue;
+            }
+            if (FieldDataType.INT.name().equals(dataType) || FieldDataType.DOUBLE.name().equals(dataType)) {
+                if(val instanceof Number ){
+                    continue;
+                }
+                if (!KunpengStringUtils.isNumeric(val.toString())) {
+                    if (sbType.length() > 0) {
+                        sbType.append(",");
                     }
-                } else if (FieldDataType.DATETIME.name().equals(dataType)) {
-                    if (!KunpengStringUtils.isDate(val)) {
-                        if (sbType.length() > 0){
-                            sbType.append(",");
-                        }
-                        sbType.append(fieldCode);
+                    sbType.append(fieldCode);
+                }
+            } else if (FieldDataType.DATETIME.name().equals(dataType)) {
+                if(val instanceof Date){
+                    continue;
+                }
+                if (!KunpengStringUtils.isDate(val.toString())) {
+                    if (sbType.length() > 0){
+                        sbType.append(",");
                     }
-                } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
-                    if (!"true".equalsIgnoreCase(val) && !"false".equalsIgnoreCase(val)) {
-                        if (sbType.length() > 0) {
-                            sbType.append(",");
-                        }
-                        sbType.append(fieldCode);
+                    sbType.append(fieldCode);
+                }
+            } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
+                if(val instanceof Boolean){
+                    continue;
+                }
+                if (!"true".equalsIgnoreCase(val.toString()) && !"false".equalsIgnoreCase(val.toString())) {
+                    if (sbType.length() > 0) {
+                        sbType.append(",");
                     }
-                } else if (FieldDataType.ARRAY.name().equals(dataType)) {
-                    if (val.replaceAll("，", ",").split(",").length > 20) {
-                        if (sbOvermax.length() > 0) {
-                            sbOvermax.append(",");
-                        }
-                        sbOvermax.append(fieldCode);
+                    sbType.append(fieldCode);
+                }
+            } else if (FieldDataType.ARRAY.name().equals(dataType)) {
+                if(val instanceof List || val instanceof Object[]){
+                    continue;
+                }
+                if (val.toString().replaceAll("，", ",").split(",").length > 20) {
+                    if (sbOvermax.length() > 0) {
+                        sbOvermax.append(",");
                     }
+                    sbOvermax.append(fieldCode);
                 }
             }
         }

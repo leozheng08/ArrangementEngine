@@ -28,7 +28,7 @@ public class SubReasonCode implements Serializable {
     }
 
     public SubReasonCode.ExtCode extCodeConstructor(String ext_service_name, String ext_reasonCode, String ext_message) {
-        return new ExtCode(ext_service_name,ext_reasonCode,ext_message);
+        return new ExtCode(ext_service_name, ext_reasonCode, ext_message);
     }
 
     public SubReasonCode addExtCode(ExtCode extCode) {
@@ -70,24 +70,38 @@ public class SubReasonCode implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SubReasonCode that = (SubReasonCode) o;
 
-        if(sub_code == null || that.sub_code == null) return false;
-        if(sub_msg == null || that.sub_msg == null) return false;
-        if(ext_service == null || that.ext_service == null) return false;
+        if (sub_code == null || that.sub_code == null) {
+            return false;
+        }
+        if (sub_msg == null || that.sub_msg == null) {
+            return false;
+        }
+        if (ext_service == null || that.ext_service == null) {
+            return false;
+        }
 
-        if (!sub_code.equals(that.sub_code)) return false;
-        if (!sub_msg.equals(that.sub_msg)) return false;
+        if (!sub_code.equals(that.sub_code)) {
+            return false;
+        }
+        if (!sub_msg.equals(that.sub_msg)) {
+            return false;
+        }
         return ext_service.equals(that.ext_service);
 
     }
 
     @Override
     public int hashCode() {
-        if(sub_code == null || sub_msg == null || ext_service == null){
+        if (sub_code == null || sub_msg == null || ext_service == null) {
             return 100;
         }
         int result = sub_code.hashCode();
@@ -139,15 +153,21 @@ public class SubReasonCode implements Serializable {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             ExtCode extCode = (ExtCode) o;
 
-            if (ext_service_name != null ? !ext_service_name.equals(extCode.ext_service_name) : extCode.ext_service_name != null)
+            if (ext_service_name != null ? !ext_service_name.equals(extCode.ext_service_name) : extCode.ext_service_name != null) {
                 return false;
-            if (ext_reasonCode != null ? !ext_reasonCode.equals(extCode.ext_reasonCode) : extCode.ext_reasonCode != null)
+            }
+            if (ext_reasonCode != null ? !ext_reasonCode.equals(extCode.ext_reasonCode) : extCode.ext_reasonCode != null) {
                 return false;
+            }
             return ext_message != null ? ext_message.equals(extCode.ext_message) : extCode.ext_message == null;
 
         }
