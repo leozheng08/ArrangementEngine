@@ -73,21 +73,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-core</artifactId>
-            <version>1.1.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-influx</artifactId>
-            <version>1.1.5</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.fraudmetrix</groupId>
-            <artifactId>module-metrics-serverinfo</artifactId>
-            <version>2.1.11</version>
-        </dependency>
+
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>

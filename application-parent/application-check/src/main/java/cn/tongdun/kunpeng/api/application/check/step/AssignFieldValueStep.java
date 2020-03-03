@@ -18,6 +18,7 @@ import cn.tongdun.tdframework.core.pipeline.Step;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -192,46 +194,62 @@ public class AssignFieldValueStep implements IRiskStep {
                 Object fieldValue = null;
                 if (FieldDataType.STRING.name().equals(dataType)) {
                     fieldValue = requestValue;
+
                 } else if (FieldDataType.INT.name().equals(dataType)) {
                     if(requestValue instanceof Number){
-                        fieldValue = ((Number)fieldValue).intValue();
+                        fieldValue = ((Number)requestValue).intValue();
                     } else {
                         if(StringUtils.isBlank(requestValue.toString())){
                            return;
                         }
                         fieldValue = Integer.valueOf(requestValue.toString());
                     }
+
                 } else if (FieldDataType.DOUBLE.name().equals(dataType)) {
                     if(requestValue instanceof Number){
-                        fieldValue = ((Number)fieldValue).doubleValue();
+                        fieldValue = ((Number)requestValue).doubleValue();
                     } else {
                         if(StringUtils.isBlank(requestValue.toString())){
                             return;
                         }
                         fieldValue = Double.valueOf(requestValue.toString());
                     }
+
                 } else if (FieldDataType.DATETIME.name().equals(dataType)) {
-                    if(!(requestValue instanceof Date)){
+                    if((requestValue instanceof Date)) {
+                        fieldValue = requestValue;
+                    } else {
                         if(StringUtils.isBlank(requestValue.toString())){
                             return;
                         }
                         fieldValue = DateUtil.parseDateTime(requestValue.toString());
                     }
+
                 } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
-                    if(!(requestValue instanceof Boolean)){
+                    if((requestValue instanceof Boolean)) {
+                        fieldValue = requestValue;
+                    } else {
                         if(StringUtils.isBlank(requestValue.toString())){
                             return;
                         }
                         fieldValue = "true".equalsIgnoreCase(requestValue.toString()) ? true : false;
                     }
+
                 } else if (FieldDataType.ARRAY.name().equals(dataType)) {
-                    if( !(requestValue instanceof List || requestValue instanceof Object[])) {
+                    if(requestValue instanceof List){
+                        fieldValue = requestValue;
+                    } else if(requestValue instanceof Object[]){
+                        fieldValue = Arrays.asList((Object[])requestValue);
+                    } else {
                         if(StringUtils.isBlank(requestValue.toString())){
                             return;
                         }
                         fieldValue = Arrays.asList(requestValue.toString().replaceAll("，", ",").split(","));
                     }
+
                 }
+
+                //根据所属类型（idNumber:身份证 mobile:手机号 email:邮箱）对值做处理
                 fieldValue = getValueByPropertyType(fieldDefinition,fieldValue);
 
                 if(fieldValue == null) {

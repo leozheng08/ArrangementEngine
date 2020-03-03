@@ -70,17 +70,31 @@ public class SubReasonCode implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SubReasonCode that = (SubReasonCode) o;
 
-        if (sub_code == null || that.sub_code == null) return false;
-        if (sub_msg == null || that.sub_msg == null) return false;
-        if (ext_service == null || that.ext_service == null) return false;
+        if (sub_code == null || that.sub_code == null) {
+            return false;
+        }
+        if (sub_msg == null || that.sub_msg == null) {
+            return false;
+        }
+        if (ext_service == null || that.ext_service == null) {
+            return false;
+        }
 
-        if (!sub_code.equals(that.sub_code)) return false;
-        if (!sub_msg.equals(that.sub_msg)) return false;
+        if (!sub_code.equals(that.sub_code)) {
+            return false;
+        }
+        if (!sub_msg.equals(that.sub_msg)) {
+            return false;
+        }
         return ext_service.equals(that.ext_service);
 
     }

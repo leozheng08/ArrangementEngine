@@ -74,6 +74,9 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         }
         riskRequest.setTokenId(request.get(TOKEN_ID));
         riskRequest.setRequestId(request.get(REQUEST_ID));
+        if(StringUtils.isBlank(riskRequest.getRequestId())){
+            riskRequest.setSequenceId(request.get(X_REQUEST_ID));
+        }
         riskRequest.setTestFlag(StringUtils.equalsIgnoreCase(request.get(TEST_FLAG), "true"));
         riskRequest.setAsync(StringUtils.equalsIgnoreCase(request.get(ASYNC), "true"));
         riskRequest.setSimulationApp(request.get(SIMULATION_APP));
