@@ -29,8 +29,12 @@ public class KunpengStringUtils {
     }
 
     public static String lowerCaseFirstChar(String x) {
-        if (x == null) return null;
-        if (x.isEmpty()) return "";
+        if (x == null) {
+            return null;
+        }
+        if (x.isEmpty()) {
+            return "";
+        }
         String firstChar = x.substring(0, 1);
         String exceptFirst = x.substring(1);
         return firstChar.toLowerCase() + exceptFirst;
