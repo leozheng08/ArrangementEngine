@@ -21,6 +21,7 @@
         <module>application-output</module>
         <module>application-runengine</module>
         <module>application-basedata</module>
+        <module>application-activity</module>
     </modules>
 
 
