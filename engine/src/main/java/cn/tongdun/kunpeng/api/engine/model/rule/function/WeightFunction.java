@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.function;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.eval.Literal;
 import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
@@ -8,6 +9,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.AbstractCalculateFunction;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,19 +62,23 @@ public class WeightFunction extends AbstractCalculateFunction {
         functionDesc.getParamList().stream().forEach(functionParam -> {
             switch (functionParam.getName()) {
                 case "baseWeight":
-                    baseWeight = Double.valueOf(functionParam.getValue());
+                    baseWeight = DataUtil.toDouble(functionParam.getValue());
                     break;
                 case "weightRatio":
-                    weightRatio = Double.valueOf(functionParam.getValue());
+                    weightRatio = DataUtil.toDouble(functionParam.getValue());
                     break;
                 case "lowerLimitScore":
-                    lowerLimitScore = Double.valueOf(functionParam.getValue());
+                    lowerLimitScore = DataUtil.toDouble(functionParam.getValue());
                     break;
                 case "upperLimitScore":
-                    upperLimitScore = Double.valueOf(functionParam.getValue());
+                    upperLimitScore = DataUtil.toDouble(functionParam.getValue());
                     break;
                 case "weightProperty":
-                    weightProperty = buildVariable(functionParam, null);
+                    if(StringUtils.isBlank(functionParam.getType())||StringUtils.isBlank(functionParam.getValue())){
+                        weightProperty = new Literal(0D);
+                    } else {
+                        weightProperty = buildVariable(functionParam, null);
+                    }
                     break;
                 default:
             }

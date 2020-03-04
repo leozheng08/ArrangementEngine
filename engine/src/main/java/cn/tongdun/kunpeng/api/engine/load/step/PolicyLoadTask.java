@@ -53,9 +53,9 @@ public class PolicyLoadTask implements Callable<Boolean> {
      */
     @Override
     public Boolean call(){
-
+        PolicyDTO policyDTO = null;
         try {
-            PolicyDTO policyDTO = policyRepository.queryByUuid(policyUuid);
+            policyDTO = policyRepository.queryByUuid(policyUuid);
 
             List<SubPolicyDTO> subpolicyDTOList = policyDTO.getSubPolicyList();
 
@@ -111,7 +111,9 @@ public class PolicyLoadTask implements Callable<Boolean> {
             //缓存策略
             localCacheService.put(Policy.class,policy.getUuid(), policy);
         } catch (Exception e){
-            logger.error("LoadPolicyTask error",e);
+            logger.error("LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
+                    policyUuid, policyDTO!=null?policyDTO.getPartnerCode():"",policyDTO != null? policyDTO.getEventId():"",
+                    e);
         }
         return true;
     }

@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.kunpeng.api.engine.model.cluster.IPartnerClusterRepository;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
+import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +49,8 @@ public class PartnerClusterLoadManager implements ILoad {
         } else {
             partners = partnerClusterRepository.queryPartnerByCluster(localEnvironment.getCluster());
         }
+
+        partners.add(Constant.DEFAULT_PARTNER);
 
         partnerClusterCache.setPartners(partners);
 

@@ -47,8 +47,7 @@ public class GetPolicyUuidStep implements IRiskStep {
         //如果合作方为空则设置默认合作方
         setDefaultPartnerCode(context, request);
 
-
-        String partnerCode = request.getPartnerCode();
+        String partnerCode = context.getPartnerCode();
         String eventId = request.getEventId();
         String policyVersion = request.getPolicyVersion();
 
@@ -56,6 +55,8 @@ public class GetPolicyUuidStep implements IRiskStep {
             response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString());
             return false;
         }
+        context.setEventId(eventId);
+        context.setPolicyVersion(policyVersion);
 
         String policyUuid = null;
         if(StringUtils.isNotBlank(policyVersion)) {

@@ -45,16 +45,23 @@ public class RuleConvertor implements IConvertor<RuleDTO, Rule> {
 
     @Override
     public Rule convert(RuleDTO dto) {
-        if (null == dto) {
-            return null;
+        try {
+            if (null == dto) {
+                return null;
+            }
+            RuleBuilder ruleBuilder = null;
+            if (StringUtils.equalsIgnoreCase(dto.getTemplate(), "common/custom")) {
+                ruleBuilder = new CustomRuleBuilder();
+            } else {
+                ruleBuilder = new FunctionRuleBuilder();
+            }
+            return ruleBuilder.build(dto);
+        } catch (Exception e){
+            logger.error("RuleConvertor error, ruleUuid:{}",
+                    dto.getUuid(),
+                    e);
+            throw e;
         }
-        RuleBuilder ruleBuilder = null;
-        if (StringUtils.equalsIgnoreCase(dto.getTemplate(), "common/custom")) {
-            ruleBuilder = new CustomRuleBuilder();
-        } else {
-            ruleBuilder = new FunctionRuleBuilder();
-        }
-        return ruleBuilder.build(dto);
     }
 
 }

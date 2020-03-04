@@ -125,6 +125,8 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 //    private String appName;
 
 
+    private String policyVersion;
+
     /**
      * 当前调用的策略uuid,根据合作方传的三要素partner_code,event_id,secret_key取得策略的运行版本的uuid，
      * 或根据再加个policy_version四要素取得策略版本的uuid
