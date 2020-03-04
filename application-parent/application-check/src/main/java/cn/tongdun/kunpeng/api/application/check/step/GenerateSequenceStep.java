@@ -31,12 +31,12 @@ public class GenerateSequenceStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         //seq_id
-        String seqId = request.getSequenceId();
+        String seqId = request.getSeqId();
         if (StringUtils.isBlank(seqId)) {
             seqId = GenerateSeqIdUtil.generateSeqId();
         }
         response.setSeqId(seqId);
-        context.setSequenceId(seqId);
+        context.setSeqId(seqId);
 
         //requestId
         context.setRequestId(request.getRequestId());

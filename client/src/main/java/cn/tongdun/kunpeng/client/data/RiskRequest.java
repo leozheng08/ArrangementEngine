@@ -38,6 +38,11 @@ public class RiskRequest implements Serializable {
     private String secretKey;
 
     /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
      * 事件id，必传
      */
     private String eventId;
@@ -56,7 +61,7 @@ public class RiskRequest implements Serializable {
     /**
      * 交易流水
      */
-    private String sequenceId;
+    private String seqId;
 
     /**
      * 链路跟踪相关的requestId
@@ -103,7 +108,7 @@ public class RiskRequest implements Serializable {
     /**
      * 507、508的重试调用对应的原seqId
      */
-    private String recallSequenceId;
+    private String recallSeqId;
 
 
     /**
@@ -151,6 +156,14 @@ public class RiskRequest implements Serializable {
         this.secretKey = secretKey;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
     public String getEventId() {
         return eventId;
     }
@@ -175,12 +188,12 @@ public class RiskRequest implements Serializable {
         this.serviceType = serviceType;
     }
 
-    public String getSequenceId() {
-        return sequenceId;
+    public String getSeqId() {
+        return seqId;
     }
 
-    public void setSequenceId(String sequenceId) {
-        this.sequenceId = sequenceId;
+    public void setSeqId(String seqId) {
+        this.seqId = seqId;
     }
 
     public String getRequestId() {
@@ -247,12 +260,12 @@ public class RiskRequest implements Serializable {
         this.recall = recall;
     }
 
-    public String getRecallSequenceId() {
-        return recallSequenceId;
+    public String getRecallSeqId() {
+        return recallSeqId;
     }
 
-    public void setRecallSequenceId(String recallSequenceId) {
-        this.recallSequenceId = recallSequenceId;
+    public void setRecallSeqId(String recallSeqId) {
+        this.recallSeqId = recallSeqId;
     }
 
     public String getSimulationPartner() {

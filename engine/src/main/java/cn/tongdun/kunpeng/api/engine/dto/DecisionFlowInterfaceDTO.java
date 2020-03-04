@@ -33,7 +33,7 @@ public class DecisionFlowInterfaceDTO extends CommonDTO {
      * 输入 input_field [
      * {"interface_field":"MobileInfo.partnerCode","interface_type":"cn.fraudmetrix.creditcloud.object.request.MobileInfo","necessary":false,"isArray":false,"type":"default","rule_field":"partnerCode"},
      * {"interface_field":"MobileInfo.mobile","interface_type":"cn.fraudmetrix.creditcloud.object.request.MobileInfo","necessary":false,"isArray":false,"type":"default","rule_field":"accountMobile"},
-     * {"interface_field":"MobileInfo.sequenceId","interface_type":"cn.fraudmetrix.creditcloud.object.request.MobileInfo","necessary":false,"isArray":false,"type":"default","rule_field":"sequenceId"}
+     * {"interface_field":"MobileInfo.seqId","interface_type":"cn.fraudmetrix.creditcloud.object.request.MobileInfo","necessary":false,"isArray":false,"type":"default","rule_field":"sequenceId"}
      * ]
      */
     private String inputs;

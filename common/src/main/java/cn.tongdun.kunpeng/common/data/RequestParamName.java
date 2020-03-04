@@ -22,7 +22,7 @@ public class RequestParamName {
     public static final String        SEQ_ID             = "seq_id";
     public static final String        RESP_DETAIL_TYPE   = "resp_detail_type";
     public static final String        RECALL             = "recall";
-    public static final String        RECALL_SEQUENCE_ID = "recall_sequence_id";
+    public static final String        RECALL_SEQ_ID = "recall_seq_id";
     public static final String        TOKEN_ID           = "token_id";
     public static final String        BLACK_BOX          = "black_box";
 
