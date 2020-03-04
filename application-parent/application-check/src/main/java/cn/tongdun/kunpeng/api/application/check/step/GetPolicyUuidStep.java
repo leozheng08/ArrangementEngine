@@ -2,8 +2,6 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplication;
-import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplicationCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
@@ -37,10 +35,6 @@ public class GetPolicyUuidStep implements IRiskStep {
     private PolicyDefinitionCache policyDefinitionCache;
 
     @Autowired
-    private AdminApplicationCache adminApplicationCache;
-
-
-    @Autowired
     private PolicyCache policyCache;
 
 
@@ -52,12 +46,9 @@ public class GetPolicyUuidStep implements IRiskStep {
 
         //如果合作方为空则设置默认合作方
         setDefaultPartnerCode(context, request);
-        //如果appName为空则设置默认appName
-        setDefaultAppName(context, request);
 
 
         String partnerCode = request.getPartnerCode();
-        String appName = context.getAppName();
         String eventId = request.getEventId();
         String policyVersion = request.getPolicyVersion();
 
@@ -68,9 +59,9 @@ public class GetPolicyUuidStep implements IRiskStep {
 
         String policyUuid = null;
         if(StringUtils.isNotBlank(policyVersion)) {
-            policyUuid = policyCache.getPolicyUuid(partnerCode, appName, eventId, policyVersion);
+            policyUuid = policyCache.getPolicyUuid(partnerCode, eventId, policyVersion);
         } else {
-            policyUuid = policyDefinitionCache.getPolicyUuid(partnerCode, appName, eventId);
+            policyUuid = policyDefinitionCache.getPolicyUuid(partnerCode, eventId);
         }
 
         if(StringUtils.isBlank(policyUuid)){ //todo 增加404子码的细分
@@ -107,31 +98,6 @@ public class GetPolicyUuidStep implements IRiskStep {
         } else {
             context.setPartnerCode(request.getPartnerCode());
         }
-    }
-
-
-    private void setDefaultAppName(AbstractFraudContext context,RiskRequest request){
-        if(StringUtils.isNotBlank(context.getAppName())) {
-            return;
-        }
-        //如果不传secretKey或appName，则appName按默认值处理
-        String appName = request.getAppName();
-        String appType = null;
-        if(StringUtils.isBlank(appName)){
-            appName = Constant.DEFAULT_APP_NAME;
-            appType = Constant.DEFAULT_APP_TYPE;
-        } else {
-            AdminApplication adminApplication  = adminApplicationCache.get(context.getPartnerCode(),appName);
-            if(adminApplication != null){
-                appType = adminApplication.getAppType();
-            }
-
-            if(StringUtils.isBlank(appType)) {
-                appType = Constant.DEFAULT_APP_TYPE;
-            }
-        }
-        context.setAppName(appName);
-        context.setAppType(appType);
     }
 
     private BizScenario createBizScenario(AbstractFraudContext context){

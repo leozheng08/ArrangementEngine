@@ -2,13 +2,10 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplication;
-import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplicationCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
-import cn.tongdun.kunpeng.common.data.RequestParamName;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +23,6 @@ import java.util.Map;
 public class AuthStep implements IRiskStep {
 
 
-    @Autowired
-    private AdminApplicationCache adminApplicationCache;
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
@@ -41,14 +36,6 @@ public class AuthStep implements IRiskStep {
             return false;
         }
 
-        AdminApplication adminApplication = adminApplicationCache.getBySecretKey(secretKey);
-
-        if(adminApplication == null){
-            response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
-            return false;
-        }
-        context.setAppName(adminApplication.getName());
-        context.setAppType(adminApplication.getAppType());
         context.setPartnerCode(partnerCode);
         context.setSecretKey(secretKey);
         return true;

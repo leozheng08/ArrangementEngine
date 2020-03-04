@@ -21,7 +21,7 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
     //policyUuid -> Policy
     private Map<String,Policy> policyMap = new ConcurrentHashMap<>(5000);
 
-    //partnerCode^^appName^^eventId^^version -> policyUuid
+    //partnerCode^^eventId^^version -> policyUuid
     private Map<String,String> policyUuidMap = new ConcurrentHashMap<>(5000);
 
 
@@ -56,27 +56,25 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
 
 
     /**
-     * 根据partner,appname,eventId,version 四要素取得policyUuid
+     * 根据partner,eventId,version 四要素取得policyUuid
      * @param partner
-     * @param appname
      * @param eventId
      * @return
      */
-    public String getPolicyUuid(String partner, String appname, String eventId,String version){
-        String key = buildKey(partner,appname,eventId,version);
+    public String getPolicyUuid(String partner, String eventId,String version){
+        String key = buildKey(partner,eventId,version);
         return policyUuidMap.get(key);
     }
 
 
     private static String buildKey(Policy policy){
-        return buildKey(policy.getPartnerCode(),policy.getAppName(),policy.getVersion(),policy.getVersion());
+        return buildKey(policy.getPartnerCode(),policy.getVersion(),policy.getVersion());
     }
 
     /**
-     * Build key:partnerCode^^appName^^eventId^^version
+     * Build key:partnerCode^^eventId^^version
      */
-    private static String buildKey(String partner, String appname, String eventId,String version) {
-        return StringUtils.join(partner, SPLIT_CHAR, appname,
-                SPLIT_CHAR, eventId, SPLIT_CHAR, version);
+    private static String buildKey(String partner, String eventId,String version) {
+        return StringUtils.join(partner, SPLIT_CHAR, eventId, SPLIT_CHAR, version);
     }
 }
