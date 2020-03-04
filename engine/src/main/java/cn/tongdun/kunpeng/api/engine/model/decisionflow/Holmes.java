@@ -103,7 +103,7 @@ public class Holmes implements IHolmes{
 
         Map<String, String> reqParams = new HashMap<>();
         String modelUuid = decisionFlowModel.getUuid();
-        String seqId = fraudContext.getSequenceId();
+        String seqId = fraudContext.getSeqId();
 
         reqParams.put("model_uuid", modelUuid);
         reqParams.put("seq_id", seqId);
@@ -195,7 +195,7 @@ public class Holmes implements IHolmes{
     private PredictionInputDTO generateV2InputParam(AbstractFraudContext fraudContext, DecisionFlowModel decisionFlowModel) {
 
         String modelUuid = decisionFlowModel.getUuid();
-        String seqId = fraudContext.getSequenceId();
+        String seqId = fraudContext.getSeqId();
 
         Map<String, String> inputsMap = mapInputs(fraudContext, decisionFlowModel.getInputList());
         String modelVersion = decisionFlowModel.getModelVersion();

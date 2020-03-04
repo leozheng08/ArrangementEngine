@@ -27,14 +27,14 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     private String                    seqId;                                       // 请求序列号，每个请求进来都分配一个全局唯一的id
     private Integer                   spendTime;                                   // 花费的时间，单位ms
 
-    private List<ISubPolicyResult>        subPolicys;                                   // 策略集信息
+    private List<ISubPolicyResult>    subPolicys;                                   // 策略集信息
 
     private String                    riskType;                                    // 风险类型
     @JSONField(serialize = false, deserialize = false)
-    private DecisionType decisionType        = DecisionType.POLICY_SET;
+    private DecisionType              decisionType = DecisionType.POLICY_SET;
 
 
-    private List<IOutputField>         outputFields;                                // 策略结果自定义输出
+    private List<IOutputField>        outputFields;                                // 策略结果自定义输出
 
 
     private List                      rawRuleDetail;                                //原始详情

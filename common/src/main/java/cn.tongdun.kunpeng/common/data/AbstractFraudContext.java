@@ -60,7 +60,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 交易流水
      */
-    private String sequenceId;
+    private String seqId;
 
     /**
      * 链路跟踪相关的requestId
@@ -95,7 +95,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 507、508的重试调用对应的原seqId
      */
-    private String recallSequenceId;
+    private String recallSeqId;
 
 
 

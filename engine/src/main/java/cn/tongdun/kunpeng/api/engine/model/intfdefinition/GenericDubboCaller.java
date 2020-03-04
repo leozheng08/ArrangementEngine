@@ -183,10 +183,10 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                     value = paramInfo.getRuleField();
                 } else {
                     value = fraudContext.get(paramInfo.getRuleField());
-                    //对于sequenceId字段直接从context中取值
+                    //对于seqId字段直接从context中取值
                     String[] temp = paramInfo.getInterfaceField().split("\\.");
-                    if (temp[temp.length - 1].equals("sequenceId")) {
-                        value = fraudContext.getSequenceId();
+                    if (temp[temp.length - 1].equals("seqId")) {
+                        value = fraudContext.getSeqId();
                     }
                     if (temp[temp.length - 1].equals("appName")) {
                         value = fraudContext.getAppName();
@@ -338,7 +338,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
         logger.info("封装泛化dubbo调用结果 resultMap:" + JSON.toJSONString(resultMap));
 
         //记录调用业务日志
-        writeBusinessLog(fraudContext.getSequenceId(), interfaceDefinition.getServiceName(), interfaceDefinition.getMethodName(), interfaceParams.toString(), beginTime);
+        writeBusinessLog(fraudContext.getSeqId(), interfaceDefinition.getServiceName(), interfaceDefinition.getMethodName(), interfaceParams.toString(), beginTime);
     }
 
     public void serializeOutParamsToRuleEngine(AbstractFraudContext fraudContext, boolean isRiskServiceOutput,
@@ -599,7 +599,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
         }
     }
 
-    private void writeBusinessLog(String sequenceId, String service, String method, String params, long beginTime) {
+    private void writeBusinessLog(String seqId, String service, String method, String params, long beginTime) {
         JSONObject jsonObject = new JSONObject(4);
         jsonObject.put("service_name", service);
         jsonObject.put("method_name", method);

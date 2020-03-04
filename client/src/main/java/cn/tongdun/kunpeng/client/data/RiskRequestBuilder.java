@@ -38,8 +38,8 @@ public class RiskRequestBuilder {
         return this;
     }
 
-    public RiskRequestBuilder setSequenceId(String sequenceId) {
-        riskRequest.setSequenceId(sequenceId);
+    public RiskRequestBuilder setSeqId(String seqId) {
+        riskRequest.setSeqId(seqId);
         return this;
     }
 
@@ -90,8 +90,8 @@ public class RiskRequestBuilder {
     }
 
 
-    public RiskRequestBuilder setRecallSequenceId(String recallSequenceId) {
-        riskRequest.setRecallSequenceId(recallSequenceId);
+    public RiskRequestBuilder setRecallSeqId(String recallSeqId) {
+        riskRequest.setRecallSeqId(recallSeqId);
         return this;
     }
 

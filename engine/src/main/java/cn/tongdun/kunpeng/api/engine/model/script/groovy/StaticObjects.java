@@ -33,7 +33,7 @@ public class StaticObjects {
     }
 
     public static void saveFeature(AbstractFraudContext context, String feature) {
-        String id = context.getSequenceId();
+        String id = context.getSeqId();
         emailFeatureLogger.info(id + ": " + feature);
     }
 

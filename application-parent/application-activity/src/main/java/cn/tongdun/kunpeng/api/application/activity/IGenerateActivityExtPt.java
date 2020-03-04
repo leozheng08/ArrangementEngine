@@ -10,7 +10,6 @@ import cn.tongdun.tdframework.core.extension.IExtensionPoint;
  * @Author: liang.chen
  * @Date: 2020/3/4 下午2:52
  */
-@Extension(business = BizScenario.DEFAULT,tenant = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
 public interface IGenerateActivityExtPt extends IExtensionPoint {
 
     /**

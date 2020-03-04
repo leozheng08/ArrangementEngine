@@ -36,13 +36,14 @@ public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     public static final String        TEST_FLAG              = "test_flag";
     public static final String        PARTNER_CODE           = "partner_code";
     public static final String        SECRET_KEY             = "secret_key";
+    public static final String        APP_NAME               = "app_name";
     public static final String        EVENT_ID               = "event_id";
     public static final String        POLICY_VERSION         = "policy_version";
     public static final String        SEQ_ID                 = "seq_id";
     public static final String        X_SEQUENCE_ID          = "x-sequence-id";
     public static final String        RESP_DETAIL_TYPE       = "resp_detail_type";
     public static final String        RECALL                 = "recall";
-    public static final String        RECALL_SEQUENCE_ID     = "recall_sequence_id";
+    public static final String        RECALL_SEQ_ID     = "recall_seq_id";
     public static final String        TOKEN_ID               = "token_id";
     public static final String        BLACK_BOX              = "black_box";
     public static final String        REQUEST_ID             = "request_id";
@@ -62,21 +63,22 @@ public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         RiskRequest riskRequest = new RiskRequest();
         riskRequest.setPartnerCode(request.get(PARTNER_CODE));
         riskRequest.setSecretKey(request.get(SECRET_KEY));
+        riskRequest.setAppName(request.get(APP_NAME));
         riskRequest.setBlackBox(request.get(BLACK_BOX));
         riskRequest.setEventId(request.get(EVENT_ID));
         riskRequest.setPolicyVersion(request.get(POLICY_VERSION));
         riskRequest.setRecall(StringUtils.equalsIgnoreCase(request.get(RECALL), "true"));
-        riskRequest.setRecallSequenceId(request.get(RECALL_SEQUENCE_ID));
+        riskRequest.setRecallSeqId(request.get(RECALL_SEQ_ID));
         riskRequest.setRespDetailType(request.get(RESP_DETAIL_TYPE));
         riskRequest.setServiceType(request.get(SERVICE_TYPE));
-        riskRequest.setSequenceId(request.get(SEQ_ID));
-        if(StringUtils.isBlank(riskRequest.getSequenceId())){
-            riskRequest.setSequenceId(request.get(X_SEQUENCE_ID));
+        riskRequest.setSeqId(request.get(SEQ_ID));
+        if(StringUtils.isBlank(riskRequest.getSeqId())){
+            riskRequest.setSeqId(request.get(X_SEQUENCE_ID));
         }
         riskRequest.setTokenId(request.get(TOKEN_ID));
         riskRequest.setRequestId(request.get(REQUEST_ID));
         if(StringUtils.isBlank(riskRequest.getRequestId())){
-            riskRequest.setSequenceId(request.get(X_REQUEST_ID));
+            riskRequest.setSeqId(request.get(X_REQUEST_ID));
         }
         riskRequest.setTestFlag(StringUtils.equalsIgnoreCase(request.get(TEST_FLAG), "true"));
         riskRequest.setAsync(StringUtils.equalsIgnoreCase(request.get(ASYNC), "true"));

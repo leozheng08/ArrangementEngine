@@ -2,11 +2,14 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplication;
+import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplicationCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.common.data.*;
@@ -34,6 +37,10 @@ public class GetPolicyUuidStep implements IRiskStep {
     private PolicyDefinitionCache policyDefinitionCache;
 
     @Autowired
+    private AdminApplicationCache adminApplicationCache;
+
+
+    @Autowired
     private PolicyCache policyCache;
 
 
@@ -43,7 +50,13 @@ public class GetPolicyUuidStep implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
-        String partnerCode = context.getPartnerCode();
+        //如果合作方为空则设置默认合作方
+        setDefaultPartnerCode(context, request);
+        //如果appName为空则设置默认appName
+        setDefaultAppName(context, request);
+
+
+        String partnerCode = request.getPartnerCode();
         String appName = context.getAppName();
         String eventId = request.getEventId();
         String policyVersion = request.getPolicyVersion();
@@ -75,12 +88,51 @@ public class GetPolicyUuidStep implements IRiskStep {
         context.setEventType(policy.getEventType());
         context.setAppName(policy.getAppName());
 
+
         BizScenario bizScenario = createBizScenario(context);
         context.setBizScenario(bizScenario);
 
         return true;
     }
 
+
+    private void setDefaultPartnerCode(AbstractFraudContext context,RiskRequest request){
+        if(StringUtils.isNotBlank(context.getPartnerCode())){
+            return;
+        }
+
+        //如果不传partner_code，则按默认值处理
+        if(StringUtils.isBlank(request.getPartnerCode())) {
+            context.setPartnerCode(Constant.DEFAULT_PARTNER);
+        } else {
+            context.setPartnerCode(request.getPartnerCode());
+        }
+    }
+
+
+    private void setDefaultAppName(AbstractFraudContext context,RiskRequest request){
+        if(StringUtils.isNotBlank(context.getAppName())) {
+            return;
+        }
+        //如果不传secretKey或appName，则appName按默认值处理
+        String appName = request.getAppName();
+        String appType = null;
+        if(StringUtils.isBlank(appName)){
+            appName = Constant.DEFAULT_APP_NAME;
+            appType = Constant.DEFAULT_APP_TYPE;
+        } else {
+            AdminApplication adminApplication  = adminApplicationCache.get(context.getPartnerCode(),appName);
+            if(adminApplication != null){
+                appType = adminApplication.getAppType();
+            }
+
+            if(StringUtils.isBlank(appType)) {
+                appType = Constant.DEFAULT_APP_TYPE;
+            }
+        }
+        context.setAppName(appName);
+        context.setAppType(appType);
+    }
 
     private BizScenario createBizScenario(AbstractFraudContext context){
         BizScenario bizScenario = new BizScenario();
