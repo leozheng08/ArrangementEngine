@@ -51,8 +51,8 @@
 
     <result column="uuid" property="policyUuid" />
     <result column="partner_code" property="partnerCode" />
-    <result column="app_name" property="appName" />
-    <result column="app_type" property="appType" />
+    <!--<result column="app_name" property="appName" />-->
+    <!--<result column="app_type" property="appType" />-->
     <result column="event_id" property="eventId" />
     <result column="event_type" property="eventType" />
     <result column="version" property="version" />

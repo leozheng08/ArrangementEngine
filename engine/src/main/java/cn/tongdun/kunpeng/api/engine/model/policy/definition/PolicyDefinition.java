@@ -17,7 +17,7 @@ public class PolicyDefinition extends VersionedEntity {
     /**
      * 应用
      */
-    private String appName;
+//    private String appName;
 
     /**
      * 事件类型
@@ -47,7 +47,7 @@ public class PolicyDefinition extends VersionedEntity {
     /**
      * 应用类型
      */
-    private String appType;
+//    private String appType;
 
     /**
      * 行业类型

@@ -27,7 +27,7 @@ public class FieldDefinition extends VersionedEntity implements IFieldDefinition
     /**
      * 应用名 app_name
      */
-    private String appName;
+//    private String appName;
 
     /**
      * 字段code field_code
@@ -57,7 +57,7 @@ public class FieldDefinition extends VersionedEntity implements IFieldDefinition
     /**
      * 应用类型 app_type
      */
-    private String appType;
+//    private String appType;
 
     /**
      * 字段数据类型 string、int、double等 data_type

@@ -133,7 +133,6 @@ public class GroovyCompileManager {
             public void saveDetail(String var1, String var2, DetailCallable var3){}
         };
         context.setPartnerCode("demo");
-        context.setAppName("test");
         context.set("accountMobile","13712341234");
         context.set("accountEmail", "hello@world.com");
         context.setEventId("login");

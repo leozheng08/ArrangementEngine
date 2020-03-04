@@ -188,9 +188,6 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                     if (temp[temp.length - 1].equals("seqId")) {
                         value = fraudContext.getSeqId();
                     }
-                    if (temp[temp.length - 1].equals("appName")) {
-                        value = fraudContext.getAppName();
-                    }
                 }
                 boolean isNecessary = paramInfo.isNecessary();
 

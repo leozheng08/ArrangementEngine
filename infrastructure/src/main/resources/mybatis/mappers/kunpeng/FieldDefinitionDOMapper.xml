@@ -12,7 +12,7 @@
     <result column="display_name" jdbcType="VARCHAR" property="displayName" />
     <result column="property" jdbcType="VARCHAR" property="property" />
     <result column="event_type" jdbcType="VARCHAR" property="eventType" />
-    <result column="app_type" jdbcType="VARCHAR" property="appType" />
+    <!--<result column="app_type" jdbcType="VARCHAR" property="appType" />-->
     <result column="data_type" jdbcType="VARCHAR" property="dataType" />
     <result column="max_length" jdbcType="SMALLINT" property="maxLength" />
     <result column="description" jdbcType="VARCHAR" property="description" />

@@ -62,13 +62,13 @@ public class DynamicScriptManager {
         String classKey = null;
         Map<String,WrappedGroovyObject> map = null;
         // 合作方指定事件类型
-        classKey = context.getPartnerCode() + context.getAppName() + context.getEventType();
+        classKey = context.getPartnerCode() + context.getEventType();
         map = groovyObjectCache.get(classKey);
         if (null != map) {
             groovyObjectMaps.add(map);
         }
         // 合作方全部事件类型
-        classKey = context.getPartnerCode() + context.getAppName() + "All";
+        classKey = context.getPartnerCode() + "All";
         map = groovyObjectCache.get(classKey);
         if (null != map) {
             groovyObjectMaps.add(map);

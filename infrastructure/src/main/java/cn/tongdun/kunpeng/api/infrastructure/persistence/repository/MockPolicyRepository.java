@@ -34,7 +34,6 @@ public class MockPolicyRepository implements IPolicyRepository{
         policyModifiedDO.setStatus(1);
         policyModifiedDO.setEventId("eventId");
         policyModifiedDO.setPartnerCode("demo");
-        policyModifiedDO.setAppName("ios");
         policyModifiedDO.setGmtModify(new Date());
         policyModifiedDO.setVersion("v1.0");
         list.add(policyModifiedDO);
@@ -53,7 +52,6 @@ public class MockPolicyRepository implements IPolicyRepository{
         policyModifiedDO.setStatus(1);
         policyModifiedDO.setEventId("eventId");
         policyModifiedDO.setPartnerCode("demo");
-        policyModifiedDO.setAppName("ios");
         policyModifiedDO.setGmtModify(new Date());
         policyModifiedDO.setVersion("v1.0");
         list.add(policyModifiedDO);
@@ -71,7 +69,6 @@ public class MockPolicyRepository implements IPolicyRepository{
         policyDO.setStatus(1);
         policyDO.setEventId("eventId");
         policyDO.setPartnerCode("demo");
-        policyDO.setAppName("ios");
         policyDO.setVersion("v1.0");
         policyDO.setName("policy name");
 

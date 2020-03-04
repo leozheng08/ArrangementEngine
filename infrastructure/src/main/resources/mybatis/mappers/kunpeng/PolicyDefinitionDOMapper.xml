@@ -20,7 +20,7 @@
     <result column="is_deleted" property="deleted" jdbcType="BIT" />
     <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
     <result column="is_template" property="template" jdbcType="BIT" />
-    <result column="app_type" property="appType" jdbcType="VARCHAR" />
+    <!--<result column="app_type" property="appType" jdbcType="VARCHAR" />-->
     <result column="industry_type" property="industryType" jdbcType="VARCHAR" />
     <result column="product_tag" property="productTag" jdbcType="VARCHAR" />
     <result column="curr_version" property="currVersion" jdbcType="VARCHAR" />

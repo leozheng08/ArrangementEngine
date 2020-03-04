@@ -22,7 +22,7 @@ public class ActitivyMsg implements IActitivyMsg {
     private String seqId;
 
     //消息发送时间
-    private Date produceTime;
+    private long produceTime;
 
     //经处理后的各字段值，包含请求入参映射的字段值，或groovy脚本生成的字段值
     private Map<String,Object> request;

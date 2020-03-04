@@ -122,7 +122,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 根据合作方传的secretKey，从缓存中取得app_name
      */
-    private String appName;
+//    private String appName;
 
 
     /**
@@ -134,7 +134,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 根据app_name，从缓存取得appType
      */
-    private String appType;
+//    private String appType;
 
     /**
      * 根据eventId，从缓存取得eventType

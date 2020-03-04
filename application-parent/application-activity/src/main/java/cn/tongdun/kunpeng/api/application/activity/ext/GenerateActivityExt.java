@@ -1,7 +1,9 @@
 package cn.tongdun.kunpeng.api.application.activity.ext;
 
+import cn.tongdun.kunpeng.api.application.activity.ActitivyMsg;
 import cn.tongdun.kunpeng.api.application.activity.IActitivyMsg;
 import cn.tongdun.kunpeng.api.application.activity.IGenerateActivityExtPt;
+import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.kunpeng.common.data.QueueItem;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -20,6 +22,13 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
      */
     @Override
     public IActitivyMsg generateActivity(QueueItem queueItem){
+        AbstractFraudContext context = queueItem.getContext();
+
+        ActitivyMsg actitivy = new ActitivyMsg();
+        actitivy.setProduceTime(System.currentTimeMillis());
+        actitivy.setSeqId(context.getSeqId());
+
+
         return null;
     }
 }

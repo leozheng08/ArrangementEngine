@@ -33,7 +33,7 @@ public class JailBreakFunction extends AbstractFunction {
         }
         else {
             Object jailBreak = deviceInfo.get("jailbreak");
-            String appType = context.getAppType();
+            String appType = "";//context.getAppType();
             if ("ios".equalsIgnoreCase(appType) && "1".equals(jailBreak)) {
                 return new FunctionResult(true);
             }

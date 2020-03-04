@@ -19,12 +19,12 @@ public class PolicyModifiedDTO {
     /**
      * appName
      */
-    private String            appName;
+//    private String            appName;
 
     /**
      * appType
      */
-    private String            appType;
+//    private String            appType;
 
     /**
      *  eventId
