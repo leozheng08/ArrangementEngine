@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
+import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +49,20 @@ public class PartnerLoadManager implements ILoad {
             partnerCache.put(partner.getPartnerCode(),partner);
         }
 
+        //加载默认合作方
+        Partner defaultPartner = createDefaultPartner();
+        partnerCache.put(defaultPartner.getPartnerCode(),defaultPartner);
+
         logger.info("PartnerLoadManager success, size:"+partnerList.size());
         return true;
+    }
+
+    private Partner createDefaultPartner(){
+        Partner partner = new Partner();
+        partner.setPartnerCode(Constant.DEFAULT_PARTNER);
+        partner.setUuid(Constant.DEFAULT_PARTNER);
+        partner.setDisplayName(Constant.DEFAULT_PARTNER);
+        partner.setStatus(true);
+        return partner;
     }
 }

@@ -33,6 +33,8 @@ public class PartnerClusterLoadManager implements ILoad {
     @Autowired
     ILocalEnvironment localEnvironment;
 
+
+
     @Override
     public boolean load(){
         logger.info("PartnerClusterLoadManager start");

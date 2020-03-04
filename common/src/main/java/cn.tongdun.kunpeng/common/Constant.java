@@ -9,15 +9,12 @@ public class Constant {
     public static final String BUSINESS_ANTI_FRAUD = "anti_fraud";
     public static final String BUSINESS_CREDIT = "credit";
 
-
-
-
-
-
-
-
-
     public static final double EARTH_RADIUS = 6378137.0;
+
+    //合作方没填时，给的默认值
+    public static final String DEFAULT_PARTNER = "default";
+    //appName没填时，给的默认值
+    public static final String DEFAULT_APP_NAME = "default";
 
 
     public class DictKey {

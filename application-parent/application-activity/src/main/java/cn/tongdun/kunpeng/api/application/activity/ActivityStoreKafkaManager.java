@@ -11,7 +11,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
- * 注册worker，及启动多个线程消费消息
+ * 注册activity发kafka的worker，向EventStoreMsgBus添加队列及入队列的过滤条件
+ * 及启动多个线程消费消息
  * @Author: liang.chen
  * @Date: 2020/3/3 下午7:42
  */
@@ -35,7 +36,7 @@ public class ActivityStoreKafkaManager {
         addWorker(activityKafkaWorker, THREAD_COUNT);
     }
 
-    private void addWorker(EventWorker worker, int threadCount) {
+    private void addWorker(IEventWorker worker, int threadCount) {
 
         BlockingQueue<QueueItem> memoryQueue = new LinkedBlockingDeque<>(IN_MEMORY_COUNT);
 
@@ -49,7 +50,7 @@ public class ActivityStoreKafkaManager {
     }
 
 
-    private WorkerThread startWorkerThread(EventWorker worker, int workerId, BlockingQueue<QueueItem> queue) {
+    private WorkerThread startWorkerThread(IEventWorker worker, int workerId, BlockingQueue<QueueItem> queue) {
         WorkerThread t = new WorkerThread(worker, queue);
         t.setName("Worker-" + worker.getName() + "-" + workerId);
         t.start();

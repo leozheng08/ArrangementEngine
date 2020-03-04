@@ -5,13 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * 工作线程
+ */
 public class WorkerThread extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkerThread.class);
-    private EventWorker              worker;
+    private IEventWorker worker;
     private BlockingQueue<QueueItem> queue;
 
-    public WorkerThread(EventWorker worker, BlockingQueue<QueueItem> queue){
+    public WorkerThread(IEventWorker worker, BlockingQueue<QueueItem> queue){
         this.worker = worker;
         this.queue = queue;
     }

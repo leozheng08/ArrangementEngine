@@ -7,10 +7,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 /**
+ *
  * @Author: liang.chen
  * @Date: 2020/3/3 下午7:28
  */
-public interface EventWorker {
+public interface IEventWorker {
 
     //事件处理
     void onEvent(QueueItem item);
