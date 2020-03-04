@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.model.adminapplication.AdminApplication;
 import cn.tongdun.kunpeng.api.engine.model.adminapplication.IAdminApplicationRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminApplicationDO;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.forseti.AdminApplicationDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminApplicationDOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;

@@ -42,16 +42,15 @@ public class PartnerLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("PartnerLoadManager start");
+        //加载默认合作方
+        Partner defaultPartner = createDefaultPartner();
+        partnerCache.put(defaultPartner.getPartnerCode(),defaultPartner);
 
         List<Partner> partnerList = partnerRepository.queryEnabledByPartners(partnerClusterCache.getPartners());
 
         for(Partner partner:partnerList){
             partnerCache.put(partner.getPartnerCode(),partner);
         }
-
-        //加载默认合作方
-        Partner defaultPartner = createDefaultPartner();
-        partnerCache.put(defaultPartner.getPartnerCode(),defaultPartner);
 
         logger.info("PartnerLoadManager success, size:"+partnerList.size());
         return true;

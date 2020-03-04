@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.forseti;
+package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminApplicationDO;
 

@@ -5,7 +5,7 @@
  * use it only in accordance with the terms of the license agreement you entered
  * into with FraudMetrix.cn.
  */
-package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.forseti;
+package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
 
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminPartnerDO;

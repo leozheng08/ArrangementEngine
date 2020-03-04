@@ -15,6 +15,7 @@ public class Constant {
     public static final String DEFAULT_PARTNER = "default";
     //appName没填时，给的默认值
     public static final String DEFAULT_APP_NAME = "default";
+    public static final String DEFAULT_APP_TYPE = "default";
 
 
     public class DictKey {

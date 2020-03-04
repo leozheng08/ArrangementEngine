@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.cluster.IPartnerClusterRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.forseti.AdminPartnerDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminPartnerDOMapper;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PartnerClusterDOMapper;
 import cn.tongdun.kunpeng.share.dataobject.PartnerClusterDO;
 import org.springframework.beans.factory.annotation.Autowired;
