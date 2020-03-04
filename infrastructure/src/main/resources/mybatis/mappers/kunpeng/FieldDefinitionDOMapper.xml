@@ -6,7 +6,7 @@
     <result column="uuid" jdbcType="CHAR" property="uuid" />
     <result column="field_type" jdbcType="VARCHAR" property="fieldType" />
     <result column="partner_code" jdbcType="VARCHAR" property="partnerCode" />
-    <result column="app_name" jdbcType="VARCHAR" property="appName" />
+    <!--<result column="app_name" jdbcType="VARCHAR" property="appName" />-->
     <result column="field_code" jdbcType="VARCHAR" property="fieldCode" />
     <result column="field_name" jdbcType="VARCHAR" property="fieldName" />
     <result column="display_name" jdbcType="VARCHAR" property="displayName" />

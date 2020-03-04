@@ -20,7 +20,7 @@ public class DecisionFlowDTO extends CommonDTO {
     /**
      * 应用名称 app_name
      */
-    private String appName;
+//    private String appName;
 
     /**
      * 事件id event_id

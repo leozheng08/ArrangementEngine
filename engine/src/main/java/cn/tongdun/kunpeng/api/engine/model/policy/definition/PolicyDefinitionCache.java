@@ -80,7 +80,7 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
     }
 
     /**
-     * Build key:partnerCode^^appName^^eventId
+     * Build key:partnerCode^^eventId
      */
     private static String buildKey(String partner, String eventId) {
         return StringUtils.join(partner, SPLIT_CHAR, eventId);

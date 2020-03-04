@@ -17,10 +17,10 @@ public class GroovyObjectCache {
 
     //scope(适用范围) -> fieldName(字段名) -> WrappedGroovyObject(包含编译后groovy对象)
     //scope(适用范围)包含：
-    //   合作方指定事件类型: context.getPartnerCode() + context.getAppName() + context.getEventType()
-    //   合作方全部事件类型: context.getPartnerCode() + context.getAppName() + "All";
-    //   全局指定事件类型:   "All" + "All" + context.getEventType();
-    //   全局全部事件类型:   "All" + "All" + "All";
+    //   合作方指定事件类型: context.getPartnerCode() + context.getEventType()
+    //   合作方全部事件类型: context.getPartnerCode() + "All";
+    //   全局指定事件类型:   "All" + context.getEventType();
+    //   全局全部事件类型:   "All" + "All";
     private Map<String, Map<String,WrappedGroovyObject>> groovyFields = new ConcurrentHashMap<String, Map<String,WrappedGroovyObject>>(30); // 缓存编译后的对象
 
 
@@ -66,8 +66,8 @@ public class GroovyObjectCache {
     }
 
 
-    public String generateKey(String partnerCode, String appName, String eventType) {
-            return StringUtils.join(partnerCode,appName,eventType);
+    public String generateKey(String partnerCode, String eventType) {
+            return StringUtils.join(partnerCode,eventType);
 
     }
 }

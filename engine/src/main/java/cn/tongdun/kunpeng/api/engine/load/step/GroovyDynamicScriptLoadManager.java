@@ -52,14 +52,13 @@ public class GroovyDynamicScriptLoadManager implements ILoad {
             try {
                 groovyCompileManager.addOrUpdate(
                         KunpengStringUtils.valNullToAll(script.getPartnerCode()),
-                        KunpengStringUtils.valNullToAll(script.getAppName()),
                         script.getEventType(),
                         script.getAssignField(),
                         script.getScriptCode());
             } catch (Exception e) {
                 failedCount++;
-                logger.warn("Groovy编译失败,partnerCode:{},appName:{},eventType:{},assignField:{},script:{},message:{}",
-                        script.getPartnerCode(), script.getAppName(), script.getEventType(), script.getAssignField(),script.getScriptCode(),e.getMessage());
+                logger.warn("Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
+                        script.getPartnerCode(), script.getEventType(), script.getAssignField(),script.getScriptCode(),e.getMessage());
             }
         }
 

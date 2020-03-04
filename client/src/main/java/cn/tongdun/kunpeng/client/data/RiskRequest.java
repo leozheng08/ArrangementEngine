@@ -40,7 +40,7 @@ public class RiskRequest implements Serializable {
     /**
      * 应用名称
      */
-    private String appName;
+//    private String appName;
 
     /**
      * 事件id，必传
@@ -116,10 +116,6 @@ public class RiskRequest implements Serializable {
      */
     private String simulationPartner;
 
-    /**
-     * 仿真的appName
-     */
-    private String simulationApp;
 
     /**
      * 仿真的seqId
@@ -156,13 +152,6 @@ public class RiskRequest implements Serializable {
         this.secretKey = secretKey;
     }
 
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
 
     public String getEventId() {
         return eventId;
@@ -274,14 +263,6 @@ public class RiskRequest implements Serializable {
 
     public void setSimulationPartner(String simulationPartner) {
         this.simulationPartner = simulationPartner;
-    }
-
-    public String getSimulationApp() {
-        return simulationApp;
-    }
-
-    public void setSimulationApp(String simulationApp) {
-        this.simulationApp = simulationApp;
     }
 
     public String getSimulationSeqId() {

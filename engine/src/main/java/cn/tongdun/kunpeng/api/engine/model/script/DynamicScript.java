@@ -28,7 +28,7 @@ public class DynamicScript extends VersionedEntity {
     /**
      * 应用 app_name
      */
-    private String appName;
+//    private String appName;
 
     /**
      * 赋值字段 assign_field

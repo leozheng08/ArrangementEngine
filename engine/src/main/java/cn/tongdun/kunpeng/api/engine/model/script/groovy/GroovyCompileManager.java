@@ -32,11 +32,10 @@ public class GroovyCompileManager {
 
 
     /**
-     * 根据partnerCode appName， eventType 更新缓存中该对象的信息，<br>
+     * 根据partnerCode eventType 更新缓存中该对象的信息，<br>
      * 如果缓存中不存在，则说明没有编译过，编译新的并放到缓存中
      *
      * @param partnerCode
-     * @param appName
      * @param eventType
      * @param eventType
      * @throws IOException
@@ -44,7 +43,7 @@ public class GroovyCompileManager {
      * @throws InstantiationException
      * @throws CompilationFailedException
      */
-    public void addOrUpdate(String partnerCode, String appName, String eventType, String field, String methodBody)
+    public void addOrUpdate(String partnerCode, String eventType, String field, String methodBody)
             throws CompilationFailedException,
             InstantiationException,
             IllegalAccessException,
@@ -53,7 +52,7 @@ public class GroovyCompileManager {
             return;
         }
 
-        String key = groovyFieldCache.generateKey(partnerCode , appName , eventType);
+        String key = groovyFieldCache.generateKey(partnerCode , eventType);
         WrappedGroovyObject groovyField = new WrappedGroovyObject();
         GroovyClassGenerator generator = new GroovyClassGenerator(key);
         generator.init();
@@ -71,7 +70,6 @@ public class GroovyCompileManager {
      * 移除处理该字段的代码
      *
      * @param partnerCode
-     * @param appName
      * @param eventType
      * @param field
      * @throws IOException
@@ -79,15 +77,15 @@ public class GroovyCompileManager {
      * @throws InstantiationException
      * @throws CompilationFailedException
      */
-    public void removeMethod(String partnerCode, String appName, String eventType, String field){
-        String key =  groovyFieldCache.generateKey(partnerCode , appName , eventType);
+    public void removeMethod(String partnerCode,  String eventType, String field){
+        String key =  groovyFieldCache.generateKey(partnerCode , eventType);
         groovyFieldCache.remove(key,field);
     }
 
 
 
-    public void remove(String partnerCode, String appName, String eventType) {
-        String key = groovyFieldCache.generateKey(partnerCode , appName , eventType);
+    public void remove(String partnerCode, String eventType) {
+        String key = groovyFieldCache.generateKey(partnerCode , eventType);
         groovyFieldCache.remove(key);
     }
 

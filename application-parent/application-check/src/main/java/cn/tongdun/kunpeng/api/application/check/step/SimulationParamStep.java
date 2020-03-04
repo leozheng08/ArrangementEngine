@@ -42,7 +42,6 @@ public class SimulationParamStep implements IRiskStep {
             context.setSimulationUuid(request.getSimulationUuid());
             if(!StringUtils.equalsIgnoreCase("all", request.getSimulationPartner())) {
                 context.setSimulationPartner(request.getSimulationPartner());
-                context.setSimulationApp(request.getSimulationApp());
             }
 
             if(StringUtils.isNotBlank(request.getTdSampleDataId())) {
