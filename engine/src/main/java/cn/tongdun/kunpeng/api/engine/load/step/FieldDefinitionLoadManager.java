@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.load.step;
 
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
+import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
@@ -40,13 +41,14 @@ public class FieldDefinitionLoadManager implements ILoad {
     public boolean load(){
         logger.info("FieldLoadManager start");
         List<FieldDefinition> list = ruleFieldRepository.queryAllSystemField();
+        List<EventType> eventTypeList=eventTypeCacheRepository.getEventTypeList();
         for(FieldDefinition ruleField:list){
-            ruleFieldCacheRepository.addSystemField(ruleField,eventTypeCacheRepository.getEventTypeList());
+            ruleFieldCacheRepository.addSystemField(ruleField,eventTypeList);
         }
 
         list = ruleFieldRepository.queryAllExtendField();
         for(FieldDefinition ruleField:list){
-            ruleFieldCacheRepository.addExtendField(ruleField,eventTypeCacheRepository.getEventTypeList());
+            ruleFieldCacheRepository.addExtendField(ruleField,eventTypeList);
         }
         logger.info("FieldLoadManager success,systemFieldMap size:"+ruleFieldCacheRepository.getSystemFieldMap().size()+" extendFieldMap size:"+ruleFieldCacheRepository.getExtendFieldMap().size());
         return true;
