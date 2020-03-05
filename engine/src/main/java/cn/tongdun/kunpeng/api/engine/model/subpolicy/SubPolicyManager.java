@@ -191,7 +191,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             if (StringUtils.isNotBlank(rule.getParentUuid())&&!StringUtils.equals(rule.getParentUuid(),"0")) {
                 Boolean parentHit = hitMap.get(rule.getParentUuid());
                 if (parentHit == null || !parentHit) {
-                    break;
+                    continue;
                 }
             }
 
