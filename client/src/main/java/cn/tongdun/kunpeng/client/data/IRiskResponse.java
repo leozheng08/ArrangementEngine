@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.client.data;
 
+import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +17,10 @@ public interface IRiskResponse extends IApiResponse {
      */
     String toJsonString();
 
+    String getSubReasonCodes();
+
+    void setSubReasonCodes(String subReasonCodes);
+
     Integer getFinalScore() ;
 
     void setFinalScore(Integer finalScore) ;
@@ -27,23 +33,12 @@ public interface IRiskResponse extends IApiResponse {
 
     void setPolicyName(String policyName) ;
 
-    String getSubPolicyName() ;
-
-    void setSubPolicyName(String subPolicyName) ;
-
     String getSeqId() ;
 
     void setSeqId(String seqId) ;
     Integer getSpendTime() ;
 
     void setSpendTime(Integer spendTime) ;
-    String getRiskType() ;
-
-    void setRiskType(String riskType) ;
-
-    DecisionType getDecisionType() ;
-
-    void setDecisionType(DecisionType decisionType) ;
 
     List<ISubPolicyResult> getSubPolicys() ;
 
@@ -53,11 +48,12 @@ public interface IRiskResponse extends IApiResponse {
 //
 //    void setHitRules(List<IHitRule> hitRules) ;
 
-    List getRawRuleDetail() ;
-    void setRawRuleDetail(List rawRuleDetail) ;
+    List<RuleDetail> getRuleDetails() ;
+    void setRuleDetails(List<RuleDetail> ruleDetail) ;
 
     List<IOutputField> getOutputFields();
     void setOutputFields(List<IOutputField> outputFields) ;
+
 
     IRiskResponseFactory getFactory();
 }

@@ -33,6 +33,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.58</version>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>rule-detail</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

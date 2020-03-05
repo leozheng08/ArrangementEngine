@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
 import cn.tongdun.kunpeng.api.application.step.ext.response.haiwai.RiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.SubReasonCode;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -9,6 +10,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Activity消息内容
@@ -28,10 +30,10 @@ public class ActitivyMsg implements IActitivyMsg {
     private Map<String,Object> request;
 
     //应答内容
-    private RiskResponse response;
+    private IRiskResponse response;
 
     //详细的错误子码
-    private List<SubReasonCode> subReasonCodes;
+    private Set<SubReasonCode> subReasonCodes;
 
 
 

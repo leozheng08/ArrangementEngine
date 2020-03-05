@@ -42,13 +42,8 @@ public class PartnerClusterLoadManager implements ILoad {
 
         Set<String> partners = null;
 
-        // todu 如果是线下环境，则取所有合作方
-        //if(localEnvironment.isInternalEnvironment()){
-        if(StringUtils.isBlank(localEnvironment.getCluster())){
-            partners = partnerClusterRepository.queryAllPartner();
-        } else {
-            partners = partnerClusterRepository.queryPartnerByCluster(localEnvironment.getCluster());
-        }
+        //则取所有合作方，暂不按集群加载
+        partners = partnerClusterRepository.queryAllPartner();
 
         partners.add(Constant.DEFAULT_PARTNER);
 

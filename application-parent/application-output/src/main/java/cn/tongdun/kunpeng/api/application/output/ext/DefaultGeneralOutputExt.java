@@ -31,12 +31,9 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             return true;
         }
         response.setSuccess(policyResponse.isSuccess());
-
         response.setFinalDecision(policyResponse.getDecision());
         response.setFinalScore(policyResponse.getScore());
-
         response.setPolicyName(policyResponse.getPolicyName());
-
 
         if (policyResponse.getSubPolicyResponses() == null || (policyResponse.getSubPolicyResponses().isEmpty())) {
             return true;
@@ -44,7 +41,6 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
 
 
         List<ISubPolicyResult> policyResults = new ArrayList<ISubPolicyResult>(policyResponse.getSubPolicyResponses().size());
-//        List<IHitRule> rules = new ArrayList<IHitRule>();
         StringBuilder riskTypeBuilder = new StringBuilder();
         for (SubPolicyResponse subPolicyResponse : policyResponse.getSubPolicyResponses()) {
             if (StringUtils.isNotBlank(subPolicyResponse.getRiskType())) {
@@ -68,21 +64,13 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             List<IHitRule> hitRuleList = getHitRules(response.getFactory(),subPolicyResponse);
             if(hitRuleList != null && !hitRuleList.isEmpty()) {
                 subPolicyResult.setHitRules(hitRuleList);
-//                rules.addAll(hitRuleList);
             }
             policyResults.add(subPolicyResult);
         }
         response.setSubPolicys(policyResults);
-//        if (rules.size() > 0) {
-//            response.setHitRules(rules);
-//        }
 
-        //风险最大的子策略
-        SubPolicyResponse finalResponse = policyResponse.getFinalSubPolicyResponse();
-        if(finalResponse != null) {
-            response.setSubPolicyName(finalResponse.getSubPolicyName());
-            response.setRiskType(riskTypeBuilder.toString());
-        }
+
+
         return true;
     }
 

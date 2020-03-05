@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application.step.ext.response;
 
+import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -22,30 +23,21 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     private Integer                   finalScore;                                  // 风险分数
     private String                    finalDecision;                               // 最终的风险决策结果
     private String                    policyName;                                  // 策略名称
-    private String                    subPolicyName;                                // 子策略名称
 //    private List<IHitRule>             hitRules;                                    // 命中规则列表
     private String                    seqId;                                       // 请求序列号，每个请求进来都分配一个全局唯一的id
     private Integer                   spendTime;                                   // 花费的时间，单位ms
 
-    private List<ISubPolicyResult>    subPolicys;                                   // 策略集信息
-
-    private String                    riskType;                                    // 风险类型
-    @JSONField(serialize = false, deserialize = false)
-    private DecisionType              decisionType = DecisionType.POLICY_SET;
-
+    private List<ISubPolicyResult>    subPolicys;                                  // 策略集信息
 
     private List<IOutputField>        outputFields;                                // 策略结果自定义输出
 
+    private List                      ruleDetails;                                  //原始详情
 
-    private List                      rawRuleDetail;                                //原始详情
+    private String                    subReasonCodes;                              //原因子码
 
 
     @JSONField(serialize = false, deserialize = false)
     private IRiskResponseFactory factory;
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     @Override
     public Integer getFinalScore() {
@@ -75,16 +67,6 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @Override
     public void setPolicyName(String policyName) {
         this.policyName = policyName;
-    }
-
-    @Override
-    public String getSubPolicyName() {
-        return subPolicyName;
-    }
-
-    @Override
-    public void setSubPolicyName(String subPolicyName) {
-        this.subPolicyName = subPolicyName;
     }
 
 //    @Override
@@ -128,26 +110,6 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
     @Override
-    public String getRiskType() {
-        return riskType;
-    }
-
-    @Override
-    public void setRiskType(String riskType) {
-        this.riskType = riskType;
-    }
-
-    @Override
-    public DecisionType getDecisionType() {
-        return decisionType;
-    }
-
-    @Override
-    public void setDecisionType(DecisionType decisionType) {
-        this.decisionType = decisionType;
-    }
-
-    @Override
     public List<IOutputField> getOutputFields() {
         return outputFields;
     }
@@ -158,13 +120,23 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
     @Override
-    public List getRawRuleDetail() {
-        return rawRuleDetail;
+    public List<RuleDetail> getRuleDetails() {
+        return ruleDetails;
     }
 
     @Override
-    public void setRawRuleDetail(List rawRuleDetail) {
-        this.rawRuleDetail = rawRuleDetail;
+    public void setRuleDetails(List<RuleDetail> ruleDetails) {
+        this.ruleDetails = ruleDetails;
+    }
+
+    @Override
+    public String getSubReasonCodes() {
+        return subReasonCodes;
+    }
+
+    @Override
+    public void setSubReasonCodes(String subReasonCodes) {
+        this.subReasonCodes = subReasonCodes;
     }
 
     /**

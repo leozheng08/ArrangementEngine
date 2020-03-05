@@ -82,11 +82,11 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
         }
 
         //风险最大的子策略
-        SubPolicyResponse finalResponse = policyResponse.getFinalSubPolicyResponse();
-        if(finalResponse != null) {
-            response.setSubPolicyName(finalResponse.getSubPolicyName());
-            response.setRiskType(riskTypeBuilder.toString());
-        }
+//        SubPolicyResponse finalResponse = policyResponse.getFinalSubPolicyResponse();
+//        if(finalResponse != null) {
+//            response.setSubPolicyName(finalResponse.getSubPolicyName());
+//            response.setRiskType(riskTypeBuilder.toString());
+//        }
         return true;
     }
 

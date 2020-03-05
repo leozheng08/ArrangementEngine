@@ -29,6 +29,8 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         actitivy.setSeqId(context.getSeqId());
 
 
+        actitivy.setResponse(queueItem.getResponse());
+        actitivy.setSubReasonCodes(context.getSubReasonCodes());
         return null;
     }
 }
