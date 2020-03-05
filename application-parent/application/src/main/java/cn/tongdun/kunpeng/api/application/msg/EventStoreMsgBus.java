@@ -56,7 +56,7 @@ public class EventStoreMsgBus {
         Predicate<QueueItem> filter;
         BlockingQueue queue;
 
-        public WrappedQueue(String workerName,Predicate<QueueItem> filter,BlockingQueue blockingQueue){
+        public WrappedQueue(String workerName,Predicate<QueueItem> filter,BlockingQueue queue){
             this.workerName = workerName;
             this.filter = filter;
             this.queue = queue;

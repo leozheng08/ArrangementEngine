@@ -40,6 +40,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 合作方编码，必传
      */
+    @SystemField
     private String partnerCode;
 
     /**
@@ -50,6 +51,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 事件id，必传
      */
+    @SystemField
     private String eventId;
 
     /**
@@ -60,16 +62,19 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 交易流水
      */
+    @SystemField
     private String seqId;
 
     /**
      * 链路跟踪相关的requestId
      */
+
     private String requestId;
 
     /**
      * 事件发生时间，如果合作方有传，以合作方为准，如果没传则取seqId中的时间戳
      */
+    @SystemField
     private Date eventOccurTime;
 
     /**
@@ -113,18 +118,20 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /*************系统级入参 end******************/
 
 
-
+    @SystemField
     private String policyVersion;
 
     /**
      * 当前调用的策略uuid,根据合作方传的三要素partner_code,event_id,secret_key取得策略的运行版本的uuid，
      * 或根据再加个policy_version四要素取得策略版本的uuid
      */
+    @SystemField
     private String policyUuid;
 
     /**
      * 根据eventId，从缓存取得eventType
      */
+    @SystemField
     private String eventType;
 
     /**

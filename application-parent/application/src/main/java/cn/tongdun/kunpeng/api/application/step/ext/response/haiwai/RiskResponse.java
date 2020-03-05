@@ -181,7 +181,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
     @Override
-    public void setRuleDetails(List<RuleDetail> ruleDetail) {
+    public void setRuleDetails(List<RuleDetail> ruleDetails) {
         this.ruleDetails = ruleDetails;
     }
 

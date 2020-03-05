@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Created by caipeichao on 15/7/29.
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SystemFieldGetter {
+public @interface SystemField {
 }
