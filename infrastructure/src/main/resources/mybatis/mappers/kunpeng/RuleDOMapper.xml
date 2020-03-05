@@ -44,7 +44,7 @@
     select
     <include refid="Base_Column_List" />
      from rule where biz_uuid = #{bizUuid} and biz_type = #{bizType} and is_deleted = 0  and status=1
-     order by priority, gmt_create desc
+     order by priority, gmt_create
   </select>
 
 </mapper>

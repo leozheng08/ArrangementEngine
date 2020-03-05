@@ -156,7 +156,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
                     decisionResult = threshold.getDecisionResultType();
                     break;
                 }
-                if(count == size-1 || score > threshold.getStartThreshold()){
+                if(count == size-1 && score > threshold.getStartThreshold()){
                     decisionResult = threshold.getDecisionResultType();
                     break;
                 }
