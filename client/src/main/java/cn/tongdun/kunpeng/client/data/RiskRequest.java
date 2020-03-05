@@ -37,10 +37,6 @@ public class RiskRequest implements Serializable {
      */
     private String secretKey;
 
-    /**
-     * 应用名称
-     */
-//    private String appName;
 
     /**
      * 事件id，必传

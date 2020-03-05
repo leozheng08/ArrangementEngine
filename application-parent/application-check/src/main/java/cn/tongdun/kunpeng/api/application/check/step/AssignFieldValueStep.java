@@ -48,8 +48,6 @@ public class AssignFieldValueStep implements IRiskStep {
         {
             add("seq_id");
             add("sequenceId");
-            add("appName");
-            add("appType");
             add("eventType");
             add("firstIndustryType");
             add("secondIndustryType");

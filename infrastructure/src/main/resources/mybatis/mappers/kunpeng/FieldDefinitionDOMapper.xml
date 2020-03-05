@@ -6,13 +6,11 @@
     <result column="uuid" jdbcType="CHAR" property="uuid" />
     <result column="field_type" jdbcType="VARCHAR" property="fieldType" />
     <result column="partner_code" jdbcType="VARCHAR" property="partnerCode" />
-    <!--<result column="app_name" jdbcType="VARCHAR" property="appName" />-->
     <result column="field_code" jdbcType="VARCHAR" property="fieldCode" />
     <result column="field_name" jdbcType="VARCHAR" property="fieldName" />
     <result column="display_name" jdbcType="VARCHAR" property="displayName" />
     <result column="property" jdbcType="VARCHAR" property="property" />
     <result column="event_type" jdbcType="VARCHAR" property="eventType" />
-    <!--<result column="app_type" jdbcType="VARCHAR" property="appType" />-->
     <result column="data_type" jdbcType="VARCHAR" property="dataType" />
     <result column="max_length" jdbcType="SMALLINT" property="maxLength" />
     <result column="description" jdbcType="VARCHAR" property="description" />
@@ -29,8 +27,8 @@
     <result column="operator" jdbcType="VARCHAR" property="operator" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, uuid, field_type, partner_code, app_name, field_code, field_name, display_name, 
-    property, event_type, app_type, data_type, max_length, description, is_velocity_field, 
+    id, uuid, field_type, partner_code, field_code, field_name, display_name,
+    property, event_type, data_type, max_length, description, is_velocity_field,
     status, auditor, audit_time, usage_scene, concurrency_version, is_deleted, gmt_create, 
     gmt_modify, creator, operator
   </sql>

@@ -11,8 +11,6 @@ import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 /**
  * 设备指纹信息获取
  * @Author: liang.chen

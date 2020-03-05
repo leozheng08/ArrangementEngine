@@ -14,11 +14,6 @@ public class PolicyDefinitionDTO extends CommonDTO  {
     private String name;
 
     /**
-     * 应用
-     */
-//    private String appName;
-
-    /**
      * 事件类型
      */
     private String eventType;
@@ -47,11 +42,6 @@ public class PolicyDefinitionDTO extends CommonDTO  {
      * 是否模板
      */
     private boolean template;
-
-    /**
-     * 应用类型
-     */
-//    private String appType;
 
     /**
      * 行业类型

@@ -24,10 +24,6 @@ public class FieldDefinition extends VersionedEntity implements IFieldDefinition
      */
     private String partnerCode;
 
-    /**
-     * 应用名 app_name
-     */
-//    private String appName;
 
     /**
      * 字段code field_code
@@ -53,11 +49,6 @@ public class FieldDefinition extends VersionedEntity implements IFieldDefinition
      * 事件类型 event_type
      */
     private String eventType;
-
-    /**
-     * 应用类型 app_type
-     */
-//    private String appType;
 
     /**
      * 字段数据类型 string、int、double等 data_type

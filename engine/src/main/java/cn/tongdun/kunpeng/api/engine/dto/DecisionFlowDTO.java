@@ -17,10 +17,6 @@ public class DecisionFlowDTO extends CommonDTO {
      */
     private String partnerCode;
 
-    /**
-     * 应用名称 app_name
-     */
-//    private String appName;
 
     /**
      * 事件id event_id

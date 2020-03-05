@@ -24,15 +24,6 @@ public class Policy extends VersionedEntity {
      */
     private String            partnerCode;
 
-    /**
-     * appName
-     */
-//    private String            appName;
-
-    /**
-     * appType
-     */
-//    private String            appType;
 
     /**
      *  eventId

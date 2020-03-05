@@ -51,8 +51,6 @@
 
     <result column="uuid" property="policyUuid" />
     <result column="partner_code" property="partnerCode" />
-    <!--<result column="app_name" property="appName" />-->
-    <!--<result column="app_type" property="appType" />-->
     <result column="event_id" property="eventId" />
     <result column="event_type" property="eventType" />
     <result column="version" property="version" />
@@ -62,7 +60,7 @@
   </resultMap>
 
   <sql id="Modified_Column_List" >
-    a.uuid,a.partner_code,b.app_name,b.app_type,b.event_id,b.event_type,a.version,a.is_default_version,a.status,a.gmt_modify
+    a.uuid,a.partner_code,b.event_id,b.event_type,a.version,a.is_default_version,a.status,a.gmt_modify
   </sql>
 
   <select id="selectDefaultPolicyByPartners" resultMap="PolicyModifiedResultMap" parameterType="java.util.Set" >

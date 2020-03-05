@@ -73,7 +73,6 @@ public class Holmes implements IHolmes{
 
     private boolean runModelV2(AbstractFraudContext fraudContext, DecisionFlowModel decisionFlowModel) {
         PredictionInputDTO predictionInputDTO = generateV2InputParam(fraudContext, decisionFlowModel);
-//        predictionInputDTO.setAppCode(fraudContext.getAppName());
         String modelUuid = predictionInputDTO.getModelUuid();
         ModelResponse<PredictionOutputDTO> modelResponse;
         try {
@@ -108,7 +107,6 @@ public class Holmes implements IHolmes{
         reqParams.put("model_uuid", modelUuid);
         reqParams.put("seq_id", seqId);
         reqParams.put("partner_code", fraudContext.getPartnerCode());
-//        reqParams.put("app_code",fraudContext.getAppName());
         Map<String, String> inputsMap = mapInputs(fraudContext, decisionFlowModel.getInputList());
         reqParams.putAll(inputsMap);
 
@@ -202,7 +200,6 @@ public class Holmes implements IHolmes{
 
         PredictionInputDTO predictionInputDTO = new PredictionInputDTO();
         predictionInputDTO.setModelUuid(modelUuid);
-//        predictionInputDTO.setAppCode(fraudContext.getAppName());
         predictionInputDTO.setSeqId(seqId);
         predictionInputDTO.setPartnerCode(fraudContext.getPartnerCode());
         predictionInputDTO.setModelVersion(modelVersion);

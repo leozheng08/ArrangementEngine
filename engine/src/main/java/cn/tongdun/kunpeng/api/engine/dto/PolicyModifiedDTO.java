@@ -16,15 +16,6 @@ public class PolicyModifiedDTO {
      */
     private String            partnerCode;
 
-    /**
-     * appName
-     */
-//    private String            appName;
-
-    /**
-     * appType
-     */
-//    private String            appType;
 
     /**
      *  eventId

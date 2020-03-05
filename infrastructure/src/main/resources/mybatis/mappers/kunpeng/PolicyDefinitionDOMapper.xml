@@ -10,7 +10,6 @@
     <result column="operator" property="operator" jdbcType="VARCHAR" />
     <result column="uuid" property="uuid" jdbcType="CHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-    <!--<result column="app_name" property="appName" jdbcType="VARCHAR" />-->
     <result column="event_type" property="eventType" jdbcType="VARCHAR" />
     <result column="event_id" property="eventId" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
@@ -20,7 +19,6 @@
     <result column="is_deleted" property="deleted" jdbcType="BIT" />
     <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
     <result column="is_template" property="template" jdbcType="BIT" />
-    <!--<result column="app_type" property="appType" jdbcType="VARCHAR" />-->
     <result column="industry_type" property="industryType" jdbcType="VARCHAR" />
     <result column="product_tag" property="productTag" jdbcType="VARCHAR" />
     <result column="curr_version" property="currVersion" jdbcType="VARCHAR" />
@@ -33,9 +31,9 @@
 
 
   <sql id="Base_Column_List" >
-    t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.name, t.app_name, t.event_type,
+    t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.name, t.event_type,
     t.event_id, t.description, t.partner_code, t.service_type, t.status, t.is_deleted,
-    t.is_template, t.app_type, t.industry_type, t.product_tag, t.curr_version, t.curr_version_uuid,
+    t.is_template, t.industry_type, t.product_tag, t.curr_version, t.curr_version_uuid,
     t.attribute, t.is_common, t.concurrency_version, t.gmt_delete
   </sql>
 

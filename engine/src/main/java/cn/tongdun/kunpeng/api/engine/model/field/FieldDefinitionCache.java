@@ -90,7 +90,7 @@ public class FieldDefinitionCache {
             return;
         }
 
-        // 字段类型为All，为同一个partnerCode和appName共用
+        // 字段类型为All，为同一个partnerCode共用
         if (IEventTypeRepository.EVENT_TYPE_ALL.equals(field.getEventType())) {
             for (EventType et : eventTypeList) {
                 String key = getExtendFieldKey(field.getPartnerCode(), et.getName());

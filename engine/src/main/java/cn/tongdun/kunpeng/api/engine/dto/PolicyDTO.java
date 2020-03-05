@@ -12,10 +12,6 @@ public class PolicyDTO extends CommonDTO {
 
     private static final long serialVersionUID = 1456486484654131346L;
 
-
-//    private String appName;
-//    private String appType;
-
     private String eventId;
     private String eventType;
 

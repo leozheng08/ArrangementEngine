@@ -15,11 +15,6 @@ public class PolicyDefinition extends VersionedEntity {
     private String name;
 
     /**
-     * 应用
-     */
-//    private String appName;
-
-    /**
      * 事件类型
      */
     private String eventType;
@@ -44,10 +39,6 @@ public class PolicyDefinition extends VersionedEntity {
      */
     private boolean template;
 
-    /**
-     * 应用类型
-     */
-//    private String appType;
 
     /**
      * 行业类型
