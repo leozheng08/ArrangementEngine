@@ -39,53 +39,58 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         actitivy.setProduceTime(System.currentTimeMillis());
         actitivy.setSeqId(context.getSeqId());
 
-//        actitivy.setRequest();
+        actitivy.setRequest(encodeRequest(queueItem.getContext()));
         actitivy.setResponse(queueItem.getResponse());
         actitivy.setSubReasonCodes(context.getSubReasonCodes());
-        return null;
+        return actitivy;
     }
 
 
-//    /**
-//     * 提取FraudContext中所有的系统字段和扩展字段
-//     */
-//    private JSONObject encodeRequest(AbstractFraudContext context) {
-//        // 通过反射提取FraudContext中代码写死的字段
-//        JSONObject result = new JSONObject();
-//        for (Map.Entry<String, Method> entry : systemFieldGetter.entrySet()) {
-//            String fieldName = entry.getKey();
-//            Method method = entry.getValue();
-//            Object value;
-//            try {
-//                value = method.invoke(context);
-//            } catch (Exception ex) {
-//                LogUtil.logWarn(logger, "FraudContext反射调用", method.getName(), "方法调用失败");
-//                continue;
-//            }
-//            if (value == null) continue;
-//            result.put(fieldName, value);
-//        }
-//
-//        // 获取系统字段
-//        Map<String, Object> systemFields = context.getSystemFiels();
-//        putAllIfNotExists(result, systemFields);
-//
-//        // 获取扩展字段
-//        Map<String, Object> customFields = context.getCustomFields();
-//        putAllIfNotExists(result, customFields);
-//
-//        // 指标2.0，velocity数据存储改造需要从activity数据里获取全量数据
-//        //去掉运行过程中产生的新地址标准化字段
-////        try {
-////            if (context.getStandardAddressFieldSet() != null) {
-////                for(String fieldName : context.getStandardAddressFieldSet()){
-////                    result.remove(fieldName);
-////                }
-////            }
-////        }catch(Exception e){
-////        }
-//
-//        // 返回结果
-//        return result;
-//    }
+
+
+    /**
+     * 提取FraudContext中所有的系统字段和扩展字段
+     */
+    private JSONObject encodeRequest(AbstractFraudContext context) {
+
+        //取得上下文中基础的字段
+        JSONObject result = getBaseField(context);
+
+        // 获取系统字段
+        Map<String, Object> systemFields = context.getSystemFields();
+        putAllIfNotExists(result, systemFields);
+
+        // 获取扩展字段
+        Map<String, Object> customFields = context.getCustomFields();
+        putAllIfNotExists(result, customFields);
+
+        return result;
+    }
+
+    private JSONObject getBaseField(AbstractFraudContext context){
+        JSONObject result = new JSONObject();
+        result.put("partnerCode",context.getPartnerCode());
+        result.put("seqId",context.getSeqId());
+        result.put("eventId",context.getEventId());
+        result.put("eventType",context.getEventType());
+        result.put("policyUuid",context.getPolicyUuid());
+        result.put("eventOccurTime",context.getEventOccurTime());
+        result.put("policyVersion",context.getPolicyVersion());
+        result.put("requestId",context.getRequestId());
+        return result;
+    }
+
+    private void putAllIfNotExists(Map<String, Object> result, Map<String, Object> map) {
+        for (String fieldName : map.keySet()) {
+            if (result.containsKey(fieldName)) {
+                continue;
+            }
+            Object fieldValue = map.get(fieldName);
+            if (fieldValue == null) {
+                continue;
+            }
+
+            result.put(fieldName, fieldValue);
+        }
+    }
 }

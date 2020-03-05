@@ -36,6 +36,14 @@ public class ActitivyMsg implements IActitivyMsg {
     private Set<SubReasonCode> subReasonCodes;
 
 
+    /**
+     * 消息的key
+     * @return
+     */
+    @Override
+    public String getMessageKey(){
+        return seqId;
+    }
 
     /**
      * 生成activity消息
