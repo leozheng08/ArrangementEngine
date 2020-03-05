@@ -91,7 +91,7 @@ public class FieldDefinitionCache {
         }
 
         // 字段类型为All，为同一个partnerCode共用
-        if (IEventTypeRepository.EVENT_TYPE_ALL.equals(field.getEventType())) {
+        if (IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(field.getEventType())) {
             for (EventType et : eventTypeList) {
                 String key = getExtendFieldKey(field.getPartnerCode(), et.getCode());
                 if (StringUtils.isBlank(key)) {

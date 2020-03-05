@@ -24,24 +24,6 @@ import java.util.Map;
 public class GenerateActivityExt implements IGenerateActivityExtPt{
 
     private Map<String, Method> systemFieldGetter;
-//
-//    @PostConstruct
-//    public void init() {
-//        // 根据FraudContext中定义的方法获取系统字段
-//        systemFieldGetter = new LinkedHashMap<>();
-//        Method[] methods = AFraudContext.class.getMethods();
-//        for (Method method : methods) {
-//            if (!isSystemFieldGetter(method)) continue;
-//            String fieldName = getFieldNameFromGetter(method.getName());
-//            if (fieldName == null) continue;
-//            systemFieldGetter.put(fieldName, method);
-//        }
-//
-//        //初始化不需要存储velocity的合作方
-//        List<String> partners = adminDictionaryService.getNoVelocityPartners();
-//        noVelocityPartners = new ConcurrentHashSet<>(partners.size());
-//        noVelocityPartners.addAll(partners);
-//    }
 
 
     /**
