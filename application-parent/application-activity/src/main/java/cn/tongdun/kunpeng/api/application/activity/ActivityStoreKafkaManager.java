@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.application.activity;
 import cn.tongdun.kunpeng.api.application.msg.EventStoreMsgBus;
 import cn.tongdun.kunpeng.common.data.QueueItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * @Author: liang.chen
  * @Date: 2020/3/3 下午7:42
  */
+@Component
 public class ActivityStoreKafkaManager {
 
     private int IN_MEMORY_COUNT = 10000;

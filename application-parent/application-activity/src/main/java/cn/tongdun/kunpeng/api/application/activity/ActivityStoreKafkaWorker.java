@@ -64,7 +64,4 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     private void sendToKafka(IActitivyMsg actitivyMsg){
         activityMsgRepository.sendRawActivity(actitivyMsg.getMessageKey(),actitivyMsg.toJsonString());
     }
-
-
-    private void produce(final String topic, final String message) {
 }
