@@ -19,7 +19,7 @@
     <bean id="activityKafkaProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close">
         <property name="topics">
             <list>
-                <value>forseti_api_raw_activity</value>
+                <value>kunpeng_api_raw_activity</value>
             </list>
         </property>
         <property name="configCenter" ref="zkConfigCenter"/>

@@ -12,6 +12,7 @@ import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author: liang.chen
  * @Date: 2020/3/5 下午5:55
  */
+@Repository
 public class ActivityMsgRepository implements IActivityMsgRepository{
 
 
@@ -40,7 +42,7 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
      * 消息发送
      * @param messageKey
      * @param message
-     */
+     */@Override
     public void sendRawActivity(String messageKey, final String message) {
 
         String topic = KUNPENG_API_RAW_ACTIVITY;
@@ -58,14 +60,14 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
                         //重试
                         addRedoException(topic, messageKey,message, e);
                     } else {
-                        logger.error("kafka produce error, can't recover, topic:{}, seqId:{}", topic,messageKey);
+                        logger.error("kafka produce error, can't recover, topic:{}, seqId:{}", topic,messageKey,e);
                     }
                 }
             });
         } catch (ProducerException e) {
-            logger.error("kafka produce throw exception, topic:{}, seqId:{}", topic,messageKey);
+            logger.error("kafka produce throw ProducerException, topic:{}, seqId:{}", topic,messageKey,e);
         } catch (UnsupportedEncodingException e) {
-            logger.error("kafka produce throw exception, topic:{}, seqId:{}", topic,messageKey);
+            logger.error("kafka produce throw UnsupportedEncodingException, topic:{}, seqId:{}", topic,messageKey,e);
         }
     }
 
