@@ -67,4 +67,5 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
 
 
     private void produce(final String topic, final String message) {
+    }
 }
