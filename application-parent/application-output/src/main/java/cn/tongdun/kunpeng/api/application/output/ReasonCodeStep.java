@@ -79,6 +79,10 @@ public class ReasonCodeStep implements IRiskStep {
                 response.setReasonCode(ReasonCode.ENCRYPTION_FIELD_NOT_READY.getCode());
             }
 
+            if(!sub.isEmpty()){
+                response.setSubReasonCodes(String.join(",", sub));
+            }
+
             logger.info("partner:{}, sub_reason_code:{}", context.getPartnerCode(), JSON.toJSONString(context.getSubReasonCodes()));
         }
     }

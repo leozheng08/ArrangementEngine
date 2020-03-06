@@ -47,7 +47,7 @@
 	</select>
 	
 
-	<select id="queryAllEnabledPartnerCodes" resultType="string">
+	<select id="selectAllEnabledPartnerCodes" resultType="string">
 		select partner_code from admin_partner where status = 1
 	</select>
 </mapper>

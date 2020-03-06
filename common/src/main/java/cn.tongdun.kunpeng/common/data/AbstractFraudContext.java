@@ -23,8 +23,6 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private static final long serialVersionUID = -3320502733559293390L;
     private static final Field[] fields = AbstractFraudContext.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length / 3);
-    private static final String IP_ADDRESS_DOMESTIC = "ipAddress";
-    private static final String IP_ADDRESS_OVERSEA = "ipAddr";
 
     static {
         Set<String> includeTypes = Sets.newHashSet("int", "integer", "string", "double", "long", "float", "date", "boolean");
@@ -65,6 +63,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 链路跟踪相关的requestId
      */
+
     private String requestId;
 
     /**
@@ -111,7 +110,6 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private String tdSampleDataId;
 
     /*************系统级入参 end******************/
-
 
 
     private String policyVersion;

@@ -5,6 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 public interface IActitivyMsg {
 
 
+    /**
+     * 消息的key
+     * @return
+     */
+    String getMessageKey();
 
     /**
      * 生成activity消息

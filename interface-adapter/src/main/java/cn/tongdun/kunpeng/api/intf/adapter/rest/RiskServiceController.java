@@ -37,7 +37,6 @@ public class RiskServiceController {
         request.putAll(header);
         IRiskResponse riskResponse = riskService.riskService(request);
 
-        response.setHeader("Decision-Type", riskResponse.getDecisionType().getIdentity());
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         if (StringUtils.isNotBlank(riskResponse.getReasonCode())) {
             response.setHeader("Reason-code", riskResponse.getReasonCode().split(":")[0]); // 用于zabbix状态码统计

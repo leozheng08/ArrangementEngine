@@ -51,7 +51,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
         }
 
         if(!ruleDetailList.isEmpty()) {
-            response.setRawRuleDetail(ruleDetailList);
+            response.setRuleDetails(ruleDetailList);
         }
 
         return true;

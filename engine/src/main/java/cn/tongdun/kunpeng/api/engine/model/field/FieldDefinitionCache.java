@@ -63,7 +63,7 @@ public class FieldDefinitionCache {
         // 如果为null，是通用字段，放到所有事件类型列表中
         if (eventType == null || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
             for (EventType et : eventTypeList) {
-                String key = getSystemFieldKey(et.getName());
+                String key = getSystemFieldKey(et.getCode());
                 List<FieldDefinition> list = systemFieldMap.get(key);
                 if (list == null) {
                     list = new ArrayList<FieldDefinition>();
@@ -91,9 +91,9 @@ public class FieldDefinitionCache {
         }
 
         // 字段类型为All，为同一个partnerCode共用
-        if (IEventTypeRepository.EVENT_TYPE_ALL.equals(field.getEventType())) {
+        if (IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(field.getEventType())) {
             for (EventType et : eventTypeList) {
-                String key = getExtendFieldKey(field.getPartnerCode(), et.getName());
+                String key = getExtendFieldKey(field.getPartnerCode(), et.getCode());
                 if (StringUtils.isBlank(key)) {
                     return;
                 }

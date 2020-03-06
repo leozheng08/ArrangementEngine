@@ -18,17 +18,8 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     @Autowired
     private ExtensionExecutor extensionExecutor;
 
-    @Override
-    public void onEvent(QueueItem item){
-
-        if(item.getContext() == null){
-            return;
-        }
-
-        IActitivyMsg actitivyMsg = extensionExecutor.execute(IGenerateActivityExtPt.class, item.getContext().getBizScenario(),
-                extension -> extension.generateActivity(item));
-
-    }
+    @Autowired
+    private IActivityMsgRepository activityMsgRepository;
 
     @Override
     public String getName(){
@@ -36,7 +27,7 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
 
-    //过滤条件
+    //过滤条件,在入到队列之前过滤
     @Override
     public Predicate<QueueItem> getFilter(){
         return (item)->{
@@ -47,4 +38,33 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
             return true;
         };
     }
+
+    @Override
+    public void onEvent(QueueItem item){
+
+        if(item.getContext() == null){
+            return;
+        }
+
+        //生成activity消息
+        IActitivyMsg actitivyMsg = generateActivity(item);
+
+        //发送到kafka
+        sendToKafka(actitivyMsg);
+
+    }
+
+
+    private IActitivyMsg generateActivity(QueueItem item){
+        IActitivyMsg actitivyMsg = extensionExecutor.execute(IGenerateActivityExtPt.class, item.getContext().getBizScenario(),
+                extension -> extension.generateActivity(item));
+        return actitivyMsg;
+    }
+
+    private void sendToKafka(IActitivyMsg actitivyMsg){
+        activityMsgRepository.sendRawActivity(actitivyMsg.getMessageKey(),actitivyMsg.toJsonString());
+    }
+
+
+    private void produce(final String topic, final String message) {
 }

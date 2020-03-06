@@ -68,7 +68,7 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
 
 
     private static String buildKey(Policy policy){
-        return buildKey(policy.getPartnerCode(),policy.getVersion(),policy.getVersion());
+        return buildKey(policy.getPartnerCode(),policy.getEventId(),policy.getVersion());
     }
 
     /**

@@ -44,13 +44,15 @@ public class WeightFunction extends AbstractCalculateFunction {
         if (null == weight) {
             weight = 0D;
         }
-        Double total = baseWeight + weight * weightRatio;
-        if (total > upperLimitScore) {
-            total = upperLimitScore;
+
+        weight = weight * weightRatio;
+        if (weight > upperLimitScore) {
+            weight = upperLimitScore;
         }
-        if (total < lowerLimitScore) {
-            total = lowerLimitScore;
+        if (weight < lowerLimitScore) {
+            weight = lowerLimitScore;
         }
+        Double total = baseWeight + weight;
         return new FunctionResult(total.intValue());
     }
 
