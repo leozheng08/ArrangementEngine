@@ -56,7 +56,7 @@ public class ReLoadScheduler implements ILoad {
                     logger.error("定时刷新缓存异常",e);
                 }
             }
-        }, 10, 20, TimeUnit.MINUTES);
+        }, 10, 10, TimeUnit.MINUTES);
 
         return true;
     }

@@ -14,6 +14,7 @@ import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,16 +41,17 @@ public class FieldDefinitionLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("FieldLoadManager start");
+
         List<FieldDefinition> list = ruleFieldRepository.queryAllSystemField();
-        List<EventType> eventTypeList=eventTypeCacheRepository.getEventTypeList();
         for(FieldDefinition ruleField:list){
-            ruleFieldCacheRepository.addSystemField(ruleField,eventTypeList);
+            ruleFieldCacheRepository.put(ruleField.getUuid(),ruleField);
         }
 
         list = ruleFieldRepository.queryAllExtendField();
         for(FieldDefinition ruleField:list){
-            ruleFieldCacheRepository.addExtendField(ruleField,eventTypeList);
+            ruleFieldCacheRepository.put(ruleField.getUuid(),ruleField);
         }
+
         logger.info("FieldLoadManager success,systemFieldMap size:"+ruleFieldCacheRepository.getSystemFieldMap().size()+" extendFieldMap size:"+ruleFieldCacheRepository.getExtendFieldMap().size());
         return true;
     }

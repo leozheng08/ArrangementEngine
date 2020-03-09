@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.GpsDistanceDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
@@ -74,7 +75,9 @@ public class GpsDistanceFunction extends AbstractFunction {
             detail.setRuleUuid(ruleUuid);
             detail.setDescription(description);
             detail.setGpsA(gpsA);
+            detail.setGpsADisplayName(VelocityHelper.getFieldDisplayName(gpsA,context));
             detail.setGpsB(gpsB);
+            detail.setGpsBDisplayName(VelocityHelper.getFieldDisplayName(gpsB,context));
             detail.setResult(ret);
             detail.setUnit("m");
             return detail;

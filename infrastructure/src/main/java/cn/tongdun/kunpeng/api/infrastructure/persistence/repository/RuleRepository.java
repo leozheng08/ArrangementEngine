@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,26 @@ public class RuleRepository implements IRuleRepository {
 
         ruleDTO.setRuleConditionElements(queryRuleConditionElementDTOByRuleUuid(ruleUuid));
         ruleDTO.setRuleActionElements(queryRuleActionElementDTOByRuleUuid(ruleUuid));
+
+        //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
+        Long modifiedVersion = ruleDO.getGmtModify().getTime();
+        if(ruleDTO.getRuleActionElements() != null) {
+            for (RuleActionElementDTO ruleActionElementDTO : ruleDTO.getRuleActionElements()){
+                if(ruleActionElementDTO.getGmtModify().getTime()>modifiedVersion){
+                    modifiedVersion = ruleActionElementDTO.getGmtModify().getTime();
+                }
+            }
+        }
+        if(ruleDTO.getRuleConditionElements() != null) {
+            for (RuleConditionElementDTO ruleConditionElementDTO : ruleDTO.getRuleConditionElements()){
+                if(ruleConditionElementDTO.getGmtModify().getTime()>modifiedVersion){
+                    modifiedVersion = ruleConditionElementDTO.getGmtModify().getTime();
+                }
+            }
+        }
+        ruleDO.setGmtModify(new Date(modifiedVersion));
+
+
         return ruleDTO;
     }
 

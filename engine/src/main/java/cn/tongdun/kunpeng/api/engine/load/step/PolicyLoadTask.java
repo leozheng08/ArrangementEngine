@@ -114,6 +114,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
             logger.error("LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
                     policyUuid, policyDTO!=null?policyDTO.getPartnerCode():"",policyDTO != null? policyDTO.getEventId():"",
                     e);
+            return false;
         }
         return true;
     }

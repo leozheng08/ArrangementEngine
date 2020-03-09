@@ -12,4 +12,7 @@ public interface IFieldDefinitionRepository {
 
     List<FieldDefinition> queryAllExtendField();
 
+
+    FieldDefinition queryByUuid(String uuid);
+
 }
