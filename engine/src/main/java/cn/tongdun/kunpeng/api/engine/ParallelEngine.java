@@ -143,6 +143,8 @@ public class ParallelEngine extends DecisionTool {
             logger.error("规则引擎执行被中断", e);
         } catch (RejectedExecutionException e) {
             logger.error("规则引擎执行被丢弃", e);
+        } catch (Exception e) {
+            logger.error("规则引擎执行异常", e);
         }
 
         if (null == futures || futures.isEmpty()) {
