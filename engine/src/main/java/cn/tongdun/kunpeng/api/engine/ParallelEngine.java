@@ -163,7 +163,7 @@ public class ParallelEngine extends DecisionTool {
                     logger.error("获取规则引擎执行结果被中断", e);
                 } catch (ExecutionException e) {
                     logger.error("获取规则引擎执行结果失败1", e);
-                } catch (Exception e){
+                } catch (Throwable e){
                     logger.error("获取规则引擎执行结果失败2", e);
                 }
             } else {
