@@ -48,7 +48,7 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
             decisionFlowInterface.setOutputParams(buildParaInfo(json.getJSONArray("outputs")));
             decisionFlowInterface.setRiskServiceOutput(json.getBoolean("isRiskServiceOutput"));
         } catch (Exception e) {
-
+            throw new ParseException("interfaceTaskConfig parse json error, interfaceTaskConfig : " + interfaceTaskConfig);
         }
     }
 

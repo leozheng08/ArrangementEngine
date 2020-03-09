@@ -54,11 +54,8 @@ public class DecisionFlowModelManager extends AbstractBizNode {
             decisionFlowModel.setRiskServiceOutput(isRiskServiceOutput);
             decisionFlowModel.setModelVersion(json.getString("modelVersion"));
         } catch (Exception e) {
-
+            throw new ParseException("modelConfig parse json error, modelConfig : " + modelConfig);
         }
-
-
-
     }
 
     @Override
