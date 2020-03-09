@@ -56,35 +56,39 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
         logger.info("SubPolicyManager execute uuid:{}",uuid);
 
-        long start = System.currentTimeMillis();
-        if (subPolicy.getPolicyMode() != null) {
-            switch (subPolicy.getPolicyMode()) {
-                case FirstMatch: //首次匹配
-                    firstMatch(subPolicy, context, subPolicyResponse);
-                    break;
-                case WorstMatch:  //最坏匹配
-                    worstMatch(subPolicy, context, subPolicyResponse);
-                    break;
-                case Weighted: //权重模式
-                    weighted(subPolicy, context, subPolicyResponse);
-                    break;
-                default:
-                    weighted(subPolicy, context, subPolicyResponse);
-                    break;
+        try {
+            long start = System.currentTimeMillis();
+            if (subPolicy.getPolicyMode() != null) {
+                switch (subPolicy.getPolicyMode()) {
+                    case FirstMatch: //首次匹配
+                        firstMatch(subPolicy, context, subPolicyResponse);
+                        break;
+                    case WorstMatch:  //最坏匹配
+                        worstMatch(subPolicy, context, subPolicyResponse);
+                        break;
+                    case Weighted: //权重模式
+                        weighted(subPolicy, context, subPolicyResponse);
+                        break;
+                    default:
+                        weighted(subPolicy, context, subPolicyResponse);
+                        break;
+                }
+            } else {
+                weighted(subPolicy, context, subPolicyResponse);
             }
-        } else {
-            weighted(subPolicy, context, subPolicyResponse);
+
+
+            subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());
+            subPolicyResponse.setSubPolicyUuid(subPolicy.getUuid());
+            subPolicyResponse.setSubPolicyName(subPolicy.getName());
+            subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
+            subPolicyResponse.setRiskType(subPolicy.getRiskType());
+            subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
+        } catch (Exception e){
+            logger.error("SubPolicyManager execute uuid:{}, seqId:{} ",uuid,context.getSeqId(), e);
+            throw e;
         }
 
-
-        subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());
-        subPolicyResponse.setSubPolicyUuid(subPolicy.getUuid());
-        subPolicyResponse.setSubPolicyName(subPolicy.getName());
-        subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
-        subPolicyResponse.setRiskType(subPolicy.getRiskType());
-        subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
-
-        logger.info("SubPolicyManager execute uuid:{}",uuid);
         logger.info("SubPolicyManager execute uuid:{}, seqId:{} subPolicyResponse:{} ",uuid,context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
         return subPolicyResponse;
     }
