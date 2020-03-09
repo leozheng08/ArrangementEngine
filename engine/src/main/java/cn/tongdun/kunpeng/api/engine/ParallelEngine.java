@@ -18,6 +18,7 @@ import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,11 +153,15 @@ public class ParallelEngine extends DecisionTool {
         for (Future<SubPolicyResponse> future : futures) {
             if (future.isDone() && !future.isCancelled()) {
                 try {
-                    subPolicyResponseList.add(future.get());
+                    SubPolicyResponse subPolicyResponse = future.get();
+                    logger.info("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
+                    subPolicyResponseList.add(subPolicyResponse);
                 } catch (InterruptedException e) {
                     logger.error("获取规则引擎执行结果被中断", e);
                 } catch (ExecutionException e) {
-                    logger.error("获取规则引擎执行结果失败", e);
+                    logger.error("获取规则引擎执行结果失败1", e);
+                } catch (Exception e){
+                    logger.error("获取规则引擎执行结果失败2", e);
                 }
             } else {
                 logger.warn("规则引擎执行服务被cancel");
