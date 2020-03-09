@@ -123,6 +123,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
                 }
             }
         }
+
         subPolicyResponse.setDecision(decisionResult.getCode());
     }
 
