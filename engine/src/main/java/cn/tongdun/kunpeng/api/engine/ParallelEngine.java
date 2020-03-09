@@ -153,6 +153,7 @@ public class ParallelEngine extends DecisionTool {
         }
         List<SubPolicyResponse> subPolicyResponseList = new ArrayList<>(futures.size());
         for (Future<SubPolicyResponse> future : futures) {
+            logger.info("future:{}",future);
             if (future.isDone() && !future.isCancelled()) {
                 try {
                     SubPolicyResponse subPolicyResponse = future.get();

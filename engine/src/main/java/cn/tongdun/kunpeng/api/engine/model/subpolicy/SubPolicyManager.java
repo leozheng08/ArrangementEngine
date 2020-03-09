@@ -9,7 +9,10 @@ import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
 import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.*;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +29,8 @@ import java.util.function.Function;
  */
 @Component
 public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
+
+    private static Logger logger = LoggerFactory.getLogger(SubPolicyManager.class);
 
     @Autowired
     SubPolicyCache subPolicyCache;
@@ -49,6 +54,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             return subPolicyResponse;
         }
 
+        logger.info("SubPolicyManager execute uuid:{}",uuid);
 
         long start = System.currentTimeMillis();
         if (subPolicy.getPolicyMode() != null) {
@@ -78,6 +84,8 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
         subPolicyResponse.setRiskType(subPolicy.getRiskType());
         subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
 
+        logger.info("SubPolicyManager execute uuid:{}",uuid);
+        logger.info("SubPolicyManager execute uuid:{}, seqId:{} subPolicyResponse:{} ",uuid,context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
         return subPolicyResponse;
     }
 
