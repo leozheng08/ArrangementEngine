@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 
 public interface IActitivyMsg {
 
