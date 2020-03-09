@@ -172,6 +172,7 @@ public class ParallelEngine extends DecisionTool {
 
         // 超时的任务，结果不会添加到subPolicyResponseList中
         if (subPolicyResponseList.size() < futures.size()) {
+            logger.info("subPolicyResponseList.size():{} futures.size():{}",subPolicyResponseList.size(),futures.size());
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_TIMEOUT.getCode(), ReasonCode.RULE_ENGINE_TIMEOUT.getDescription(), "决策引擎执行"));
             policyResponse.setCostTime(System.currentTimeMillis() - start);
             return policyResponse;
