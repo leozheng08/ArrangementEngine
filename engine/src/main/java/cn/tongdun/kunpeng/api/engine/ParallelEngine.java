@@ -18,6 +18,7 @@ import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,6 +143,8 @@ public class ParallelEngine extends DecisionTool {
             logger.error("规则引擎执行被中断", e);
         } catch (RejectedExecutionException e) {
             logger.error("规则引擎执行被丢弃", e);
+        } catch (Exception e) {
+            logger.error("规则引擎执行异常", e);
         }
 
         if (null == futures || futures.isEmpty()) {
@@ -152,11 +155,15 @@ public class ParallelEngine extends DecisionTool {
         for (Future<SubPolicyResponse> future : futures) {
             if (future.isDone() && !future.isCancelled()) {
                 try {
-                    subPolicyResponseList.add(future.get());
+                    SubPolicyResponse subPolicyResponse = future.get();
+                    logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
+                    subPolicyResponseList.add(subPolicyResponse);
                 } catch (InterruptedException e) {
                     logger.error("获取规则引擎执行结果被中断", e);
                 } catch (ExecutionException e) {
-                    logger.error("获取规则引擎执行结果失败", e);
+                    logger.error("获取规则引擎执行结果失败1", e);
+                } catch (Throwable e){
+                    logger.error("获取规则引擎执行结果失败2", e);
                 }
             } else {
                 logger.warn("规则引擎执行服务被cancel");
@@ -165,6 +172,7 @@ public class ParallelEngine extends DecisionTool {
 
         // 超时的任务，结果不会添加到subPolicyResponseList中
         if (subPolicyResponseList.size() < futures.size()) {
+            logger.info("subPolicyResponseList.size():{} futures.size():{}",subPolicyResponseList.size(),futures.size());
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_TIMEOUT.getCode(), ReasonCode.RULE_ENGINE_TIMEOUT.getDescription(), "决策引擎执行"));
             policyResponse.setCostTime(System.currentTimeMillis() - start);
             return policyResponse;
