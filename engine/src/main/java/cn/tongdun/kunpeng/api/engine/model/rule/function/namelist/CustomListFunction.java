@@ -133,13 +133,13 @@ public class CustomListFunction extends AbstractFunction {
         switch (matchMode) {
             case INCLUDE:
             case EXCLUDE:
-                return StringUtils.contains(matchString, string);
+                return StringUtils.contains(string, matchString);
             case PREFIX:
-                return StringUtils.startsWith(matchString, string);
+                return StringUtils.startsWith(string, matchString);
             case SUFFIX:
-                return StringUtils.endsWith(matchString, string);
+                return StringUtils.endsWith(string, matchString);
             case FUZZY:
-                return fuzzyMatch(matchString, string);
+                return fuzzyMatch(string, matchString);
             default:
                 return false;
         }
