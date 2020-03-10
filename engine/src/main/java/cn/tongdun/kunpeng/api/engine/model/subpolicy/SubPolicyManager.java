@@ -54,8 +54,6 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             return subPolicyResponse;
         }
 
-        logger.info("SubPolicyManager execute uuid:{}",uuid);
-
         try {
             long start = System.currentTimeMillis();
             if (subPolicy.getPolicyMode() != null) {
@@ -89,7 +87,6 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             throw e;
         }
 
-        logger.info("SubPolicyManager execute uuid:{}, seqId:{} subPolicyResponse:{} ",uuid,context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
         return subPolicyResponse;
     }
 
