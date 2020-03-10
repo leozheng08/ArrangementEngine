@@ -153,7 +153,7 @@ public class ParallelEngine extends DecisionTool {
         }
         List<SubPolicyResponse> subPolicyResponseList = new ArrayList<>(futures.size());
         for (Future<SubPolicyResponse> future : futures) {
-            logger.info("future:{}",future);
+            logger.info("future isCancelled:{}, isDone:{}",future.isCancelled(),future.isDone());
             if (future.isDone() && !future.isCancelled()) {
                 try {
                     SubPolicyResponse subPolicyResponse = future.get();
@@ -169,6 +169,7 @@ public class ParallelEngine extends DecisionTool {
             } else {
                 logger.warn("规则引擎执行服务被cancel");
             }
+            logger.info("future end");
         }
 
         // 超时的任务，结果不会添加到subPolicyResponseList中
