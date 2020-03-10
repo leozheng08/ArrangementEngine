@@ -83,7 +83,7 @@ public class ComplexCustomListFunction extends AbstractFunction {
                     }
                 }
             }
-            if (CollectionUtils.isEmpty(matchList)) {
+            if (CollectionUtils.isNotEmpty(matchList)) {
                 return new FunctionResult(true, buildConditionDetail(matchList, dimValue, rowValues));
             } else {
                 return new FunctionResult(false, null);
