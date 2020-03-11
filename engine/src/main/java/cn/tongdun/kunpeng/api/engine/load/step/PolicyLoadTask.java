@@ -8,6 +8,8 @@ import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPolicyIndicatrixItemRepository;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PolicyIndicatrixItemCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeType;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -37,13 +39,20 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private IPolicyRepository policyRepository;
 
+    private IPolicyIndicatrixItemRepository policyIndicatrixItemRepository;
+
+    private PolicyIndicatrixItemCache policyIndicatrixItemCache;
 
 
-    public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService){
+
+    public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
+                          IPolicyIndicatrixItemRepository policyIndicatrixItemRepository, PolicyIndicatrixItemCache policyIndicatrixItemCache){
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
         this.policyRepository = policyRepository;
+        this.policyIndicatrixItemRepository = policyIndicatrixItemRepository;
+        this.policyIndicatrixItemCache = policyIndicatrixItemCache;
     }
 
     /**
@@ -112,7 +121,11 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
             }
 
-
+            //加载平台指标
+            List<String> gaeaIds = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
+            if (null != gaeaIds) {
+                policyIndicatrixItemCache.putList(policyUuid, gaeaIds);
+            }
 
             //缓存运行模式
             localCacheService.put(AbstractDecisionMode.class,policy.getUuid(),policy.getDecisionMode());
