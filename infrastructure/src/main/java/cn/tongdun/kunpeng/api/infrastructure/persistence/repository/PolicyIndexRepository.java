@@ -30,6 +30,7 @@ public class PolicyIndexRepository implements IPolicyIndexRepository{
     private Logger logger = LoggerFactory.getLogger(PolicyIndexRepository.class);
 
 
+    @Autowired
     private IndexDefinitionDOMapper indexDefinitionDOMapper;
 
 

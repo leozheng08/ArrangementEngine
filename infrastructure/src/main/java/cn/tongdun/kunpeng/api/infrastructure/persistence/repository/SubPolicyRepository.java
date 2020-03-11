@@ -26,12 +26,12 @@ public class SubPolicyRepository implements ISubPolicyRepository{
     private Logger logger = LoggerFactory.getLogger(SubPolicyRepository.class);
 
 
+    @Autowired
     private PolicyChallengerDOMapper policyChallengerDOMapper;
     @Autowired
     private SubPolicyDOMapper subPolicyDOMapper;
     @Autowired
     private PolicyIndexRepository policyIndexRepository;
-
     @Autowired
     private RuleRepository ruleRepository;
 

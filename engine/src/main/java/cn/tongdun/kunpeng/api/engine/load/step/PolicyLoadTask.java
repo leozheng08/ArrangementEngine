@@ -57,16 +57,16 @@ public class PolicyLoadTask implements Callable<Boolean> {
     public Boolean call(){
         PolicyDTO policyDTO = null;
         try {
-            policyDTO = policyRepository.queryByUuid(policyUuid);
+            policyDTO = policyRepository.queryFullByUuid(policyUuid);
 
-            List<SubPolicyDTO> subpolicyDTOList = policyDTO.getSubPolicyList();
+            List<SubPolicyDTO> subPolicyDTOList = policyDTO.getSubPolicyList();
             List<IndexDefinitionDTO> indexDefinitionDTOList = new ArrayList<>();
 
             IConvertor<PolicyDTO, Policy> policyConvertor = convertorFactory.getConvertor(PolicyDTO.class);
             Policy policy = policyConvertor.convert(policyDTO);
 
-            if (subpolicyDTOList != null) {
-                for (SubPolicyDTO subpolicyDTO : subpolicyDTOList) {
+            if (subPolicyDTOList != null) {
+                for (SubPolicyDTO subpolicyDTO : subPolicyDTOList) {
                     IConvertor<SubPolicyDTO, SubPolicy> subPolicyConvertor = convertorFactory.getConvertor(SubPolicyDTO.class);
                     SubPolicy subPolicy = subPolicyConvertor.convert(subpolicyDTO);
                     if (subpolicyDTO.getRules() != null) {
