@@ -1,10 +1,10 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class PartnerReLoadManager implements IReload<Partner> {
     @Override
     public boolean addOrUpdate(Partner partnerDO){
         String partnerCode = partnerDO.getPartnerCode();
-        logger.info("PartnerReLoadManager start, partnerCode:{}",partnerCode);
+        logger.debug("PartnerReLoadManager start, partnerCode:{}",partnerCode);
         try {
             Long timestamp = partnerDO.getGmtModify().getTime();
             Partner oldPartner = partnerCache.get(partnerCode);
@@ -57,7 +57,7 @@ public class PartnerReLoadManager implements IReload<Partner> {
             logger.error("PartnerReLoadManager failed, partnerCode:{}",partnerCode,e);
             return false;
         }
-        logger.info("PartnerReLoadManager success, partnerCode:{}",partnerCode);
+        logger.debug("PartnerReLoadManager success, partnerCode:{}",partnerCode);
         return true;
     }
 

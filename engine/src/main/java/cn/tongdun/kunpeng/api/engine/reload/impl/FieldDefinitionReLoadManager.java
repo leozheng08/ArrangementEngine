@@ -1,10 +1,10 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
     @Override
     public boolean addOrUpdate(FieldDefinitionDO fieldDefinitionDO){
         String uuid = fieldDefinitionDO.getUuid();
-        logger.info("FieldDefinitionReLoadManager start, uuid:{}",uuid);
+        logger.debug("FieldDefinitionReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = fieldDefinitionDO.getGmtModify().getTime();
             FieldDefinition oldFieldDefinition = fieldDefinitionCache.get(uuid);
@@ -58,7 +58,7 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
             logger.error("FieldDefinitionReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("FieldDefinitionReLoadManager success, uuid:{}",uuid);
+        logger.debug("FieldDefinitionReLoadManager success, uuid:{}",uuid);
         return true;
     }
 

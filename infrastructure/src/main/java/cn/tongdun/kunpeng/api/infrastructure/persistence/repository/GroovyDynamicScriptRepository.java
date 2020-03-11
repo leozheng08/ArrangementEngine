@@ -35,4 +35,14 @@ public class GroovyDynamicScriptRepository implements IDynamicScriptRepository {
 
         return result;
     }
+
+
+    @Override
+    public DynamicScript queryByUuid(String uuid){
+        DynamicScriptDO dynamicScriptDO = dynamicScriptDOMapper.selectByUuid(uuid);
+
+        DynamicScript dynamicScript = new DynamicScript();
+        BeanUtils.copyProperties(dynamicScriptDO,dynamicScript);
+        return dynamicScript;
+    }
 }

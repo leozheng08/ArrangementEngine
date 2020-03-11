@@ -73,55 +73,19 @@ public class GroovyCompileManager {
         groovyFieldCache.put(script.getUuid(), groovyField);
     }
 
-//    /**
-//     * 移除处理该字段的代码
-//     *
-//     * @param partnerCode
-//     * @param eventType
-//     * @param field
-//     * @throws IOException
-//     * @throws IllegalAccessException
-//     * @throws InstantiationException
-//     * @throws CompilationFailedException
-//     */
-//    public void removeMethod(String partnerCode,  String eventType, String field){
-//        String key =  groovyFieldCache.generateKey(partnerCode , eventType);
-//        groovyFieldCache.remove(key,field);
-//    }
-
-
-
-//    public void remove(String partnerCode, String eventType) {
-//        String key = groovyFieldCache.generateKey(partnerCode , eventType);
-//        groovyFieldCache.remove(key);
-//    }
-
-
-//    private void remove(String key) {
-//        groovyFieldCache.remove(key);
-//    }
-
-    private void remove(String uuid) {
+    public void remove(String uuid) {
         groovyFieldCache.remove(uuid);
     }
 
 
     public void warmAllGroovyFields() {
-//        Set<String> keys = groovyFieldCache.keySet();
-//        for (String key : keys) {
-//            Map<String,WrappedGroovyObject> map = groovyFieldCache.get(key);
-//            for(WrappedGroovyObject groovyField:map.values()){
-//                warmGroovyField(groovyField);
-//            }
-//        }
-
         Collection<WrappedGroovyObject> allGooovyObjs = groovyFieldCache.getAll();
         for(WrappedGroovyObject groovyField : allGooovyObjs){
             warmGroovyField(groovyField);
         }
     }
 
-    private void warmGroovyField( WrappedGroovyObject field) {
+    private void warmGroovyField(WrappedGroovyObject field) {
         try {
             AbstractFraudContext context = mockFraudContext();
             executeGroovyField(context, field);

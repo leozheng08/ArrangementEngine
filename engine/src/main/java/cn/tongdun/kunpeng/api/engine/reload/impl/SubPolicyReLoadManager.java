@@ -1,19 +1,14 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.RuleDO;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +54,7 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
     @Override
     public boolean addOrUpdate(SubPolicyDO subPolicyDO){
         String uuid = subPolicyDO.getUuid();
-        logger.info("SubPolicyReLoadManager start, uuid:{}",uuid);
+        logger.debug("SubPolicyReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = subPolicyDO.getGmtModify().getTime();
             SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
@@ -73,7 +68,7 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
             logger.error("SubPolicyReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("SubPolicyReLoadManager success, uuid:{}",uuid);
+        logger.debug("SubPolicyReLoadManager success, uuid:{}",uuid);
         return true;
     }
 

@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
@@ -7,12 +7,11 @@ import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,7 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
     @Override
     public boolean addOrUpdate(PolicyDO policyDO){
         String uuid = policyDO.getUuid();
-        logger.info("SubPolicyReLoadManager start, uuid:{}",uuid);
+        logger.debug("SubPolicyReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = policyDO.getGmtModify().getTime();
             Policy oldPolicy = policyCache.get(uuid);
@@ -87,7 +86,7 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             logger.error("SubPolicyReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("SubPolicyReLoadManager success, uuid:{}",uuid);
+        logger.debug("SubPolicyReLoadManager success, uuid:{}",uuid);
         return true;
     }
 

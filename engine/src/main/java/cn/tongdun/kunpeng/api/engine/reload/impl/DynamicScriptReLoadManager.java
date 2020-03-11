@@ -1,15 +1,14 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
-import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
+import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,39 +53,38 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
     @Override
     public boolean addOrUpdate(DynamicScriptDO dynamicScriptDO){
         String uuid = dynamicScriptDO.getUuid();
-        logger.info("SubPolicyReLoadManager start, uuid:{}",uuid);
+        logger.debug("DynamicScriptReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = dynamicScriptDO.getGmtModify().getTime();
-            SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
+            WrappedGroovyObject oldWrappedGroovyObject = groovyObjectCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(oldSubPolicy != null && oldSubPolicy.getModifiedVersion() >= timestamp) {
+            if(oldWrappedGroovyObject != null && oldWrappedGroovyObject.getModifiedVersion() >= timestamp) {
                 return true;
             }
-//
-//            SubPolicyDTO subPolicyDTO = subPolicyRepository.queryByUuid(uuid);
-//            SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDTO);
-//            subPolicyCache.put(uuid,subPolicy);
+
+            DynamicScript dynamicScript = dynamicScriptRepository.queryByUuid(uuid);
+            groovyCompileManager.addOrUpdate(dynamicScript);
         } catch (Exception e){
-            logger.error("SubPolicyReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("DynamicScriptReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("SubPolicyReLoadManager success, uuid:{}",uuid);
+        logger.debug("DynamicScriptReLoadManager success, uuid:{}",uuid);
         return true;
     }
 
 
     /**
      * 删除事件类型
-     * @param subPolicyDO
+     * @param dynamicScriptDO
      * @return
      */
     @Override
     public boolean remove(DynamicScriptDO dynamicScriptDO){
-//        try {
-//            return removeSubPolicy(dynamicScriptDO.getUuid());
-//        } catch (Exception e){
-//            return false;
-//        }
-        return false;
+        try {
+            groovyCompileManager.remove(dynamicScriptDO.getUuid());
+        } catch (Exception e){
+            return false;
+        }
+        return true;
     }
 }

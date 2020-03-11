@@ -155,7 +155,7 @@ public class PolicyRepository implements IPolicyRepository{
 
     //查询平台指标
     private List<PolicyIndicatrixItemDTO> queryPolicyIndicatrixItemDTOByPolicyUuid(String policyUuid){
-        List<PolicyIndicatrixItemDO>  policyIndicatrixItemDOList = policyIndicatrixItemDOMapper.selectByPolicyUuid(policyUuid);
+        List<PolicyIndicatrixItemDO>  policyIndicatrixItemDOList = policyIndicatrixItemDOMapper.selectEnabledByPolicyUuid(policyUuid);
         if(policyIndicatrixItemDOList == null) {
             return null;
         }
