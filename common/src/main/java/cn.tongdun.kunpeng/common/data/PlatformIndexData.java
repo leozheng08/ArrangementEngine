@@ -20,7 +20,7 @@ public class PlatformIndexData {
     /**
      * 平台指标描述
      */
-    private Double desc;
+    private String desc;
     /**
      * 指标详情，暂时写成Object，后面再强制转换为rule-detail中的详情
      */

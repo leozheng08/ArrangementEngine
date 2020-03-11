@@ -4,6 +4,8 @@ import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPolicyIndicatrixItemRepository;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PolicyIndicatrixItemCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import com.google.common.collect.Sets;
@@ -42,6 +44,12 @@ public class PolicyLoadByPartnerService {
     @Autowired
     private LocalCacheService localCacheService;
 
+    @Autowired
+    private PolicyIndicatrixItemCache policyIndicatrixItemCache;
+
+    @Autowired
+    private IPolicyIndicatrixItemRepository policyIndicatrixItemRepository;
+
 
     @PostConstruct
     public void init() {
@@ -70,7 +78,7 @@ public class PolicyLoadByPartnerService {
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getPolicyUuid(),policyRepository,defaultConvertorFactory,localCacheService);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getPolicyUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
             tasks.add(task);
         }
 
