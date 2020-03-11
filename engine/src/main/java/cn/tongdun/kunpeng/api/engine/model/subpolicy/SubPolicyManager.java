@@ -53,9 +53,8 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
             return subPolicyResponse;
         }
-
+        long start = System.currentTimeMillis();
         try {
-            long start = System.currentTimeMillis();
             if (subPolicy.getPolicyMode() != null) {
                 switch (subPolicy.getPolicyMode()) {
                     case FirstMatch: //首次匹配
@@ -81,12 +80,12 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             subPolicyResponse.setSubPolicyName(subPolicy.getName());
             subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
             subPolicyResponse.setRiskType(subPolicy.getRiskType());
-            subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
         } catch (Exception e){
+            subPolicyResponse.setSuccess(false);
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
             logger.error("SubPolicyManager execute uuid:{}, seqId:{} ",uuid,context.getSeqId(), e);
-            throw e;
         }
-
+        subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
         return subPolicyResponse;
     }
 
