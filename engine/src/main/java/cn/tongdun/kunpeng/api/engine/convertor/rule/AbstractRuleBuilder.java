@@ -216,8 +216,9 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         ConditionParam right = new ConditionParam();
         FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(elementDTO.getRightType());
         if (null == fieldTypeEnum) {
-            throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!RightType:"
-                    + elementDTO.getRightType() + "conditionUuid:" + elementDTO.getUuid());
+            return null;
+//            throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!RightType:"
+//                    + elementDTO.getRightType() + "conditionUuid:" + elementDTO.getUuid());
         }
         right.setFieldType(fieldTypeEnum);
         right.setDataType(elementDTO.getRightDataType());
