@@ -46,9 +46,12 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
                 context.removeFunctionDetail(uuid);
                 break;
             case Terminate:
+                //subPolicy在执行时，如果某条规则返回Terminate=true，则不再执行后继规则。
                 ruleResponse.setTerminate(true);
                 context.removeFunctionDetail(uuid);
-                ruleResponse.setTerminate(true);//subPolicy在执行时，如果某条规则返回Terminate=true，则不再执行后继规则。
+                ruleResponse.setHit(true);
+                ruleResponse.setDecision(rule.getDecision());
+                ruleResponse.setScore(getWeight(rule, context));
                 break;
             default:
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
