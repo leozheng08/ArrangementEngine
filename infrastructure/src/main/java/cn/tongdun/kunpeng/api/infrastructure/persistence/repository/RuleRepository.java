@@ -256,7 +256,7 @@ public class RuleRepository implements IRuleRepository {
      * }
      */
     private void parseRiskConfig(RuleDTO ruleDTO,String riskConfig){
-        if(StringUtils.isBlank(riskConfig) && !"null".equalsIgnoreCase(riskConfig)) {
+        if(StringUtils.isBlank(riskConfig) || "null".equalsIgnoreCase(riskConfig)) {
             return;
         }
         try {

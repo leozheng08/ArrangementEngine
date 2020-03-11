@@ -214,14 +214,13 @@ public class ParallelEngine extends DecisionTool {
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
                 return false;
             }
-            List<Rule> ruleList = ruleCache.getRuleBySubPolicyUuid(subPolicyUuid);
-            if(ruleList == null){
+            if(subPolicy.getRuleUuidList() == null){
                 continue;
             }
 
-            ruleCount += ruleList.size();
-            for(Rule rule : ruleList) {
-                String ruleUuid = rule.getUuid();
+            ruleCount += subPolicy.getRuleUuidList().size();
+            for(String ruleUuid : subPolicy.getRuleUuidList()) {
+                Rule rule = ruleCache.get(ruleUuid);
                 if(rule == null){
                     logger.warn("{},policyUuid:{},subPolicyUuid:{},ruleUuid:{}",ReasonCode.RULE_LOAD_ERROR.toString(), policyUuid, subPolicyUuid, ruleUuid);
                     context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));

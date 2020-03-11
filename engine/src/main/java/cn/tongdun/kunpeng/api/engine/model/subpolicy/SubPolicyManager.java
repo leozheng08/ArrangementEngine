@@ -196,10 +196,9 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
                                 SubPolicyResponse subPolicyResponse, Function<RuleResponse, Boolean> breakWhenHitfunc) {
         Map<String, Boolean> hitMap = new HashMap<>();
 
-        List<Rule> ruleList = ruleCache.getRuleBySubPolicyUuid(subPolicy.getUuid());
-        for (Rule rule : ruleList) {
+        for (String ruleUuid : subPolicy.getRuleUuidList()) {
             //子规则在上级规则命中情况下才能运行，
-            String ruleUuid = rule.getUuid();
+            Rule rule = ruleCache.get(ruleUuid);
             if (StringUtils.isNotBlank(rule.getParentUuid())&&!StringUtils.equals(rule.getParentUuid(),"0")) {
                 Boolean parentHit = hitMap.get(rule.getParentUuid());
                 if (parentHit == null || !parentHit) {
