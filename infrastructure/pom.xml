@@ -161,11 +161,6 @@
         <!-- module end -->
 
         <dependency>
-            <groupId>cn.tongdun.client</groupId>
-            <artifactId>gaea-paas-client</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>redis-client</artifactId>
         </dependency>

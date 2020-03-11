@@ -42,8 +42,6 @@
         <elfin.version>1.0.3</elfin.version>
         <module.ruledetail.version>3.4.15</module.ruledetail.version>
         <cargo-service-share-version>1.0.3</cargo-service-share-version>
-        <gaea.paas.version>1.0.1-SNAPSHOT</gaea.paas.version>
-
 
     </properties>
 
@@ -342,12 +340,6 @@
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy</artifactId>
                 <version>2.3.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.tongdun.client</groupId>
-                <artifactId>gaea-paas-client</artifactId>
-                <version>${gaea.paas.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
