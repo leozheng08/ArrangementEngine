@@ -130,7 +130,7 @@ public class AssignFieldValueStep implements IRiskStep {
                 if (requestValue == null) {
                     continue;
                 }
-                putValueByFieldDefinition(ctx.getCustomFields(),fieldDefinition,requestValue);
+                putValueByFieldDefinition(ctx.getFieldValues(),fieldDefinition,requestValue);
             }
         }
     }

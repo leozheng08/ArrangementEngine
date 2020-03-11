@@ -56,15 +56,7 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
         addDecisionResultType(subPolicy,t);
 
         //规则列表
-        List<String> ruleUuidList = new ArrayList<>();
-        subPolicy.setRuleUuidList(ruleUuidList);
-        List<RuleDTO> ruleDOList= t.getRules();
-        if(ruleDOList != null){
-            for(RuleDTO ruleDO:ruleDOList){
-                ruleUuidList.add(ruleDO.getUuid());
-            }
-        }
-
+        subPolicy.setRuleUuidList(t.getRuleUuidList());
 
         return subPolicy;
     }

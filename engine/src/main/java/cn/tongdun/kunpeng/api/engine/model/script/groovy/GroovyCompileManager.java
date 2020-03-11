@@ -57,7 +57,6 @@ public class GroovyCompileManager {
             return;
         }
 
-//        String key = groovyFieldCache.generateKey(partnerCode , eventType);
         WrappedGroovyObject groovyField = new WrappedGroovyObject();
         String className = "groovy_"+script.getUuid();
         GroovyClassGenerator generator = new GroovyClassGenerator(className);

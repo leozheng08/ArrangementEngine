@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
@@ -30,6 +31,8 @@ public class RuleReLoadManager implements IReload<RuleDO> {
 
     @Autowired
     private IRuleRepository ruleRepository;
+
+    private SubPolicyReLoadManager subPolicyReLoadManager;
 
     @Autowired
     private RuleCache ruleCache;
@@ -65,6 +68,9 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             RuleDTO ruleDTO = ruleRepository.queryFullByUuid(uuid);
             Rule newRule = ruleConvertor.convert(ruleDTO);
             ruleCache.put(uuid,newRule);
+
+            //刷新子策略下规则的执行顺序
+            subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
         } catch (Exception e){
             logger.error("RuleReLoadManager failed, uuid:{}",uuid,e);
             return false;
@@ -82,7 +88,9 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     @Override
     public boolean remove(RuleDO ruleDO){
         try {
-            ruleCache.remove(ruleDO.getUuid());
+            Rule rule = ruleCache.remove(ruleDO.getUuid());
+            //刷新子策略下规则的执行顺序
+            subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
         } catch (Exception e){
             return false;
         }

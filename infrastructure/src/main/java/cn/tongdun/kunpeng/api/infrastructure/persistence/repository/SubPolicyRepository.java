@@ -57,7 +57,9 @@ public class SubPolicyRepository implements ISubPolicyRepository{
         }).collect(Collectors.toList());
 
         for(SubPolicyDTO subPolicyDTO :result){
-            subPolicyDTO.setRules(ruleRepository.queryFullBySubPolicyUuid(subPolicyDTO.getUuid()));
+            List<RuleDTO> ruleDOList = ruleRepository.queryFullBySubPolicyUuid(subPolicyDTO.getUuid());
+            subPolicyDTO.setRules(ruleDOList);
+            subPolicyDTO.setRuleUuidList(getRuleUuidList(ruleDOList));
             subPolicyDTO.setIndexDefinitionList(policyIndexRepository.queryBySubPolicyUuid(subPolicyDTO.getUuid()));
         }
 
@@ -80,7 +82,9 @@ public class SubPolicyRepository implements ISubPolicyRepository{
         SubPolicyDTO subPolicyDTO = new SubPolicyDTO();
         BeanUtils.copyProperties(subPolicyDO,subPolicyDTO);
 
-        subPolicyDTO.setRules(ruleRepository.queryFullBySubPolicyUuid(subPolicyDTO.getUuid()));
+        List<RuleDTO> ruleDOList = ruleRepository.queryFullBySubPolicyUuid(subPolicyDTO.getUuid());
+        subPolicyDTO.setRules(ruleDOList);
+        subPolicyDTO.setRuleUuidList(getRuleUuidList(ruleDOList));
         subPolicyDTO.setIndexDefinitionList(policyIndexRepository.queryBySubPolicyUuid(subPolicyDTO.getUuid()));
 
         return subPolicyDTO;
@@ -100,7 +104,22 @@ public class SubPolicyRepository implements ISubPolicyRepository{
         }
         SubPolicyDTO subPolicyDTO = new SubPolicyDTO();
         BeanUtils.copyProperties(subPolicyDO,subPolicyDTO);
+
+        List<RuleDTO> ruleDOList = ruleRepository.queryBySubPolicyUuid(subPolicyDTO.getUuid());
+        subPolicyDTO.setRuleUuidList(getRuleUuidList(ruleDOList));
         return subPolicyDTO;
+    }
+
+    private List<String> getRuleUuidList(List<RuleDTO> ruleDOList){
+        if(ruleDOList == null) {
+            return null;
+        }
+
+        List<String> ruleUuidList = new ArrayList<>();
+        for(RuleDTO ruleDO:ruleDOList){
+            ruleUuidList.add(ruleDO.getUuid());
+        }
+        return ruleUuidList;
     }
 
 }

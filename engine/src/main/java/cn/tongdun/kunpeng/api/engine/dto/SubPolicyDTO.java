@@ -96,6 +96,9 @@ public class SubPolicyDTO extends CommonDTO {
     private Date gmtDelete;
 
     private List<RuleDTO> rules;
+    //按执行顺序放
+    private List<String> ruleUuidList;
+
     private List<IndexDefinitionDTO> indexDefinitionList;
 
 }

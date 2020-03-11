@@ -463,7 +463,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
             // for logging purpose only
             if (logger.isDebugEnabled()) {
                 JSONObject resultObject = new JSONObject();
-                for (Map.Entry<String, Object> entry : fraudContext.getSystemFields().entrySet()) {
+                for (Map.Entry<String, Object> entry : fraudContext.getFieldValues().entrySet()) {
                     resultObject.put(entry.getKey(), entry.getValue());
                 }
             }

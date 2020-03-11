@@ -26,4 +26,12 @@ public interface IRuleRepository {
      * @return
      */
     List<RuleDTO> queryFullBySubPolicyUuid(String subPolicyUuid);
+
+
+    /**
+     * 根据子策略uuid 查询查询Rule列表
+     * @param subPolicyUuid
+     * @return
+     */
+    List<RuleDTO> queryBySubPolicyUuid(String subPolicyUuid);
 }

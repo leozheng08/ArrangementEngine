@@ -68,15 +68,22 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
                 return true;
             }
 
-            SubPolicyDTO subPolicyDTO = subPolicyRepository.queryByUuid(uuid);
-            SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDTO);
-            subPolicyCache.put(uuid,subPolicy);
+            reloadByUuid(uuid);
         } catch (Exception e){
             logger.error("SubPolicyReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
         logger.info("SubPolicyReLoadManager success, uuid:{}",uuid);
         return true;
+    }
+
+    public void reloadByUuid(String subPolicyUuid){
+        SubPolicyDTO subPolicyDTO = subPolicyRepository.queryByUuid(subPolicyUuid);
+        if(subPolicyDTO == null){
+            return;
+        }
+        SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDTO);
+        subPolicyCache.put(subPolicyUuid,subPolicy);
     }
 
 

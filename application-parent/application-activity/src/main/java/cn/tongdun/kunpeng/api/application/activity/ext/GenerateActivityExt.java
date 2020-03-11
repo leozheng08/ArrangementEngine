@@ -56,13 +56,10 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         //取得上下文中基础的字段
         JSONObject result = getBaseField(context);
 
-        // 获取系统字段
-        Map<String, Object> systemFields = context.getSystemFields();
-        putAllIfNotExists(result, systemFields);
+        // 获取字段值
+        Map<String, Object> fieldValues = context.getFieldValues();
+        putAllIfNotExists(result, fieldValues);
 
-        // 获取扩展字段
-        Map<String, Object> customFields = context.getCustomFields();
-        putAllIfNotExists(result, customFields);
 
         return result;
     }

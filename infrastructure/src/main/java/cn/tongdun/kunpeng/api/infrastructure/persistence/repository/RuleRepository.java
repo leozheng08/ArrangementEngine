@@ -94,6 +94,30 @@ public class RuleRepository implements IRuleRepository {
         return result;
     }
 
+    @Override
+    public List<RuleDTO> queryBySubPolicyUuid(String subPolicyUuid){
+        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+
+        if(ruleDOList == null) {
+            return null;
+        }
+
+        List<RuleDTO> result = null;
+        result = ruleDOList.stream().map(ruleDO->{
+            RuleDTO ruleDTO = new RuleDTO();
+            BeanUtils.copyProperties(ruleDO,ruleDTO);
+            parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());
+            //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
+            setRuleModifiedVersion(ruleDTO);
+            return ruleDTO;
+        }).collect(Collectors.toList());
+
+        //按上下级关系创建树
+        result = buildRuleTree(result);
+
+        return result;
+    }
+
 
     /**
      * 查询子节点

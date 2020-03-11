@@ -21,15 +21,15 @@ import java.util.function.Supplier;
 public abstract class AbstractFraudContext implements Serializable, ExecuteContext {
 
     private static final long serialVersionUID = -3320502733559293390L;
-    private static final Field[] fields = AbstractFraudContext.class.getDeclaredFields();
-    private static final Set<String> fieldNames = new HashSet<>(fields.length / 3);
+    private static final Field[] classFields = AbstractFraudContext.class.getDeclaredFields();
+    private static final Set<String> classFieldNames = new HashSet<>(classFields.length / 3);
 
     static {
         Set<String> includeTypes = Sets.newHashSet("int", "integer", "string", "double", "long", "float", "date", "boolean");
-        for (Field field : fields) {
+        for (Field field : classFields) {
             String simTypeName = field.getType().getSimpleName();
             if (includeTypes.contains(simTypeName.toLowerCase())) {
-                fieldNames.add(field.getName());
+                classFieldNames.add(field.getName());
             }
         }
     }
@@ -158,14 +158,9 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private List<IFieldDefinition> fieldDefinitions = new ArrayList<>();
 
     /**
-     * 系统字段
+     * 字段值
      */
-    private Map<String, Object> systemFields = new ConcurrentHashMap<>();
-
-    /**
-     * 扩展字段
-     */
-    private Map<String, Object> customFields = new ConcurrentHashMap<String, Object>();
+    private Map<String, Object> fieldValues = new ConcurrentHashMap<>();
 
     /**
      * 异常子码
@@ -279,7 +274,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             return;
         }
 
-        if (fieldNames.contains(key)) {
+        if (classFieldNames.contains(key)) {
             try {
                 String methodName = "set" + KunpengStringUtils.upperCaseFirstChar(key);
                 Method method = this.getClass().getDeclaredMethod(methodName, o.getClass());
@@ -298,11 +293,8 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         if (StringUtils.isBlank(key) || null == value) {
             return;
         }
-        if (key.startsWith("ext_")) {// 扩展字段
-            this.customFields.put(key, value);
-        } else { // 系统字段
-            this.systemFields.put(key, value);
-        }
+
+        this.fieldValues.put(key, value);
     }
 
     /**
@@ -320,17 +312,12 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             return "null";
         }
 
-        Object sysVal = systemFields.get(key);
+        Object sysVal = fieldValues.get(key);
         if (sysVal != null) {
             return sysVal;
         }
 
-        Object customVal = customFields.get(key);
-        if (customVal != null) {
-            return customVal;
-        }
-
-        if (fieldNames.contains(key)) {
+        if (classFieldNames.contains(key)) {
             String methodName = "get" + KunpengStringUtils.upperCaseFirstChar(key);
             try {
                 Method method = this.getClass().getMethod(methodName);
