@@ -8,8 +8,8 @@ import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPolicyIndicatrixItemRepository;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PolicyIndicatrixItemCache;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeType;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -39,14 +39,14 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private IPolicyRepository policyRepository;
 
-    private IPolicyIndicatrixItemRepository policyIndicatrixItemRepository;
+    private IPlatformIndexRepository policyIndicatrixItemRepository;
 
-    private PolicyIndicatrixItemCache policyIndicatrixItemCache;
+    private PlatformIndexCache policyIndicatrixItemCache;
 
 
 
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
-                          IPolicyIndicatrixItemRepository policyIndicatrixItemRepository, PolicyIndicatrixItemCache policyIndicatrixItemCache){
+                          IPlatformIndexRepository policyIndicatrixItemRepository, PlatformIndexCache policyIndicatrixItemCache){
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;

@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.application.ruledata;
 
-import cn.fraudmetrix.forseti.global.util.LogUtil;
 import cn.tongdun.gaea.client.common.IndicatrixRetCode;
 import cn.tongdun.gaea.client.common.base.Result;
 import cn.tongdun.gaea.paas.api.GaeaPaasApi;
@@ -8,7 +7,7 @@ import cn.tongdun.gaea.paas.dto.PaasGaeaIndicatrixVal;
 import cn.tongdun.gaea.paas.dto.PassIndicatrixValQuery;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PolicyIndicatrixItemCache;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
@@ -28,13 +27,13 @@ import java.util.*;
 
 @Component
 @Step(pipeline = Risk.NAME,phase = Risk.RULE_DATA,order = 1100)
-public class PolicyIndicatrixItemStep implements IRiskStep {
+public class PlatformIndexStep implements IRiskStep {
 
     @Autowired
     private GaeaPaasApi gaeaPaasApi;
 
     @Autowired
-    private PolicyIndicatrixItemCache policyIndicatrixItemCache;
+    private PlatformIndexCache policyIndicatrixItemCache;
 
     @Autowired
     private FieldDefinitionCache fieldDefinitionCache;

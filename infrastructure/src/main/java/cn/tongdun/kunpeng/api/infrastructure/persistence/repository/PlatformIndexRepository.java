@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPolicyIndicatrixItemRepository;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyIndicatrixItemDOMapper;
 import cn.tongdun.kunpeng.share.dataobject.PolicyIndicatrixItemDO;
 import com.google.common.collect.Lists;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class PolicyIndicatrixItemRepository implements IPolicyIndicatrixItemRepository {
+public class PlatformIndexRepository implements IPlatformIndexRepository {
 
     @Autowired
     private PolicyIndicatrixItemDOMapper policyIndicatrixItemDOMapper;

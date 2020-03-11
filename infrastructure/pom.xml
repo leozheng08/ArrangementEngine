@@ -160,13 +160,6 @@
 
         <!-- module end -->
 
-        <!-- gaea start -->
-        <dependency>
-            <groupId>cn.tongdun.client</groupId>
-            <artifactId>gaea-paas-client</artifactId>
-        </dependency>
-        <!-- gaea end -->
-
         <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>redis-client</artifactId>

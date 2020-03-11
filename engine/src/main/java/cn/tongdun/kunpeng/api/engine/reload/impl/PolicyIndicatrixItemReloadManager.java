@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyIndexConvertor;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPolicyIndicatrixItemRepository;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PolicyIndicatrixItemCache;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
@@ -23,10 +23,10 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     private Logger logger = LoggerFactory.getLogger(PolicyIndexReLoadManager.class);
 
     @Autowired
-    private IPolicyIndicatrixItemRepository policyIndicatrixItemRepository;
+    private IPlatformIndexRepository policyIndicatrixItemRepository;
 
     @Autowired
-    private PolicyIndicatrixItemCache policyIndicatrixItemCache;
+    private PlatformIndexCache policyIndicatrixItemCache;
 
     @Autowired
     private PolicyIndexCache policyIndexCache;

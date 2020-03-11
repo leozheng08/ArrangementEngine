@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.engine.model.Indicatrix;
 
 import java.util.List;
 
-public interface IPolicyIndicatrixItemRepository {
+public interface IPlatformIndexRepository {
 
     /**
      *

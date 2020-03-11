@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Component
-public class PolicyIndicatrixItemCache extends AbstractBatchLocalCache<String, String> {
+public class PlatformIndexCache extends AbstractBatchLocalCache<String, String> {
 
     private ConcurrentMap<String, List<String>> policyIndicatrixItem = new ConcurrentHashMap<>();
 
