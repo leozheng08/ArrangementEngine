@@ -35,7 +35,7 @@ public class EventNotify {
         for(Object entity : domainEvent.getData()){
             IReload reLoadManager = reloadFactory.getReload(entity.getClass());
             if(domainEvent.getEventType().contains("Remove")){
-                reLoadManager.remove(((UUIDEntity)entity).getUuid());
+                reLoadManager.remove(entity);
             } else {
                 reLoadManager.addOrUpdate(entity);
             }

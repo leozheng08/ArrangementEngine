@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyIndexConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyIndicatrixItemDTO;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPolicyIndicatrixItemRepository2;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPolicyIndicatrixItemRepository;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PolicyIndicatrixItemCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
@@ -23,7 +23,10 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     private Logger logger = LoggerFactory.getLogger(PolicyIndexReLoadManager.class);
 
     @Autowired
-    private IPolicyIndicatrixItemRepository2 policyIndicatrixItemRepository;
+    private IPolicyIndicatrixItemRepository policyIndicatrixItemRepository;
+
+    @Autowired
+    private PolicyIndicatrixItemCache policyIndicatrixItemCache;
 
     @Autowired
     private PolicyIndexCache policyIndexCache;
@@ -50,13 +53,8 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     private boolean reload(String policyUuid){
         logger.debug("PolicyIndicatrixItemReloadManager start, policyUuid:{}",policyUuid);
         try {
-            List<PolicyIndicatrixItemDTO> policyIndicatrixItemDTOList = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
-            //缓存平台指标
-//            if (null!= policyIndicatrixItemDTOList && !policyIndicatrixItemDTOList.isEmpty()){
-//                policyIndexCache.putList(policyUuid,policyIndicatrixItemDTOList);
-//            } else {
-//                policyIndexCache.removeList(policyUuid);
-//            }
+            List<String> policyIndicatrixItemDTOList = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
+            policyIndicatrixItemCache.putList(policyUuid,policyIndicatrixItemDTOList);
 
         } catch (Exception e){
             logger.error("PolicyIndicatrixItemReloadManager failed, policyUuid:{}",policyUuid,e);

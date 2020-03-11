@@ -16,7 +16,7 @@ public class PolicyIndicatrixItemRepository implements IPolicyIndicatrixItemRepo
     private PolicyIndicatrixItemDOMapper policyIndicatrixItemDOMapper;
 
     @Override
-    public List<String> selectByPolicyUuid(String policyUuid) {
+    public List<String> queryByPolicyUuid(String policyUuid) {
         List<PolicyIndicatrixItemDO> indicatrixItemList = policyIndicatrixItemDOMapper.selectEnabledByPolicyUuid(policyUuid);
         if (null != indicatrixItemList) {
             List<String> result = Lists.newArrayList();

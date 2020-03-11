@@ -9,5 +9,5 @@ public interface IPolicyIndicatrixItemRepository {
      * @param policyUuid
      * @return
      */
-    List<String> selectByPolicyUuid(String policyUuid);
+    List<String> queryByPolicyUuid(String policyUuid);
 }
