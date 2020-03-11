@@ -5,6 +5,9 @@ import cn.tongdun.kunpeng.api.engine.reload.impl.EventTypeReLoadManager;
 import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyDefinitionReLoadManager;
 import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyReLoadManager;
 import cn.tongdun.kunpeng.api.engine.reload.impl.RuleReLoadManager;
+import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class EventNotify {
 
+    private Logger logger = LoggerFactory.getLogger(EventNotify.class);
 
     @Autowired
     private EventMsgParser eventMsgParser;
@@ -27,20 +31,34 @@ public class EventNotify {
     @Autowired
     private ReloadFactory reloadFactory;
 
+    private final static String EVENT_TYPE_REMOVE ="Remove";
+
 
     public boolean onMessage(String event){
-
-        DomainEvent domainEvent = eventMsgParser.parse(event);
-
-        for(Object entity : domainEvent.getData()){
-            IReload reLoadManager = reloadFactory.getReload(entity.getClass());
-            if(domainEvent.getEventType().contains("Remove")){
-                reLoadManager.remove(entity);
-            } else {
-                reLoadManager.addOrUpdate(entity);
+        try {
+            DomainEvent domainEvent = eventMsgParser.parse(event);
+            boolean result = true;
+            for (Object entity : domainEvent.getData()) {
+                IReload reLoadManager = reloadFactory.getReload(entity.getClass());
+                if (reLoadManager == null) {
+                    result = false;
+                    logger.error("EventNotify reLoadManager is null,class:{},event:{}", entity.getClass(), event);
+                    break;
+                }
+                if (domainEvent.getEventType().endsWith(EVENT_TYPE_REMOVE)) {
+                    if(!reLoadManager.remove(entity)){
+                        result = false;
+                    }
+                } else {
+                    if(reLoadManager.addOrUpdate(entity)){
+                        result = false;
+                    }
+                }
             }
+            return result;
+        } catch (Exception e){
+            logger.error("EventNotify reLoadManager is null,class:{},event:{}", event);
+            return false;
         }
-
-        return true;
     }
 }

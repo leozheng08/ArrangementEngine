@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ReLoadScheduler implements ILoad {
     @Autowired
     FieldDefinitionLoadManager fieldLoadManager;
 
-    List<ILoad> reLoadTasks = new ArrayList<>();
+//    List<ILoad> reLoadTasks = new ArrayList<>();
 
     /**
      * 启动加载成功后，增加定时刷新任务
@@ -41,33 +42,37 @@ public class ReLoadScheduler implements ILoad {
     @Override
     public boolean load(){
 
-        reLoadTasks.add(eventTypeLoadManager);
-        reLoadTasks.add(fieldLoadManager);
-
+//        reLoadTasks.add(eventTypeLoadManager);
+//        reLoadTasks.add(fieldLoadManager);
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
-
-        //定时器每5秒钟执行一次
+        //定时器10秒钟执行一次
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
-                    reLoad();
+                    getEventMsgFromRedis();
                 } catch (Exception e) {
                     logger.error("定时刷新缓存异常",e);
                 }
             }
-        }, 10, 10, TimeUnit.MINUTES);
+        }, 10, 10, TimeUnit.SECONDS);
 
         return true;
     }
 
-    public void reLoad(){
-        for(ILoad task:reLoadTasks) {
-            try {
-                task.load();
-            } catch (Exception e){
-                logger.error("定时刷新缓存异常",e);
-            }
-        }
+//    public void reLoad(){
+//        for(ILoad task:reLoadTasks) {
+//            try {
+//                task.load();
+//            } catch (Exception e){
+//                logger.error("定时刷新缓存异常",e);
+//            }
+//        }
+//    }
+
+
+    //定时刷新动态配置
+    public void getEventMsgFromRedis(){
+
     }
 }
