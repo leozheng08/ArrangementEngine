@@ -63,12 +63,52 @@ public class RuleRepository implements IRuleRepository {
             return ruleDTO;
         }).collect(Collectors.toList());
 
+        //按下下级关系创建树
+        result = buildRuleTree(result);
+
         for(RuleDTO ruleDTO :result){
             ruleDTO.setRuleConditionElements(queryRuleConditionElementDTOByRuleUuid(ruleDTO.getUuid()));
             ruleDTO.setRuleActionElements(queryRuleActionElementDTOByRuleUuid(ruleDTO.getUuid()));
         }
 
         return result;
+    }
+
+
+    private List<RuleDTO> buildRuleTree(List<RuleDTO> ruleDTOList) {
+        if (ruleDTOList == null || ruleDTOList.isEmpty()) {
+            return ruleDTOList;
+        }
+
+        List<RuleDTO> result = new ArrayList<>();
+
+        // 查找根节点
+        for (RuleDTO element : ruleDTOList) {
+            if (StringUtils.isBlank(element.getParentUuid())) {
+                result.add(element);
+                // 递归查找每个根节点下的元素,
+                findRuleChildren(element, ruleDTOList,result);
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 查询子节点
+     *
+     * @param parent
+     * @param source
+     * @param target
+     */
+    private void findRuleChildren(RuleDTO parent, List<RuleDTO> source, List<RuleDTO> target) {
+        for (RuleDTO re : source) {
+            if (parent.getUuid().equals(re.getParentUuid())) {
+                target.add(re);
+                findRuleChildren(re, source,target);
+            }
+        }
     }
 
 

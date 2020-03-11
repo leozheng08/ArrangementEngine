@@ -19,6 +19,9 @@ public class SubPolicy extends VersionedEntity {
     private PolicyMode policyMode;
     private String riskType;
 
+    //按执行顺序放
+    private List<String> ruleUuidList;
+
     //决策结果的类型，如Accept、Review、Reject 对应的阈值
     private List<DecisionResultThreshold> riskThresholds;
 
