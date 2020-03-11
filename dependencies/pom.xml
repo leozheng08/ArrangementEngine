@@ -141,12 +141,6 @@
                 <version>${common.arch.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>cn.tongdun.client</groupId>
-                <artifactId>gaea-paas-client</artifactId>
-                <version>${gaea.paas.client.version}</version>
-            </dependency>
-
             <!-- compress -->
             <dependency>
                 <groupId>org.lz4</groupId>
@@ -349,7 +343,6 @@
                 <artifactId>groovy</artifactId>
                 <version>2.3.1</version>
             </dependency>
-
 
         </dependencies>
     </dependencyManagement>
