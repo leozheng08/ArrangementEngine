@@ -13,15 +13,15 @@ import java.util.Map;
 @Component
 public class LocalCacheService {
     //保存各个类对应的本地缓存
-    Map<Class, ILocalCache> cacheMap = new HashMap<>(5);
+    Map<Class, ILocalCache> cacheMap = new HashMap<>();
     Map<Class, IBatchLocalCache> batchCacheMap = new HashMap<>(2);
 
     public void register(Class clazz, ILocalCache localCache) {
         cacheMap.put(clazz, localCache);
     }
 
-    public ILocalCache getLocalCache(Class clazz) {
-        return cacheMap.get(clazz);
+    public ILocalCache getLocalCache(Class valueClazz) {
+        return cacheMap.get(valueClazz);
     }
 
     public void register(Class clazz, IBatchLocalCache batchLocalCache) {
@@ -63,6 +63,14 @@ public class LocalCacheService {
             return null;
         }
         return cache.getList(key);
+    }
+
+    public <V> V remove(Class<V> vClass, Object key) {
+        ILocalCache<Object, V> cache = getLocalCache(vClass);
+        if (cache == null) {
+            return null;
+        }
+        return cache.remove(key);
     }
 
 }

@@ -19,6 +19,8 @@ public class Rule extends VersionedEntity {
     private String ruleId;
     private String ruleCustomId;
     private String parentUuid;
+    private String bizType;
+    private String bizUuid;
     private String subPolicyUuid;
 
     private String name;

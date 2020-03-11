@@ -23,5 +23,8 @@ public interface IPolicyRepository {
 
 
     //查询单个策略的完整信息，包含各个子对象
+    PolicyDTO queryFullByUuid(String uuid);
+
+    //查询单个策略信息，不包含各个子对象
     PolicyDTO queryByUuid(String uuid);
 }

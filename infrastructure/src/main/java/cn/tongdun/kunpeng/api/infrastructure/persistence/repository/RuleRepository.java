@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.dto.RuleActionElementDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.api.engine.dto.WeightedRiskConfigDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDOMapper;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDOMapper;
@@ -10,7 +11,10 @@ import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng
 import cn.tongdun.kunpeng.share.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,6 +30,7 @@ import java.util.stream.Collectors;
  */
 @Repository
 public class RuleRepository implements IRuleRepository {
+    private Logger logger = LoggerFactory.getLogger(RuleRepository.class);
 
     @Autowired
     private RuleDOMapper ruleDOMapper;
@@ -35,18 +40,63 @@ public class RuleRepository implements IRuleRepository {
     @Autowired
     private RuleActionElementDOMapper ruleActionElementDOMapper;
 
+
+    /**
+     * 根据子策略uuid 查询查询Rule完整信息，包含下级的ruleConditionElements,ruleActionElements
+     * @param subPolicyUuid
+     * @return
+     */
     @Override
-    public RuleDTO queryByUuid(String ruleUuid) {
+    public List<RuleDTO> queryFullBySubPolicyUuid(String subPolicyUuid){
+        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+
+        if(ruleDOList == null) {
+            return null;
+        }
+
+        List<RuleDTO> result = null;
+        result = ruleDOList.stream().map(ruleDO->{
+            RuleDTO ruleDTO = new RuleDTO();
+            BeanUtils.copyProperties(ruleDO,ruleDTO);
+            parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());
+            //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
+            setRuleModifiedVersion(ruleDTO);
+            return ruleDTO;
+        }).collect(Collectors.toList());
+
+        for(RuleDTO ruleDTO :result){
+            ruleDTO.setRuleConditionElements(queryRuleConditionElementDTOByRuleUuid(ruleDTO.getUuid()));
+            ruleDTO.setRuleActionElements(queryRuleActionElementDTOByRuleUuid(ruleDTO.getUuid()));
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 查询Rule完整信息，包含下级的ruleConditionElements,ruleActionElements
+     * @param ruleUuid
+     * @return
+     */
+    @Override
+    public RuleDTO queryFullByUuid(String ruleUuid) {
 
         RuleDO ruleDO = ruleDOMapper.selectByUuid(ruleUuid);
         RuleDTO ruleDTO = new RuleDTO();
         BeanUtils.copyProperties(ruleDO, ruleDTO);
+        parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());
+        //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
+        setRuleModifiedVersion(ruleDTO);
 
         ruleDTO.setRuleConditionElements(queryRuleConditionElementDTOByRuleUuid(ruleUuid));
         ruleDTO.setRuleActionElements(queryRuleActionElementDTOByRuleUuid(ruleUuid));
 
+        return ruleDTO;
+    }
+
+    private void setRuleModifiedVersion(RuleDTO ruleDTO){
         //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
-        Long modifiedVersion = ruleDO.getGmtModify().getTime();
+        Long modifiedVersion = ruleDTO.getGmtModify().getTime();
         if(ruleDTO.getRuleActionElements() != null) {
             for (RuleActionElementDTO ruleActionElementDTO : ruleDTO.getRuleActionElements()){
                 if(ruleActionElementDTO.getGmtModify().getTime()>modifiedVersion){
@@ -61,11 +111,9 @@ public class RuleRepository implements IRuleRepository {
                 }
             }
         }
-        ruleDO.setGmtModify(new Date(modifiedVersion));
-
-
-        return ruleDTO;
+        ruleDTO.setGmtModify(new Date(modifiedVersion));
     }
+
 
     //查询规则条件
     public List<RuleConditionElementDTO> queryRuleConditionElementDTOByRuleUuid(String ruleUuid) {
@@ -143,4 +191,63 @@ public class RuleRepository implements IRuleRepository {
             findChildren(element, conditionElements);
         }
     }
+
+
+    /**
+     * 风险配置
+     * {
+     * "mode":"WorstMatch"
+     * "riskDecision":"Accept"
+     * }
+     * 或者
+     * {
+     * "mode":"Weighted",
+     * "riskWeight":10,
+     * "weightRatio":20.33,
+     * "op":"+",
+     * "property":{
+     * "type":"indicatrix/field",
+     * "name":"指标/字段"
+     * },
+     * "propertyValue":{
+     * "value":"3333333333"
+     * },
+     * "upperLimitScore":-30,
+     * "lowerLimitScore":30
+     * }
+     */
+    private void parseRiskConfig(RuleDTO ruleDTO,String riskConfig){
+        if(StringUtils.isBlank(riskConfig)) {
+            return;
+        }
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(riskConfig);
+            String mode = jsonObject.getString("mode");
+            if(StringUtils.isBlank(mode)) {
+                return;
+            }
+            ruleDTO.setMode(mode);
+            switch (mode){
+                case "FirstMatch":
+                case "WorstMatch":
+                    ruleDTO.setRiskDecision(jsonObject.getString("riskDecision"));
+                    break;
+                case "Weighted":
+                    WeightedRiskConfigDTO weighted = new WeightedRiskConfigDTO();
+                    weighted.setBaseWeight(jsonObject.getDouble("baseWeight"));
+                    weighted.setWeightRatio(jsonObject.getDouble("weightRatio"));
+                    weighted.setWeightProperty(jsonObject.getString("weightProperty"));
+                    weighted.setWeightPropertyValue(jsonObject.getString("weightPropertyValue"));
+                    weighted.setLowerLimitScore(jsonObject.getInteger("lowerLimitScore"));
+                    weighted.setUpperLimitScore(jsonObject.getInteger("upperLimitScore"));
+                    ruleDTO.setWeightedRiskConfigDTO(weighted);
+                    break;
+                default:
+                    logger.warn("buildRiskConfig mode error, riskConfig:{}",riskConfig);
+            }
+        } catch (Exception e){
+            logger.error("buildRiskConfig error,riskConfig:{}",riskConfig,e);
+        }
+    }
+
 }

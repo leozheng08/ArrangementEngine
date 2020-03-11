@@ -55,16 +55,6 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
         //决策结果，如Accept、Review、Reject
         addDecisionResultType(subPolicy,t);
 
-        //规则列表
-        List<String> ruleUuidList = new ArrayList<>();
-        subPolicy.setRuleUuidList(ruleUuidList);
-        List<RuleDTO> ruleDOList= t.getRules();
-        if(ruleDOList != null){
-            for(RuleDTO ruleDO:ruleDOList){
-                ruleUuidList.add(ruleDO.getUuid());
-            }
-        }
-
         return subPolicy;
     }
 
@@ -72,7 +62,6 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
     private void addDecisionResultType(SubPolicy subPolicy,SubPolicyDTO t){
         /**
          * 扩展字段，json结构
-         *
          * mode=Weighted 才有下面的风险阈值配置
          * {
          * "riskThreshold":[

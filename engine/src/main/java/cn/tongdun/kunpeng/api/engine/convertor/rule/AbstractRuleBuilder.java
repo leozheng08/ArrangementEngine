@@ -120,7 +120,8 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         rule.setDisplayOrder(ruleDTO.getPriority());
         rule.setName(ruleDTO.getName());
         rule.setParentUuid(ruleDTO.getParentUuid());
-        rule.setSubPolicyUuid(ruleDTO.getPolicyUuid());
+        rule.setBizType(ruleDTO.getBizType());
+        rule.setBizUuid(ruleDTO.getBizUuid());
         rule.setTemplate(ruleDTO.getTemplate());
         rule.setMode(ruleDTO.getMode());
         rule.setDecision(ruleDTO.getRiskDecision());

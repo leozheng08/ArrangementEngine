@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
+import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DecisionFlowDOMapper;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDecisionModeDOMapper;
@@ -19,33 +20,19 @@ import org.springframework.stereotype.Repository;
  * @Date: 2019/12/18 上午11:42
  */
 @Repository
-public class PolicyDecisionModeRepository implements IPolicyRepository{
+public class DecisionFlowRepository implements IDecisionFlowRepository{
 
-    private Logger logger = LoggerFactory.getLogger(PolicyDecisionModeRepository.class);
+    private Logger logger = LoggerFactory.getLogger(DecisionFlowRepository.class);
 
-    @Autowired
-    private PolicyDecisionModeDOMapper policyDecisionModeDOMapper;
     @Autowired
     private  DecisionFlowDOMapper decisionFlowDOMapper;
 
 
-
-
-    //查询策略运行模式
-    private PolicyDecisionModeDTO queryPolicyDecisionModeDTOByPolicyUuid(String policyUuid){
-        PolicyDecisionModeDO policyDecisionModeDO = policyDecisionModeDOMapper.selectByPolicyUuid(policyUuid);
-        if(policyDecisionModeDO == null) {
-            return null;
-        }
-
-        PolicyDecisionModeDTO policyDecisionModeDTO = new PolicyDecisionModeDTO();
-        BeanUtils.copyProperties(policyDecisionModeDO,policyDecisionModeDTO);
-
-        return policyDecisionModeDTO;
-    }
-
-    //查询决策流
-    private DecisionFlowDTO queryDecisionFlowDTOByPolicyUuid(String policyUuid){
+    /**
+     * 查询决策流, 决策流的uuid与策略的uuid为值相同
+     */
+    @Override
+    public DecisionFlowDTO queryByUuid(String policyUuid){
         DecisionFlowDO decisionFlowDO = decisionFlowDOMapper.selectByUuid(policyUuid);
         if(decisionFlowDO == null) {
             return null;

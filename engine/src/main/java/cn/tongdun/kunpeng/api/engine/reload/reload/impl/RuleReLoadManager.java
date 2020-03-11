@@ -43,7 +43,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(EventTypeDO.class,this);
+        reloadFactory.register(RuleDO.class,this);
     }
 
     /**
@@ -56,14 +56,15 @@ public class RuleReLoadManager implements IReload<RuleDO> {
         logger.info("RuleReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = ruleDO.getGmtModify().getTime();
-            Rule rule = ruleCache.get(uuid);
+            Rule oldRule = ruleCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(rule != null && rule.getModifiedVersion() >= timestamp) {
+            if(oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
-            RuleDTO ruleDTO = ruleRepository.queryByUuid(uuid);
-//            eventTypeCache.put(uuid, newEventType);
+            RuleDTO ruleDTO = ruleRepository.queryFullByUuid(uuid);
+            Rule newRule = ruleConvertor.convert(ruleDTO);
+            ruleCache.put(uuid,newRule);
         } catch (Exception e){
             logger.error("RuleReLoadManager failed, uuid:{}",uuid,e);
             return false;
@@ -75,16 +76,16 @@ public class RuleReLoadManager implements IReload<RuleDO> {
 
     /**
      * 删除事件类型
-     * @param uuid
+     * @param ruleDO
      * @return
      */
     @Override
-    public boolean remove(String uuid){
-//        try {
-//            eventTypeCache.remove(uuid);
-//        } catch (Exception e){
-//            return false;
-//        }
+    public boolean remove(RuleDO ruleDO){
+        try {
+            ruleCache.remove(ruleDO.getUuid());
+        } catch (Exception e){
+            return false;
+        }
         return true;
     }
 

@@ -195,9 +195,11 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
     private void executePorcess(SubPolicy subPolicy, AbstractFraudContext context,
                                 SubPolicyResponse subPolicyResponse, Function<RuleResponse, Boolean> breakWhenHitfunc) {
         Map<String, Boolean> hitMap = new HashMap<>();
-        for (String ruleUuid : subPolicy.getRuleUuidList()) {
+
+        List<Rule> ruleList = ruleCache.getRuleBySubPolicyUuid(subPolicy.getUuid());
+        for (Rule rule : ruleList) {
             //子规则在上级规则命中情况下才能运行，
-            Rule rule = ruleCache.get(ruleUuid);
+            String ruleUuid = rule.getUuid();
             if (StringUtils.isNotBlank(rule.getParentUuid())&&!StringUtils.equals(rule.getParentUuid(),"0")) {
                 Boolean parentHit = hitMap.get(rule.getParentUuid());
                 if (parentHit == null || !parentHit) {

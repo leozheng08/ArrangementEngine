@@ -1,19 +1,23 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 
-import cn.tongdun.kunpeng.api.engine.dto.*;
+import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
+import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.policyindex.IPolicyIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.*;
-import cn.tongdun.kunpeng.share.dataobject.*;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.IndexDefinitionDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyChallengerDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyIndicatrixItemDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.SubPolicyDOMapper;
+import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
+import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -21,54 +25,20 @@ import java.util.stream.Collectors;
  * @Date: 2019/12/18 上午11:42
  */
 @Repository
-public class SubPolicyRepository implements ISubPolicyRepository{
+public class PolicyIndexRepository implements IPolicyIndexRepository{
 
-    private Logger logger = LoggerFactory.getLogger(SubPolicyRepository.class);
+    private Logger logger = LoggerFactory.getLogger(PolicyIndexRepository.class);
 
 
-    private PolicyChallengerDOMapper policyChallengerDOMapper;
-    @Autowired
-    private SubPolicyDOMapper subPolicyDOMapper;
-    @Autowired
-    private PolicyIndicatrixItemDOMapper policyIndicatrixItemDOMapper;
-
-    @Autowired
-    private RuleRepository ruleRepository;
+    private IndexDefinitionDOMapper indexDefinitionDOMapper;
 
 
     /**
-     * 根据策略uuid查询子策略列表，包含策略的各个子对象的完整信息，
-     * @param policyUuid
-     * @return
+     * 根据策略查询策略指标定义
      */
     @Override
-    public List<SubPolicyDTO> queryFullByPolicyUuid(String policyUuid){
-        List<SubPolicyDO> subPolicyDOList = subPolicyDOMapper.selectListByPolicyUuid(policyUuid);
-
-        if(subPolicyDOList == null) {
-            return null;
-        }
-
-        List<SubPolicyDTO> result = null;
-        result = subPolicyDOList.stream().map(subPolicyDO->{
-            SubPolicyDTO subPolicyDTO = new SubPolicyDTO();
-            BeanUtils.copyProperties(subPolicyDO,subPolicyDTO);
-            return subPolicyDTO;
-        }).collect(Collectors.toList());
-
-        for(SubPolicyDTO subPolicyDTO :result){
-            subPolicyDTO.setRules(ruleRepository.queryFullBySubPolicyUuid(subPolicyDTO.getUuid()));
-            subPolicyDTO.setIndexDefinitionList(queryIndexDefinitionDTOBySubPolicyUuid(subPolicyDTO.getUuid()));
-        }
-
-        return result;
-    }
-
-
-
-    //查询策略指标
-    private List<IndexDefinitionDTO> queryIndexDefinitionDTOBySubPolicyUuid(String subPolicyUuid){
-        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDOMapper.getEnabledIndexesBySubPolicyUuid(subPolicyUuid);
+    public List<IndexDefinitionDTO> queryByPolicyUuid(String policyUuid){
+        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDOMapper.selectEnabledIndexesByPolicyUuid(policyUuid);
         if(indexDefinitionDOList == null) {
             return null;
         }
@@ -81,6 +51,41 @@ public class SubPolicyRepository implements ISubPolicyRepository{
         }).collect(Collectors.toList());
 
         return result;
+    }
+
+    /**
+     * 根据子策略查询策略指标定义
+     */
+    @Override
+    public List<IndexDefinitionDTO> queryBySubPolicyUuid(String subPolicyUuid){
+        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDOMapper.selectEnabledIndexesBySubPolicyUuid(subPolicyUuid);
+        if(indexDefinitionDOList == null) {
+            return null;
+        }
+
+        List<IndexDefinitionDTO> result = null;
+        result = indexDefinitionDOList.stream().map(indexDefinitionDO->{
+            IndexDefinitionDTO indexDefinitionDTO = new IndexDefinitionDTO();
+            BeanUtils.copyProperties(indexDefinitionDO,indexDefinitionDTO);
+            return indexDefinitionDTO;
+        }).collect(Collectors.toList());
+
+        return result;
+    }
+
+    /**
+     * 根据uuid查询策略指标定义
+     */
+    @Override
+    public IndexDefinitionDTO queryByUuid(String uuid){
+        IndexDefinitionDO indexDefinitionDO = indexDefinitionDOMapper.selectByUuid(uuid);
+        if(indexDefinitionDO == null){
+            return null;
+        }
+
+        IndexDefinitionDTO indexDefinitionDTO = new IndexDefinitionDTO();
+        BeanUtils.copyProperties(indexDefinitionDO,indexDefinitionDTO);
+        return indexDefinitionDTO;
     }
 
 }

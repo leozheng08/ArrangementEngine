@@ -12,5 +12,18 @@ import java.util.List;
 public interface IRuleRepository {
 
 
-    RuleDTO queryByUuid(String ruleUuid);
+    /**
+     * 查询Rule完整信息，包含下级的ruleConditionElements,ruleActionElements
+     * @param ruleUuid
+     * @return
+     */
+    RuleDTO queryFullByUuid(String ruleUuid);
+
+
+    /**
+     * 根据子策略uuid 查询查询Rule完整信息，包含下级的ruleConditionElements,ruleActionElements
+     * @param subPolicyUuid
+     * @return
+     */
+    List<RuleDTO> queryFullBySubPolicyUuid(String subPolicyUuid);
 }

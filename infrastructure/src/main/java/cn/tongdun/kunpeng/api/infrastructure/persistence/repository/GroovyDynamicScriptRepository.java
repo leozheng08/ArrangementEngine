@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
-import cn.tongdun.kunpeng.api.engine.model.script.groovy.IGroovyDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.GroovyDynamicScriptDOMapper;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @Date: 2020/2/19 下午8:33
  */
 @Repository
-public class GroovyDynamicScriptRepository implements IGroovyDynamicScriptRepository {
+public class GroovyDynamicScriptRepository implements IDynamicScriptRepository {
 
     @Autowired
     GroovyDynamicScriptDOMapper dynamicScriptDOMapper;

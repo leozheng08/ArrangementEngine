@@ -1,43 +1,110 @@
 package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.convertor.impl.DecisionFlowConvertor;
+import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
+import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
+import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
+import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
+import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
+import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
+import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class DecisionFlowReLoadManager {
+public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
 
     private Logger logger = LoggerFactory.getLogger(DecisionFlowReLoadManager.class);
 
     @Autowired
-    private IPolicyDefinitionRepository policyDefinitionRepository;
+    private IDecisionFlowRepository decisionFlowRepository;
+
+    private IPolicyDecisionModeRepository policyDecisionModeRepository;
 
     @Autowired
-    private PolicyDefinitionCache policyDefinitionCache;
+    private DecisionModeCache decisionModeCache;
+
+    @Autowired
+    private DecisionFlowConvertor decisionFlowConvertor;
+
+    @Autowired
+    private ReloadFactory reloadFactory;
+
+    @PostConstruct
+    public void init(){
+        reloadFactory.register(DecisionFlowDO.class,this);
+    }
 
     /**
-     * 加载当前集群下所有合作方的策略定义
+     * 更新事件类型
      * @return
      */
-    public boolean reload(String uuid){
-        logger.info("DecisionFlowReLoadManager start, uuid:{}",uuid);
-
+    @Override
+    public boolean addOrUpdate(DecisionFlowDO decisionFlowDO){
+        String uuid = decisionFlowDO.getUuid();
+        logger.debug("DecisionFlowReLoadManager start, uuid:{}",uuid);
         try {
-            PolicyDefinition policyDefinition = policyDefinitionRepository.queryByUuid(uuid);
-            policyDefinitionCache.put(policyDefinition.getUuid(), policyDefinition);
+            PolicyDecisionModeDTO policyDecisionModeDTO = policyDecisionModeRepository.queryByPolicyUuid(decisionFlowDO.getUuid());
+            if(policyDecisionModeDTO == null){
+                return true;
+            }
+            //当前策略是否按决策流执行
+            if(!DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())){
+                return true;
+            }
+
+            Long timestamp = decisionFlowDO.getGmtModify().getTime();
+            AbstractDecisionMode decisionMode = decisionModeCache.get(uuid);
+            if(decisionMode instanceof DecisionFlow){
+                //缓存中的数据是相同版本或更新的，则不刷新
+                if(decisionMode.getModifiedVersion()  >= timestamp){
+                    return true;
+                }
+            }
+
+
+            DecisionFlowDTO decisionFlowDTO = decisionFlowRepository.queryByUuid(uuid);
+            DecisionFlow decisionFlow = decisionFlowConvertor.convert(decisionFlowDTO);
+            decisionModeCache.put(uuid,decisionFlow);
         } catch (Exception e){
             logger.error("DecisionFlowReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("DecisionFlowReLoadManager success, uuid:{}",uuid);
+        logger.debug("DecisionFlowReLoadManager success, uuid:{}",uuid);
+        return true;
+    }
+
+
+    /**
+     * 删除事件类型
+     * @param decisionFlowDO
+     * @return
+     */
+    @Override
+    public boolean remove(DecisionFlowDO decisionFlowDO){
+        try {
+            decisionModeCache.remove(decisionFlowDO.getUuid());
+        } catch (Exception e){
+            return false;
+        }
         return true;
     }
 }

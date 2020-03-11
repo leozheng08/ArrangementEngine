@@ -1,17 +1,12 @@
-package cn.tongdun.kunpeng.api.engine.model.policy;
+package cn.tongdun.kunpeng.api.engine.model.decisionmode;
 
-import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:46
  */
-public interface IPolicyRepository {
+public interface IPolicyDecisionModeRepository {
 
 
     /**

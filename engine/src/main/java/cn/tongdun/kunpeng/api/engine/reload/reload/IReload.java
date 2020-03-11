@@ -14,5 +14,5 @@ public interface IReload<T> {
 
     boolean addOrUpdate(T t);
 
-    boolean remove(String uuid);
+    boolean remove(T t);
 }

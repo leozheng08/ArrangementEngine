@@ -1,40 +1,32 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
+import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import groovy.lang.GroovyObject;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class WrappedGroovyObject implements Serializable{
+@Data
+public class WrappedGroovyObject extends VersionedEntity {
 
     private static final long serialVersionUID = 2785807641911113679L;
+    /**
+     * 合作方 partner_code
+     */
+    private String partnerCode;
+
+    /**
+     * 事件类型 event_type
+     */
+    private String eventType;
+
     private GroovyObject        groovyObject;                                // 编译后的对象
     private String              source;                                      // 源代码
+    private String              fieldMethodName;                             // 方法名
+    private String              assignField;                                 // 赋值的字段名
+
     private Map<String, String> fieldMethods = new ConcurrentHashMap<>();    // 字段和方法体
-
-    public GroovyObject getGroovyObject() {
-        return groovyObject;
-    }
-
-    public void setGroovyObject(GroovyObject groovyObject) {
-        this.groovyObject = groovyObject;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public Map<String, String> getFieldMethods() {
-        return fieldMethods;
-    }
-
-    public void setFieldMethods(Map<String, String> fieldMethods) {
-        this.fieldMethods = fieldMethods;
-    }
 
 }

@@ -28,6 +28,13 @@
     and limit=1
   </select>
 
+  <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_challenger a
+    where uuid = #{uuid}
+  </select>
+
   <select id="selectAvailableByPartners" resultMap="BaseResultMap" parameterType="java.util.Set">
     select
     <include refid="Base_Column_List" />

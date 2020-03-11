@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface IInterfaceDefinitionRepository {
     List<InterfaceDefinition> queryAllAvailable();
+
+    InterfaceDefinition queryByUuid(String uuid);
 }

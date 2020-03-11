@@ -123,10 +123,11 @@ public class ParallelEngine extends DecisionTool {
 
         policyResponse.setPolicyUuid(policy.getUuid());
         policyResponse.setPolicyName(policy.getName());
-        List<String> subPolicyUuidList = policy.getSubPolicyList();
+
+        List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
         List<Callable<SubPolicyResponse>> tasks = new ArrayList<>();
-        for (String subPolicyUuid : subPolicyUuidList) {
-            SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicyUuid, context);
+        for (SubPolicy subPolicy : subPolicyList) {
+            SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicy.getUuid(), context);
             tasks.add(MDCUtil.wrap(task));
         }
 
@@ -197,28 +198,30 @@ public class ParallelEngine extends DecisionTool {
     private boolean checkPolicyConfig(AbstractFraudContext context,Policy policy){
         //取得此策略配置的子策略，子策略并行执行。
         String policyUuid = policy.getUuid();
-        List<String> subPolicyUuidList = policy.getSubPolicyList();
-        if(subPolicyUuidList.isEmpty()) {
+        List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
+
+        if(subPolicyList == null || subPolicyList.isEmpty()) {
             logger.warn("{},policyUuid:{}",ReasonCode.SUB_POLICY_NOT_EXIST.toString(), policyUuid);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_EXIST.getCode(), ReasonCode.SUB_POLICY_NOT_EXIST.getDescription(), "决策引擎执行"));
             return false;
         }
 
         int ruleCount = 0;
-        for(String subPolicyUuid : subPolicyUuidList) {
-            SubPolicy subPolicy = subPolicyCache.get(subPolicyUuid);
+        for(SubPolicy subPolicy : subPolicyList) {
+            String subPolicyUuid = subPolicy.getUuid();
             if(subPolicy == null){
                 logger.warn("{},policyUuid:{},subPolicyUuid:{}",ReasonCode.SUB_POLICY_LOAD_ERROR.toString(), policyUuid, subPolicyUuid);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
                 return false;
             }
-            if(subPolicy.getRuleUuidList() == null){
+            List<Rule> ruleList = ruleCache.getRuleBySubPolicyUuid(subPolicyUuid);
+            if(ruleList == null){
                 continue;
             }
 
-            ruleCount += subPolicy.getRuleUuidList().size();
-            for(String ruleUuid : subPolicy.getRuleUuidList()) {
-                Rule rule = ruleCache.get(ruleUuid);
+            ruleCount += ruleList.size();
+            for(Rule rule : ruleList) {
+                String ruleUuid = rule.getUuid();
                 if(rule == null){
                     logger.warn("{},policyUuid:{},subPolicyUuid:{},ruleUuid:{}",ReasonCode.RULE_LOAD_ERROR.toString(), policyUuid, subPolicyUuid, ruleUuid);
                     context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));

@@ -36,7 +36,7 @@ public class RuleEdgeCondition extends EdgeCondition {
             throw new ParseException("Edge id:" + edgeDesc.getId() + " rule condition tns:taskName is blank or tns:ruleUuid is blank!");
         }
         IRuleRepository ruleRepository = (IRuleRepository) SpringContextHolder.getBean("ruleRepository");
-        RuleDTO ruleDTO = ruleRepository.queryByUuid(ruleUuid);
+        RuleDTO ruleDTO = ruleRepository.queryFullByUuid(ruleUuid);
         this.rule = ruleBuilder.build(ruleDTO);
     }
 

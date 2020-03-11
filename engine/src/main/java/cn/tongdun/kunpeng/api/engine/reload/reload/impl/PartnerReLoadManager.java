@@ -1,11 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
+import cn.tongdun.kunpeng.api.engine.model.partner.IPartnerRepository;
+import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
+import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +17,22 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class EventTypeReLoadManager implements IReload<EventTypeDO> {
+public class PartnerReLoadManager implements IReload<Partner> {
 
-    private Logger logger = LoggerFactory.getLogger(EventTypeReLoadManager.class);
-
-    @Autowired
-    private IEventTypeRepository eventTypeRepository;
+    private Logger logger = LoggerFactory.getLogger(PartnerReLoadManager.class);
 
     @Autowired
-    private EventTypeCache eventTypeCache;
+    private IPartnerRepository partnerRepository;
+
+    @Autowired
+    private PartnerCache partnerCache;
 
     @Autowired
     private ReloadFactory reloadFactory;
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(EventTypeDO.class,this);
+        reloadFactory.register(Partner.class,this);
     }
 
     /**
@@ -41,37 +40,37 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
      * @return
      */
     @Override
-    public boolean addOrUpdate(EventTypeDO eventTypeDO){
-        String uuid = eventTypeDO.getUuid();
-        logger.info("EventTypeReLoadManager start, uuid:{}",uuid);
+    public boolean addOrUpdate(Partner partnerDO){
+        String partnerCode = partnerDO.getPartnerCode();
+        logger.info("PartnerReLoadManager start, partnerCode:{}",partnerCode);
         try {
-            Long timestamp = eventTypeDO.getGmtModify().getTime();
-            EventType eventType = eventTypeCache.get(uuid);
+            Long timestamp = partnerDO.getGmtModify().getTime();
+            Partner oldPartner = partnerCache.get(partnerCode);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(eventType != null && eventType.getModifiedVersion() >= timestamp) {
+            if(oldPartner != null && oldPartner.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
-            EventType newEventType = eventTypeRepository.queryByUuid(uuid);
-            eventTypeCache.put(uuid, newEventType);
+            Partner newPartner = partnerRepository.queryByPartnerCode(partnerCode);
+            partnerCache.put(partnerCode, newPartner);
         } catch (Exception e){
-            logger.error("EventTypeReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("PartnerReLoadManager failed, partnerCode:{}",partnerCode,e);
             return false;
         }
-        logger.info("EventTypeReLoadManager success, uuid:{}",uuid);
+        logger.info("PartnerReLoadManager success, partnerCode:{}",partnerCode);
         return true;
     }
 
 
     /**
      * 删除事件类型
-     * @param eventTypeDO
+     * @param partner
      * @return
      */
     @Override
-    public boolean remove(EventTypeDO eventTypeDO){
+    public boolean remove(Partner partner){
         try {
-            eventTypeCache.remove(eventTypeDO.getUuid());
+            partnerCache.remove(partner.getPartnerCode());
         } catch (Exception e){
             return false;
         }

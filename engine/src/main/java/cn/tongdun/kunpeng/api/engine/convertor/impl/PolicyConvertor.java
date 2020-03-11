@@ -35,16 +35,6 @@ public class PolicyConvertor implements IConvertor<PolicyDTO,Policy> {
         Policy policy = new Policy();
         BeanUtils.copyProperties(t,policy);
 
-        //子策略
-        List<String> subPolicyList = new ArrayList<>();
-        policy.setSubPolicyList(subPolicyList);
-        List<SubPolicyDTO> subPolicyDOList= t.getSubPolicyList();
-        if(subPolicyDOList != null){
-            for(SubPolicyDTO subPolicyDO:subPolicyDOList){
-                subPolicyList.add(subPolicyDO.getUuid());
-            }
-        }
-
         return policy;
     }
 

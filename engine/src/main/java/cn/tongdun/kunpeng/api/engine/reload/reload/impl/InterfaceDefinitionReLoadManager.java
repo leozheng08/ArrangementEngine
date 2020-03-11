@@ -1,14 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.IInterfaceDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinition;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +18,9 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class InterfaceReLoadManager implements IReload<InterfaceDefinitionDO> {
+public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefinitionDO> {
 
-    private Logger logger = LoggerFactory.getLogger(InterfaceReLoadManager.class);
+    private Logger logger = LoggerFactory.getLogger(InterfaceDefinitionReLoadManager.class);
 
     @Autowired
     private IInterfaceDefinitionRepository interfaceDefinitionRepository;

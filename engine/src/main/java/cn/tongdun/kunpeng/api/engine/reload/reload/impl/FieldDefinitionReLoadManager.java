@@ -65,13 +65,13 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
 
     /**
      * 删除事件类型
-     * @param uuid
+     * @param fieldDefinitionDO
      * @return
      */
     @Override
-    public boolean remove(String uuid){
+    public boolean remove(FieldDefinitionDO fieldDefinitionDO){
         try {
-            fieldDefinitionCache.remove(uuid);
+            fieldDefinitionCache.remove(fieldDefinitionDO.getUuid());
         } catch (Exception e){
             return false;
         }

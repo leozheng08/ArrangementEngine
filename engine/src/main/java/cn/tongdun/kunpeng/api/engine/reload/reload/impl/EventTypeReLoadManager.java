@@ -65,13 +65,13 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
 
     /**
      * 删除事件类型
-     * @param uuid
+     * @param eventTypeDO
      * @return
      */
     @Override
-    public boolean remove(String uuid){
+    public boolean remove(EventTypeDO eventTypeDO){
         try {
-            eventTypeCache.remove(uuid);
+            eventTypeCache.remove(eventTypeDO.getUuid());
         } catch (Exception e){
             return false;
         }
