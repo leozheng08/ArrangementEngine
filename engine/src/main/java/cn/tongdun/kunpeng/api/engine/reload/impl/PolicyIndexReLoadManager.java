@@ -1,22 +1,13 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyIndexConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
-import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.IPolicyIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
-import cn.tongdun.kunpeng.share.dataobject.RuleDO;
-import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +51,9 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
     }
 
     private boolean reload(String policyUuid){
-        logger.info("PolicyIndexReLoadManager start, policyUuid:{}",policyUuid);
+        logger.debug("PolicyIndexReLoadManager start, policyUuid:{}",policyUuid);
         try {
-            List<IndexDefinitionDTO> indexDefinitionDTOList = policyIndexRepository.queryBySubPolicyUuid(policyUuid);
+            List<IndexDefinitionDTO> indexDefinitionDTOList = policyIndexRepository.queryByPolicyUuid(policyUuid);
             //缓存策略指标
             if (null!= indexDefinitionDTOList && !indexDefinitionDTOList.isEmpty()){
                 List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(indexDefinitionDTOList);
@@ -77,7 +68,7 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
             logger.error("PolicyIndexReLoadManager failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.info("PolicyIndexReLoadManager success, policyUuid:{}",policyUuid);
+        logger.debug("PolicyIndexReLoadManager success, policyUuid:{}",policyUuid);
         return true;
     }
 

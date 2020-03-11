@@ -1,10 +1,10 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
     @Override
     public boolean addOrUpdate(EventTypeDO eventTypeDO){
         String uuid = eventTypeDO.getUuid();
-        logger.info("EventTypeReLoadManager start, uuid:{}",uuid);
+        logger.debug("EventTypeReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = eventTypeDO.getGmtModify().getTime();
             EventType eventType = eventTypeCache.get(uuid);
@@ -58,7 +58,7 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
             logger.error("EventTypeReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("EventTypeReLoadManager success, uuid:{}",uuid);
+        logger.debug("EventTypeReLoadManager success, uuid:{}",uuid);
         return true;
     }
 
@@ -77,7 +77,4 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
         }
         return true;
     }
-
-
-
 }

@@ -1,14 +1,8 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.cache.ILocalCache;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
-import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
-import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
-import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
-import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -17,22 +11,17 @@ import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRe
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.PolicyDefinitionDO;
-import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 
 /**
  * @Author: liang.chen
@@ -93,7 +82,7 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
     @Override
     public boolean addOrUpdate(PolicyDefinitionDO policyDefinitionDO){
         String uuid = policyDefinitionDO.getUuid();
-        logger.info("PolicyDefinitionReLoadManager start, uuid:{}",uuid);
+        logger.debug("PolicyDefinitionReLoadManager start, uuid:{}",uuid);
         boolean result = false;
         try {
             Long timestamp = policyDefinitionDO.getGmtModify().getTime();
@@ -123,7 +112,7 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             logger.error("PolicyDefinitionReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("PolicyDefinitionReLoadManager success, uuid:{}",uuid);
+        logger.debug("PolicyDefinitionReLoadManager success, uuid:{}",uuid);
         return result;
     }
 

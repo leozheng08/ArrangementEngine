@@ -1,6 +1,5 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload;
+package cn.tongdun.kunpeng.api.engine.reload;
 
-import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

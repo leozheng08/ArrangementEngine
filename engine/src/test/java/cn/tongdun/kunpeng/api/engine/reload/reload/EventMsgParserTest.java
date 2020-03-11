@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.reload;
 
+import cn.tongdun.kunpeng.api.engine.reload.DomainEvent;
+import cn.tongdun.kunpeng.api.engine.reload.EventMsgParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

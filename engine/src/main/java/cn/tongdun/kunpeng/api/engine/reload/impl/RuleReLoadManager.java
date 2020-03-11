@@ -1,17 +1,12 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +51,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     @Override
     public boolean addOrUpdate(RuleDO ruleDO){
         String uuid = ruleDO.getUuid();
-        logger.info("RuleReLoadManager start, uuid:{}",uuid);
+        logger.debug("RuleReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = ruleDO.getGmtModify().getTime();
             Rule oldRule = ruleCache.get(uuid);
@@ -75,7 +70,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             logger.error("RuleReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("RuleReLoadManager success, uuid:{}",uuid);
+        logger.debug("RuleReLoadManager success, uuid:{}",uuid);
         return true;
     }
 

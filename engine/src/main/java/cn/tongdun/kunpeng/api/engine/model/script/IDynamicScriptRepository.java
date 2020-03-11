@@ -12,4 +12,6 @@ import java.util.Set;
 public interface IDynamicScriptRepository {
 
     List<DynamicScript> queryGroovyByPartners(Set<String> partners);
+
+    DynamicScript queryByUuid(String uuid);
 }

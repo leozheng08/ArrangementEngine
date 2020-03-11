@@ -1,10 +1,10 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload.impl;
+package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.IInterfaceDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinition;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinitionCache;
-import cn.tongdun.kunpeng.api.engine.reload.reload.IReload;
-import cn.tongdun.kunpeng.api.engine.reload.reload.ReloadFactory;
+import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
     @Override
     public boolean addOrUpdate(InterfaceDefinitionDO interfaceDefinitionDO){
         String uuid = interfaceDefinitionDO.getUuid();
-        logger.info("InterfaceReLoadManager start, uuid:{}",uuid);
+        logger.debug("InterfaceReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = interfaceDefinitionDO.getGmtModify().getTime();
             InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(uuid);
@@ -58,7 +58,7 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
             logger.error("InterfaceReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.info("InterfaceReLoadManager success, uuid:{}",uuid);
+        logger.debug("InterfaceReLoadManager success, uuid:{}",uuid);
         return true;
     }
 
