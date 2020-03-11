@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.infrastructure.redis;
+package cn.tongdun.kunpeng.api.infrastructure.redis.impl;
 
 import cn.tongdun.kunpeng.api.engine.reload.IEventMsgPullRepository;
 import cn.tongdun.kunpeng.common.util.DateUtil;
@@ -15,5 +15,6 @@ public class EventMsgPullRepository implements IEventMsgPullRepository{
     public List<String> pullLastEventMsgs(){
         String currentKey = DateUtil.getYYYYMMDDHHMMStr();
         String lastKey = DateUtil.getLastMinute();
+        return null;
     }
 }
