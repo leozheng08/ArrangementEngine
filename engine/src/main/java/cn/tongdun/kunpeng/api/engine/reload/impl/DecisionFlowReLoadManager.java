@@ -72,6 +72,9 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
 
 
             DecisionFlowDTO decisionFlowDTO = decisionFlowRepository.queryByUuid(uuid);
+            if(decisionFlowDTO == null){
+                return true;
+            }
             DecisionFlow decisionFlow = decisionFlowConvertor.convert(decisionFlowDTO);
             decisionModeCache.put(uuid,decisionFlow);
         } catch (Exception e){

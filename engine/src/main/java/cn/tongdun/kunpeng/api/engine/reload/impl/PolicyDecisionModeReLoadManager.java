@@ -57,6 +57,9 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
             AbstractDecisionMode decisionMode = decisionModeCache.get(policyUuid);
 
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDecisionModeRepository.queryByPolicyUuid(policyUuid);
+            if(policyDecisionModeDTO == null){
+                return true;
+            }
             //当前策略是否按决策流执行
             if(DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())){
                 if(decisionMode instanceof DecisionFlow){

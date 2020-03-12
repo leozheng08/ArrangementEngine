@@ -11,10 +11,7 @@ import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.Tuple;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lvyadong on 2020/02/20.
@@ -86,112 +83,112 @@ public class RedisScoreKVRepository implements IScoreKVRepository {
     public Set<IScoreValue> zrangeByScoreWithScores(String key, double min, double max) {
         Set<Tuple> tuples = kunPengRedisClient.zrangeByScoreWithScores(key, min, max);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
     public Set<IScoreValue> zrangeByScoreWithScores(String key, String min, String max) {
         Set<Tuple> tuples = kunPengRedisClient.zrangeByScoreWithScores(key, min, max);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
     public Set<IScoreValue> zrangeByScoreWithScores(String key, double min, double max, int offset, int count) {
         Set<Tuple> tuples = kunPengRedisClient.zrangeByScoreWithScores(key, min, max, offset, count);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
     public Set<IScoreValue> zrangeByScoreWithScores(String key, String min, String max, int offset, int count) {
         Set<Tuple> tuples = kunPengRedisClient.zrangeByScoreWithScores(key, min, max, offset, count);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
     public Set<IScoreValue> zrevrangeByScoreWithScores(String key, double max, double min) {
         Set<Tuple> tuples = kunPengRedisClient.zrevrangeByScoreWithScores(key, max, min);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
     public Set<IScoreValue> zrevrangeByScoreWithScores(String key, String max, String min) {
         Set<Tuple> tuples = kunPengRedisClient.zrevrangeByScoreWithScores(key, max, min);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
     public Set<IScoreValue> zrevrangeByScoreWithScores(String key, double max, double min, int offset, int count) {
         Set<Tuple> tuples = kunPengRedisClient.zrevrangeByScoreWithScores(key, max, min, offset, count);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
     public Set<IScoreValue> zrevrangeByScoreWithScores(String key, String max, String min, int offset, int count) {
         Set<Tuple> tuples = kunPengRedisClient.zrevrangeByScoreWithScores(key, max, min, offset, count);
         if (CollectionUtils.isNotEmpty(tuples)) {
-            Set<IScoreValue> values = new HashSet<>(tuples.size());
+            Set<IScoreValue> values = new LinkedHashSet<>(tuples.size());
             tuples.forEach(tuple -> {
                 IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                 values.add(redisScoreValue);
             });
             return values;
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override
@@ -228,7 +225,7 @@ public class RedisScoreKVRepository implements IScoreKVRepository {
             cursor.setStringCursor(tupleScanResult.getStringCursor());
             List<Tuple> results = tupleScanResult.getResult();
             if (CollectionUtils.isNotEmpty(results)) {
-                Set<IScoreValue<String>> values = new HashSet<>(results.size());
+                Set<IScoreValue<String>> values = new LinkedHashSet<>(results.size());
                 results.forEach(tuple -> {
                     IScoreValue<String> redisScoreValue = RedisScoreValue.convert(key, tuple);
                     values.add(redisScoreValue);
@@ -236,7 +233,7 @@ public class RedisScoreKVRepository implements IScoreKVRepository {
                 return values;
             }
         }
-        return new HashSet<>(0);
+        return new LinkedHashSet<>(0);
     }
 
     @Override

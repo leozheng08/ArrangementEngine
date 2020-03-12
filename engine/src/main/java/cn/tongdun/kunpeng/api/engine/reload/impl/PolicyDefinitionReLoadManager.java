@@ -96,11 +96,14 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             Long timestamp = policyDefinitionDO.getGmtModify().getTime();
             PolicyDefinition oldPolicyDefinition = policyDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(oldPolicyDefinition != null && oldPolicyDefinition.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldPolicyDefinition != null && oldPolicyDefinition.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
             PolicyDefinition policyDefinition = policyDefinitionRepository.queryByUuid(uuid);
+            if(policyDefinition == null){
+                return true;
+            }
             //当前调用版本
             String newPolicyUuid = policyDefinition.getCurrVersionUuid();
             Policy oldPolicy = policyCache.get(newPolicyUuid);

@@ -51,12 +51,17 @@ public class EventMsgParser {
         DomainEvent domainEvent = new DomainEvent();
         domainEvent.setOccurredTime(jsonObject.getLong("occurredTime"));
         domainEvent.setEntity(entity);
-        domainEvent.setEventType(jsonObject.getString("eventType("));
+        domainEvent.setEventType(jsonObject.getString("eventType"));
         JSONArray jsonArray = jsonObject.getJSONArray("data");
         List entityList = new ArrayList();
         if(jsonArray != null){
             for(Object obj:jsonArray){
-                Object entityInst = ((JSONObject)obj).toJavaObject(entityClass);
+                JSONObject data = (JSONObject)obj;
+                Long gmtModify = data.getLong("gmtModify");
+                if(gmtModify == null || gmtModify< domainEvent.getOccurredTime()) {
+                    data.put("gmtModify", domainEvent.getOccurredTime());
+                }
+                Object entityInst = data.toJavaObject(entityClass);
                 entityList.add(entityInst);
             }
         }
@@ -84,11 +89,16 @@ public class EventMsgParser {
         SingleDomainEvent domainEvent = new SingleDomainEvent();
         domainEvent.setOccurredTime(jsonObject.getLong("occurredTime"));
         domainEvent.setEntity(entity);
-        domainEvent.setEventType(jsonObject.getString("eventType("));
+        domainEvent.setEventType(jsonObject.getString("eventType"));
         JSONArray jsonArray = jsonObject.getJSONArray("data");
-        List entityList = new ArrayList();
-        if(jsonArray != null && !entityList.isEmpty()){
-            Object entityInst = ((JSONObject)jsonArray.get(0)).toJavaObject(entityClass);
+
+        if(jsonArray != null && !jsonArray.isEmpty()){
+            JSONObject data = (JSONObject)jsonArray.get(0);
+            Long gmtModify = data.getLong("gmtModify");
+            if(gmtModify == null || gmtModify< domainEvent.getOccurredTime()) {
+                data.put("gmtModify", domainEvent.getOccurredTime());
+            }
+            Object entityInst = data.toJavaObject(entityClass);
             domainEvent.setData(entityInst);
         }
         return domainEvent;

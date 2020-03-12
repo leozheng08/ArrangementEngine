@@ -9,15 +9,12 @@ import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 /**
  * @Author: liang.chen
@@ -36,7 +33,7 @@ public class ReLoadScheduler implements ILoad {
     private FieldDefinitionLoadManager fieldLoadManager;
 
     @Autowired
-    private IEventMsgPullRepository eventMsgPullRepository;
+    private IDomainEventRepository domainEventRepository;
 
     @Autowired
     private DomainEventHandle domainEventHandle;
@@ -81,7 +78,10 @@ public class ReLoadScheduler implements ILoad {
     //定时刷新取得最新的domain事件，并更新本地缓存
     public void reLoad(){
         //拉取得最新两分钟的domain事件
-        List<String> eventMsgs = eventMsgPullRepository.pullLastEventMsgs();
+        List<String> eventMsgs = domainEventRepository.pullLastEventMsgsFromRemoteCache();
+        if(eventMsgs == null || eventMsgs.isEmpty()){
+            return;
+        }
         domainEventHandle.handleMessage(eventMsgs);
     }
 

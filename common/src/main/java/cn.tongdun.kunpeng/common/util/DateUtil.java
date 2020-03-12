@@ -256,8 +256,12 @@ public class DateUtil {
 	};
 
 	public static String getLastMinute() {
+		return getLastMinute(-1);
+	}
+
+	public static String getLastMinute(int minutes) {
 		Calendar cal = getSysCalendar();
-		cal.set(Calendar.MINUTE,cal.get(Calendar.MINUTE)-1);
+		cal.set(Calendar.MINUTE,cal.get(Calendar.MINUTE)-minutes);
 		return getCalStr(cal);
 	}
 
