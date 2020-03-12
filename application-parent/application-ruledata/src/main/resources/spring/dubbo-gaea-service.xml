@@ -7,13 +7,13 @@
 						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
        default-autowire="byName">
 
-    <dubbo:reference id="gaeaPaasApi" interface="cn.tongdun.gaea.paas.api.GaeaPaasApi"
-                     version="${gaea.paas.dubbo.version}" retries="0" timeout="${gaea.paas.dubbo.timeout}" connections="2" >
-        <dubbo:parameter key="threadname" value="Dubbo-gaea-"/>
-        <dubbo:parameter key="threadpool" value="cached"/>
-        <dubbo:parameter key="corethreads" value="2" />
-        <dubbo:parameter key="threads" value="10" />
-        <dubbo:parameter key="alive" value="600000" />
-    </dubbo:reference>
+<!--    <dubbo:reference id="gaeaPaasApi" interface="cn.tongdun.gaea.paas.api.GaeaPaasApi"-->
+<!--                     version="${gaea.paas.dubbo.version}" retries="0" timeout="${gaea.paas.dubbo.timeout}" connections="2" >-->
+<!--        <dubbo:parameter key="threadname" value="Dubbo-gaea-"/>-->
+<!--        <dubbo:parameter key="threadpool" value="cached"/>-->
+<!--        <dubbo:parameter key="corethreads" value="2" />-->
+<!--        <dubbo:parameter key="threads" value="10" />-->
+<!--        <dubbo:parameter key="alive" value="600000" />-->
+<!--    </dubbo:reference>-->
 
 </beans>
