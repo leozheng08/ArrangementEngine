@@ -9,7 +9,7 @@ import java.util.List;
  * @Date: 2020/3/6 下午12:05
  */
 @Data
-public class DomainEvent<T> implements IDomainEvent<List<T>>{
+public class SingleDomainEvent<T> implements IDomainEvent<T>{
 
     private long occurredTime;
 
@@ -17,6 +17,5 @@ public class DomainEvent<T> implements IDomainEvent<List<T>>{
 
     private String entity;
 
-    private List<T> data;
-
+    private T data;
 }

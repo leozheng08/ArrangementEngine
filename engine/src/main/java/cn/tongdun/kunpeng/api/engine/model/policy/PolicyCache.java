@@ -75,6 +75,6 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
      * Build key:partnerCode^^eventId^^version
      */
     private static String buildKey(String partner, String eventId,String version) {
-        return StringUtils.join(partner, SPLIT_CHAR, eventId, SPLIT_CHAR, version);
+        return StringUtils.join(StringUtils.trim(partner), SPLIT_CHAR, StringUtils.trim(eventId), SPLIT_CHAR, StringUtils.trim(version));
     }
 }
