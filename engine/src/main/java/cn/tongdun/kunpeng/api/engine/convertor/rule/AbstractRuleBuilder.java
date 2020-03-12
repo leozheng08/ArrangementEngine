@@ -11,6 +11,7 @@ import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.Condition;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.fraudmetrix.module.tdrule.util.RuleCreateFactory;
+import cn.tongdun.kunpeng.api.engine.constant.RuleConstant;
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
@@ -30,6 +31,11 @@ import java.util.List;
  * @Date: 2020/2/14 11:22 AM
  */
 public abstract class AbstractRuleBuilder implements RuleBuilder {
+
+    /**
+     * 序号生成，用于匹配
+     */
+    protected int num = 0;
 
     @Override
     public Rule build(RuleDTO ruleDTO) {
@@ -55,7 +61,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         Rule rule = buildRuleWithBasicInfo(ruleDTO);
         rule.setEval(evalRule);
         //2.3把权重转为Function
-        if (ruleDTO.getWeightedRiskConfigDTO()!= null && StringUtils.equalsIgnoreCase( ruleDTO.getMode(), PolicyMode.Weighted.name())) {
+        if (ruleDTO.getWeightedRiskConfigDTO() != null && StringUtils.equalsIgnoreCase(ruleDTO.getMode(), PolicyMode.Weighted.name())) {
             WeightFunction weightFunction = getWeightFunctionFromDTO(ruleDTO);
             rule.setWeightFunction(weightFunction);
         }
@@ -63,7 +69,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
     }
 
     private WeightFunction getWeightFunctionFromDTO(RuleDTO ruleDTO) {
-        if (null == ruleDTO || ruleDTO.getWeightedRiskConfigDTO()== null) {
+        if (null == ruleDTO || ruleDTO.getWeightedRiskConfigDTO() == null) {
             return null;
         }
         WeightedRiskConfigDTO riskConfigDTO = ruleDTO.getWeightedRiskConfigDTO();
@@ -92,7 +98,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         weightIndex.setName("weightProperty");
         paramList.add(weightIndex);
 
-        if(riskConfigDTO.getLowerLimitScore() != null) {
+        if (riskConfigDTO.getLowerLimitScore() != null) {
             FunctionParam lowerLimitScore = new FunctionParam();
             lowerLimitScore.setType(FieldTypeEnum.INPUT.name());
             lowerLimitScore.setValue(riskConfigDTO.getLowerLimitScore().toString());
@@ -100,7 +106,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             paramList.add(lowerLimitScore);
         }
 
-        if(riskConfigDTO.getUpperLimitScore() != null) {
+        if (riskConfigDTO.getUpperLimitScore() != null) {
             FunctionParam upperLimitScore = new FunctionParam();
             upperLimitScore.setType(FieldTypeEnum.INPUT.name());
             upperLimitScore.setValue(riskConfigDTO.getUpperLimitScore().toString());
@@ -166,16 +172,15 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
      *
      * @param elementDTO
      * @param functionDescList
-     * @param num
      * @return
      */
-    private ConditionParam constructLeft(RuleConditionElementDTO elementDTO, List<FunctionDesc> functionDescList, Integer num) {
+    private ConditionParam constructLeft(RuleConditionElementDTO elementDTO, List<FunctionDesc> functionDescList) {
         ConditionParam left = new ConditionParam();
         if (StringUtils.equalsIgnoreCase("alias", elementDTO.getLeftPropertyType())) {
             //左变量是函数
             ++num;
             FunctionDesc functionDesc = new FunctionDesc();
-            functionDesc.setId(num.intValue());
+            functionDesc.setId(num);
             functionDesc.setType(elementDTO.getLeftProperty());
             functionDesc.setConditionUuid(elementDTO.getUuid());
             functionDesc.setDescription(elementDTO.getDescription());
@@ -183,8 +188,9 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             List<FunctionParam> paramList = JSONArray.parseArray(elementDTO.getParams(), FunctionParam.class);
             functionDesc.setParamList(paramList);
             functionDescList.add(functionDesc);
+            functionDesc.putExtProperty(RuleConstant.FUNC_DESC_PARAMS_ALL,"true");
 
-            left.setValue(num.toString());
+            left.setValue(Integer.valueOf(num).toString());
             left.setFieldType(FieldTypeEnum.FUNC);
 
         } else {
@@ -255,14 +261,13 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
      * @param elementDTO
      * @param conditionList
      * @param functionDescList
-     * @param num
      */
-    protected void processOneElement(RuleConditionElementDTO elementDTO, List<Condition> conditionList, List<FunctionDesc> functionDescList, Integer num) {
+    protected void processOneElement(RuleConditionElementDTO elementDTO, List<Condition> conditionList, List<FunctionDesc> functionDescList) {
         Condition condition = new Condition();
         condition.setId(elementDTO.getId().intValue());
 
         //1.构造左变量
-        ConditionParam left = constructLeft(elementDTO, functionDescList, num);
+        ConditionParam left = constructLeft(elementDTO, functionDescList);
         condition.setLeft(left);
         //2.构造右变量
         ConditionParam right = constructRight(elementDTO);

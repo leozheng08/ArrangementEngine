@@ -38,8 +38,7 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
         /**
          * 用于给函数计数，把condition和函数对应起来
          */
-        Integer num = new Integer(1);
-        String logic = processOneLayerAndChildrenElements(ruleConditionElements.get(0), conditionList, functionDescList, num);
+        String logic = processOneLayerAndChildrenElements(ruleConditionElements.get(0), conditionList, functionDescList);
 
         rawRule.setConditionList(conditionList);
         rawRule.setFunctionDescList(functionDescList);
@@ -52,16 +51,15 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
      * @param elementDTO
      * @param conditionList
      * @param functionDescList
-     * @param num
      * @return 返回逻辑表达式:1&(2|4)等
      */
-    private String processOneLayerAndChildrenElements(RuleConditionElementDTO elementDTO, List<Condition> conditionList, List<FunctionDesc> functionDescList, Integer num) {
+    private String processOneLayerAndChildrenElements(RuleConditionElementDTO elementDTO, List<Condition> conditionList, List<FunctionDesc> functionDescList) {
         StringBuilder sb = new StringBuilder();
         /**
          * 只有一个条件的情况
          */
         if (elementDTO.getSubConditions() == null || elementDTO.getSubConditions().isEmpty()) {
-            processOneElement(elementDTO, conditionList, functionDescList, num);
+            processOneElement(elementDTO, conditionList, functionDescList);
             return elementDTO.getId().toString();
         }
         if (StringUtils.isBlank(elementDTO.getLogicOperator())) {
@@ -87,11 +85,11 @@ public class CustomRuleBuilder extends AbstractRuleBuilder {
             if (StringUtils.isNotBlank(ruleConditionElementDTO.getLogicOperator())) {
                 sb.append(logic);
                 sb.append("(");
-                sb.append(processOneLayerAndChildrenElements(ruleConditionElementDTO, conditionList, functionDescList, num));
+                sb.append(processOneLayerAndChildrenElements(ruleConditionElementDTO, conditionList, functionDescList));
                 sb.append(")");
             } else {
                 sb.append(logic).append(ruleConditionElementDTO.getId());
-                processOneElement(ruleConditionElementDTO, conditionList, functionDescList, num);
+                processOneElement(ruleConditionElementDTO, conditionList, functionDescList);
             }
         }
         if (needNot) {
