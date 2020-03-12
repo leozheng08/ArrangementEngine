@@ -16,26 +16,35 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class FinishEventCache {
 
-    //entityName+uuid+version(即时间戳) -> Policy
-    private Cache<String, String> cache;
+    //entityName+uuid+version(即时间戳) -> true
+    private Cache<String, Boolean> cache;
 
 
     @PostConstruct
     public void init(){
         //设置缓存有效期
-        CacheBuilder<String, String> cacheBuilder = (CacheBuilder) CacheBuilder.newBuilder();
+        CacheBuilder<String, Boolean> cacheBuilder = (CacheBuilder) CacheBuilder.newBuilder();
         cacheBuilder.expireAfterWrite(10, TimeUnit.MINUTES);
         cache = cacheBuilder.build();
     }
 
 
-    public String get(String key){
+    public Boolean get(String key){
         return cache.getIfPresent(key);
     }
 
 
-    public void put(String key, String event){
+    public void put(String key, Boolean event){
         cache.put(key,event);
+    }
+
+
+    public boolean contains(String key){
+        Boolean value = get(key);
+        if(value == null){
+            return false;
+        }
+        return true;
     }
 
 }

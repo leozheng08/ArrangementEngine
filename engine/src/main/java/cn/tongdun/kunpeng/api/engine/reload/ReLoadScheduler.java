@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * @Author: liang.chen
@@ -29,10 +30,16 @@ public class ReLoadScheduler implements ILoad {
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
     @Autowired
-    EventTypeLoadManager eventTypeLoadManager;
+    private EventTypeLoadManager eventTypeLoadManager;
 
     @Autowired
-    FieldDefinitionLoadManager fieldLoadManager;
+    private FieldDefinitionLoadManager fieldLoadManager;
+
+    @Autowired
+    private IEventMsgPullRepository eventMsgPullRepository;
+
+    @Autowired
+    private DomainEventHandle domainEventHandle;
 
 //    List<ILoad> reLoadTasks = new ArrayList<>();
 
@@ -50,7 +57,7 @@ public class ReLoadScheduler implements ILoad {
             @Override
             public void run() {
                 try {
-                    getEventMsgFromRedis();
+                    reLoad();
                 } catch (Exception e) {
                     logger.error("定时刷新缓存异常",e);
                 }
@@ -71,8 +78,13 @@ public class ReLoadScheduler implements ILoad {
 //    }
 
 
-    //定时刷新动态配置
-    public void getEventMsgFromRedis(){
-
+    //定时刷新取得最新的domain事件，并更新本地缓存
+    public void reLoad(){
+        //拉取得最新两分钟的domain事件
+        List<String> eventMsgs = eventMsgPullRepository.pullLastEventMsgs();
+        domainEventHandle.handleMessage(eventMsgs);
     }
+
+
+
 }

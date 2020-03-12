@@ -1,18 +1,16 @@
 package cn.tongdun.kunpeng.api.infrastructure.redis.impl;
 
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
-import cn.tongdun.kunpeng.api.engine.reload.DomainEvent;
+
 import cn.tongdun.kunpeng.api.engine.reload.IEventMsgPullRepository;
 import cn.tongdun.kunpeng.common.util.DateUtil;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +18,7 @@ import java.util.stream.Collectors;
  * @Author: liang.chen
  * @Date: 2020/3/11 下午6:42
  */
+@Repository
 public class EventMsgPullRepository implements IEventMsgPullRepository{
 
     private static Logger logger = LoggerFactory.getLogger(EventMsgPullRepository.class);
@@ -41,21 +40,22 @@ public class EventMsgPullRepository implements IEventMsgPullRepository{
             logger.error("update rule form redis error!",e);
         }
 
-        //对
+        //业务去重
         return deduplicationd(scoreValueSet);
     }
 
 
     /**
-     * 按业务去重
+     * 按业务去重,只保留一个对象的uuid最新时间的变更,
+     * 并原先一个消息里面data有多条记录变成一个记录一条消息
      */
-    private List<String> deduplicationd(Collection<IScoreValue> scoreValueSet){
+    private List<String> deduplicationd(Set<IScoreValue> scoreValueSet){
 
         if(scoreValueSet == null || scoreValueSet.isEmpty()){
             return new ArrayList<>();
         }
 
-        Map<String,IScoreValue> target = new HashMap<>();
+        Map<String,IScoreValue> target = new LinkedHashMap<>();
 
         for(IScoreValue scoreValue :scoreValueSet) {
             String value = scoreValue.getValue().toString();
@@ -71,9 +71,8 @@ public class EventMsgPullRepository implements IEventMsgPullRepository{
             for(Object obj:jsonArray) {
                 JSONObject data = (JSONObject)obj;
                 String uuid = data.getString("uuid");
-                String key = buildKey(eventType,entity,uuid);
 
-                IScoreValue oldScoreValue = target.get(key);
+                IScoreValue oldScoreValue = target.get(uuid);
                 if(oldScoreValue == null || oldScoreValue.getScore()<occurredTime){
                     JSONObject targetJson = new JSONObject();
                     targetJson.put("eventType",eventType);
@@ -83,7 +82,7 @@ public class EventMsgPullRepository implements IEventMsgPullRepository{
                     targetDatas.add(data);
                     targetJson.put("data",targetDatas);
 
-                    target.put(key, new IScoreValue() {
+                    target.put(uuid, new IScoreValue() {
                         @Override
                         public Double getScore() {
                             return occurredTime.doubleValue();
@@ -91,7 +90,7 @@ public class EventMsgPullRepository implements IEventMsgPullRepository{
 
                         @Override
                         public String getKey() {
-                            return key;
+                            return uuid;
                         }
 
                         @Override
@@ -111,11 +110,5 @@ public class EventMsgPullRepository implements IEventMsgPullRepository{
         return target.values().stream().map(scoreValue ->{
             return scoreValue.getValue().toString();
         }).collect(Collectors.toList());
-    }
-
-
-
-    private static String buildKey(String eventType, String entity, String uuid) {
-        return StringUtils.join(eventType, SPLIT_CHAR, entity, SPLIT_CHAR, uuid);
     }
 }
