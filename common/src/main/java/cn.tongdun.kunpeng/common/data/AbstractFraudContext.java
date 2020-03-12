@@ -411,6 +411,15 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     }
 
     /**
+     * 将平台指标放入map中
+     * @param platformIndexId
+     * @param platformIndexData
+     */
+    public void putPlatformIndexMap(String platformIndexId, PlatformIndexData platformIndexData) {
+        platformIndexMap.put(platformIndexId, platformIndexData);
+    }
+
+    /**
      * 删除没有命中的规则的详情
      *
      * @param ruleUuid

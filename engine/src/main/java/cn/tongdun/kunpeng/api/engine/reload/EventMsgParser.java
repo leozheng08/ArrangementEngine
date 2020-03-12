@@ -64,4 +64,33 @@ public class EventMsgParser {
 
         return domainEvent;
     }
+
+
+
+    public SingleDomainEvent parseSingleDomainEvent(String event){
+        JSONObject jsonObject = JSONObject.parseObject(event);
+
+        String entity = jsonObject.getString("entity");
+        if(entity == null){
+            throw new RuntimeException("event entity is empty!");
+        }
+
+        Class entityClass = entityMap.get(entity);
+        if(entityClass == null){
+            throw new RuntimeException("event entityClass not find!");
+        }
+
+
+        SingleDomainEvent domainEvent = new SingleDomainEvent();
+        domainEvent.setOccurredTime(jsonObject.getLong("occurredTime"));
+        domainEvent.setEntity(entity);
+        domainEvent.setEventType(jsonObject.getString("eventType("));
+        JSONArray jsonArray = jsonObject.getJSONArray("data");
+        List entityList = new ArrayList();
+        if(jsonArray != null && !entityList.isEmpty()){
+            Object entityInst = ((JSONObject)jsonArray.get(0)).toJavaObject(entityClass);
+            domainEvent.setData(entityInst);
+        }
+        return domainEvent;
+    }
 }

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * @Author: liang.chen
@@ -28,12 +30,18 @@ public class ReLoadScheduler implements ILoad {
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
     @Autowired
-    EventTypeLoadManager eventTypeLoadManager;
+    private EventTypeLoadManager eventTypeLoadManager;
 
     @Autowired
-    FieldDefinitionLoadManager fieldLoadManager;
+    private FieldDefinitionLoadManager fieldLoadManager;
 
-    List<ILoad> reLoadTasks = new ArrayList<>();
+    @Autowired
+    private IEventMsgPullRepository eventMsgPullRepository;
+
+    @Autowired
+    private DomainEventHandle domainEventHandle;
+
+//    List<ILoad> reLoadTasks = new ArrayList<>();
 
     /**
      * 启动加载成功后，增加定时刷新任务
@@ -41,12 +49,10 @@ public class ReLoadScheduler implements ILoad {
     @Override
     public boolean load(){
 
-        reLoadTasks.add(eventTypeLoadManager);
-        reLoadTasks.add(fieldLoadManager);
-
+//        reLoadTasks.add(eventTypeLoadManager);
+//        reLoadTasks.add(fieldLoadManager);
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
-
-        //定时器每5秒钟执行一次
+        //定时器10秒钟执行一次
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -56,18 +62,29 @@ public class ReLoadScheduler implements ILoad {
                     logger.error("定时刷新缓存异常",e);
                 }
             }
-        }, 10, 10, TimeUnit.MINUTES);
+        }, 10, 10, TimeUnit.SECONDS);
 
         return true;
     }
 
+//    public void reLoad(){
+//        for(ILoad task:reLoadTasks) {
+//            try {
+//                task.load();
+//            } catch (Exception e){
+//                logger.error("定时刷新缓存异常",e);
+//            }
+//        }
+//    }
+
+
+    //定时刷新取得最新的domain事件，并更新本地缓存
     public void reLoad(){
-        for(ILoad task:reLoadTasks) {
-            try {
-                task.load();
-            } catch (Exception e){
-                logger.error("定时刷新缓存异常",e);
-            }
-        }
+        //拉取得最新两分钟的domain事件
+        List<String> eventMsgs = eventMsgPullRepository.pullLastEventMsgs();
+        domainEventHandle.handleMessage(eventMsgs);
     }
+
+
+
 }

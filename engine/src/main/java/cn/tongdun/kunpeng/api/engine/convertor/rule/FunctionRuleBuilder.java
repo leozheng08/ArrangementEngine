@@ -29,11 +29,7 @@ public class FunctionRuleBuilder extends AbstractRuleBuilder {
         List<Condition> conditionList = Lists.newArrayList();
         List<FunctionDesc> functionDescList = Lists.newArrayList();
 
-        /**
-         * 用于给函数计数，把condition和函数对应起来
-         */
-        Integer num = new Integer(1);
-        processOneElement(ruleConditionElements.get(0), conditionList, functionDescList, num);
+        processOneElement(ruleConditionElements.get(0), conditionList, functionDescList);
         rawRule.setConditionList(conditionList);
         rawRule.setFunctionDescList(functionDescList);
     }

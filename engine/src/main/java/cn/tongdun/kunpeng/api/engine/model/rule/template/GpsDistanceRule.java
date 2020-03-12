@@ -13,6 +13,7 @@ import cn.fraudmetrix.module.tdrule.operator.AbstractBinaryOperator;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.fraudmetrix.module.tdrule.util.OperatorLoader;
+import cn.tongdun.kunpeng.api.engine.util.RawRuleParseUtils;
 import cn.tongdun.kunpeng.api.engine.util.TdRuleOperatorMapUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,35 +29,6 @@ public class GpsDistanceRule extends AbstractRule {
 
     @Override
     public void parse(RawRule rawRule) {
-        if (null == rawRule || rawRule.getFunctionDescList() == null || rawRule.getFunctionDescList().isEmpty()) {
-            throw new ParseException("GpsDistanceRule parse error!null == rawRule or rawRule.getFunctionDescList is blank!");
-        }
-        if (rawRule.getFunctionDescList().size() > 1) {
-            throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
-        }
-        FunctionDesc functionDesc = rawRule.getFunctionDescList().get(0);
-        Function function = FunctionLoader.getFunction(functionDesc);
-
-        String distanceOperator = null;
-        Double distanceSlice = null;
-
-        for (FunctionParam functionParam : functionDesc.getParamList()) {
-            if (StringUtils.equalsIgnoreCase(functionParam.getName(), "distanceOperator")) {
-                distanceOperator = functionParam.getValue();
-            } else if (StringUtils.equalsIgnoreCase(functionParam.getName(), "distanceSlice")) {
-                distanceSlice = Double.parseDouble(functionParam.getValue());
-            }
-        }
-
-        operator = (AbstractBinaryOperator) OperatorLoader.getOperator(TdRuleOperatorMapUtils.getEngineTypeFromDisplay(distanceOperator));
-        if (null == operator) {
-            throw new ParseException("GpsDistanceRule parse error,rawRule id:" + rawRule.getId() + ",distanceOperator:" + distanceOperator);
-        }
-        if (distanceSlice == null || distanceSlice.isNaN()) {
-            throw new ParseException("GpsDistanceRule parse error,rawRule id:" + rawRule.getId() + ",distanceSlice:" + distanceSlice);
-        }
-        Variable right = new Literal(distanceSlice, null);
-        operator.addOperand(function);
-        operator.addOperand(right);
+        this.operator = RawRuleParseUtils.parseWithFunctionAndRight(rawRule);
     }
 }

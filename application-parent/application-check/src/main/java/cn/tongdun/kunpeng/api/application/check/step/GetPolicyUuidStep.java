@@ -52,7 +52,7 @@ public class GetPolicyUuidStep implements IRiskStep {
         String policyVersion = request.getPolicyVersion();
 
         if(StringUtils.isBlank(eventId)){
-            response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString());
+            response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString()+":"+"eventId值为空");
             return false;
         }
         context.setEventId(eventId);

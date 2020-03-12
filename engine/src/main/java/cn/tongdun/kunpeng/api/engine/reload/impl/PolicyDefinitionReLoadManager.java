@@ -3,6 +3,8 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -70,6 +72,12 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
     @Autowired
     private PolicyReLoadManager policyReLoadManager;
 
+    @Autowired
+    private IPlatformIndexRepository policyIndicatrixItemRepository;
+
+    @Autowired
+    private PlatformIndexCache policyIndicatrixItemCache;
+
     @PostConstruct
     public void init(){
         reloadFactory.register(PolicyDefinitionDO.class,this);
@@ -101,7 +109,7 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
                 result = true;
             } else {
                 //加载策略信息，包含各个子对象
-                PolicyLoadTask task = new PolicyLoadTask(newPolicyUuid,policyRepository,defaultConvertorFactory,localCacheService);
+                PolicyLoadTask task = new PolicyLoadTask(newPolicyUuid,policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
                 result = task.call();
             }
             if(result){
