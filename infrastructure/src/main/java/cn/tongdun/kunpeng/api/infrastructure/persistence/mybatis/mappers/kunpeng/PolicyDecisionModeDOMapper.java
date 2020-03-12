@@ -5,11 +5,9 @@ import cn.tongdun.kunpeng.share.dataobject.PolicyDecisionModeDO;
 
 public interface PolicyDecisionModeDOMapper {
 
-    /**
-     *
-     * @mbggenerated
-     */
+
     PolicyDecisionModeDO selectByPolicyUuid(String policyUuid);
 
+    PolicyDecisionModeDO selectByUuid(String uuid);
 
 }

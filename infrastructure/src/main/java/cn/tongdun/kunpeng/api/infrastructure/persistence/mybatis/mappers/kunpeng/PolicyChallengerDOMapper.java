@@ -9,5 +9,7 @@ public interface PolicyChallengerDOMapper {
 
     PolicyChallengerDO selectByPolicyDefinitionUuid(String policyDefinitionUuid);
 
+    PolicyChallengerDO selectByUuid(String uuid);
+
     List<PolicyChallengerDO> selectAvailableByPartners(Set<String> partners);
 }

@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload;
+package cn.tongdun.kunpeng.api.engine.reload;
 
 import cn.tongdun.kunpeng.api.engine.load.step.EventTypeLoadManager;
 import cn.tongdun.kunpeng.api.engine.load.step.FieldDefinitionLoadManager;
@@ -56,7 +56,7 @@ public class ReLoadScheduler implements ILoad {
                     logger.error("定时刷新缓存异常",e);
                 }
             }
-        }, 10, 20, TimeUnit.MINUTES);
+        }, 10, 10, TimeUnit.MINUTES);
 
         return true;
     }

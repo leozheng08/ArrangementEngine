@@ -34,8 +34,8 @@ public class CheatFunction extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
-        Map<String, Object> systemFields = context.getSystemFields();
-        Object containsCheatApp = systemFields.get("containsCheatApp");
+        Map<String, Object> fieldValues = context.getFieldValues();
+        Object containsCheatApp = fieldValues.get("containsCheatApp");
 
         if (containsCheatApp == null) {
             logger.warn("ios cheat containsCheatApp system field not configured");

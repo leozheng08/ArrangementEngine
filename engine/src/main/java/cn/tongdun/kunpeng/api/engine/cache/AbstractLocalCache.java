@@ -1,6 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.cache;
 
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 
 /**
  * 本地缓存

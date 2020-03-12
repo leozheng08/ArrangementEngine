@@ -23,4 +23,11 @@
     where is_deleted=0 and status =1 and is_curr_decision_mode=1
     and policy_uuid = #{policyUuid}
   </select>
+
+  <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_decision_mode
+    where uuid = #{uuid}
+  </select>
 </mapper>

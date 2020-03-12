@@ -6,5 +6,9 @@ import java.util.List;
 
 public interface IndexDefinitionDOMapper {
 
-    List<IndexDefinitionDO> getEnabledIndexesBySubPolicyUuid(String subPolicyUuid);
+    List<IndexDefinitionDO> selectEnabledIndexesByPolicyUuid(String policyUuid);
+
+    List<IndexDefinitionDO> selectEnabledIndexesBySubPolicyUuid(String subPolicyUuid);
+
+    IndexDefinitionDO selectByUuid(String uuid);
 }

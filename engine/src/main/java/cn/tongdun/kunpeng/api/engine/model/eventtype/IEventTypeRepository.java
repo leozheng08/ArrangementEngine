@@ -11,4 +11,6 @@ public interface IEventTypeRepository {
     public static final String EVENT_TYPE_ALL = "All";
 
     List<EventType> queryAll();
+
+    EventType queryByUuid(String uuid);
 }

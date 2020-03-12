@@ -5,7 +5,7 @@ import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
-import cn.tongdun.kunpeng.api.engine.model.script.groovy.IGroovyDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
@@ -23,13 +23,13 @@ import java.util.Set;
  */
 @Component
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_PARTNER)
-public class GroovyDynamicScriptLoadManager implements ILoad {
+public class DynamicScriptLoadManager implements ILoad {
 
-    private Logger logger = LoggerFactory.getLogger(GroovyDynamicScriptLoadManager.class);
+    private Logger logger = LoggerFactory.getLogger(DynamicScriptLoadManager.class);
 
 
     @Autowired
-    IGroovyDynamicScriptRepository groovyRepository;
+    IDynamicScriptRepository groovyRepository;
 
     @Autowired
     PartnerClusterCache partnerClusterCache;
@@ -39,7 +39,7 @@ public class GroovyDynamicScriptLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("GroovyDynamicScriptLoadManager start");
+        logger.info("DynamicScriptLoadManager start");
 
         Set allPartners = new HashSet(partnerClusterCache.getPartners());
         allPartners.add("All");
@@ -50,11 +50,7 @@ public class GroovyDynamicScriptLoadManager implements ILoad {
         int failedCount = 0;
         for (DynamicScript script : scripts) {
             try {
-                groovyCompileManager.addOrUpdate(
-                        KunpengStringUtils.valNullToAll(script.getPartnerCode()),
-                        script.getEventType(),
-                        script.getAssignField(),
-                        script.getScriptCode());
+                groovyCompileManager.addOrUpdate(script);
             } catch (Exception e) {
                 failedCount++;
                 logger.warn("Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
@@ -66,7 +62,7 @@ public class GroovyDynamicScriptLoadManager implements ILoad {
         if(scripts != null){
             scriptsCount = scripts.size();
         }
-        logger.info("GroovyDynamicScriptLoadManager success,cost:{},failedCount:,scriptsCount:{}", System.currentTimeMillis() - beginTime,failedCount, scriptsCount);
+        logger.info("DynamicScriptLoadManager success,cost:{},failedCount:,scriptsCount:{}", System.currentTimeMillis() - beginTime,failedCount, scriptsCount);
         return true;
     }
 }

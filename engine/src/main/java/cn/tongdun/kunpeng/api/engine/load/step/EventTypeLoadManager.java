@@ -36,9 +36,11 @@ public class EventTypeLoadManager implements ILoad {
         logger.info("EventTypeLoadManager start");
         List<EventType> list = eventTypeRepository.queryAll();
         if(list != null) {
-            eventTypeLocalCache.setEventTypeList(list);
+            for(EventType eventType :list) {
+                eventTypeLocalCache.put(eventType.getUuid(),eventType);
+            }
         }
-        logger.info("EventTypeLoadManager success, size:"+eventTypeLocalCache.getEventTypeList().size());
+        logger.info("EventTypeLoadManager success, size:"+eventTypeLocalCache.getEventTypes().size());
         return true;
     }
 }

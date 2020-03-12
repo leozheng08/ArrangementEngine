@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeType;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
@@ -19,6 +20,7 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -55,15 +57,16 @@ public class PolicyLoadTask implements Callable<Boolean> {
     public Boolean call(){
         PolicyDTO policyDTO = null;
         try {
-            policyDTO = policyRepository.queryByUuid(policyUuid);
+            policyDTO = policyRepository.queryFullByUuid(policyUuid);
 
-            List<SubPolicyDTO> subpolicyDTOList = policyDTO.getSubPolicyList();
+            List<SubPolicyDTO> subPolicyDTOList = policyDTO.getSubPolicyList();
+            List<IndexDefinitionDTO> indexDefinitionDTOList = new ArrayList<>();
 
             IConvertor<PolicyDTO, Policy> policyConvertor = convertorFactory.getConvertor(PolicyDTO.class);
             Policy policy = policyConvertor.convert(policyDTO);
 
-            if (subpolicyDTOList != null) {
-                for (SubPolicyDTO subpolicyDTO : subpolicyDTOList) {
+            if (subPolicyDTOList != null) {
+                for (SubPolicyDTO subpolicyDTO : subPolicyDTOList) {
                     IConvertor<SubPolicyDTO, SubPolicy> subPolicyConvertor = convertorFactory.getConvertor(SubPolicyDTO.class);
                     SubPolicy subPolicy = subPolicyConvertor.convert(subpolicyDTO);
                     if (subpolicyDTO.getRules() != null) {
@@ -77,20 +80,25 @@ public class PolicyLoadTask implements Callable<Boolean> {
                     //缓存子策略
                     localCacheService.put(SubPolicy.class,subPolicy.getUuid(),subPolicy);
 
-                    //缓存策略指标
+                    //策略指标
                     if (null!=subpolicyDTO.getIndexDefinitionList()&&!subpolicyDTO.getIndexDefinitionList().isEmpty()){
-                        IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor=convertorFactory.getConvertor(IndexDefinitionDTO.class);
-                        List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(subpolicyDTO.getIndexDefinitionList());
-                        if (null!=policyIndexList&&!policyIndexList.isEmpty()){
-                            localCacheService.putList(PolicyIndex.class,policyDTO.getUuid(),policyIndexList);
-                        }
+                        indexDefinitionDTOList.addAll(subpolicyDTO.getIndexDefinitionList());
                     }
-
                 }
             }
 
+            //缓存策略指标
+            if (!indexDefinitionDTOList.isEmpty()){
+                IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor=convertorFactory.getConvertor(IndexDefinitionDTO.class);
+                List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(indexDefinitionDTOList);
+                if (null!=policyIndexList&&!policyIndexList.isEmpty()){
+                    localCacheService.putList(PolicyIndex.class,policyDTO.getUuid(),policyIndexList);
+                }
+            }
+
+
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDTO.getPolicyDecisionModeDTO();
-            if(policyDecisionModeDTO != null && "flow".equals(policyDecisionModeDTO.getDecisionModeType())
+            if(policyDecisionModeDTO != null && DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())
                 && policyDTO.getDecisionFlowDTO() != null){
                 //策略流运行模式
                 IConvertor<DecisionFlowDTO, DecisionFlow> flowConvertor = convertorFactory.getConvertor(DecisionFlowDTO.class);
@@ -114,6 +122,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
             logger.error("LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
                     policyUuid, policyDTO!=null?policyDTO.getPartnerCode():"",policyDTO != null? policyDTO.getEventId():"",
                     e);
+            return false;
         }
         return true;
     }

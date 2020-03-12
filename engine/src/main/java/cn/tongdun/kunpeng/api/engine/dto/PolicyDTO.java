@@ -23,6 +23,7 @@ public class PolicyDTO extends CommonDTO {
 
     private PolicyDecisionModeDTO policyDecisionModeDTO;
     private DecisionFlowDTO decisionFlowDTO;
+    private List<IndexDefinitionDTO> indexDefinitionList;
     /**
      * 合作方
      */

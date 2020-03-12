@@ -120,10 +120,13 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         rule.setDisplayOrder(ruleDTO.getPriority());
         rule.setName(ruleDTO.getName());
         rule.setParentUuid(ruleDTO.getParentUuid());
-        rule.setSubPolicyUuid(ruleDTO.getPolicyUuid());
+        rule.setBizType(ruleDTO.getBizType());
+        rule.setBizUuid(ruleDTO.getBizUuid());
         rule.setTemplate(ruleDTO.getTemplate());
         rule.setMode(ruleDTO.getMode());
         rule.setDecision(ruleDTO.getRiskDecision());
+        rule.setBizType(ruleDTO.getBizType());
+        rule.setBizUuid(ruleDTO.getBizUuid());
         return rule;
     }
 
@@ -213,8 +216,9 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         ConditionParam right = new ConditionParam();
         FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(elementDTO.getRightType());
         if (null == fieldTypeEnum) {
-            throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!RightType:"
-                    + elementDTO.getRightType() + "conditionUuid:" + elementDTO.getUuid());
+            return null;
+//            throw new ParseException("AbstractRuleBuilder processOneElement error,FieldType not exist!RightType:"
+//                    + elementDTO.getRightType() + "conditionUuid:" + elementDTO.getUuid());
         }
         right.setFieldType(fieldTypeEnum);
         right.setDataType(elementDTO.getRightDataType());

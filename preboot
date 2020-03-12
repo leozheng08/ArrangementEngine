@@ -12,10 +12,15 @@ APP_EXT_PARAM=''
 JVM_EXT_PARAM=''
 
 # custom logic starts
-JAVA_DEBUG_OPT=" -server -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8090,server=y,suspend=n "
-#JAVA_DEBUG_OPT=" -agentlib:jdwp=transport=dt_socket,address=8090,server=y,suspend=n"
 
-APP_EXT_PARAM=" $APP_EXT_PARAM $JAVA_DEBUG_OPT"
-JVM_EXT_PARAM=" $JVM_EXT_PARAM "
+if [ "$ENV" = "smoke" ] || [ "$ENV" = "dev" ]; then
+  JVM_EXT_PARAM=" -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8095,suspend=n $JVM_EXT_PARAM "
+fi
+
+#JVM_EXT_PARAM="-Xmx2688M -Xms2688M -Xmn960M -Xss256K -XX:MaxMetaspaceSize=256M -XX:MetaspaceSize=256M -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+CMSClassUnloadingEnabled -XX:+ParallelRefProcEnabled -XX:+CMSScavengeBeforeRemark -XX:+HeapDumpOnOutOfMemoryError $JVM_EXT_PARAM "
+
+JVM_EXT_PARAM="-XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps $JVM_EXT_PARAM"
+
+echo "JVM_EXT_PARAM=$JVM_EXT_PARAM"
 
 echo 'preboot done'

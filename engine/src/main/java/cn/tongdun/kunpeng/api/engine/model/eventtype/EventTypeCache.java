@@ -1,9 +1,16 @@
 package cn.tongdun.kunpeng.api.engine.model.eventtype;
 
+import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import com.google.common.collect.Lists;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author: liang.chen
@@ -11,6 +18,33 @@ import java.util.List;
  */
 @Component
 @Data
-public class EventTypeCache {
-    private List<EventType> eventTypeList;
+public class EventTypeCache  extends AbstractLocalCache<String,EventType> {
+
+    private Map<String,EventType> eventTypeMap =  new ConcurrentHashMap<>(20);
+
+
+    @PostConstruct
+    public void init(){
+        register(EventType.class);
+    }
+
+    @Override
+    public EventType get(String uuid){
+        return eventTypeMap.get(uuid);
+    }
+
+    @Override
+    public void put(String uuid, EventType policy){
+        eventTypeMap.put(uuid,policy);
+    }
+
+    @Override
+    public EventType remove(String uuid){
+        return eventTypeMap.remove(uuid);
+    }
+
+    public Collection<EventType> getEventTypes(){
+        return eventTypeMap.values();
+    }
+
 }

@@ -123,10 +123,11 @@ public class ParallelEngine extends DecisionTool {
 
         policyResponse.setPolicyUuid(policy.getUuid());
         policyResponse.setPolicyName(policy.getName());
-        List<String> subPolicyUuidList = policy.getSubPolicyList();
+
+        List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
         List<Callable<SubPolicyResponse>> tasks = new ArrayList<>();
-        for (String subPolicyUuid : subPolicyUuidList) {
-            SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicyUuid, context);
+        for (SubPolicy subPolicy : subPolicyList) {
+            SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicy.getUuid(), context);
             tasks.add(MDCUtil.wrap(task));
         }
 
@@ -156,13 +157,13 @@ public class ParallelEngine extends DecisionTool {
             if (future.isDone() && !future.isCancelled()) {
                 try {
                     SubPolicyResponse subPolicyResponse = future.get();
-                    logger.info("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
+                    logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
                     subPolicyResponseList.add(subPolicyResponse);
                 } catch (InterruptedException e) {
                     logger.error("获取规则引擎执行结果被中断", e);
                 } catch (ExecutionException e) {
                     logger.error("获取规则引擎执行结果失败1", e);
-                } catch (Exception e){
+                } catch (Throwable e){
                     logger.error("获取规则引擎执行结果失败2", e);
                 }
             } else {
@@ -172,6 +173,7 @@ public class ParallelEngine extends DecisionTool {
 
         // 超时的任务，结果不会添加到subPolicyResponseList中
         if (subPolicyResponseList.size() < futures.size()) {
+            logger.info("subPolicyResponseList.size():{} futures.size():{}",subPolicyResponseList.size(),futures.size());
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_TIMEOUT.getCode(), ReasonCode.RULE_ENGINE_TIMEOUT.getDescription(), "决策引擎执行"));
             policyResponse.setCostTime(System.currentTimeMillis() - start);
             return policyResponse;
@@ -196,16 +198,17 @@ public class ParallelEngine extends DecisionTool {
     private boolean checkPolicyConfig(AbstractFraudContext context,Policy policy){
         //取得此策略配置的子策略，子策略并行执行。
         String policyUuid = policy.getUuid();
-        List<String> subPolicyUuidList = policy.getSubPolicyList();
-        if(subPolicyUuidList.isEmpty()) {
+        List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
+
+        if(subPolicyList == null || subPolicyList.isEmpty()) {
             logger.warn("{},policyUuid:{}",ReasonCode.SUB_POLICY_NOT_EXIST.toString(), policyUuid);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_EXIST.getCode(), ReasonCode.SUB_POLICY_NOT_EXIST.getDescription(), "决策引擎执行"));
             return false;
         }
 
         int ruleCount = 0;
-        for(String subPolicyUuid : subPolicyUuidList) {
-            SubPolicy subPolicy = subPolicyCache.get(subPolicyUuid);
+        for(SubPolicy subPolicy : subPolicyList) {
+            String subPolicyUuid = subPolicy.getUuid();
             if(subPolicy == null){
                 logger.warn("{},policyUuid:{},subPolicyUuid:{}",ReasonCode.SUB_POLICY_LOAD_ERROR.toString(), policyUuid, subPolicyUuid);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));

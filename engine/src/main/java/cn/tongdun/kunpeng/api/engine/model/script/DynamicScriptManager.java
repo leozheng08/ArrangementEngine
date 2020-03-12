@@ -59,39 +59,40 @@ public class DynamicScriptManager {
 
     private void handleField(AbstractFraudContext context) {
         List<Map<String,WrappedGroovyObject>> groovyObjectMaps = new ArrayList<Map<String,WrappedGroovyObject>>(4);
+        List<WrappedGroovyObject> groovyObjectList = new ArrayList<>(50);
         String classKey = null;
         Map<String,WrappedGroovyObject> map = null;
         // 合作方指定事件类型
         classKey = context.getPartnerCode() + context.getEventType();
-        map = groovyObjectCache.get(classKey);
-        if (null != map) {
-            groovyObjectMaps.add(map);
+        List<WrappedGroovyObject> tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+        if (null != tmpGroovyObjects) {
+            groovyObjectList.addAll(tmpGroovyObjects);
         }
         // 合作方全部事件类型
         classKey = context.getPartnerCode() + "All";
-        map = groovyObjectCache.get(classKey);
+        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
         if (null != map) {
-            groovyObjectMaps.add(map);
+            groovyObjectList.addAll(tmpGroovyObjects);
         }
         // 全局指定事件类型
-        classKey = "All" + "All" + context.getEventType();
-        map = groovyObjectCache.get(classKey);
+        classKey =  "All" + context.getEventType();
+        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
         if (null != map) {
-            groovyObjectMaps.add(map);
+            groovyObjectList.addAll(tmpGroovyObjects);
         }
         // 全局全部事件类型
-        classKey = "All" + "All" + "All";
-        map = groovyObjectCache.get(classKey);
+        classKey = "All" + "All" ;
+        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
         if (null != map) {
-            groovyObjectMaps.add(map);
+            groovyObjectList.addAll(tmpGroovyObjects);
         }
-        if (0 == groovyObjectMaps.size()) {
+        if (0 == groovyObjectList.size()) {
             return;
         }
 
-        List<Callable<Boolean>> tasks = new ArrayList(groovyObjectMaps.size());
-        for (Map<String,WrappedGroovyObject> objectMap : groovyObjectMaps) {
-            tasks.add(MDCUtil.wrap(new GroovyRunTask(context, objectMap)));
+        List<Callable<Boolean>> tasks = new ArrayList(groovyObjectList.size());
+        for (WrappedGroovyObject wrappedGroovyObject : groovyObjectList) {
+            tasks.add(MDCUtil.wrap(new GroovyRunTask(context, wrappedGroovyObject)));
         }
         List<Future<Boolean>> futures = null;
         long t1 = System.currentTimeMillis();
@@ -125,30 +126,24 @@ public class DynamicScriptManager {
         }
     }
 
-    private boolean executeGroovyField(AbstractFraudContext context, Map<String,WrappedGroovyObject> groovyObjectMap) {
-        int failedCnt = 0;
-        for (String fieldName : groovyObjectMap.keySet()) {
-
-            String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(fieldName);
-            Object value;
-            try {
-                long t1 = System.currentTimeMillis();
-                GroovyObject groovyObject = groovyObjectMap.get(fieldName).getGroovyObject();
-                value = executeGroovy(context, groovyObject, methodName);
-                long t2 = System.currentTimeMillis();
-                if(t2 - t1 > 30){
-                    logger.warn("动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
-                }
-                context.setField(fieldName, value);
-            } catch(Throwable ex) {
-                failedCnt++;
+    private boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject) {
+        String fieldName = wrappedGroovyObject.getAssignField();
+        String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(fieldName);
+        Object value;
+        try {
+            long t1 = System.currentTimeMillis();
+            GroovyObject groovyObject = wrappedGroovyObject.getGroovyObject();
+            value = executeGroovy(context, groovyObject, methodName);
+            long t2 = System.currentTimeMillis();
+            if(t2 - t1 > 30){
+                logger.warn("动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
             }
-        }
-        if (failedCnt > 0) {
+            context.setField(fieldName, value);
+        } catch(Throwable ex) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     private Object executeGroovy(AbstractFraudContext context, GroovyObject groovyObject, String methodName) {
@@ -159,16 +154,16 @@ public class DynamicScriptManager {
 
     class GroovyRunTask implements Callable<Boolean> {
         private AbstractFraudContext context;
-        private Map<String,WrappedGroovyObject> groovyObjectMap;
+        private WrappedGroovyObject wrappedGroovyObject;
 
-        public GroovyRunTask(AbstractFraudContext context, Map<String,WrappedGroovyObject> groovyObjectMap) {
+        public GroovyRunTask(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject) {
             this.context = context;
-            this.groovyObjectMap = groovyObjectMap;
+            this.wrappedGroovyObject = wrappedGroovyObject;
         }
 
         @Override
         public Boolean call() throws Exception {
-            return executeGroovyField(context, groovyObjectMap);
+            return executeGroovyField(context, wrappedGroovyObject);
         }
     }
 }

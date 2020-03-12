@@ -30,10 +30,10 @@ public class FieldRepository implements IFieldDefinitionRepository {
 
         List<FieldDefinition> result = null;
         if(list != null){
-            result = list.stream().map(ruleFieldDO->{
-                FieldDefinition ruleField = new FieldDefinition();
-                BeanUtils.copyProperties(ruleFieldDO,ruleField);
-                return ruleField;
+            result = list.stream().map(fieldDefinitionDO->{
+                FieldDefinition fieldDefinition = new FieldDefinition();
+                BeanUtils.copyProperties(fieldDefinitionDO,fieldDefinition);
+                return fieldDefinition;
             }).collect(Collectors.toList());
         }
         return result;
@@ -48,13 +48,22 @@ public class FieldRepository implements IFieldDefinitionRepository {
 
         List<FieldDefinition> result = null;
         if(list != null){
-            result = list.stream().map(ruleFieldDO->{
-                FieldDefinition ruleField = new FieldDefinition();
-                BeanUtils.copyProperties(ruleFieldDO,ruleField);
-                return ruleField;
+            result = list.stream().map(fieldDefinitionDO->{
+                FieldDefinition fieldDefinition = new FieldDefinition();
+                BeanUtils.copyProperties(fieldDefinitionDO,fieldDefinition);
+                return fieldDefinition;
             }).collect(Collectors.toList());
         }
         return result;
 
+    }
+
+    @Override
+    public FieldDefinition queryByUuid(String uuid){
+        FieldDefinitionDO fieldDefinitionDO = fieldDefinitionDOMapper.selectByUuid(uuid);
+
+        FieldDefinition fieldDefinition = new FieldDefinition();
+        BeanUtils.copyProperties(fieldDefinitionDO,fieldDefinition);
+        return fieldDefinition;
     }
 }

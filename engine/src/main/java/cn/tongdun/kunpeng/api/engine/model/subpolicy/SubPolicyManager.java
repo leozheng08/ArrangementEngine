@@ -9,7 +9,10 @@ import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
 import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.*;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +29,8 @@ import java.util.function.Function;
  */
 @Component
 public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
+
+    private static Logger logger = LoggerFactory.getLogger(SubPolicyManager.class);
 
     @Autowired
     SubPolicyCache subPolicyCache;
@@ -48,36 +53,39 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
             return subPolicyResponse;
         }
-
-
         long start = System.currentTimeMillis();
-        if (subPolicy.getPolicyMode() != null) {
-            switch (subPolicy.getPolicyMode()) {
-                case FirstMatch: //首次匹配
-                    firstMatch(subPolicy, context, subPolicyResponse);
-                    break;
-                case WorstMatch:  //最坏匹配
-                    worstMatch(subPolicy, context, subPolicyResponse);
-                    break;
-                case Weighted: //权重模式
-                    weighted(subPolicy, context, subPolicyResponse);
-                    break;
-                default:
-                    weighted(subPolicy, context, subPolicyResponse);
-                    break;
+        try {
+            if (subPolicy.getPolicyMode() != null) {
+                switch (subPolicy.getPolicyMode()) {
+                    case FirstMatch: //首次匹配
+                        firstMatch(subPolicy, context, subPolicyResponse);
+                        break;
+                    case WorstMatch:  //最坏匹配
+                        worstMatch(subPolicy, context, subPolicyResponse);
+                        break;
+                    case Weighted: //权重模式
+                        weighted(subPolicy, context, subPolicyResponse);
+                        break;
+                    default:
+                        weighted(subPolicy, context, subPolicyResponse);
+                        break;
+                }
+            } else {
+                weighted(subPolicy, context, subPolicyResponse);
             }
-        } else {
-            weighted(subPolicy, context, subPolicyResponse);
+
+
+            subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());
+            subPolicyResponse.setSubPolicyUuid(subPolicy.getUuid());
+            subPolicyResponse.setSubPolicyName(subPolicy.getName());
+            subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
+            subPolicyResponse.setRiskType(subPolicy.getRiskType());
+        } catch (Exception e){
+            subPolicyResponse.setSuccess(false);
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
+            logger.error("SubPolicyManager execute uuid:{}, seqId:{} ",uuid,context.getSeqId(), e);
         }
-
-
-        subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());
-        subPolicyResponse.setSubPolicyUuid(subPolicy.getUuid());
-        subPolicyResponse.setSubPolicyName(subPolicy.getName());
-        subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
-        subPolicyResponse.setRiskType(subPolicy.getRiskType());
         subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
-
         return subPolicyResponse;
     }
 
@@ -186,6 +194,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
     private void executePorcess(SubPolicy subPolicy, AbstractFraudContext context,
                                 SubPolicyResponse subPolicyResponse, Function<RuleResponse, Boolean> breakWhenHitfunc) {
         Map<String, Boolean> hitMap = new HashMap<>();
+
         for (String ruleUuid : subPolicy.getRuleUuidList()) {
             //子规则在上级规则命中情况下才能运行，
             Rule rule = ruleCache.get(ruleUuid);

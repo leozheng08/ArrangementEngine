@@ -1,0 +1,46 @@
+package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
+
+
+import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
+import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
+import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
+import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DecisionFlowDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDecisionModeDOMapper;
+import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
+import cn.tongdun.kunpeng.share.dataobject.PolicyDecisionModeDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @Author: liang.chen
+ * @Date: 2019/12/18 上午11:42
+ */
+@Repository
+public class DecisionFlowRepository implements IDecisionFlowRepository{
+
+    private Logger logger = LoggerFactory.getLogger(DecisionFlowRepository.class);
+
+    @Autowired
+    private  DecisionFlowDOMapper decisionFlowDOMapper;
+
+
+    /**
+     * 查询决策流, 决策流的uuid与策略的uuid为值相同
+     */
+    @Override
+    public DecisionFlowDTO queryByUuid(String policyUuid){
+        DecisionFlowDO decisionFlowDO = decisionFlowDOMapper.selectByUuid(policyUuid);
+        if(decisionFlowDO == null) {
+            return null;
+        }
+
+        DecisionFlowDTO decisionFlowDTO = new DecisionFlowDTO();
+        BeanUtils.copyProperties(decisionFlowDO,decisionFlowDTO);
+
+        return decisionFlowDTO;
+    }
+}

@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
+import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
 import groovy.lang.GroovyObject;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -35,26 +37,29 @@ public class GroovyCompileManager {
      * 根据partnerCode eventType 更新缓存中该对象的信息，<br>
      * 如果缓存中不存在，则说明没有编译过，编译新的并放到缓存中
      *
-     * @param partnerCode
-     * @param eventType
-     * @param eventType
+     * @param script
      * @throws IOException
      * @throws IllegalAccessException
      * @throws InstantiationException
      * @throws CompilationFailedException
      */
-    public void addOrUpdate(String partnerCode, String eventType, String field, String methodBody)
+    public void addOrUpdate(DynamicScript script)
             throws CompilationFailedException,
             InstantiationException,
             IllegalAccessException,
             IOException {
+        String partnerCode = KunpengStringUtils.valNullToAll(script.getPartnerCode());
+        String eventType = script.getEventType();
+        String field = script.getAssignField();
+        String methodBody = script.getScriptCode();
+
         if(StringUtils.isAnyBlank(field, methodBody)){
             return;
         }
 
-        String key = groovyFieldCache.generateKey(partnerCode , eventType);
         WrappedGroovyObject groovyField = new WrappedGroovyObject();
-        GroovyClassGenerator generator = new GroovyClassGenerator(key);
+        String className = "groovy_"+script.getUuid();
+        GroovyClassGenerator generator = new GroovyClassGenerator(className);
         generator.init();
         String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(field);
         generator.appendMethod(methodName, methodBody);
@@ -63,50 +68,24 @@ public class GroovyCompileManager {
         groovyField.setGroovyObject(groovyObject);
         groovyField.getFieldMethods().put(field, methodBody);
         groovyField.setSource(generator.getSource().toString());
-        groovyFieldCache.put(key, field, groovyField);
+        groovyField.setUuid(script.getUuid());
+        groovyField.setGmtModify(script.getGmtModify());
+        groovyFieldCache.put(script.getUuid(), groovyField);
     }
 
-    /**
-     * 移除处理该字段的代码
-     *
-     * @param partnerCode
-     * @param eventType
-     * @param field
-     * @throws IOException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws CompilationFailedException
-     */
-    public void removeMethod(String partnerCode,  String eventType, String field){
-        String key =  groovyFieldCache.generateKey(partnerCode , eventType);
-        groovyFieldCache.remove(key,field);
+    public void remove(String uuid) {
+        groovyFieldCache.remove(uuid);
     }
-
-
-
-    public void remove(String partnerCode, String eventType) {
-        String key = groovyFieldCache.generateKey(partnerCode , eventType);
-        groovyFieldCache.remove(key);
-    }
-
-
-    private void remove(String key) {
-        groovyFieldCache.remove(key);
-    }
-
 
 
     public void warmAllGroovyFields() {
-        Set<String> keys = groovyFieldCache.keySet();
-        for (String key : keys) {
-            Map<String,WrappedGroovyObject> map = groovyFieldCache.get(key);
-            for(WrappedGroovyObject groovyField:map.values()){
-                warmGroovyField(groovyField);
-            }
+        Collection<WrappedGroovyObject> allGooovyObjs = groovyFieldCache.getAll();
+        for(WrappedGroovyObject groovyField : allGooovyObjs){
+            warmGroovyField(groovyField);
         }
     }
 
-    private void warmGroovyField( WrappedGroovyObject field) {
+    private void warmGroovyField(WrappedGroovyObject field) {
         try {
             AbstractFraudContext context = mockFraudContext();
             executeGroovyField(context, field);

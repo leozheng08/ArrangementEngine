@@ -36,21 +36,15 @@ public class PolicyRepository implements IPolicyRepository{
     @Autowired
     private PolicyChallengerDOMapper policyChallengerDOMapper;
     @Autowired
-    private SubPolicyDOMapper subPolicyDOMapper;
+    private SubPolicyRepository subPolicyRepository;
     @Autowired
-    private RuleDOMapper ruleDOMapper;
+    private PolicyDecisionModeRepository policyDecisionModeRepository;
     @Autowired
     private PolicyIndicatrixItemDOMapper policyIndicatrixItemDOMapper;
     @Autowired
-    private IndexDefinitionDOMapper indexDefinitionDOMapper;
-    @Autowired
     private PolicyFieldDOMapper policyFieldDOMapper;
     @Autowired
-    private PolicyDecisionModeDOMapper policyDecisionModeDOMapper;
-    @Autowired
-    private  DecisionFlowDOMapper decisionFlowDOMapper;
-    @Autowired
-    private RuleRepository ruleRepository;
+    private  DecisionFlowRepository decisionFlowRepository;
 
 
     //根据合作列表，取得运行版本的策略清单
@@ -93,9 +87,7 @@ public class PolicyRepository implements IPolicyRepository{
         return policyDOMapper.selectPolicyByUuids(policyUuidList);
     }
 
-
-
-    //查询单个策略的完整信息，包含各个子对象
+    //查询单个策略的信息，不包含各个子对象
     @Override
     public PolicyDTO queryByUuid(String uuid){
         PolicyDO policyDO = policyDOMapper.selectByUuid(uuid);
@@ -115,132 +107,55 @@ public class PolicyRepository implements IPolicyRepository{
         policyDTO.setPartnerCode(policyDefinitionDO.getPartnerCode());
 
         String policyUuid = policyDTO.getUuid();
+        //查询平台指标
+        policyDTO.setPolicyIndicatrixItemList(queryPolicyIndicatrixItemDTOByPolicyUuid(policyUuid));
+        //查询策略使用到的字段
+        policyDTO.setPolicyFieldList(queryPolicyFieldDTOByPolicyUuid(policyUuid));
+
+        return policyDTO;
+    }
+
+
+    //查询单个策略的完整信息，包含各个子对象
+    @Override
+    public PolicyDTO queryFullByUuid(String uuid){
+        PolicyDO policyDO = policyDOMapper.selectByUuid(uuid);
+
+        if(policyDO == null){
+            return null;
+        }
+
+        PolicyDTO policyDTO = new PolicyDTO();
+        BeanUtils.copyProperties(policyDO,policyDTO);
+
+        //取得策略定义表中的策略名称、eventId
+        PolicyDefinitionDO policyDefinitionDO = policyDefinitionDOMapper.selectByUuid(policyDO.getPolicyDefinitionUuid());
+        policyDTO.setName(policyDefinitionDO.getName());
+        policyDTO.setEventId(policyDefinitionDO.getEventId());
+        policyDTO.setEventType(policyDefinitionDO.getEventType());
+        policyDTO.setPartnerCode(policyDefinitionDO.getPartnerCode());
+
+        String policyUuid = policyDTO.getUuid();
         //查询子策略
-        policyDTO.setSubPolicyList(querySubPolicyDTOByPolicyUuid(policyUuid));
+        policyDTO.setSubPolicyList(subPolicyRepository.queryFullByPolicyUuid(policyUuid));
         //查询平台指标
         policyDTO.setPolicyIndicatrixItemList(queryPolicyIndicatrixItemDTOByPolicyUuid(policyUuid));
         //查询策略使用到的字段
         policyDTO.setPolicyFieldList(queryPolicyFieldDTOByPolicyUuid(policyUuid));
         //策略运行模式
-        policyDTO.setPolicyDecisionModeDTO(queryPolicyDecisionModeDTOByPolicyUuid(policyUuid));
+        policyDTO.setPolicyDecisionModeDTO(policyDecisionModeRepository.queryByPolicyUuid(policyUuid));
 
         //查询决策流
-        policyDTO.setDecisionFlowDTO(queryDecisionFlowDTOByPolicyUuid(policyUuid));
+        policyDTO.setDecisionFlowDTO(decisionFlowRepository.queryByUuid(policyUuid));
 
 
         return policyDTO;
     }
 
-    //查询子策略
-    private List<SubPolicyDTO> querySubPolicyDTOByPolicyUuid(String policyUuid){
-        List<SubPolicyDO> subPolicyDOList = subPolicyDOMapper.selectListByPolicyUuid(policyUuid);
-
-        if(subPolicyDOList == null) {
-            return null;
-        }
-
-        List<SubPolicyDTO> result = null;
-        result = subPolicyDOList.stream().map(subPolicyDO->{
-            SubPolicyDTO subPolicyDTO = new SubPolicyDTO();
-            BeanUtils.copyProperties(subPolicyDO,subPolicyDTO);
-            return subPolicyDTO;
-        }).collect(Collectors.toList());
-
-        for(SubPolicyDTO subPolicyDTO :result){
-            subPolicyDTO.setRules(queryRuleDTOBySubPolicyUuid(subPolicyDTO.getUuid()));
-            subPolicyDTO.setIndexDefinitionList(queryIndexDefinitionDTOBySubPolicyUuid(subPolicyDTO.getUuid()));
-        }
-
-        return result;
-    }
-
-    //查询规则
-    private List<RuleDTO> queryRuleDTOBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
-
-        if(ruleDOList == null) {
-            return null;
-        }
-
-        List<RuleDTO> result = null;
-        result = ruleDOList.stream().map(ruleDO->{
-            RuleDTO ruleDTO = new RuleDTO();
-            BeanUtils.copyProperties(ruleDO,ruleDTO);
-            parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());
-            return ruleDTO;
-        }).collect(Collectors.toList());
-
-        for(RuleDTO ruleDTO :result){
-            ruleDTO.setRuleConditionElements(ruleRepository.queryRuleConditionElementDTOByRuleUuid(ruleDTO.getUuid()));
-            ruleDTO.setRuleActionElements(ruleRepository.queryRuleActionElementDTOByRuleUuid(ruleDTO.getUuid()));
-        }
-
-        return result;
-    }
-
-    /**
-     * 风险配置
-     * {
-     * "mode":"WorstMatch"
-     * "riskDecision":"Accept"
-     * }
-     * 或者
-     * {
-     * "mode":"Weighted",
-     * "riskWeight":10,
-     * "weightRatio":20.33,
-     * "op":"+",
-     * "property":{
-     * "type":"indicatrix/field",
-     * "name":"指标/字段"
-     * },
-     * "propertyValue":{
-     * "value":"3333333333"
-     * },
-     * "upperLimitScore":-30,
-     * "lowerLimitScore":30
-     * }
-     */
-    private void parseRiskConfig(RuleDTO ruleDTO,String riskConfig){
-        if(StringUtils.isBlank(riskConfig)) {
-            return;
-        }
-        try {
-            JSONObject jsonObject = JSONObject.parseObject(riskConfig);
-            String mode = jsonObject.getString("mode");
-            if(StringUtils.isBlank(mode)) {
-                return;
-            }
-            ruleDTO.setMode(mode);
-            switch (mode){
-                case "FirstMatch":
-                case "WorstMatch":
-                    ruleDTO.setRiskDecision(jsonObject.getString("riskDecision"));
-                    break;
-                case "Weighted":
-                    WeightedRiskConfigDTO weighted = new WeightedRiskConfigDTO();
-                    weighted.setBaseWeight(jsonObject.getDouble("baseWeight"));
-                    weighted.setWeightRatio(jsonObject.getDouble("weightRatio"));
-                    weighted.setWeightProperty(jsonObject.getString("weightProperty"));
-                    weighted.setWeightPropertyValue(jsonObject.getString("weightPropertyValue"));
-                    weighted.setLowerLimitScore(jsonObject.getInteger("lowerLimitScore"));
-                    weighted.setUpperLimitScore(jsonObject.getInteger("upperLimitScore"));
-                    ruleDTO.setWeightedRiskConfigDTO(weighted);
-                    break;
-                default:
-                    logger.warn("buildRiskConfig mode error, riskConfig:{}",riskConfig);
-            }
-        } catch (Exception e){
-            logger.error("buildRiskConfig error,riskConfig:{}",riskConfig,e);
-        }
-    }
-
-
-
 
     //查询平台指标
     private List<PolicyIndicatrixItemDTO> queryPolicyIndicatrixItemDTOByPolicyUuid(String policyUuid){
-        List<PolicyIndicatrixItemDO>  policyIndicatrixItemDOList = policyIndicatrixItemDOMapper.selectByPolicyUuid(policyUuid);
+        List<PolicyIndicatrixItemDO>  policyIndicatrixItemDOList = policyIndicatrixItemDOMapper.selectEnabledByPolicyUuid(policyUuid);
         if(policyIndicatrixItemDOList == null) {
             return null;
         }
@@ -250,24 +165,6 @@ public class PolicyRepository implements IPolicyRepository{
             PolicyIndicatrixItemDTO policyIndicatrixItemDTO = new PolicyIndicatrixItemDTO();
             BeanUtils.copyProperties(rolicyIndicatrixItemDO,policyIndicatrixItemDTO);
             return policyIndicatrixItemDTO;
-        }).collect(Collectors.toList());
-
-        return result;
-    }
-
-
-    //查询策略指标
-    private List<IndexDefinitionDTO> queryIndexDefinitionDTOBySubPolicyUuid(String subPolicyUuid){
-        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDOMapper.getEnabledIndexesBySubPolicyUuid(subPolicyUuid);
-        if(indexDefinitionDOList == null) {
-            return null;
-        }
-
-        List<IndexDefinitionDTO> result = null;
-        result = indexDefinitionDOList.stream().map(indexDefinitionDO->{
-            IndexDefinitionDTO indexDefinitionDTO = new IndexDefinitionDTO();
-            BeanUtils.copyProperties(indexDefinitionDO,indexDefinitionDTO);
-            return indexDefinitionDTO;
         }).collect(Collectors.toList());
 
         return result;
@@ -291,29 +188,5 @@ public class PolicyRepository implements IPolicyRepository{
         return result;
     }
 
-    //查询策略运行模式
-    private PolicyDecisionModeDTO queryPolicyDecisionModeDTOByPolicyUuid(String policyUuid){
-        PolicyDecisionModeDO policyDecisionModeDO = policyDecisionModeDOMapper.selectByPolicyUuid(policyUuid);
-        if(policyDecisionModeDO == null) {
-            return null;
-        }
 
-        PolicyDecisionModeDTO policyDecisionModeDTO = new PolicyDecisionModeDTO();
-        BeanUtils.copyProperties(policyDecisionModeDO,policyDecisionModeDTO);
-
-        return policyDecisionModeDTO;
-    }
-
-    //查询决策流
-    private DecisionFlowDTO queryDecisionFlowDTOByPolicyUuid(String policyUuid){
-        DecisionFlowDO decisionFlowDO = decisionFlowDOMapper.selectByUuid(policyUuid);
-        if(decisionFlowDO == null) {
-            return null;
-        }
-
-        DecisionFlowDTO decisionFlowDTO = new DecisionFlowDTO();
-        BeanUtils.copyProperties(decisionFlowDO,decisionFlowDTO);
-
-        return decisionFlowDTO;
-    }
 }

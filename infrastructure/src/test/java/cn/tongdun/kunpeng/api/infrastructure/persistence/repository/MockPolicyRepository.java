@@ -62,6 +62,21 @@ public class MockPolicyRepository implements IPolicyRepository{
     @Override
 //    @Cacheable("policyDOCache")
     public PolicyDTO queryByUuid(String uuid){
+        //策略
+        PolicyDTO policyDO = new PolicyDTO();
+        policyDO.setUuid("123456789");
+        policyDO.setStatus(1);
+        policyDO.setEventId("eventId");
+        policyDO.setPartnerCode("demo");
+        policyDO.setVersion("v1.0");
+        policyDO.setName("policy name");
+        return policyDO;
+    }
+
+
+    @Override
+//    @Cacheable("policyDOCache")
+    public PolicyDTO queryFullByUuid(String uuid){
 
         //策略
         PolicyDTO policyDO = new PolicyDTO();

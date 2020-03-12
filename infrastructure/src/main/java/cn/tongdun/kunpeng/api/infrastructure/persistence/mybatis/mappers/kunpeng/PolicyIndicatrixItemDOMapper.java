@@ -9,6 +9,8 @@ public interface PolicyIndicatrixItemDOMapper {
     /**
      * @mbggenerated
      */
-    List<PolicyIndicatrixItemDO> selectByPolicyUuid(String policyUuid);
+    List<PolicyIndicatrixItemDO> selectEnabledByPolicyUuid(String policyUuid);
+
+    PolicyIndicatrixItemDO selectByUuid(String uuid);
 
 }
