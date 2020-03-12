@@ -32,27 +32,27 @@ public class RawRuleParseUtils {
             throw new ParseException("RawRuleParseUtils parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
         FunctionDesc functionDesc = rawRule.getFunctionDescList().get(0);
-        AbstractFunction fourCalculation = (AbstractFunction) FunctionLoader.getFunction(functionDesc);
+        AbstractFunction abstractFunction = (AbstractFunction) FunctionLoader.getFunction(functionDesc);
         //构造比较条件
         if (rawRule.getConditionList() == null || rawRule.getConditionList().isEmpty() || rawRule.getConditionList().size() != 1) {
-            throw new ParseException("RawRuleParseUtils parse condition error,ruleUuid:" + fourCalculation.getRuleUuid() + ",conditionUuid:" + fourCalculation.getConditionUuid());
+            throw new ParseException("RawRuleParseUtils parse condition error,ruleUuid:" + abstractFunction.getRuleUuid() + ",conditionUuid:" + abstractFunction.getConditionUuid());
         }
 
         Condition condition = rawRule.getConditionList().get(0);
         if (condition.getLeft().getFieldType() != FieldTypeEnum.FUNC ||
                 !condition.getLeft().getValue().equals(functionDesc.getId().toString())) {
-            throw new ParseException("RawRuleParseUtils condition not match function error,ruleUuid:" + fourCalculation.getRuleUuid() + ",conditionUuid:" + fourCalculation.getConditionUuid());
+            throw new ParseException("RawRuleParseUtils condition not match function error,ruleUuid:" + abstractFunction.getRuleUuid() + ",conditionUuid:" + abstractFunction.getConditionUuid());
         }
 
         Variable right = ConditionParamUtils.parseConditionParam(condition.getRight());
         if (null == right) {
-            throw new ParseException("RawRuleParseUtils condition parse error,conditionUuid:" + fourCalculation.getConditionUuid());
+            throw new ParseException("RawRuleParseUtils condition parse error,conditionUuid:" + abstractFunction.getConditionUuid());
         }
         AbstractBinaryOperator operator = (AbstractBinaryOperator) OperatorLoader.getOperator(condition.getOp());
         if (null == operator) {
-            throw new ParseException("RawRuleParseUtils getOperator error,conditionUuid:" + fourCalculation.getConditionUuid() + ",op:" + condition.getOp());
+            throw new ParseException("RawRuleParseUtils getOperator error,conditionUuid:" + abstractFunction.getConditionUuid() + ",op:" + condition.getOp());
         }
-        operator.addOperand(fourCalculation);
+        operator.addOperand(abstractFunction);
         operator.addOperand(right);
         return operator;
     }
