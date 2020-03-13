@@ -32,7 +32,7 @@
     select
     <include refid="Base_Column_List" />
     from policy_challenger a
-    where uuid = #{uuid}
+    where uuid = #{uuid} and is_deleted = 0
   </select>
 
   <select id="selectAvailableByPartners" resultMap="BaseResultMap" parameterType="java.util.Set">

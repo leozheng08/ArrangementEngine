@@ -21,10 +21,10 @@ import java.util.List;
 public class CustomListValueRepository implements ICustomListValueRepository {
 
     @Autowired
-    CustomListDOMapper customListDOMapper;
+    private CustomListDOMapper customListDOMapper;
 
     @Autowired
-    CustomListValueDOMapper customListValueDOMapper;
+    private CustomListValueDOMapper customListValueDOMapper;
 
 
     @Override
@@ -53,17 +53,8 @@ public class CustomListValueRepository implements ICustomListValueRepository {
         if (null != valueDOList) {
             List<CustomListValue> result = new ArrayList<>();
             for (CustomListValueDO listValueDO : valueDOList) {
-                //列表类型，0为普通，1为复合
-                int type = listValueDO.getColumnType();
-                String value = null;
-                if (type == 0) {
-                    value = listValueDO.getDataValue();
-                } else if (type ==1) {
-                    value = listValueDO.getColumnValues();
-                }
-                long expireTime = listValueDO.getGmtExpire().getTime();
-                if (StringUtils.isNoneBlank(value)) {
-                    CustomListValue customListValue = new CustomListValue(value, expireTime);
+                CustomListValue customListValue = convert(listValueDO);
+                if(customListValue != null){
                     result.add(customListValue);
                 }
             }
@@ -72,5 +63,60 @@ public class CustomListValueRepository implements ICustomListValueRepository {
 
         return null;
     }
+
+    /**
+     * 根据customListValueUuid 查询列表数据
+     * @param customListValueUuid
+     * @return
+     */
+    @Override
+    public CustomListValue selectByUuid(String customListValueUuid){
+        CustomListValueDO customListValueDO = customListValueDOMapper.selectByUuid(customListValueUuid);
+        if(customListValueDO == null) {
+            return null;
+        }
+        return convert(customListValueDO);
+    }
+
+    /**
+     * 根据customListValueUuid 查询列表数据
+     * @param uuids
+     * @return
+     */
+    @Override
+    public List<CustomListValue> selectByUuids(List<String> uuids){
+        List<CustomListValueDO> valueDOList = customListValueDOMapper.selectByUuids(uuids);
+
+        if (null != valueDOList) {
+            List<CustomListValue> result = new ArrayList<>();
+            for (CustomListValueDO listValueDO : valueDOList) {
+                CustomListValue customListValue = convert(listValueDO);
+                if(customListValue != null){
+                    result.add(customListValue);
+                }
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+
+    private CustomListValue convert(CustomListValueDO listValueDO){
+        //列表类型，0为普通，1为复合
+        int type = listValueDO.getColumnType();
+        String value = null;
+        if (type == 0) {
+            value = listValueDO.getDataValue();
+        } else if (type ==1) {
+            value = listValueDO.getColumnValues();
+        }
+        long expireTime = listValueDO.getGmtExpire().getTime();
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
+        return new CustomListValue(listValueDO.getCustomListUuid(),value, expireTime);
+    }
+
 
 }

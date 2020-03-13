@@ -1,10 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +54,11 @@ public class PartnerReLoadManager implements IReload<Partner> {
             }
 
             Partner newPartner = partnerRepository.queryByPartnerCode(partnerCode);
-            if(newPartner == null){
-                return true;
+            //如果失效则删除缓存
+            if(newPartner == null || CommonStatusEnum.CLOSE.getCode() == newPartner.getStatus()){
+                return remove(partnerDO);
             }
+
             partnerCache.put(partnerCode, newPartner);
         } catch (Exception e){
             logger.error("PartnerReLoadManager failed, partnerCode:{}",partnerCode,e);
@@ -80,6 +84,14 @@ public class PartnerReLoadManager implements IReload<Partner> {
         return true;
     }
 
-
+    /**
+     * 关闭状态
+     * @param partner
+     * @return
+     */
+    @Override
+    public boolean deactivate(Partner partner){
+        return remove(partner);
+    }
 
 }

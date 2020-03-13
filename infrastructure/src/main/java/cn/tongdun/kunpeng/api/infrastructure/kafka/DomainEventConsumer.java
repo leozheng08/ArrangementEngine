@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.kafka;
 
 import cn.tongdun.kunpeng.api.engine.reload.DomainEventHandle;
+import cn.tongdun.kunpeng.api.engine.reload.RawDomainEventHandle;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,7 @@ public class DomainEventConsumer extends AbstractConsumer {
     private static final Logger                     logger                   = LoggerFactory.getLogger(DomainEventConsumer.class);
 
     @Autowired
-    private DomainEventHandle domainEventHandle;
+    private RawDomainEventHandle rawDomainEventHandle;
 
     @Override
     protected boolean batchConsume() {
@@ -20,7 +21,7 @@ public class DomainEventConsumer extends AbstractConsumer {
 
     @Override
     public void onMessage(String topic, JSONObject message) {
-        domainEventHandle.handleRawMessage(message);
+        rawDomainEventHandle.handleRawMessage(message);
     }
 
 

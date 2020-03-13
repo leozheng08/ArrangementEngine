@@ -1,12 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
-import cn.tongdun.ddd.common.domain.UUIDEntity;
-import cn.tongdun.kunpeng.api.engine.reload.impl.EventTypeReLoadManager;
-import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyDefinitionReLoadManager;
-import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyReLoadManager;
-import cn.tongdun.kunpeng.api.engine.reload.impl.RuleReLoadManager;
+import cn.tongdun.ddd.common.domain.CommonEntity;
+import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,20 +31,9 @@ public class DomainEventHandle {
     @Autowired
     private EventMsgParser eventMsgParser;
     @Autowired
-    private PolicyDefinitionReLoadManager policyDefinitionReLoadManager;
-    @Autowired
-    private PolicyReLoadManager policyReLoadManager;
-    @Autowired
-    private RuleReLoadManager ruleReLoadManager;
-    @Autowired
-    private EventTypeReLoadManager eventTypeReLoadManager;
-    @Autowired
     private FinishEventCache finishEventCache;
     @Autowired
     private ReloadFactory reloadFactory;
-
-    @Autowired
-    private IDomainEventRepository domainEventRepository;
 
     private final static String EVENT_TYPE_REMOVE ="Remove";
 
@@ -56,20 +41,12 @@ public class DomainEventHandle {
     @PostConstruct
     public void init(){
         threadPool = threadService.createThreadPool(
-                2,
-                2,
+                1,
+                1,
                 30L,
                 TimeUnit.MINUTES,
                 1000,
                 "DomainEventHandle-");
-    }
-
-
-    /**
-     * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
-     */
-    public void handleRawMessage(JSONObject rawEventMsg){
-        domainEventRepository.putEventMsgToRemoteCache(rawEventMsg.toJSONString(),rawEventMsg.getLong("occurredTime"));
     }
 
 
@@ -88,6 +65,9 @@ public class DomainEventHandle {
                 public Boolean call(){
                     try {
                         SingleDomainEvent singleDomainEvent = eventMsgParser.parseSingleDomainEvent(eventMsg);
+                        if(singleDomainEvent == null){
+                            return true;
+                        }
                         //如果此消息已处理成功，则不需要再处理
                         if(isFinish(singleDomainEvent)){
                             return true;
@@ -99,7 +79,7 @@ public class DomainEventHandle {
                             setFinish(singleDomainEvent);
                         }
                     } catch (Exception e){
-                        logger.error("EventNotify reLoadManager is null,class:{},event:{}", eventMsg);
+                        logger.error("handleMessage error,event:{}", eventMsg,e);
                         return false;
                     }
                     return true;
@@ -119,15 +99,15 @@ public class DomainEventHandle {
                 Object entryData = domainEvent.getData();
                 IReload reLoadManager = reloadFactory.getReload(entryData.getClass());
                 if (reLoadManager == null) {
-                    logger.error("EventNotify reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
-                    return false;
+                    logger.warn("EventNotify reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
+                    return true;
                 }
-                if (domainEvent.getEventType().endsWith(EVENT_TYPE_REMOVE)) {
+                if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {
                     if(!reLoadManager.remove(domainEvent.getData())){
                         return false;
                     }
                 } else {
-                    if(reLoadManager.addOrUpdate(domainEvent.getData())){
+                    if(!reLoadManager.addOrUpdate(domainEvent.getData())){
                         return false;
                     }
                 }
@@ -145,9 +125,19 @@ public class DomainEventHandle {
      * @return
      */
     private boolean isFinish(SingleDomainEvent domainEvent){
-        UUIDEntity uuidEntity = (UUIDEntity)domainEvent.getData();
-        String key = StringUtils.join(domainEvent.getEntity(),SPLIT_CHAR,uuidEntity.getUuid());
+        String key = buildKey(domainEvent);
         return finishEventCache.contains(key);
+    }
+
+    private String buildKey(SingleDomainEvent domainEvent){
+        String uuid = null;
+        Long gmtModify = null;
+        if(domainEvent.getData() instanceof CommonEntity) {
+            CommonEntity commonEntity = (CommonEntity) domainEvent.getData();
+            uuid = commonEntity.getUuid();
+            gmtModify = commonEntity.getGmtModify().getTime();
+        }
+        return StringUtils.join(domainEvent.getEntity(),SPLIT_CHAR,uuid,SPLIT_CHAR,gmtModify);
     }
 
     /**
@@ -155,8 +145,7 @@ public class DomainEventHandle {
      * @param domainEvent
      */
     private void setFinish(SingleDomainEvent domainEvent){
-        UUIDEntity uuidEntity = (UUIDEntity)domainEvent.getData();
-        String key = StringUtils.join(domainEvent.getEntity(),SPLIT_CHAR,uuidEntity.getUuid());
+        String key = buildKey(domainEvent);
         finishEventCache.put(key,true);
     }
 

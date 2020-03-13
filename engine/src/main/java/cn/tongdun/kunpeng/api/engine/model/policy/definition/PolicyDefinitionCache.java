@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefinition> {
 
     public static final String SPLIT_CHAR = "^^";
-    //policyDefinitionUuid -> PolicyDefinition
+    //policyDefinitionUuid -> PolicyDefinition 有包含status=0 isDeleted=1的数据
     private Map<String,PolicyDefinition> policyDefinitionMap = new ConcurrentHashMap<>(3000);
 
     //partnerCode^^eventId -> policyDefinitionUuid
@@ -72,6 +72,22 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
         }
 
         return policyDefinition.getCurrVersionUuid();
+    }
+
+    public PolicyDefinition getPolicyDefinition(String partner, String eventId){
+        String key = buildKey(partner,eventId);
+        String policyDefinitionUuid = policyDefinitionUuidMap.get(key);
+
+        if(StringUtils.isBlank(policyDefinitionUuid)){
+            return null;
+        }
+
+        PolicyDefinition policyDefinition = policyDefinitionMap.get(policyDefinitionUuid);
+        if(policyDefinition == null){
+            return null;
+        }
+
+        return policyDefinition;
     }
 
 

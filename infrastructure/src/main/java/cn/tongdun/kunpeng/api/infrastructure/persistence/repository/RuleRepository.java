@@ -145,6 +145,9 @@ public class RuleRepository implements IRuleRepository {
     public RuleDTO queryFullByUuid(String ruleUuid) {
 
         RuleDO ruleDO = ruleDOMapper.selectByUuid(ruleUuid);
+        if(ruleDO == null){
+            return null;
+        }
         RuleDTO ruleDTO = new RuleDTO();
         BeanUtils.copyProperties(ruleDO, ruleDTO);
         parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());

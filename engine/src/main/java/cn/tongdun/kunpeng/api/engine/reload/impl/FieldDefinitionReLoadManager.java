@@ -1,10 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +55,11 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
             }
 
             FieldDefinition newFieldDefinition = fieldDefinitionRepository.queryByUuid(uuid);
-            if(newFieldDefinition == null){
-                return true;
+            //如果失效则删除缓存
+            if(newFieldDefinition == null || CommonStatusEnum.CLOSE.getCode() == newFieldDefinition.getStatus()){
+                return remove(fieldDefinitionDO);
             }
+
             fieldDefinitionCache.put(uuid, newFieldDefinition);
         } catch (Exception e){
             logger.error("FieldDefinitionReLoadManager failed, uuid:{}",uuid,e);
@@ -81,4 +85,14 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
         return true;
     }
 
+
+    /**
+     * 关闭状态
+     * @param fieldDefinitionDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(FieldDefinitionDO fieldDefinitionDO){
+        return remove(fieldDefinitionDO);
+    }
 }

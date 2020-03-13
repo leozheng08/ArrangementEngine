@@ -43,7 +43,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select <include refid="Base_Column_List"/>
     from index_definition
-    where uuid = #{uuid,jdbcType=CHAR}
+    where uuid = #{uuid,jdbcType=CHAR} and is_deleted = 0
   </select>
 
 

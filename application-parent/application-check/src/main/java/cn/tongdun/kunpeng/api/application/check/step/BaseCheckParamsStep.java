@@ -93,7 +93,7 @@ public class BaseCheckParamsStep implements IRiskStep {
             String fieldCode = fieldDefinition.getFieldCode();
             String dataType = fieldDefinition.getDataType();
 
-            Object val = request.getFieldValues().get(KunpengStringUtils.camel2underline(fieldCode));
+            Object val = request.getFieldValues().get(fieldCode);
             if(val == null){
                 continue;
             }

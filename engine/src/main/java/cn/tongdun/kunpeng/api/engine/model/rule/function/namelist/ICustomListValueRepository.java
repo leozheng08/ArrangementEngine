@@ -32,4 +32,18 @@ public interface ICustomListValueRepository {
      */
     List<CustomListValue> selectByListUuid(String customListUuid, Integer offset, Integer size);
 
+    /**
+     * 根据customListValueUuid 查询列表数据
+     * @param uuid
+     * @return
+     */
+    CustomListValue selectByUuid(String uuid);
+
+    /**
+     * 根据多个customListValueUuid 查询列表数据
+     * @param uuids
+     * @return
+     */
+    List<CustomListValue> selectByUuids(List<String> uuids);
+
 }

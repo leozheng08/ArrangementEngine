@@ -67,6 +67,8 @@ public class Policy extends VersionedEntity {
      */
     private Integer status;
 
+    private boolean deleted;
+
     //执行方式，并行执行子策略、决策流、决策表、决策树
     private AbstractDecisionMode decisionMode;
 

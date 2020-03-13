@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.model;
+package cn.tongdun.kunpeng.api.engine.model.constant;
 
 /**
  * 规则表rule、规则条件表rule_condition_element中的biz_type

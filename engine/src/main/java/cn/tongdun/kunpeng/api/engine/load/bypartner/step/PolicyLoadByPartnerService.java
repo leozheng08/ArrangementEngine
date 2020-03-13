@@ -4,13 +4,18 @@ import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
+import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
+import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +42,9 @@ public class PolicyLoadByPartnerService {
 
     @Autowired
     private IPolicyRepository policyRepository;
+
+    @Autowired
+    private PolicyCache policyCache;
 
     @Autowired
     private DefaultConvertorFactory defaultConvertorFactory;
@@ -73,12 +81,15 @@ public class PolicyLoadByPartnerService {
 
         List<PolicyLoadTask> tasks = new ArrayList<>();
         for(PolicyModifiedDTO policyModifiedDO:policyModifiedDOList){
-            if(policyModifiedDO.getStatus() != 1){
-                //todo 缓存不在用状态，便于返回404子码
+            if(CommonStatusEnum.CLOSE.getCode() == policyModifiedDO.getStatus()||
+                    DeleteStatusEnum.INVALID.getCode() == policyModifiedDO.isDeleted() ){
+                //缓存不在用状态，便于返回404子码
+                Policy policy = convertor(policyModifiedDO);
+                policyCache.put(policy.getUuid(),policy);
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getPolicyUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
             tasks.add(task);
         }
 
@@ -90,5 +101,11 @@ public class PolicyLoadByPartnerService {
         }
 
         return true;
+    }
+
+    private Policy convertor(PolicyModifiedDTO policyModifiedDTO){
+        Policy policy = new Policy();
+        BeanUtils.copyProperties(policyModifiedDTO,policy);
+        return policy;
     }
 }

@@ -37,7 +37,7 @@
     ,
     <include refid="Blob_Column_List" />
     from dynamic_script
-    where uuid = #{uuid,jdbcType=CHAR}
+    where uuid = #{uuid,jdbcType=CHAR} and is_deleted = 0
   </select>
 
   <select id="selectGroovyByPartners" resultMap="BaseResultMap" parameterType="java.util.Set">

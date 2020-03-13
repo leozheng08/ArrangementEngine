@@ -11,8 +11,12 @@ import org.slf4j.LoggerFactory;
  */
 public interface IReload<T> {
 
-
+    //create创建,import导入,update修改,activate激活,recover恢复  都归此类操作
     boolean addOrUpdate(T t);
 
+    //删除
     boolean remove(T t);
+
+    //关闭
+    boolean deactivate(T t);
 }

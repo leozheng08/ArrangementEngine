@@ -56,7 +56,9 @@ public class PolicyDefinitionRepository  implements IPolicyDefinitionRepository{
     @Override
     public PolicyDefinition queryByUuid(String uuid){
         PolicyDefinitionDO policyDefinitionDO= policyDefinitionDOMapper.selectByUuid(uuid);
-
+        if(policyDefinitionDO == null){
+            return null;
+        }
         PolicyDefinition policyDefinition = new PolicyDefinition();
         BeanUtils.copyProperties(policyDefinitionDO,policyDefinition);
         return policyDefinition;
@@ -67,7 +69,9 @@ public class PolicyDefinitionRepository  implements IPolicyDefinitionRepository{
     @Override
     public PolicyDefinition queryByPolicyUuid(String uuid){
         PolicyDefinitionDO policyDefinitionDO= policyDefinitionDOMapper.selectByPolicyUuid(uuid);
-
+        if(policyDefinitionDO == null){
+            return null;
+        }
         PolicyDefinition policyDefinition = new PolicyDefinition();
         BeanUtils.copyProperties(policyDefinitionDO,policyDefinition);
         return policyDefinition;

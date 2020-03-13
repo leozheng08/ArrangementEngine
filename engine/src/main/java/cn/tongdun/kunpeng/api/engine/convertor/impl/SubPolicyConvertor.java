@@ -46,6 +46,7 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
         subPolicy.setUuid(t.getUuid());
         subPolicy.setName(t.getName());
         subPolicy.setRiskType(t.getRiskType());
+        subPolicy.setGmtModify(t.getGmtModify());
 
         //策略模式,如首次匹配、最坏匹配、权重模式
         PolicyMode policyMode = PolicyMode.Weighted;
