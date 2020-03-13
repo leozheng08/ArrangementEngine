@@ -47,11 +47,14 @@ public class PartnerReLoadManager implements IReload<Partner> {
             Long timestamp = partnerDO.getGmtModify().getTime();
             Partner oldPartner = partnerCache.get(partnerCode);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(oldPartner != null && oldPartner.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldPartner != null && oldPartner.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
             Partner newPartner = partnerRepository.queryByPartnerCode(partnerCode);
+            if(newPartner == null){
+                return true;
+            }
             partnerCache.put(partnerCode, newPartner);
         } catch (Exception e){
             logger.error("PartnerReLoadManager failed, partnerCode:{}",partnerCode,e);

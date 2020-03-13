@@ -2,12 +2,14 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.api.engine.model.BizTypeEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.RuleDO;
+import cn.tongdun.kunpeng.share.dataobject.RuleActionElementDO;
+import cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,9 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class RuleReLoadManager implements IReload<RuleDO> {
+public class RuleActionElementReLoadManager implements IReload<RuleActionElementDO> {
 
-    private Logger logger = LoggerFactory.getLogger(RuleReLoadManager.class);
+    private Logger logger = LoggerFactory.getLogger(RuleActionElementReLoadManager.class);
 
     @Autowired
     private IRuleRepository ruleRepository;
@@ -41,7 +43,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(RuleDO.class,this);
+        reloadFactory.register(RuleActionElementDO.class,this);
     }
 
     /**
@@ -49,50 +51,54 @@ public class RuleReLoadManager implements IReload<RuleDO> {
      * @return
      */
     @Override
-    public boolean addOrUpdate(RuleDO ruleDO){
-        String uuid = ruleDO.getUuid();
-        logger.debug("RuleReLoadManager start, uuid:{}",uuid);
+    public boolean addOrUpdate(RuleActionElementDO ruleActionElementDO){
+        return reload(ruleActionElementDO);
+    }
+
+
+    /**
+     * 条件修改，需要整体规则重新加载
+     * @param ruleActionElementDO
+     * @return
+     */
+    public boolean reload(RuleActionElementDO ruleActionElementDO){
+        String ruleUuid = ruleActionElementDO.getRuleUuid();
+        logger.debug("RuleConditionElementReLoadManager start, ruleUuid:{}",ruleUuid);
         try {
-            Long timestamp = ruleDO.getGmtModify().getTime();
-            Rule oldRule = ruleCache.get(uuid);
+
+            Long timestamp = ruleActionElementDO.getGmtModify().getTime();
+            Rule oldRule = ruleCache.get(ruleUuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
-            RuleDTO ruleDTO = ruleRepository.queryFullByUuid(uuid);
+            RuleDTO ruleDTO = ruleRepository.queryFullByUuid(ruleUuid);
             if(ruleDTO == null){
                 return true;
             }
             Rule newRule = ruleConvertor.convert(ruleDTO);
-            ruleCache.put(uuid,newRule);
+            ruleCache.put(ruleUuid,newRule);
 
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
         } catch (Exception e){
-            logger.error("RuleReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("RuleConditionElementReLoadManager failed, uuid:{}",ruleUuid,e);
             return false;
         }
-        logger.debug("RuleReLoadManager success, uuid:{}",uuid);
+        logger.debug("RuleConditionElementReLoadManager success, uuid:{}",ruleUuid);
         return true;
     }
-
+    
 
     /**
      * 删除事件类型
-     * @param ruleDO
+     * @param ruleActionElementDO
      * @return
      */
     @Override
-    public boolean remove(RuleDO ruleDO){
-        try {
-            Rule rule = ruleCache.remove(ruleDO.getUuid());
-            //刷新子策略下规则的执行顺序
-            subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
-        } catch (Exception e){
-            return false;
-        }
-        return true;
+    public boolean remove(RuleActionElementDO ruleActionElementDO){
+        return reload(ruleActionElementDO);
     }
 
 }

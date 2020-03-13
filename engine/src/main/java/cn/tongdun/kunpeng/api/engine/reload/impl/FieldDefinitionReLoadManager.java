@@ -48,11 +48,14 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
             Long timestamp = fieldDefinitionDO.getGmtModify().getTime();
             FieldDefinition oldFieldDefinition = fieldDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(oldFieldDefinition != null && oldFieldDefinition.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldFieldDefinition != null && oldFieldDefinition.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
             FieldDefinition newFieldDefinition = fieldDefinitionRepository.queryByUuid(uuid);
+            if(newFieldDefinition == null){
+                return true;
+            }
             fieldDefinitionCache.put(uuid, newFieldDefinition);
         } catch (Exception e){
             logger.error("FieldDefinitionReLoadManager failed, uuid:{}",uuid,e);

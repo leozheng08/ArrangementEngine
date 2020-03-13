@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.redis.impl;
 
 
-import cn.tongdun.kunpeng.api.engine.reload.IEventMsgPullRepository;
+import cn.tongdun.kunpeng.api.engine.reload.IDomainEventRepository;
 import cn.tongdun.kunpeng.common.util.DateUtil;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
 import com.alibaba.fastjson.JSONArray;
@@ -19,23 +19,34 @@ import java.util.stream.Collectors;
  * @Date: 2020/3/11 下午6:42
  */
 @Repository
-public class EventMsgPullRepository implements IEventMsgPullRepository{
+public class EventMsgPullRepository implements IDomainEventRepository {
 
     private static Logger logger = LoggerFactory.getLogger(EventMsgPullRepository.class);
 
-    public static final String SPLIT_CHAR = "^^";
+    private static final String SPLIT_CHAR = "^^";
+
+    //取最近几分钟数据
+    private static final int LAST_MINUTES = 60;
+
     @Autowired
     private RedisScoreKVRepository redisScoreKVRepository;
 
-
     @Override
-    public List<String> pullLastEventMsgs(){
-        String currentKey = DateUtil.getYYYYMMDDHHMMStr();
-        String lastKey = DateUtil.getLastMinute();
-        Set<IScoreValue> scoreValueSet = new HashSet<>();
+    public List<String> pullLastEventMsgsFromRemoteCache(){
+
+        Set<IScoreValue> scoreValueSet = new LinkedHashSet<>();
         try {
-            scoreValueSet = redisScoreKVRepository.zrangeByScoreWithScores(currentKey,0,-1);
-            scoreValueSet.addAll(redisScoreKVRepository.zrangeByScoreWithScores(lastKey,0,-1));
+            for(int i=LAST_MINUTES-1;i>=0;i--){
+                String lastKey = DateUtil.getLastMinute(i);
+                Set<IScoreValue> scoreValueSetTmp = redisScoreKVRepository.zrangeByScoreWithScores(lastKey,0,Long.MAX_VALUE);
+                if(scoreValueSetTmp.isEmpty()){
+                    continue;
+                }
+
+                scoreValueSet.addAll(scoreValueSetTmp);
+            }
+
+
         } catch (Exception e) {
             logger.error("update rule form redis error!",e);
         }
@@ -110,5 +121,11 @@ public class EventMsgPullRepository implements IEventMsgPullRepository{
         return target.values().stream().map(scoreValue ->{
             return scoreValue.getValue().toString();
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void putEventMsgToRemoteCache(String eventMsg,Long occurredTime){
+        String currentKey = DateUtil.getYYYYMMDDHHMMStr();
+        redisScoreKVRepository.zadd(currentKey,occurredTime,eventMsg);
     }
 }

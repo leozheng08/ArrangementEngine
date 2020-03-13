@@ -75,11 +75,14 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             Long timestamp = policyDO.getGmtModify().getTime();
             Policy oldPolicy = policyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(oldPolicy != null && oldPolicy.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldPolicy != null && oldPolicy.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
             PolicyDTO policyDTO = policyRepository.queryByUuid(uuid);
+            if(policyDTO == null){
+                return true;
+            }
             Policy policy = policyConvertor.convert(policyDTO);
             policyCache.put(uuid,policy);
         } catch (Exception e){

@@ -6,12 +6,14 @@ import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyDefinitionReLoadManager;
 import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyReLoadManager;
 import cn.tongdun.kunpeng.api.engine.reload.impl.RuleReLoadManager;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -45,15 +47,13 @@ public class DomainEventHandle {
     @Autowired
     private ReloadFactory reloadFactory;
 
+    @Autowired
+    private IDomainEventRepository domainEventRepository;
+
     private final static String EVENT_TYPE_REMOVE ="Remove";
 
 
-    /**
-     * 默认线程池
-     *     如果处理器无定制线程池，则使用此默认
-     */
-    ExecutorService executor;
-
+    @PostConstruct
     public void init(){
         threadPool = threadService.createThreadPool(
                 2,
@@ -65,13 +65,25 @@ public class DomainEventHandle {
     }
 
 
+    /**
+     * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
+     */
+    public void handleRawMessage(JSONObject rawEventMsg){
+        domainEventRepository.putEventMsgToRemoteCache(rawEventMsg.toJSONString(),rawEventMsg.getLong("occurredTime"));
+    }
+
+
+    /**
+     * 根据redis或aerospike远程缓存中拉取最近两分钟的变更数据，处理这些变更事件
+     * @param eventMsgs
+     */
     public void handleMessage(List<String> eventMsgs ){
         if(eventMsgs == null || eventMsgs.isEmpty()){
             return;
         }
 
         for(String eventMsg : eventMsgs){
-            executor.submit(new Callable<Boolean>() {
+            threadPool.submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call(){
                     try {
@@ -83,7 +95,7 @@ public class DomainEventHandle {
 
                         boolean result = handleMessage(singleDomainEvent);
                         if (result) {
-                            //如果处理成功，则标记到缓存中
+                            //如果处理成功，则标记到本地缓存中
                             setFinish(singleDomainEvent);
                         }
                     } catch (Exception e){
@@ -97,6 +109,11 @@ public class DomainEventHandle {
     }
 
 
+    /**
+     * 处理单个事件
+     * @param domainEvent
+     * @return
+     */
     private boolean handleMessage(SingleDomainEvent domainEvent){
         try {
                 Object entryData = domainEvent.getData();
@@ -123,7 +140,7 @@ public class DomainEventHandle {
     }
 
     /**
-     *
+     * 判断某个事件是否已处理过，避免重复处理
      * @param domainEvent
      * @return
      */
@@ -133,6 +150,10 @@ public class DomainEventHandle {
         return finishEventCache.contains(key);
     }
 
+    /**
+     * 成功处理的，标记到本地缓存
+     * @param domainEvent
+     */
     private void setFinish(SingleDomainEvent domainEvent){
         UUIDEntity uuidEntity = (UUIDEntity)domainEvent.getData();
         String key = StringUtils.join(domainEvent.getEntity(),SPLIT_CHAR,uuidEntity.getUuid());

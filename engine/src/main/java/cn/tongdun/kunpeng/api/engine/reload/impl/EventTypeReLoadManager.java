@@ -48,11 +48,14 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
             Long timestamp = eventTypeDO.getGmtModify().getTime();
             EventType eventType = eventTypeCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(eventType != null && eventType.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && eventType != null && eventType.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
             EventType newEventType = eventTypeRepository.queryByUuid(uuid);
+            if(newEventType == null){
+                return true;
+            }
             eventTypeCache.put(uuid, newEventType);
         } catch (Exception e){
             logger.error("EventTypeReLoadManager failed, uuid:{}",uuid,e);

@@ -59,7 +59,7 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
             Long timestamp = subPolicyDO.getGmtModify().getTime();
             SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(oldSubPolicy != null && oldSubPolicy.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldSubPolicy != null && oldSubPolicy.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
