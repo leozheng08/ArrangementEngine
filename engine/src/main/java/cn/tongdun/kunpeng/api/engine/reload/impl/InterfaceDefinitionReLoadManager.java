@@ -48,11 +48,14 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
             Long timestamp = interfaceDefinitionDO.getGmtModify().getTime();
             InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(interfaceDefinition != null && interfaceDefinition.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && interfaceDefinition != null && interfaceDefinition.getModifiedVersion() >= timestamp) {
                 return true;
             }
 
             InterfaceDefinition newInterfaceDefinition = interfaceDefinitionRepository.queryByUuid(uuid);
+            if(newInterfaceDefinition == null){
+                return true;
+            }
             interfaceDefinitionCache.put(uuid, newInterfaceDefinition);
         } catch (Exception e){
             logger.error("InterfaceReLoadManager failed, uuid:{}",uuid,e);

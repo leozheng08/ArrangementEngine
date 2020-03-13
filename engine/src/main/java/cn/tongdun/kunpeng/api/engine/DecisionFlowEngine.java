@@ -39,8 +39,7 @@ public class DecisionFlowEngine extends DecisionTool {
         long start = System.currentTimeMillis();
         PolicyResponse policyResponse = new PolicyResponse();
 
-        String policyUuid = decisionMode.getPolicyUuid();
-        Policy policy = policyCache.get(policyUuid);
+        Policy policy = policyCache.get(context.getPolicyUuid());
 
         GraphResult graphResult = decisionFlow.getGraph().execute(context);
         if (graphResult.getException() != null) {
@@ -70,6 +69,7 @@ public class DecisionFlowEngine extends DecisionTool {
         policyResponse.setScore(finalSubPolicyResponse.getScore());
 
         policyResponse.setCostTime(System.currentTimeMillis() - start);
+        policyResponse.setSuccess(true);
         return policyResponse;
     }
 }

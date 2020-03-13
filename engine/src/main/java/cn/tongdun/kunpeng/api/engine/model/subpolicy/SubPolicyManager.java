@@ -80,6 +80,7 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
             subPolicyResponse.setSubPolicyName(subPolicy.getName());
             subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
             subPolicyResponse.setRiskType(subPolicy.getRiskType());
+            subPolicyResponse.setSuccess(true);
         } catch (Exception e){
             subPolicyResponse.setSuccess(false);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));

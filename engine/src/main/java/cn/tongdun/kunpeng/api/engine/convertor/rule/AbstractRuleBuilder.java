@@ -133,6 +133,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         rule.setDecision(ruleDTO.getRiskDecision());
         rule.setBizType(ruleDTO.getBizType());
         rule.setBizUuid(ruleDTO.getBizUuid());
+        rule.setGmtModify(ruleDTO.getGmtModify());
         return rule;
     }
 
