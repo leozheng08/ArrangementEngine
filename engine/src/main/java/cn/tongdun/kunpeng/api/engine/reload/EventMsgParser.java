@@ -37,6 +37,8 @@ public class EventMsgParser {
         put("custom_list_value", CustomListValueDO.class);
         put("interface_definition",InterfaceDefinitionDO.class);
         put("policy_challenger",PolicyChallengerDO.class);
+        put("eventtype",EventTypeDO.class);
+        put("event_type",EventTypeDO.class);
     }};
 
 
