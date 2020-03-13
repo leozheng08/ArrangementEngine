@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
-import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
-
 import java.util.List;
 
 /**
@@ -9,27 +7,11 @@ import java.util.List;
  * @Author: liang.chen
  * @Date: 2020/2/28 下午3:08
  */
-public interface ICustomListValueRepository {
-
-    /**
-     * 查询所有在用的自定义列表
-     * @return
-     */
-    List<String> selectAllAvailable();
+public interface ICustomListValueKVRepository {
 
 
-    /**
-     * 根据自定义列表查询数量
-     * @param customListUuid
-     * @return
-     */
-    int selectCountByListUuid(String customListUuid);
+    void putCustomListValueData(CustomListValue customListValue);
 
-    /**
-     * 分页加载自定义列表
-     * @param customListUuid
-     * @return
-     */
-    List<CustomListValue> selectByListUuid(String customListUuid, Integer offset, Integer size);
+    void removeCustomListValueData(CustomListValue customListValue);
 
 }

@@ -2,8 +2,11 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
+import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
@@ -62,19 +65,57 @@ public class GetPolicyUuidStep implements IRiskStep {
         if(StringUtils.isNotBlank(policyVersion)) {
             policyUuid = policyCache.getPolicyUuid(partnerCode, eventId, policyVersion);
         } else {
-            policyUuid = policyDefinitionCache.getPolicyUuid(partnerCode, eventId);
+            PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, eventId);
+            //策略定义不存在
+            if(policyDefinition == null){
+                logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+                context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
+                return false;
+            }
+
+            //策略定义已删除
+            if(DeleteStatusEnum.INVALID.getCode() == policyDefinition.isDeleted()){
+                logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
+                context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_DELETED.getCode(), ReasonCode.POLICY_DELETED.getDescription(), "决策引擎执行"));
+                return false;
+            }
+
+            //策略定义已关闭
+            if(CommonStatusEnum.CLOSE.getCode() == policyDefinition.getStatus()){
+                logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
+                context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_CLOSED.getCode(), ReasonCode.POLICY_CLOSED.getDescription(), "决策引擎执行"));
+                return false;
+            }
+            policyUuid = policyDefinition.getCurrVersionUuid();
         }
 
-        if(StringUtils.isBlank(policyUuid)){ //todo 增加404子码的细分
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString());
+        //策略不存在
+        if(StringUtils.isBlank(policyUuid)){
+            logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
             return false;
         }
-
         Policy policy = policyCache.get(policyUuid);
-        if(policy == null){ //todo 增加404子码的细分
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString());
+        if(policy == null){
+            logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
             return false;
         }
+
+        //策略已删除
+        if(DeleteStatusEnum.INVALID.getCode() == policy.isDeleted()){
+            logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_DELETED.getCode(), ReasonCode.POLICY_DELETED.getDescription(), "决策引擎执行"));
+            return false;
+        }
+
+        //策略已关闭
+        if(CommonStatusEnum.CLOSE.getCode() == policy.getStatus()){
+            logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_CLOSED.getCode(), ReasonCode.POLICY_CLOSED.getDescription(), "决策引擎执行"));
+            return false;
+        }
+
 
         context.setPolicyUuid(policyUuid);
         context.setEventType(policy.getEventType());

@@ -4,26 +4,30 @@ package cn.tongdun.kunpeng.api.engine.model.constant;
  * @Author: liang.chen
  * @Date: 2020/3/13 下午6:04
  */
-public enum DomainEventEntryEnum {
+public enum DomainEventTypeEnum {
 
-    POLICY_DEFINITION("策略定义"),
-    POLICY("策略"),
-    SUB_POLICY("子策略"),
-    RULE("规则"),
-    DECISION_FLOW("决策流"),
-    INDEX_DEFINITION("策略指标"),
-    POLICY_DECISION_MODE("决策模式"),
-    EVENT_TYPE("事件类型"),
-    DYNAMIC_SCRIPT("动态脚本 "),
-    INTERFACE_DEFINITION("三方接口定义"),
-    POLICY_CHALLENGER("挑战者信息"),
-    CUSTOM_LIST("自定义表列"),
-    CUSTOM_LIST_VALUE("自定义表列数据");
+
+    BATCH_REMOVE("批量删除"),
+    BATCH_CREATE("批量创建"),
+    BATCH_UPDATE("批量修改"),
+    BATCH_ACTIVATE("批量激活"),
+    BATCH_DEACTIVATE("批量关闭"),
+
+    CREATE("创建"),
+    IMPORT("导入"),
+    UPDATE("修改"),
+    ACTIVATE("激活"),
+    DEACTIVATE("关闭"),
+    REMOVE("删除"),
+    RECOVER("恢复"),
+    SUSPEND("暂停"),
+    TERMINATE("停止"),
+    SORT("排序");
 
 
     private String desc;
 
-    DomainEventEntryEnum(String desc) {
+    DomainEventTypeEnum(String desc) {
         this.desc = desc;
     }
 

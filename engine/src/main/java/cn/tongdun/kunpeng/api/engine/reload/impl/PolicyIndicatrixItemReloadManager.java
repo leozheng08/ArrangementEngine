@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
 import cn.tongdun.kunpeng.share.dataobject.PolicyIndicatrixItemDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,4 +75,15 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     public boolean remove(PolicyIndicatrixItemDO policyIndicatrixItemDO){
         return reload(policyIndicatrixItemDO.getPolicyUuid());
     }
+
+    /**
+     * 关闭状态
+     * @param policyIndicatrixItemDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyIndicatrixItemDO policyIndicatrixItemDO){
+        return remove(policyIndicatrixItemDO);
+    }
+
 }

@@ -1,53 +1,34 @@
 package cn.tongdun.kunpeng.api.engine.model.constant;
 
-import cn.tongdun.kunpeng.share.dataobject.*;
-
 /**
  * @Author: liang.chen
  * @Date: 2020/3/13 下午6:04
  */
-public class DOEntryNameEnum {
+public enum DomainEventEntryEnum {
 
-    policy_definition("policy_definition"),
-    policy("policy"),
-    sub_policy("sub_policy"),
-    rule("rule"),
-    decision_flow("decision_flow"),
-    index_definition("index_definition"),
-    policy_decision_mode("policy_decision_mode"),
-    event_type("event_type"),
-    dynamic_script("dynamic_script"),
-    custom_list_value("custom_list_value"),
-    interface_definition("interface_definition"),
-    policy_challenger("policy_challenger"),
-    custom_list("custom_list"),
-    policy_definition("policy_definition");
+    POLICY_DEFINITION("策略定义"),
+    POLICY("策略"),
+    SUB_POLICY("子策略"),
+    RULE("规则"),
+    DECISION_FLOW("决策流"),
+    INDEX_DEFINITION("策略指标"),
+    POLICY_DECISION_MODE("决策模式"),
+    EVENT_TYPE("事件类型"),
+    DYNAMIC_SCRIPT("动态脚本 "),
+    INTERFACE_DEFINITION("三方接口定义"),
+    POLICY_CHALLENGER("挑战者信息"),
+    CUSTOM_LIST("自定义表列"),
+    CUSTOM_LIST_VALUE("自定义表列数据");
 
 
-    private String code;
+    private String desc;
 
-    DOEntryNameEnum(String code) {
-        this.code = code;
+    DomainEventEntryEnum(String desc) {
+        this.desc = desc;
     }
 
-    public String getCode() {
-        return code;
+    public String getDesc() {
+        return desc;
     }
 
-
-    put("",PolicyDefinitionDO.class);
-    put("",PolicyDO.class);
-    put("",SubPolicyDO.class);
-    put("",RuleDO.class);
-    //        put("rule_condition_element", RuleConditionElementDO.class);
-//        put("rule_action_element", RuleActionElementDO.class);
-    put("",DecisionFlowDO.class);
-    put("", IndexDefinitionDO.class);
-    put("", PolicyDecisionModeDO.class);
-    put("", FieldDefinitionDO.class);
-    put("", EventTypeDO.class);
-    put("", DynamicScriptDO.class);
-    put("", CustomListValueDO.class);
-    put("",InterfaceDefinitionDO.class);
-    put("",PolicyChallengerDO.class);
 }

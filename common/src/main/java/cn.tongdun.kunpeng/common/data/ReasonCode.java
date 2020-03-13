@@ -74,11 +74,13 @@ public enum ReasonCode {
 
     // 400~499：策略执行错误
     POLICY_NOT_EXIST_SUB("40401", "没有对应的策略配置"),
+    POLICY_DELETED("40405", "策略已删除"),
+    POLICY_CLOSED("40406", "策略已关闭"),
     SUB_POLICY_NOT_EXIST("40404","对应的策略下没有子策略"),
     RULE_NOT_EXIST("40402", "对应的策略下没有规则"),
     POLICY_LOAD_ERROR("40403", "策略加载有误"),
-    SUB_POLICY_LOAD_ERROR("40405", "子策略加载有误"),
-    RULE_LOAD_ERROR("40406", "规则加载有误"),
+    SUB_POLICY_LOAD_ERROR("40407", "子策略加载有误"),
+    RULE_LOAD_ERROR("40408", "规则加载有误"),
 
 
     //此状态码表示：部分数据获取失败的，仍旧返回调用成功，同时返回部分数据获取失败的状态码，不计费、记录事件；客户可以重试

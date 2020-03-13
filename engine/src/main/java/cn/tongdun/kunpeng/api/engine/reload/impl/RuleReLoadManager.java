@@ -2,12 +2,14 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
+import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     @Autowired
     private IRuleRepository ruleRepository;
 
+    @Autowired
     private SubPolicyReLoadManager subPolicyReLoadManager;
 
     @Autowired
@@ -61,9 +64,12 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             }
 
             RuleDTO ruleDTO = ruleRepository.queryFullByUuid(uuid);
-            if(ruleDTO == null){
-                return true;
+
+            //如果失效则删除缓存
+            if(ruleDTO == null || CommonStatusEnum.CLOSE.getCode() == ruleDTO.getStatus()){
+                return remove(ruleDO);
             }
+
             Rule newRule = ruleConvertor.convert(ruleDTO);
             ruleCache.put(uuid,newRule);
 
@@ -87,12 +93,25 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     public boolean remove(RuleDO ruleDO){
         try {
             Rule rule = ruleCache.remove(ruleDO.getUuid());
+            if(rule == null){
+                return true;
+            }
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
         } catch (Exception e){
             return false;
         }
         return true;
+    }
+
+    /**
+     * 关闭状态
+     * @param ruleDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(RuleDO ruleDO){
+        return remove(ruleDO);
     }
 
 }

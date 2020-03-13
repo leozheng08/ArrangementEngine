@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.model;
+package cn.tongdun.kunpeng.api.engine.model.constant;
 
 public enum CommonStatusEnum {
 

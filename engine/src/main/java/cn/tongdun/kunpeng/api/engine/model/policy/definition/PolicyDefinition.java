@@ -71,4 +71,6 @@ public class PolicyDefinition extends VersionedEntity {
 
     private Integer status;
 
+    private boolean deleted;
+
 }

@@ -2,10 +2,13 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
+import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
@@ -13,6 +16,8 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
+import cn.tongdun.kunpeng.share.dataobject.PolicyDefinitionDO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +85,11 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             }
 
             PolicyDTO policyDTO = policyRepository.queryByUuid(uuid);
-            if(policyDTO == null){
-                return true;
+            //如果失效则删除缓存
+            if(policyDTO == null || CommonStatusEnum.CLOSE.getCode() == policyDTO.getStatus()){
+                return remove(policyDO);
             }
+
             Policy policy = policyConvertor.convert(policyDTO);
             policyCache.put(uuid,policy);
         } catch (Exception e){
@@ -111,15 +118,29 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
     }
 
 
+    /**
+     * 级联删除各个子对象
+     * @param policyUuid
+     * @return
+     */
     public boolean removePolicy(String policyUuid){
-        //级联删除各个子对象
-
         Policy policy = policyCache.get(policyUuid);
         if(policy == null){
             return true;
         }
-        //删除策略
-        policyCache.remove(policyUuid);
+
+        //标记为删除状态
+        policy.setDeleted(DeleteStatusEnum.INVALID.getCode());
+
+        //级联删除各个子对象
+        return cascadeRemove(policyUuid);
+    }
+
+    public boolean cascadeRemove(String policyUuid){
+
+        if(StringUtils.isBlank(policyUuid)){
+            return true;
+        }
 
         //删除策略运行模式
         decisionModeCache.remove(policyUuid);
@@ -136,4 +157,33 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
         }
         return true;
     }
+
+    /**
+     * 关闭状态
+     * @param policyDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyDO policyDO){
+        try {
+            String policyUuid = policyDO.getUuid();
+            Policy policy = policyCache.get(policyUuid);
+            if(policy == null){
+                return true;
+            }
+
+            //标记不在用状态
+            policy.setStatus(CommonStatusEnum.CLOSE.getCode());
+
+            //级联删除各个子对象
+            cascadeRemove(policyUuid);
+        } catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+
+
+
 }

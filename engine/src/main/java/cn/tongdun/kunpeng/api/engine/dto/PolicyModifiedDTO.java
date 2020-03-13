@@ -10,7 +10,7 @@ public class PolicyModifiedDTO {
     /**
      * 策略uuid
      */
-    private String            policyUuid;
+    private String            uuid;
     /**
      * 合作方编码
      */
@@ -42,6 +42,11 @@ public class PolicyModifiedDTO {
      * 状态 0：已关闭 1：已启用
      */
     private Integer status;
+
+    /**
+     * 是否删除
+     */
+    private boolean deleted;
 
 
     /**

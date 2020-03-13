@@ -29,7 +29,7 @@ public class MockPolicyRepository implements IPolicyRepository{
         //mock
         List<PolicyModifiedDTO> list = new ArrayList();
         PolicyModifiedDTO policyModifiedDO = new PolicyModifiedDTO();
-        policyModifiedDO.setPolicyUuid("123456789");
+        policyModifiedDO.setUuid("123456789");
         policyModifiedDO.setDefaultVersion(true);
         policyModifiedDO.setStatus(1);
         policyModifiedDO.setEventId("eventId");
@@ -47,7 +47,7 @@ public class MockPolicyRepository implements IPolicyRepository{
         //mock
         List<PolicyModifiedDTO> list = new ArrayList();
         PolicyModifiedDTO policyModifiedDO = new PolicyModifiedDTO();
-        policyModifiedDO.setPolicyUuid("123456789");
+        policyModifiedDO.setUuid("123456789");
         policyModifiedDO.setDefaultVersion(true);
         policyModifiedDO.setStatus(1);
         policyModifiedDO.setEventId("eventId");

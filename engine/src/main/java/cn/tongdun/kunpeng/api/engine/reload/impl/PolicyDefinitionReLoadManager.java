@@ -3,18 +3,16 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
+import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
-import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.PolicyDefinitionDO;
@@ -47,18 +45,6 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
 
     @Autowired
     private PolicyCache policyCache;
-
-    @Autowired
-    private DecisionModeCache decisionModeCache;
-
-    @Autowired
-    private SubPolicyCache subPolicyCache;
-
-    @Autowired
-    private RuleCache ruleCache;
-
-    @Autowired
-    private PolicyIndexCache policyIndexCache;
 
     @Autowired
     private DefaultConvertorFactory defaultConvertorFactory;
@@ -101,9 +87,12 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             }
 
             PolicyDefinition policyDefinition = policyDefinitionRepository.queryByUuid(uuid);
-            if(policyDefinition == null){
-                return true;
+            //如果失效则删除缓存
+            if(policyDefinition == null || CommonStatusEnum.CLOSE.getCode() == policyDefinition.getStatus()){
+                remove(policyDefinitionDO);
+                return policyReLoadManager.removePolicy(policyDefinition != null?policyDefinition.getCurrVersionUuid():policyDefinitionDO.getCurrVersionUuid());
             }
+
             //当前调用版本
             String newPolicyUuid = policyDefinition.getCurrVersionUuid();
             Policy oldPolicy = policyCache.get(newPolicyUuid);
@@ -136,12 +125,38 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
     @Override
     public boolean remove(PolicyDefinitionDO policyDefinitionDO){
         try {
-            PolicyDefinition policyDefinition = policyDefinitionCache.remove(policyDefinitionDO.getUuid());
+            PolicyDefinition policyDefinition = policyDefinitionCache.get(policyDefinitionDO.getUuid());
             if(policyDefinition == null){
-                return true;
+                return policyReLoadManager.removePolicy(policyDefinitionDO.getCurrVersionUuid());
             }
-            String policyUuid = policyDefinition.getCurrVersionUuid();
+            //标记不删除状态
+            policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
 
+            String policyUuid = policyDefinition.getCurrVersionUuid();
+            return policyReLoadManager.removePolicy(policyUuid);
+
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+
+    /**
+     * 关闭状态
+     * @param policyDefinitionDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyDefinitionDO policyDefinitionDO){
+        try {
+            PolicyDefinition policyDefinition = policyDefinitionCache.get(policyDefinitionDO.getUuid());
+            if(policyDefinition == null){
+                return policyReLoadManager.removePolicy(policyDefinitionDO.getCurrVersionUuid());
+            }
+            //标记不在用状态
+            policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
+
+            String policyUuid = policyDefinition.getCurrVersionUuid();
             return policyReLoadManager.removePolicy(policyUuid);
 
         } catch (Exception e){

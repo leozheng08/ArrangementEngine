@@ -49,7 +49,9 @@ public class ReasonCodeStep implements IRiskStep {
     public void dealWithSubReasonCodes(AbstractFraudContext context, IRiskResponse response) {
         if (CollectionUtils.isNotEmpty(context.getSubReasonCodes())) {
             Set<String> sub = new HashSet<>();
+            Set<String> subReasonCodes = new HashSet<>();
             for (SubReasonCode subReasonCode : context.getSubReasonCodes()) {
+                subReasonCodes.add(subReasonCode.getSub_code());
                 //404没有对应的策略配置
                 if (subReasonCode.getSub_code().startsWith(ReasonCode.POLICY_NOT_EXIST.getCode())) {
                     sub.add(ReasonCode.POLICY_NOT_EXIST.getCode());
@@ -79,8 +81,8 @@ public class ReasonCodeStep implements IRiskStep {
                 response.setReasonCode(ReasonCode.ENCRYPTION_FIELD_NOT_READY.getCode());
             }
 
-            if(!sub.isEmpty()){
-                response.setSubReasonCodes(String.join(",", sub));
+            if(!subReasonCodes.isEmpty()){
+                response.setSubReasonCodes(String.join(",", subReasonCodes));
             }
 
             logger.info("partner:{}, sub_reason_code:{}", context.getPartnerCode(), JSON.toJSONString(context.getSubReasonCodes()));

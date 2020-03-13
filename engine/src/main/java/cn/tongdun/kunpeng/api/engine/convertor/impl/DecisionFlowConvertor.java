@@ -45,6 +45,9 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
         }
 
         DecisionFlow decisionFlow = new DecisionFlow();
+        decisionFlow.setUuid(decisionFlowDTO.getUuid());
+        decisionFlow.setPolicyUuid(decisionFlowDTO.getUuid());
+        decisionFlow.setGmtModify(decisionFlowDTO.getGmtModify());
         decisionFlow.setDecisionFlowUuid(decisionFlowDTO.getUuid());
 
         String processXml = null;
@@ -64,6 +67,7 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
         }
 
         decisionFlow.setGraph(graph);
+
         return decisionFlow;
     }
 }

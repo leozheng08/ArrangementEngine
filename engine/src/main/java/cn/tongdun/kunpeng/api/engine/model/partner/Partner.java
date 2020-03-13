@@ -16,7 +16,7 @@ public class Partner extends VersionedEntity {
     private String            partnerCode;                             // 合作标识
     private String            partnerKey;                              // 合作方密钥
     private String            displayName;                             // 合作方公司名称
-    private Boolean           status;                                  // 状态
+    private Integer           status;                                  // 状态
     private Boolean           testAccount;                             // 是否是测试账号
     private String            industryType;                            // 行业类型
     private String            partnerType;                             // 合作类型

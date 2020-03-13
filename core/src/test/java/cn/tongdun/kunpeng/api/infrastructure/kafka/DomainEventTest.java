@@ -115,7 +115,7 @@ public class DomainEventTest {
     @Test
     public void setTestData(){
         Random random = new SecureRandom();
-        String topic = "kupeng_domain_event";
+        String topic = "kunpeng_admin_event";
 
         for(String message  :domainEventList) {
             String messageKey = String.valueOf(random.nextLong());

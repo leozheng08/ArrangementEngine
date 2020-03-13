@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
@@ -9,6 +10,7 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
 import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,9 +76,13 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
 
     public void reloadByUuid(String subPolicyUuid){
         SubPolicyDTO subPolicyDTO = subPolicyRepository.queryByUuid(subPolicyUuid);
-        if(subPolicyDTO == null){
+
+        //如果失效则删除缓存
+        if(subPolicyDTO == null || CommonStatusEnum.CLOSE.getCode() == subPolicyDTO.getStatus()){
+            removeSubPolicy(subPolicyUuid);
             return;
         }
+
         SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDTO);
         subPolicyCache.put(subPolicyUuid,subPolicy);
     }
@@ -111,5 +117,15 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
             ruleCache.remove(rule.getUuid());
         }
         return true;
+    }
+
+    /**
+     * 关闭状态
+     * @param subPolicyDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(SubPolicyDO subPolicyDO){
+        return remove(subPolicyDO);
     }
 }
