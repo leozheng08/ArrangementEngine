@@ -65,6 +65,7 @@
     </appender>
 
     <logger name="cn.tongdun.tdframework" level="DEBUG"/>
+    <logger name="cn.tongdun.kunpeng.api.engine.reload" level="DEBUG"/>
 
     <if condition='p("CONSOLE_LEVEL").equals("OFF")'>
         <then>
