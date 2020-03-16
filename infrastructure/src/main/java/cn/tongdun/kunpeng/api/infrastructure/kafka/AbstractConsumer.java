@@ -52,7 +52,7 @@ public abstract class AbstractConsumer implements IConsumer {
                     onMessage(topic, msgItem);
                 }
             } catch (Exception e) {
-                logger.warn("{} Receive a not json message for {}, data:{}", clsName, record.topic(), message);
+                logger.warn("{} Receive a not json message for {}, data:{}", clsName, record.topic(), message,e);
             }
         }
         if (!batchConsume() || bulkMessages.isEmpty() || StringUtils.isBlank(topic)) {
