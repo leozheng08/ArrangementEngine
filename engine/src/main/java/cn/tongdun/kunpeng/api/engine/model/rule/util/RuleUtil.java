@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +40,9 @@ public class RuleUtil {
         }
 
         //系统字段
-        List<FieldDefinition> systemFields = getFieldDefinitionCache().getSystemField(context);
+        Collection<FieldDefinition> systemFields = getFieldDefinitionCache().getSystemField(context);
         //扩展字段
-        List<FieldDefinition> extendFields = getFieldDefinitionCache().getExtendField(context);
+        Collection<FieldDefinition> extendFields = getFieldDefinitionCache().getExtendField(context);
 
 
         if (null != systemFields && !systemFields.isEmpty()) {

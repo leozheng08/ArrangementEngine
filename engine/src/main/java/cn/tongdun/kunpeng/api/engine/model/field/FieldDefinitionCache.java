@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -33,15 +30,15 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
 
     /**
      * 系统字段
-     * eventType -> List<FieldDefinition>>
+     * eventType -> uuid -> Policy
      */
-    private Map<String, List<FieldDefinition>> systemFieldMap = new ConcurrentHashMap<>(200);
+    private Map<String, Map<String,FieldDefinition>> systemFieldMap = new ConcurrentHashMap<>(200);
 
     /**
      * 扩展字段
-     * partnerCode.eventType -> List<FieldDefinition>>
+     * eventType -> uuid -> Policy
      */
-    private Map<String, List<FieldDefinition>> extendFieldMap = new ConcurrentHashMap<>(200);
+    private Map<String, Map<String,FieldDefinition>> extendFieldMap = new ConcurrentHashMap<>(200);
 
 
     @Autowired
@@ -88,26 +85,45 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
     }
 
 
-    public List<FieldDefinition> getSystemField(AbstractFraudContext context){
+    public Collection<FieldDefinition> getSystemField(AbstractFraudContext context){
         return getSystemField(context.getEventType());
     }
 
-    public List<FieldDefinition> getSystemField(String eventType){
+    public Collection<FieldDefinition> getSystemField(String eventType){
         String key = getSystemFieldKey(eventType);
-
-        return systemFieldMap.get(key);
+        Map<String,FieldDefinition> sysFieldMap = systemFieldMap.get(key);
+        if(sysFieldMap == null){
+            return null;
+        }
+        return sysFieldMap.values();
     }
 
-    public List<FieldDefinition> getExtendField(AbstractFraudContext context){
+    public Collection<FieldDefinition> getExtendField(AbstractFraudContext context){
         return getExtendField(context.getPartnerCode(),context.getEventType());
     }
 
-    public List<FieldDefinition> getExtendField(String partnerCode, String eventType){
+    public Collection<FieldDefinition> getExtendField(String partnerCode, String eventType){
         String key = getExtendFieldKey(partnerCode,eventType);
-
-        return extendFieldMap.get(key);
+        Map<String,FieldDefinition> sysFieldMap = extendFieldMap.get(key);
+        if(sysFieldMap == null){
+            return null;
+        }
+        return sysFieldMap.values();
     }
 
+
+
+    private Map<String,FieldDefinition> getFieldMap(Map<String, Map<String,FieldDefinition>> fieldMap,String key){
+        Map<String,FieldDefinition> map = fieldMap.get(key);
+        if (map == null) {
+            map = new HashMap<>();
+            Map<String,FieldDefinition> oldMap = fieldMap.putIfAbsent(key, map);
+            if(oldMap != null){
+                map = oldMap;
+            }
+        }
+        return map;
+    }
 
     public void addSystemField(FieldDefinition field) {
         if (field == null) {
@@ -120,24 +136,26 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
         if (eventType == null || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
             for (EventType et : eventTypeList) {
                 String key = getSystemFieldKey(et.getEventCode());
-                List<FieldDefinition> list = systemFieldMap.get(key);
-                if (list == null) {
-                    list = new ArrayList<FieldDefinition>();
-                }
-                list.add(field);
-                systemFieldMap.put(key, list);
+                Map<String,FieldDefinition> map = getFieldMap(systemFieldMap,key);
+                map.put(field.getUuid(),field);
             }
         } else {
             String key = getSystemFieldKey(eventType);
             if (StringUtils.isBlank(key)) {
                 return;
             }
-            List<FieldDefinition> list = systemFieldMap.get(key);
-            if (list == null) {
-                list = new ArrayList<FieldDefinition>();
+            Map<String,FieldDefinition> map = getFieldMap(systemFieldMap,key);
+            map.put(field.getUuid(),field);
+
+            //删除其他事件类型下的此字段
+            for (EventType et : eventTypeList) {
+                String sysKey = getSystemFieldKey(et.getEventCode());
+                if(key.equals(sysKey)){
+                    continue;
+                }
+                Map<String,FieldDefinition> sysMap = getFieldMap(systemFieldMap,sysKey);
+                sysMap.remove(field.getUuid());
             }
-            list.add(field);
-            systemFieldMap.put(key, list);
         }
     }
 
@@ -153,24 +171,26 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
                 if (StringUtils.isBlank(key)) {
                     return;
                 }
-                List<FieldDefinition> list = extendFieldMap.get(key);
-                if (list == null) {
-                    list = new ArrayList<FieldDefinition>();
-                }
-                list.add(field);
-                extendFieldMap.put(key, list);
+                Map<String,FieldDefinition> map = getFieldMap(extendFieldMap,key);
+                map.put(field.getUuid(),field);
             }
         } else {
             String key = getExtendFieldKey(field.getPartnerCode(), field.getEventType());
             if (StringUtils.isBlank(key)) {
                 return;
             }
-            List<FieldDefinition> list = extendFieldMap.get(key);
-            if (list == null) {
-                list = new ArrayList<FieldDefinition>();
+            Map<String,FieldDefinition> map = getFieldMap(extendFieldMap,key);
+            map.put(field.getUuid(),field);
+
+            //删除其他事件类型下的此字段
+            for (EventType et : eventTypeList) {
+                String extKey = getExtendFieldKey(field.getPartnerCode(), et.getEventCode());
+                if(key.equals(extKey)){
+                    continue;
+                }
+                Map<String,FieldDefinition> sysMap = getFieldMap(extendFieldMap,extKey);
+                sysMap.remove(field.getUuid());
             }
-            list.add(field);
-            extendFieldMap.put(key, list);
         }
     }
 
@@ -178,49 +198,16 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
      * 删除systemFieldMap或extendFieldMap中的字段定义
      * @param uuid
      */
-    public void removeField(String uuid, Map<String, List<FieldDefinition>> fieldMap){
+    public void removeField(String uuid, Map<String, Map<String,FieldDefinition>> fieldMap){
 
-        fieldMap.values().forEach(new Consumer<List<FieldDefinition>>() {
+        fieldMap.values().forEach(new Consumer<Map<String,FieldDefinition>>() {
             @Override
-            public void accept(List<FieldDefinition> fieldDefinitions) {
-                fieldDefinitions.removeIf(new Predicate<FieldDefinition>() {
-                    @Override
-                    public boolean test(FieldDefinition fieldDefinition) {
-                        if(fieldDefinition.getUuid().equals(uuid)) {
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+            public void accept(Map<String,FieldDefinition> map) {
+                map.remove(uuid);
             }
         });
 
     }
-
-    /**
-     * todo 修改时，删除systemFieldMap或extendFieldMap中的多余数据
-     * @param
-     */
-    public void replaceField(FieldDefinition oldFieldDefinition, Map<String, List<FieldDefinition>> fieldMap){
-
-        fieldMap.values().forEach(new Consumer<List<FieldDefinition>>() {
-            @Override
-            public void accept(List<FieldDefinition> fieldDefinitions) {
-                fieldDefinitions.removeIf(new Predicate<FieldDefinition>() {
-                    @Override
-                    public boolean test(FieldDefinition fieldDefinition) {
-                        if(fieldDefinition.getUuid().equals(oldFieldDefinition.getUuid())) {
-
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-            }
-        });
-
-    }
-
 
 
     private String getExtendFieldKey(String partnerCode, String eventType) {

@@ -32,6 +32,7 @@ public class EventMsgParser {
         put("index_definition", IndexDefinitionDO.class);
         put("policy_decision_mode", PolicyDecisionModeDO.class);
         put("field_definition", FieldDefinitionDO.class);
+        put("field", FieldDefinitionDO.class);
         put("event_type", EventTypeDO.class);
         put("dynamic_script", DynamicScriptDO.class);
         put("custom_list_value", CustomListValueDO.class);
