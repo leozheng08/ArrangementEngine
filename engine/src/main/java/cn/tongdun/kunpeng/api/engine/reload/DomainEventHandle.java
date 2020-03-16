@@ -131,12 +131,16 @@ public class DomainEventHandle {
 
     private String buildKey(SingleDomainEvent domainEvent){
         String uuid = null;
-        Long gmtModify = null;
+        Long gmtModify = domainEvent.getOccurredTime();
         if(domainEvent.getData() instanceof CommonEntity) {
             CommonEntity commonEntity = (CommonEntity) domainEvent.getData();
             uuid = commonEntity.getUuid();
-            gmtModify = commonEntity.getGmtModify().getTime();
+            if(gmtModify<commonEntity.getGmtModify().getTime()) {
+                gmtModify = commonEntity.getGmtModify().getTime();
+            }
         }
+
+
         return StringUtils.join(domainEvent.getEntity(),SPLIT_CHAR,uuid,SPLIT_CHAR,gmtModify);
     }
 
