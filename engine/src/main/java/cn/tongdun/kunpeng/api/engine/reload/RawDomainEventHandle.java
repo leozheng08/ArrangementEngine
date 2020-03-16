@@ -45,21 +45,26 @@ public class RawDomainEventHandle {
      * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
      */
     public void handleRawMessage(JSONObject rawEventMsg){
-        if(rawEventMsg == null){
-            return;
-        }
+        try {
+            if (rawEventMsg == null) {
+                return;
+            }
 
-        String entityName = rawEventMsg.getString("entity");
-        if(StringUtils.isBlank(entityName)){
-            return;
-        }
+            String entityName = rawEventMsg.getString("entity");
+            if (StringUtils.isBlank(entityName)) {
+                return;
+            }
 
-        switch (entityName.toUpperCase()) {
-            case "CUSTOM_LIST_VALUE":
-                putCustomListValueToRemoteCache(rawEventMsg);
-                break;
-            default:
-                putEventMsgToRemoteCache(rawEventMsg);
+            switch (entityName.toUpperCase()) {
+                case "CUSTOM_LIST_VALUE":
+                    putCustomListValueToRemoteCache(rawEventMsg);
+                    break;
+                default:
+                    putEventMsgToRemoteCache(rawEventMsg);
+            }
+        } catch (Exception e){
+            logger.error("handleRawMessage error",e);
+            throw e;
         }
     }
 
