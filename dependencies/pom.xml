@@ -33,6 +33,7 @@
         <tdflow.version>0.0.1-SNAPSHOT</tdflow.version>
         <kunpeng-share.version>1.0-SNAPSHOT</kunpeng-share.version>
         <common.arch.version>2.0.2</common.arch.version>
+        <module.kafka.version>3.1.0</module.kafka.version>
 
         <lz4.version>1.7.1</lz4.version>
 
@@ -381,7 +382,40 @@
                 <version>2.0.2-beta</version>
                 <scope>test</scope>
             </dependency>
+            <!-- module start -->
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>module-kafka</artifactId>
+                <version>${module.kafka.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.kafka</groupId>
+                        <artifactId>kafka-clients</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>1.1.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
+
+
     </dependencyManagement>
 
 

@@ -12,9 +12,6 @@
     <artifactId>infrastructure</artifactId>
     <packaging>jar</packaging>
     <name>infrastructure</name>
-    <properties>
-        <module.kafka.version>3.1.0</module.kafka.version>
-    </properties>
 
     <dependencies>
 
@@ -125,32 +122,6 @@
         <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>module-kafka</artifactId>
-            <version>${module.kafka.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka-clients</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>1.1.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.zookeeper</groupId>
-                    <artifactId>zookeeper</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>cn.fraudmetrix.shutter</groupId>-->
