@@ -209,7 +209,7 @@ public class ParallelEngine extends DecisionTool {
         int ruleCount = 0;
         for(SubPolicy subPolicy : subPolicyList) {
             String subPolicyUuid = subPolicy.getUuid();
-            if(subPolicy == null){
+            if(subPolicyUuid == null){
                 logger.warn("{},policyUuid:{},subPolicyUuid:{}",ReasonCode.SUB_POLICY_LOAD_ERROR.toString(), policyUuid, subPolicyUuid);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
                 return false;

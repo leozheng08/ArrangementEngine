@@ -1,8 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.DecisionFlowConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
+import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
@@ -27,6 +28,7 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
     @Autowired
     private IDecisionFlowRepository decisionFlowRepository;
 
+    @Autowired
     private IPolicyDecisionModeRepository policyDecisionModeRepository;
 
     @Autowired
@@ -75,6 +77,11 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
             if(decisionFlowDTO == null){
                 return true;
             }
+            //如果失效则删除缓存
+            if(decisionFlowDTO == null || CommonStatusEnum.CLOSE.getCode() == decisionFlowDTO.getStatus()){
+                return remove(decisionFlowDO);
+            }
+
             DecisionFlow decisionFlow = decisionFlowConvertor.convert(decisionFlowDTO);
             decisionModeCache.put(uuid,decisionFlow);
         } catch (Exception e){
@@ -99,5 +106,16 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * 关闭状态
+     * @param decisionFlowDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(DecisionFlowDO decisionFlowDO){
+        return remove(decisionFlowDO);
     }
 }

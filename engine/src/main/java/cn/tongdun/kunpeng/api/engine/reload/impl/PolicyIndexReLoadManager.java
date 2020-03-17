@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
+import cn.tongdun.kunpeng.share.dataobject.PolicyDecisionModeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,4 +83,16 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
     public boolean remove(IndexDefinitionDO indexDefinitionDO){
         return reload(indexDefinitionDO.getPolicyUuid());
     }
+
+
+    /**
+     * 关闭状态
+     * @param indexDefinitionDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(IndexDefinitionDO indexDefinitionDO){
+        return remove(indexDefinitionDO);
+    }
+
 }

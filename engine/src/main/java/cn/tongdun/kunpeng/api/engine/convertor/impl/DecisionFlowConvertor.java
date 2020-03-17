@@ -5,11 +5,8 @@ import cn.fraudmetrix.module.tdflow.util.GraphUtil;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
+import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
-import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
-import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexManager;
 import cn.tongdun.kunpeng.api.engine.util.CompressUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -45,6 +42,9 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
         }
 
         DecisionFlow decisionFlow = new DecisionFlow();
+        decisionFlow.setUuid(decisionFlowDTO.getUuid());
+        decisionFlow.setPolicyUuid(decisionFlowDTO.getUuid());
+        decisionFlow.setGmtModify(decisionFlowDTO.getGmtModify());
         decisionFlow.setDecisionFlowUuid(decisionFlowDTO.getUuid());
 
         String processXml = null;
@@ -64,6 +64,7 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
         }
 
         decisionFlow.setGraph(graph);
+
         return decisionFlow;
     }
 }

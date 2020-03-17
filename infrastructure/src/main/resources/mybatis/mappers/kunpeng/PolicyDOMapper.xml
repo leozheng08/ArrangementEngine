@@ -37,7 +37,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
     select
     <include refid="Base_Column_List" />
-    from policy t where t. uuid = #{uuid}
+    from policy t where t. uuid = #{uuid} and is_deleted = 0
   </select>
 
   <select id="selectByPolicyDefinitionUuid" resultMap="BaseResultMap">
@@ -49,18 +49,21 @@
 
   <resultMap id="PolicyModifiedResultMap" type="cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO" >
 
-    <result column="uuid" property="policyUuid" />
+    <result column="uuid" property="uuid" />
     <result column="partner_code" property="partnerCode" />
     <result column="event_id" property="eventId" />
     <result column="event_type" property="eventType" />
     <result column="version" property="version" />
     <result column="is_default_version" property="defaultVersion" />
-    <result column="status" property="status" />
     <result column="gmt_modify" property="gmtModify" />
+    <result column="status" property="status" />
+    <result column="is_deleted" property="deleted" jdbcType="BIT" />
   </resultMap>
 
   <sql id="Modified_Column_List" >
-    a.uuid,a.partner_code,b.event_id,b.event_type,a.version,a.is_default_version,a.status,a.gmt_modify
+    a.uuid,b.partner_code,b.event_id,b.event_type,a.version,a.is_default_version,a.gmt_modify,
+     (a.status =1 and b.status=1) status,
+     (a.is_deleted =1 or b.is_deleted=1) is_deleted
   </sql>
 
   <select id="selectDefaultPolicyByPartners" resultMap="PolicyModifiedResultMap" parameterType="java.util.Set" >

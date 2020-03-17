@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +40,8 @@ public class BaseCheckParamsStep implements IRiskStep {
         StringBuilder sbType = new StringBuilder();
         StringBuilder sbFormat = new StringBuilder();
         StringBuilder sbOvermax = new StringBuilder();
-        List<FieldDefinition> sysFields = fieldDefinitionCache.getSystemField(context.getEventType());
-        List<FieldDefinition> extFields = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType());
+        Collection<FieldDefinition> sysFields = fieldDefinitionCache.getSystemField(context.getEventType());
+        Collection<FieldDefinition> extFields = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType());
 
         if(sysFields != null) {
             context.getFieldDefinitions().addAll(sysFields);
@@ -53,7 +54,7 @@ public class BaseCheckParamsStep implements IRiskStep {
             checkParams(request,sysFields,sbType,sbFormat,sbOvermax);
         }
         if (extFields != null) {
-            checkParams(request,sysFields,sbType,sbFormat,sbOvermax);
+            checkParams(request,extFields,sbType,sbFormat,sbOvermax);
         }
 
 
@@ -87,13 +88,13 @@ public class BaseCheckParamsStep implements IRiskStep {
      * @param sbFormat
      * @param sbOvermax
      */
-    private void checkParams(RiskRequest request,List<FieldDefinition> fields,
+    private void checkParams(RiskRequest request,Collection<FieldDefinition> fields,
                              StringBuilder sbType, StringBuilder sbFormat, StringBuilder sbOvermax){
         for (FieldDefinition fieldDefinition : fields) {
             String fieldCode = fieldDefinition.getFieldCode();
             String dataType = fieldDefinition.getDataType();
 
-            Object val = request.getFieldValues().get(KunpengStringUtils.camel2underline(fieldCode));
+            Object val = request.getFieldValues().get(fieldCode);
             if(val == null){
                 continue;
             }

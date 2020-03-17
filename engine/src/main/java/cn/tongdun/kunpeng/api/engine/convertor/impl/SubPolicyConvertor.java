@@ -2,14 +2,12 @@ package cn.tongdun.kunpeng.api.engine.convertor.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultThreshold;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
-import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +44,7 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
         subPolicy.setUuid(t.getUuid());
         subPolicy.setName(t.getName());
         subPolicy.setRiskType(t.getRiskType());
+        subPolicy.setGmtModify(t.getGmtModify());
 
         //策略模式,如首次匹配、最坏匹配、权重模式
         PolicyMode policyMode = PolicyMode.Weighted;

@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.dto;
 
-import cn.tongdun.ddd.common.domain.ConcurrencySafeEntity;
+import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import lombok.Data;
 
 import java.util.Date;

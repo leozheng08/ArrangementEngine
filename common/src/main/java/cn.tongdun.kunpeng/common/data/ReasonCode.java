@@ -10,32 +10,32 @@ public enum ReasonCode {
 
 
     // 100~199：数据和参数校验错误
-    REQ_DATA_TYPE_ERROR("100", "100"), //
-    PARAM_NULL_ERROR("101", "101"), //
-    PARAM_DATA_TYPE_ERROR("102", "102"), //
-    PARAM_OVER_MAX_LEN("103", "103"), //
-    PARAM_FORMAT_ERROR("104", "104"), //
-    QUERY_TIME_INTERVAL_INVALID("105", "105"), //
-    PARAM_DATA_NOT_EXIST_ERROR("106", "106"), //
+    REQ_DATA_TYPE_ERROR("100", "请求数据类型或格式不正确"), //
+    PARAM_NULL_ERROR("101", "参数不能为空"), //
+    PARAM_DATA_TYPE_ERROR("102", "参数类型不正确"), //
+    PARAM_OVER_MAX_LEN("103", "参数超过最大长度"), //
+    PARAM_FORMAT_ERROR("104", "参数格式不正确"), //
+    QUERY_TIME_INTERVAL_INVALID("105", "参数范围不正确"), //
+    PARAM_DATA_NOT_EXIST_ERROR("106", "枚举值不存在"), //
     PARAM_RECALL_SEQID_ILLEGAL("108", "重试验证失败,重试seqId不合法"),
     PARAM_RECALL_HAVE_SUCCESS("109", "已重试成功,无法再次重试"),
     RECALL_TIME_TOO_LONG("110", "重试时间太久远,超过3个月"),
 
 
-    LOAN_APPLY_ID_BLANK_ERROR("130", "130"),
-    LOAN_APPLY_ID_PARTNER_ERROR("131", "131"),
-    LOAN_APPLY_ID_ID_NUMBER_ERROR("132", "132"),
-    LOAN_APPLY_ID_NOT_EXIST_ERROR("133", "133"),
+    LOAN_APPLY_ID_BLANK_ERROR("130", "申请编号不存在"),
+    LOAN_APPLY_ID_PARTNER_ERROR("131", "申请编号非合作方所有"),
+    LOAN_APPLY_ID_ID_NUMBER_ERROR("132", "申请编号与身份证不符"),
+    LOAN_APPLY_ID_NOT_EXIST_ERROR("133", "申请编号过期"),
 
 
     SUCCESS("200", "处理成功"),
 
     // 300～399 客户账单错误
-    NOT_BUY_SERVICE("301", "301"), //
-    NOT_ALLOWED("302", "302"), //
-    FLOW_POOR("303", "303"), //
-    OUT_OF_SERVICE_DATE("304", "304"), //
-    NOT_ACCEPTABLE("305", "305"), //
+    NOT_BUY_SERVICE("301", "没有购买服务"), //
+    NOT_ALLOWED("302", "已被禁用"), //
+    FLOW_POOR("303", "流量不足"), //
+    OUT_OF_SERVICE_DATE("304", "服务时间过期"), //
+    NOT_ACCEPTABLE("305", "日调用次数已达上限"), //
 
     // 400~499：策略执行错误
     POLICY_NOT_EXIST("404", "没有对应的策略配置"), //
@@ -43,7 +43,7 @@ public enum ReasonCode {
     RECALL_DATA_EXIST("470", "重试查询不到数据"),
 
     // 500~599:服务器内部错误
-    INTERNAL_ERROR("500", "500"),
+    INTERNAL_ERROR("500", "服务器内部异常"),
     ENGINE_EXECUTE_ERROR("505", "505"),
     ENGINE_EXECUTE_TIMEOUT("506", "决策引擎运行异常"),
     DATA_NOT_READY("507", "部分数据未准备好"),
@@ -74,11 +74,13 @@ public enum ReasonCode {
 
     // 400~499：策略执行错误
     POLICY_NOT_EXIST_SUB("40401", "没有对应的策略配置"),
+    POLICY_DELETED("40405", "策略已删除"),
+    POLICY_CLOSED("40406", "策略已关闭"),
     SUB_POLICY_NOT_EXIST("40404","对应的策略下没有子策略"),
     RULE_NOT_EXIST("40402", "对应的策略下没有规则"),
     POLICY_LOAD_ERROR("40403", "策略加载有误"),
-    SUB_POLICY_LOAD_ERROR("40405", "子策略加载有误"),
-    RULE_LOAD_ERROR("40406", "规则加载有误"),
+    SUB_POLICY_LOAD_ERROR("40407", "子策略加载有误"),
+    RULE_LOAD_ERROR("40408", "规则加载有误"),
 
 
     //此状态码表示：部分数据获取失败的，仍旧返回调用成功，同时返回部分数据获取失败的状态码，不计费、记录事件；客户可以重试

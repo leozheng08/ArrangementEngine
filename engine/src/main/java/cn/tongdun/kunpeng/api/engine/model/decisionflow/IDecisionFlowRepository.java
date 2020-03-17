@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.decisionflow;
 
-import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
+import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 
 public interface IDecisionFlowRepository {
 

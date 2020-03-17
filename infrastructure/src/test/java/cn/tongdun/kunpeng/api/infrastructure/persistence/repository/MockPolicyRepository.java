@@ -4,6 +4,10 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDOMapper;
+import cn.tongdun.kunpeng.client.dto.RuleActionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -29,7 +33,7 @@ public class MockPolicyRepository implements IPolicyRepository{
         //mock
         List<PolicyModifiedDTO> list = new ArrayList();
         PolicyModifiedDTO policyModifiedDO = new PolicyModifiedDTO();
-        policyModifiedDO.setPolicyUuid("123456789");
+        policyModifiedDO.setUuid("123456789");
         policyModifiedDO.setDefaultVersion(true);
         policyModifiedDO.setStatus(1);
         policyModifiedDO.setEventId("eventId");
@@ -47,7 +51,7 @@ public class MockPolicyRepository implements IPolicyRepository{
         //mock
         List<PolicyModifiedDTO> list = new ArrayList();
         PolicyModifiedDTO policyModifiedDO = new PolicyModifiedDTO();
-        policyModifiedDO.setPolicyUuid("123456789");
+        policyModifiedDO.setUuid("123456789");
         policyModifiedDO.setDefaultVersion(true);
         policyModifiedDO.setStatus(1);
         policyModifiedDO.setEventId("eventId");

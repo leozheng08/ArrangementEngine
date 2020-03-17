@@ -1,10 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.IInterfaceDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinition;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
 import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +55,11 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
             }
 
             InterfaceDefinition newInterfaceDefinition = interfaceDefinitionRepository.queryByUuid(uuid);
-            if(newInterfaceDefinition == null){
-                return true;
+            //如果失效则删除缓存
+            if(newInterfaceDefinition == null || CommonStatusEnum.CLOSE.getCode() == newInterfaceDefinition.getStatus()){
+                return remove(interfaceDefinitionDO);
             }
+
             interfaceDefinitionCache.put(uuid, newInterfaceDefinition);
         } catch (Exception e){
             logger.error("InterfaceReLoadManager failed, uuid:{}",uuid,e);
@@ -81,6 +85,17 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
         return true;
     }
 
+
+
+    /**
+     * 关闭状态
+     * @param interfaceDefinitionDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(InterfaceDefinitionDO interfaceDefinitionDO){
+        return remove(interfaceDefinitionDO);
+    }
 
 
 }

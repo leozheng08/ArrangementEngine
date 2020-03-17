@@ -42,7 +42,9 @@ public class InterfaceDefinitionRepository implements IInterfaceDefinitionReposi
     @Override
     public InterfaceDefinition queryByUuid(String uuid){
         InterfaceDefinitionDO interfaceDefinitionDO = interfaceDefinitionDOMapper.selectByUuid(uuid);
-
+        if(interfaceDefinitionDO == null){
+            return null;
+        }
         InterfaceDefinition interfaceDefinition  = new InterfaceDefinition();
         BeanUtils.copyProperties(interfaceDefinitionDO,interfaceDefinition);
         return interfaceDefinition;

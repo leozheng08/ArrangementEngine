@@ -12,16 +12,18 @@ import cn.fraudmetrix.module.tdrule.rule.Condition;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.fraudmetrix.module.tdrule.util.RuleCreateFactory;
 import cn.tongdun.kunpeng.api.engine.constant.RuleConstant;
-import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
 import cn.tongdun.kunpeng.api.engine.util.TdRuleOperatorMapUtils;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
+import cn.tongdun.kunpeng.client.dto.RuleActionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -191,7 +193,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             functionDescList.add(functionDesc);
             functionDesc.putExtProperty(RuleConstant.FUNC_DESC_PARAMS_ALL,"true");
 
-            left.setValue(Integer.valueOf(num).toString());
+            left.setValue(String.valueOf(num));
             left.setFieldType(FieldTypeEnum.FUNC);
 
         } else {

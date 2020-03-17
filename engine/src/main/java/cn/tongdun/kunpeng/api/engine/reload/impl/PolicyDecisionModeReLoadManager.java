@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.DecisionFlowConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
+import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
@@ -58,7 +58,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
 
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDecisionModeRepository.queryByPolicyUuid(policyUuid);
             if(policyDecisionModeDTO == null){
-                return true;
+                return remove(policyDecisionModeDO);
             }
             //当前策略是否按决策流执行
             if(DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())){
@@ -111,4 +111,15 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
         }
         return true;
     }
+
+    /**
+     * 关闭状态
+     * @param policyDecisionModeDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyDecisionModeDO policyDecisionModeDO){
+        return remove(policyDecisionModeDO);
+    }
+
 }

@@ -5,12 +5,35 @@ package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
  */
 public class CustomListValue {
 
+    private String customListUuid;
     private String value;
     private long expireTime;
 
+    public CustomListValue() {
+
+    }
     public CustomListValue(String value, long expireTime) {
         this.value = value;
         this.expireTime = expireTime;
+    }
+
+    public CustomListValue(String customListUuid,String value) {
+        this.customListUuid = customListUuid;
+        this.value = value;
+    }
+
+    public CustomListValue(String customListUuid,String value, long expireTime) {
+        this.customListUuid = customListUuid;
+        this.value = value;
+        this.expireTime = expireTime;
+    }
+
+    public String getCustomListUuid() {
+        return customListUuid;
+    }
+
+    public void setCustomListUuid(String customListUuid) {
+        this.customListUuid = customListUuid;
     }
 
     public String getValue() {

@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
 import cn.tongdun.kunpeng.api.engine.reload.DomainEventHandle;
+import cn.tongdun.kunpeng.api.engine.reload.RawDomainEventHandle;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class DomainEventController {
     private Logger logger = LoggerFactory.getLogger(DomainEventController.class);
 
     @Autowired
-    private DomainEventHandle domainEventHandle;
+    private RawDomainEventHandle rawDomainEventHandle;
 
 
 
@@ -28,7 +29,7 @@ public class DomainEventController {
     @ResponseBody
     public String addDomainEvent(@RequestBody String domainEvent) {
 
-        domainEventHandle.handleRawMessage( JSONObject.parseObject(domainEvent));
+        rawDomainEventHandle.handleRawMessage( JSONObject.parseObject(domainEvent));
         return "success";
     }
 }

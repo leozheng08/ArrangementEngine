@@ -61,7 +61,7 @@ public class PartnerLoadManager implements ILoad {
         partner.setPartnerCode(Constant.DEFAULT_PARTNER);
         partner.setUuid(Constant.DEFAULT_PARTNER);
         partner.setDisplayName(Constant.DEFAULT_PARTNER);
-        partner.setStatus(true);
+        partner.setStatus(1);
         return partner;
     }
 }

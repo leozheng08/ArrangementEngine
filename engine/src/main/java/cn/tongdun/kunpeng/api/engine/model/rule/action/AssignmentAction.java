@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.*;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @Author: liuq
@@ -25,6 +26,9 @@ public class AssignmentAction implements Action {
         String rightValueType = json.getString("rightValueType");
         String rightValue=json.getString("rightValue");
 
+        if(StringUtils.isBlank(rightValueType)){
+            return;
+        }
         switch (rightValueType) {
             case "input":
                 right = new Literal(rightValue);

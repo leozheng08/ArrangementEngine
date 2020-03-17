@@ -1,5 +1,6 @@
-package cn.tongdun.kunpeng.api.engine.dto;
+package cn.tongdun.kunpeng.client.dto;
 
+import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
  * @Date: 2020/1/17 下午10:15
  */
 @Data
-public class DecisionFlowModelDTO extends CommonDTO{
+public class DecisionFlowModelDTO extends CommonDTO {
 
     private Long id;
     private Date gmtCreate;

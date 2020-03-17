@@ -37,7 +37,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from rule where uuid = #{uuid} limit 1
+    from rule where uuid = #{uuid}  and is_deleted = 0 limit 1
   </select>
 
   <select id="selectByBizUuidBizType" resultMap="BaseResultMap">

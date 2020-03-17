@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +55,9 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
 
             EventType newEventType = eventTypeRepository.queryByUuid(uuid);
             if(newEventType == null){
-                return true;
+                return remove(eventTypeDO);
             }
+
             eventTypeCache.put(uuid, newEventType);
         } catch (Exception e){
             logger.error("EventTypeReLoadManager failed, uuid:{}",uuid,e);
@@ -79,5 +81,15 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 关闭状态
+     * @param eventTypeDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(EventTypeDO eventTypeDO){
+        return remove(eventTypeDO);
     }
 }

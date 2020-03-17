@@ -13,7 +13,6 @@
     <!-- 使用zookeeper注册中心暴露服务地址 -->
     <dubbo:registry group="${dubbo.zookeeper.root}" protocol="zookeeper" address="${dubbo.zookeeper.host}" port="${dubbo.port}" />
 
-    <dubbo:service interface="cn.tongdun.kunpeng.client.api.IRiskService" ref="riskService" group="${CLUSTER}"/>
 
     <dubbo:consumer check="${dubbo.check}" timeout="${dubbo.consumer.default.timeout}" retries="0"
                     filter="seqid" loadbalance="smart">

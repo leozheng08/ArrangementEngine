@@ -28,6 +28,6 @@
     select
     <include refid="Base_Column_List" />
     from policy_decision_mode
-    where uuid = #{uuid}
+    where uuid = #{uuid} and is_deleted = 0
   </select>
 </mapper>

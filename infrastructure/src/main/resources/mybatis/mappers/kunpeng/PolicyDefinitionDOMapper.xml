@@ -40,7 +40,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
     select
     <include refid="Base_Column_List" />
-    from policy_definition t where t. uuid = #{uuid} limit 1
+    from policy_definition t where t. uuid = #{uuid}  and is_deleted = 0 limit 1
   </select>
 
   <select id="selectByPolicyUuid" resultMap="BaseResultMap">
@@ -52,8 +52,8 @@
   <select id="selectByPartners" resultMap="BaseResultMap" parameterType="java.util.Set" >
     select
     <include refid="Base_Column_List" />
-    from policy_definition t where is_deleted =0
-    and partner_code in
+    from policy_definition t where
+    partner_code in
     <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
       #{partner}
     </foreach>

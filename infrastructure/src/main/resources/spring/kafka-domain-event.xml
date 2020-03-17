@@ -21,7 +21,7 @@
         <property name="mode" value="standard" />
         <property name="bizConsumers">
             <map>
-                <entry key="kupeng_domain_event">
+                <entry key="kunpeng_admin_event">
                     <ref bean="domainEventConsumer" />
                 </entry>
             </map>
@@ -34,13 +34,12 @@
 
     <!-- 注意必须保证每个producer实例中配置的topic列表属于同一个kafka集群,否则初始化检查将失败-->
     <!-- 若当前应用需要发送多个集群的topic请建立多个实例 -->
-    <!-- kunpeng_admin_event -->
     <bean id="domainEventProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close">
         <property name="topics">
             <list>
-                <value>kupeng_domain_event</value>
+                <value>kunpeng_admin_event</value>
             </list>
         </property>
-        <property name="configCenter" ref="zkConfigCenter-activity"/>
+        <property name="configCenter" ref="zkConfigCenter-domainEvent"/>
     </bean>
 </beans>

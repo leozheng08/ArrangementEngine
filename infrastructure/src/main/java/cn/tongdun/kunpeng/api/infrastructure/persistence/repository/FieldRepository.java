@@ -61,7 +61,9 @@ public class FieldRepository implements IFieldDefinitionRepository {
     @Override
     public FieldDefinition queryByUuid(String uuid){
         FieldDefinitionDO fieldDefinitionDO = fieldDefinitionDOMapper.selectByUuid(uuid);
-
+        if(fieldDefinitionDO == null){
+            return null;
+        }
         FieldDefinition fieldDefinition = new FieldDefinition();
         BeanUtils.copyProperties(fieldDefinitionDO,fieldDefinition);
         return fieldDefinition;

@@ -1,14 +1,15 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +64,11 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
             }
 
             DynamicScript dynamicScript = dynamicScriptRepository.queryByUuid(uuid);
-            if(dynamicScript == null){
-                return true;
+            //如果失效则删除缓存
+            if(dynamicScript == null || CommonStatusEnum.CLOSE.getCode() == dynamicScript.getStatus()){
+                return remove(dynamicScriptDO);
             }
+
             groovyCompileManager.addOrUpdate(dynamicScript);
         } catch (Exception e){
             logger.error("DynamicScriptReLoadManager failed, uuid:{}",uuid,e);
@@ -89,5 +92,16 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * 关闭状态
+     * @param dynamicScriptDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(DynamicScriptDO dynamicScriptDO){
+        return remove(dynamicScriptDO);
     }
 }

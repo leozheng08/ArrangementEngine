@@ -34,7 +34,7 @@ public class LocalEnvironment implements ILocalEnvironment{
 
     private String ip;
 
-    @Value("${cluster.poc.name}")
+    @Value("${cluster.poc.name:}")
     private String pocClusterName;
 
     @Override

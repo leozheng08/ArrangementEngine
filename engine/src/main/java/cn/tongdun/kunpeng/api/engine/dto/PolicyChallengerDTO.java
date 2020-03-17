@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.dto;
 
+import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
  * @Date: 2020/1/17 下午10:17
  */
 @Data
-public class PolicyChallengerDTO extends CommonDTO{
+public class PolicyChallengerDTO extends CommonDTO {
 
     /**
      * 策略uuid policy_uuid

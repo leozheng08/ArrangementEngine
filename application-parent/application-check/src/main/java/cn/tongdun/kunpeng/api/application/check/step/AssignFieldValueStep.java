@@ -73,9 +73,9 @@ public class AssignFieldValueStep implements IRiskStep {
 
         /*************根据字段的定义，将请求参数设置到上下文中 start**********************/
         //系统字段
-        List<FieldDefinition> systemFields = fieldDefinitionCache.getSystemField(context);
+        Collection<FieldDefinition> systemFields = fieldDefinitionCache.getSystemField(context);
         //扩展字段
-        List<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context);
+        Collection<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context);
 
         setFraudContext(context, request, systemFields);
         setFraudContext(context, request, extendFields);
@@ -114,7 +114,7 @@ public class AssignFieldValueStep implements IRiskStep {
      * @param request
      * @param fields
      */
-    public void setFraudContext(AbstractFraudContext ctx, RiskRequest request, List<FieldDefinition> fields) {
+    public void setFraudContext(AbstractFraudContext ctx, RiskRequest request, Collection<FieldDefinition> fields) {
         if (ctx != null && request != null && fields != null) {
             for (FieldDefinition fieldDefinition : fields) {
                 String fieldCode = fieldDefinition.getFieldCode();
