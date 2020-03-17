@@ -60,14 +60,14 @@ public class EventMsgParser {
 
         if(entity == null){
             domainEvent.setData(jsonArray);
-            logger.warn("event entity is empty! event:{}",jsonObject.toString());
+//            logger.debug("event entity is empty! event:{}",jsonObject.toString());
             return domainEvent;
         }
 
         Class entityClass = entityMap.get(entity.toLowerCase());
         if(entityClass == null){
             domainEvent.setData(jsonArray);
-            logger.warn("event entityClass not find! event:{}",jsonObject.toString());
+//            logger.debug("event entityClass not find! event:{}",jsonObject.toString());
             return domainEvent;
         }
 
@@ -104,14 +104,14 @@ public class EventMsgParser {
 
         if(entity == null){
             domainEvent.setData(jsonArray);
-            logger.warn("event entity is empty! event:{}",event);
+//            logger.debug("event entity is empty! event:{}",event);
             return domainEvent;
         }
 
         Class entityClass = entityMap.get(entity.toLowerCase());
         if(entityClass == null){
             domainEvent.setData(jsonArray);
-            logger.warn("event entityClass not find! event:{}",event);
+//            logger.debug("event entityClass not find! event:{}",event);
             return domainEvent;
         }
 

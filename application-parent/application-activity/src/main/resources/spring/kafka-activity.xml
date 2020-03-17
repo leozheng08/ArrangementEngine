@@ -7,7 +7,7 @@
 
     <!-- 引用公共zk配置中心,对应shutter文件为zookeeper.properties -->
     <!-- business.unit 为管理员分配值，请将这个配置放在应用自己的shutter配置文件中 -->
-    <bean id="zkConfigCenter" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">
+    <bean id="zkConfigCenter-activity" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">
         <property name="zkserver" value="${configcenter.endpoint}"/>
         <property name="businessUnit" value="${business.unit}"/>
     </bean>
@@ -22,7 +22,7 @@
                 <value>kunpeng_api_raw_activity</value>
             </list>
         </property>
-        <property name="configCenter" ref="zkConfigCenter"/>
+        <property name="configCenter" ref="zkConfigCenter-activity"/>
     </bean>
 
 </beans>

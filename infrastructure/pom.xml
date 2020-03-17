@@ -127,25 +127,6 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>cn.fraudmetrix.shutter</groupId>-->
-            <!--<artifactId>shutter-client</artifactId>-->
-            <!--<version>2.1.7.8</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>log4j</groupId>-->
-                    <!--<artifactId>log4j</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.slf4j</groupId>-->
-                    <!--<artifactId>slf4j-log4j12</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>com.google.protobuf</groupId>-->
-                    <!--<artifactId>protobuf-java</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
 
         <!-- module end -->
 
