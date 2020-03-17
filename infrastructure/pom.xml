@@ -125,12 +125,8 @@
             <version>3.1.2</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.alibaba</groupId>
-                    <artifactId>fastjson</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cn.fraudmetrix</groupId>
-                    <artifactId>module-common</artifactId>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
