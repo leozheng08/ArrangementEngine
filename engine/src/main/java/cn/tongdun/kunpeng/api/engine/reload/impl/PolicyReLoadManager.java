@@ -75,7 +75,7 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
     @Override
     public boolean addOrUpdate(PolicyDO policyDO){
         String uuid = policyDO.getUuid();
-        logger.debug("SubPolicyReLoadManager start, uuid:{}",uuid);
+        logger.debug("PolicyReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = policyDO.getGmtModify().getTime();
             Policy oldPolicy = policyCache.get(uuid);
@@ -93,10 +93,10 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             Policy policy = policyConvertor.convert(policyDTO);
             policyCache.put(uuid,policy);
         } catch (Exception e){
-            logger.error("SubPolicyReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("PolicyReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("SubPolicyReLoadManager success, uuid:{}",uuid);
+        logger.debug("PolicyReLoadManager success, uuid:{}",uuid);
         return true;
     }
 

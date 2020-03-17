@@ -45,7 +45,7 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
     @Override
     public boolean addOrUpdate(InterfaceDefinitionDO interfaceDefinitionDO){
         String uuid = interfaceDefinitionDO.getUuid();
-        logger.debug("InterfaceReLoadManager start, uuid:{}",uuid);
+        logger.debug("InterfaceDefinitionReLoadManager start, uuid:{}",uuid);
         try {
             Long timestamp = interfaceDefinitionDO.getGmtModify().getTime();
             InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(uuid);
@@ -62,10 +62,10 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
 
             interfaceDefinitionCache.put(uuid, newInterfaceDefinition);
         } catch (Exception e){
-            logger.error("InterfaceReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("InterfaceDefinitionReLoadManager failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("InterfaceReLoadManager success, uuid:{}",uuid);
+        logger.debug("InterfaceDefinitionReLoadManager success, uuid:{}",uuid);
         return true;
     }
 
