@@ -91,36 +91,4 @@ public class FieldDefinition extends VersionedEntity implements IFieldDefinition
         return "ext".equals(fieldType);
     }
 
-
-    @Override
-    public int hashCode(){
-        if(getUuid() == null){
-            return super.hashCode();
-        }
-
-        return getUuid().hashCode();
-    }
-
-
-    @Override
-    public boolean equals(Object obj){
-
-        super.equals("");
-        if(obj == null){
-            return false;
-        }
-        if(this == obj){
-            return true;
-        }
-
-        if(getUuid() == null || !(obj instanceof FieldDefinition)){
-            return false;
-        }
-
-        if(getUuid().equals(((FieldDefinition)obj).getUuid())) {
-           return true;
-        }
-
-       return false;
-    }
 }

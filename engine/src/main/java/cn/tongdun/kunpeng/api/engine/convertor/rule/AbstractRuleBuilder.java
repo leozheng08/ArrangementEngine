@@ -191,7 +191,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             functionDescList.add(functionDesc);
             functionDesc.putExtProperty(RuleConstant.FUNC_DESC_PARAMS_ALL,"true");
 
-            left.setValue(Integer.valueOf(num).toString());
+            left.setValue(String.valueOf(num));
             left.setFieldType(FieldTypeEnum.FUNC);
 
         } else {

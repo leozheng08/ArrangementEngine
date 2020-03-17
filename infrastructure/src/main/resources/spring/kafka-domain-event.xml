@@ -7,16 +7,16 @@
 
     <!-- 引用公共zk配置中心,对应shutter文件为zookeeper.properties -->
     <!-- business.unit 为管理员分配值，请将这个配置放在应用自己的shutter配置文件中 -->
-    <bean id="zkConfigCenter-domainEvent" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">
-        <property name="zkserver" value="${configcenter.endpoint}"/>
-        <property name="businessUnit" value="${business.unit}"/>
-    </bean>
+    <!--<bean id="zkConfigCenter-domainEvent" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">-->
+        <!--<property name="zkserver" value="${configcenter.endpoint}"/>-->
+        <!--<property name="businessUnit" value="${business.unit}"/>-->
+    <!--</bean>-->
 
 
 
     <!-- domainEvent消费者-->
     <bean id="domainEventPoller" class="cn.fraudmetrix.module.kafka.consumer.ConcurrentPoller" init-method="init" destroy-method="close">
-        <property name="configCenter" ref="zkConfigCenter-domainEvent"/>
+        <property name="configCenter" ref="zkConfigCenter"/>
         <property name="consumerName" value="kunpeng_api_domain_event_consumer" />
         <property name="mode" value="standard" />
         <property name="bizConsumers">
@@ -40,6 +40,6 @@
                 <value>kunpeng_admin_event</value>
             </list>
         </property>
-        <property name="configCenter" ref="zkConfigCenter-activity"/>
+        <property name="configCenter" ref="zkConfigCenter"/>
     </bean>
 </beans>
