@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.DecisionFlowConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.DecisionFlowDTO;
+import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
@@ -9,7 +9,6 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
-import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

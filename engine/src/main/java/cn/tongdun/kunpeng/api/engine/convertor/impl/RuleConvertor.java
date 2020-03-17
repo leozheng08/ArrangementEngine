@@ -6,7 +6,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.CustomRuleBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.FunctionRuleBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.RuleBuilder;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

@@ -9,7 +9,7 @@ import cn.fraudmetrix.module.tdrule.rule.RuleResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.CustomRuleBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.RuleBuilder;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import org.apache.commons.lang3.StringUtils;

@@ -1,9 +1,9 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
-import cn.tongdun.kunpeng.api.engine.dto.RuleActionElementDTO;
-import cn.tongdun.kunpeng.api.engine.dto.RuleConditionElementDTO;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
-import cn.tongdun.kunpeng.api.engine.dto.WeightedRiskConfigDTO;
+import cn.tongdun.kunpeng.client.dto.RuleActionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDOMapper;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDOMapper;

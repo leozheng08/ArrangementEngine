@@ -4,7 +4,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.Condition;
-import cn.tongdun.kunpeng.api.engine.dto.RuleConditionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
 import com.google.common.collect.Lists;
 
 import java.util.List;

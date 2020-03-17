@@ -6,7 +6,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
@@ -19,6 +19,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
+import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

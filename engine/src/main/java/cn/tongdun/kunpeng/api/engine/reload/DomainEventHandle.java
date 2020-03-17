@@ -42,10 +42,10 @@ public class DomainEventHandle {
     public void init(){
         threadPool = threadService.createThreadPool(
                 1,
-                1,
+                2,
                 30L,
                 TimeUnit.MINUTES,
-                1000,
+                10000,
                 "DomainEventHandle-");
     }
 
