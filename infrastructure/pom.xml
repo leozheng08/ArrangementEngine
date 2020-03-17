@@ -122,7 +122,7 @@
         <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>module-kafka</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
