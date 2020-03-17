@@ -99,7 +99,7 @@ public class DomainEventHandle {
                 Object entryData = domainEvent.getData();
                 IReload reLoadManager = reloadFactory.getReload(entryData.getClass());
                 if (reLoadManager == null) {
-                    logger.warn("EventNotify reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
+                    logger.warn("reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
                     return true;
                 }
                 if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {
@@ -112,7 +112,7 @@ public class DomainEventHandle {
                     }
                 }
         } catch (Exception e){
-            logger.error("EventNotify reLoadManager is null,class:{},event:{}", domainEvent);
+            logger.error("handleMessage error,event:{}", domainEvent,e);
             return false;
         }
 
