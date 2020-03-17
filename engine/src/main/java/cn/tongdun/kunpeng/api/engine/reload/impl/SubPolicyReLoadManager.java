@@ -97,8 +97,11 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
     @Override
     public boolean remove(SubPolicyDO subPolicyDO){
         try {
-            return removeSubPolicy(subPolicyDO.getUuid());
+            boolean result = removeSubPolicy(subPolicyDO.getUuid());
+            logger.debug("SubPolicy remove success, uuid:{}",subPolicyDO.getUuid());
+            return result;
         } catch (Exception e){
+            logger.error("SubPolicy remove failed, uuid:{}",subPolicyDO.getUuid(),e);
             return false;
         }
     }

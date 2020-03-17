@@ -106,6 +106,10 @@ public class DomainEventHandle {
                     if(!reLoadManager.remove(domainEvent.getData())){
                         return false;
                     }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.DEACTIVATE.name())) {
+                    if(!reLoadManager.deactivate(domainEvent.getData())){
+                        return false;
+                    }
                 } else {
                     if(!reLoadManager.addOrUpdate(domainEvent.getData())){
                         return false;

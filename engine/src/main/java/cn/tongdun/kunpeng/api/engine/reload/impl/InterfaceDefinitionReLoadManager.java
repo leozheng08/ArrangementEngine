@@ -81,8 +81,10 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
         try {
             interfaceDefinitionCache.remove(interfaceDefinitionDO.getUuid());
         } catch (Exception e){
+            logger.error("InterfaceDefinition remove failed, uuid:{}",interfaceDefinitionDO.getUuid(),e);
             return false;
         }
+        logger.debug("InterfaceDefinition remove success, uuid:{}",interfaceDefinitionDO.getUuid());
         return true;
     }
 

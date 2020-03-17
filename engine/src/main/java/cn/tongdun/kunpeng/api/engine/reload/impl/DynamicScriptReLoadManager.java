@@ -90,8 +90,10 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
         try {
             groovyCompileManager.remove(dynamicScriptDO.getUuid());
         } catch (Exception e){
+            logger.error("DynamicScript remove failed, uuid:{}",dynamicScriptDO.getUuid(),e);
             return false;
         }
+        logger.debug("DynamicScript remove success, uuid:{}",dynamicScriptDO.getUuid());
         return true;
     }
 

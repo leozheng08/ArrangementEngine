@@ -79,8 +79,10 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
         try {
             eventTypeCache.remove(eventTypeDO.getUuid());
         } catch (Exception e){
+            logger.error("EventType remove failed, uuid:{}",eventTypeDO.getUuid(),e);
             return false;
         }
+        logger.debug("EventType remove success, uuid:{}",eventTypeDO.getUuid());
         return true;
     }
 

@@ -104,8 +104,10 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
         try {
             decisionModeCache.remove(decisionFlowDO.getUuid());
         } catch (Exception e){
+            logger.error("DecisionFlow remove failed, uuid:{}",decisionFlowDO.getUuid(),e);
             return false;
         }
+        logger.debug("DecisionFlow remove success, uuid:{}",decisionFlowDO.getUuid());
         return true;
     }
 

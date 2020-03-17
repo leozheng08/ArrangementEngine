@@ -109,8 +109,10 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
         try {
             decisionModeCache.remove(policyDecisionModeDO.getPolicyUuid());
         } catch (Exception e){
+            logger.error("PolicyDecisionMode remove failed, uuid:{}",policyDecisionModeDO.getUuid(),e);
             return false;
         }
+        logger.debug("PolicyDecisionMode remove success, uuid:{}",policyDecisionModeDO.getPolicyUuid());
         return true;
     }
 

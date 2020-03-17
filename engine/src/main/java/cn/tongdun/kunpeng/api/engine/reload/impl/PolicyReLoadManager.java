@@ -113,8 +113,10 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             String policyUuid = policyDO.getUuid();
             removePolicy(policyUuid);
         } catch (Exception e){
+            logger.error("Policy remove failed, uuid:{}",policyDO.getUuid(),e);
             return false;
         }
+        logger.debug("Policy remove success, uuid:{}",policyDO.getUuid());
         return true;
     }
 
@@ -179,8 +181,10 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             //级联删除各个子对象
             cascadeRemove(policyUuid);
         } catch (Exception e){
+            logger.error("Policy deactivate failed, uuid:{}",policyDO.getUuid(),e);
             return false;
         }
+        logger.debug("Policy deactivate success, uuid:{}",policyDO.getUuid());
         return true;
     }
 

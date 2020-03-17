@@ -80,8 +80,10 @@ public class PartnerReLoadManager implements IReload<Partner> {
         try {
             partnerCache.remove(partner.getPartnerCode());
         } catch (Exception e){
+            logger.error("Partner remove failed, uuid:{}",partner.getPartnerCode(),e);
             return false;
         }
+        logger.debug("Partner remove success, partnerCode:{}",partner.getPartnerCode());
         return true;
     }
 

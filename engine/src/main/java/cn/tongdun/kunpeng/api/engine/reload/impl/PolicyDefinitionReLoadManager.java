@@ -134,9 +134,12 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
 
             String policyUuid = policyDefinition.getCurrVersionUuid();
-            return policyReLoadManager.removePolicy(policyUuid);
+            boolean result = policyReLoadManager.removePolicy(policyUuid);
 
+            logger.debug("PolicyDefinition remove success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
+            return result;
         } catch (Exception e){
+            logger.error("PolicyDefinition remove failed, uuid:{}",policyDefinitionDO.getUuid(),e);
             return false;
         }
     }
@@ -158,9 +161,12 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
 
             String policyUuid = policyDefinition.getCurrVersionUuid();
-            return policyReLoadManager.removePolicy(policyUuid);
+            boolean result = policyReLoadManager.removePolicy(policyUuid);
 
+            logger.debug("PolicyDefinition deactivate success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
+            return result;
         } catch (Exception e){
+            logger.error("FieldDefinition deactivate failed, uuid:{}",policyDefinitionDO.getUuid(),e);
             return false;
         }
     }

@@ -99,8 +99,10 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
         } catch (Exception e){
+            logger.error("Rule remove failed, uuid:{}",ruleDO.getUuid(),e);
             return false;
         }
+        logger.debug("Rule remove success, uuid:{}",ruleDO.getUuid());
         return true;
     }
 

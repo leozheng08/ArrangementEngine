@@ -81,8 +81,10 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
         try {
             fieldDefinitionCache.remove(fieldDefinitionDO.getUuid());
         } catch (Exception e){
+            logger.error("FieldDefinition remove failed, uuid:{}",fieldDefinitionDO.getUuid(),e);
             return false;
         }
+        logger.debug("FieldDefinition remove failed, uuid:{}",fieldDefinitionDO.getUuid());
         return true;
     }
 
