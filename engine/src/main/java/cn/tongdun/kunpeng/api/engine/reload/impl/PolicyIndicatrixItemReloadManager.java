@@ -52,16 +52,16 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     }
 
     private boolean reload(String policyUuid){
-        logger.debug("PolicyIndicatrixItemReloadManager start, policyUuid:{}",policyUuid);
+        logger.debug("PlatformIndex reload start, policyUuid:{}",policyUuid);
         try {
             List<String> policyIndicatrixItemDTOList = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
             policyIndicatrixItemCache.putList(policyUuid,policyIndicatrixItemDTOList);
 
         } catch (Exception e){
-            logger.error("PolicyIndicatrixItemReloadManager failed, policyUuid:{}",policyUuid,e);
+            logger.error("PlatformIndex reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PolicyIndicatrixItemReloadManager success, policyUuid:{}",policyUuid);
+        logger.debug("PlatformIndex reload success, policyUuid:{}",policyUuid);
         return true;
     }
 

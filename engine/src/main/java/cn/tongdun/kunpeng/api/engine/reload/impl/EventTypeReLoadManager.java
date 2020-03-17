@@ -44,12 +44,13 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
     @Override
     public boolean addOrUpdate(EventTypeDO eventTypeDO){
         String uuid = eventTypeDO.getUuid();
-        logger.debug("EventTypeReLoadManager start, uuid:{}",uuid);
+        logger.debug("EventType reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventTypeDO.getGmtModify().getTime();
             EventType eventType = eventTypeCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && eventType != null && eventType.getModifiedVersion() >= timestamp) {
+                logger.debug("EventType reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -60,10 +61,10 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
 
             eventTypeCache.put(uuid, newEventType);
         } catch (Exception e){
-            logger.error("EventTypeReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("EventType reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("EventTypeReLoadManager success, uuid:{}",uuid);
+        logger.debug("EventType reload success, uuid:{}",uuid);
         return true;
     }
 

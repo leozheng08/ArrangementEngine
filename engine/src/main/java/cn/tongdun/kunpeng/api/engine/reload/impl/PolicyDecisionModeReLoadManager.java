@@ -52,7 +52,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
     @Override
     public boolean addOrUpdate(PolicyDecisionModeDO policyDecisionModeDO){
         String policyUuid = policyDecisionModeDO.getPolicyUuid();
-        logger.debug("PolicyDecisionModeReLoadManager start, policyUuid:{}",policyUuid);
+        logger.debug("PolicyDecisionMode reload start, policyUuid:{}",policyUuid);
         try {
             Long timestamp = policyDecisionModeDO.getGmtModify().getTime();
             AbstractDecisionMode decisionMode = decisionModeCache.get(policyUuid);
@@ -66,6 +66,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 if(decisionMode instanceof DecisionFlow){
                     //缓存中的数据是相同版本或更新的，则不刷新
                     if(decisionMode.getModifiedVersion()  >= timestamp){
+                        logger.debug("PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }
                 }
@@ -73,6 +74,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 if(decisionMode instanceof ParallelSubPolicy){
                     //缓存中的数据是相同版本或更新的，则不刷新
                     if(decisionMode.getModifiedVersion()  >= timestamp){
+                        logger.debug("PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }
                 }
@@ -90,10 +92,10 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 decisionModeCache.put(policyUuid,parallelSubPolicy);
             }
         } catch (Exception e){
-            logger.error("PolicyDecisionModeReLoadManager failed, policyUuid:{}",policyUuid,e);
+            logger.error("PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PolicyDecisionModeReLoadManager success, policyUuid:{}",policyUuid);
+        logger.debug("PolicyDecisionMode reload success, policyUuid:{}",policyUuid);
         return true;
     }
 

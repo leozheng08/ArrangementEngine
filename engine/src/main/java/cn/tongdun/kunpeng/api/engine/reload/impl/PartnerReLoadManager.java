@@ -44,12 +44,13 @@ public class PartnerReLoadManager implements IReload<Partner> {
     @Override
     public boolean addOrUpdate(Partner partnerDO){
         String partnerCode = partnerDO.getPartnerCode();
-        logger.debug("PartnerReLoadManager start, partnerCode:{}",partnerCode);
+        logger.debug("Partner reload start, partnerCode:{}",partnerCode);
         try {
             Long timestamp = partnerDO.getGmtModify().getTime();
             Partner oldPartner = partnerCache.get(partnerCode);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPartner != null && oldPartner.getModifiedVersion() >= timestamp) {
+                logger.debug("Partner reload localCache is newest, ignore partnerCode:{}",partnerCode);
                 return true;
             }
 
@@ -61,10 +62,10 @@ public class PartnerReLoadManager implements IReload<Partner> {
 
             partnerCache.put(partnerCode, newPartner);
         } catch (Exception e){
-            logger.error("PartnerReLoadManager failed, partnerCode:{}",partnerCode,e);
+            logger.error("Partner reload failed, partnerCode:{}",partnerCode,e);
             return false;
         }
-        logger.debug("PartnerReLoadManager success, partnerCode:{}",partnerCode);
+        logger.debug("Partner reload success, partnerCode:{}",partnerCode);
         return true;
     }
 

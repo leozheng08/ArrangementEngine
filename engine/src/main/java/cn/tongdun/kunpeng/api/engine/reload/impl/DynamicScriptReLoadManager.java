@@ -54,12 +54,13 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
     @Override
     public boolean addOrUpdate(DynamicScriptDO dynamicScriptDO){
         String uuid = dynamicScriptDO.getUuid();
-        logger.debug("DynamicScriptReLoadManager start, uuid:{}",uuid);
+        logger.debug("DynamicScript reload start, uuid:{}",uuid);
         try {
             Long timestamp = dynamicScriptDO.getGmtModify().getTime();
             WrappedGroovyObject oldWrappedGroovyObject = groovyObjectCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldWrappedGroovyObject != null && oldWrappedGroovyObject.getModifiedVersion() >= timestamp) {
+                logger.debug("DynamicScript reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -71,10 +72,10 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
 
             groovyCompileManager.addOrUpdate(dynamicScript);
         } catch (Exception e){
-            logger.error("DynamicScriptReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("DynamicScript reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("DynamicScriptReLoadManager success, uuid:{}",uuid);
+        logger.debug("DynamicScript reload success, uuid:{}",uuid);
         return true;
     }
 

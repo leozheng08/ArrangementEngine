@@ -56,21 +56,22 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
     @Override
     public boolean addOrUpdate(SubPolicyDO subPolicyDO){
         String uuid = subPolicyDO.getUuid();
-        logger.debug("SubPolicyReLoadManager start, uuid:{}",uuid);
+        logger.debug("SubPolicy reload start, uuid:{}",uuid);
         try {
             Long timestamp = subPolicyDO.getGmtModify().getTime();
             SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldSubPolicy != null && oldSubPolicy.getModifiedVersion() >= timestamp) {
+                logger.debug("SubPolicy reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
             reloadByUuid(uuid);
         } catch (Exception e){
-            logger.error("SubPolicyReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("SubPolicy reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("SubPolicyReLoadManager success, uuid:{}",uuid);
+        logger.debug("SubPolicy reload success, uuid:{}",uuid);
         return true;
     }
 
