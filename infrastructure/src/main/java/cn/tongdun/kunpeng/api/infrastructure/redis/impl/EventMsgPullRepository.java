@@ -26,7 +26,7 @@ public class EventMsgPullRepository implements IDomainEventRepository {
     private static final String SPLIT_CHAR = "^^";
 
     //取最近几分钟数据
-    private static final int LAST_MINUTES = 60;
+    private static final int LAST_MINUTES = 3;
 
     @Autowired
     private RedisScoreKVRepository redisScoreKVRepository;
@@ -123,6 +123,7 @@ public class EventMsgPullRepository implements IDomainEventRepository {
         }).collect(Collectors.toList());
     }
 
+    //@todo 增加超时时间
     @Override
     public void putEventMsgToRemoteCache(String eventMsg,Long occurredTime){
         String currentKey = DateUtil.getYYYYMMDDHHMMStr();

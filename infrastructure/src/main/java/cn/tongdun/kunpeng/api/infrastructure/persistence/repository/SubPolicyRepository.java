@@ -4,6 +4,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.*;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.dataobject.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

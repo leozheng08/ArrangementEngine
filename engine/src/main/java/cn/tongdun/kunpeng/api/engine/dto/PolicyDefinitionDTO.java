@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.dto;
 
+import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
  * 策略定义
  */
 @Data
-public class PolicyDefinitionDTO extends CommonDTO  {
+public class PolicyDefinitionDTO extends CommonDTO {
 
     private String name;
 

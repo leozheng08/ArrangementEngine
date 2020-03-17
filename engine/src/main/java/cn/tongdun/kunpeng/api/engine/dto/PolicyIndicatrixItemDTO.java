@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.dto;
 
+import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import lombok.Data;
 
 /**
@@ -7,7 +8,7 @@ import lombok.Data;
  * @Date: 2020/1/17 下午10:20
  */
 @Data
-public class PolicyIndicatrixItemDTO extends CommonDTO{
+public class PolicyIndicatrixItemDTO extends CommonDTO {
     /**
      * 合作方 partner_code
      */

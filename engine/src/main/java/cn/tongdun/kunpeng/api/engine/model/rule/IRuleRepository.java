@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.rule;
 
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 
 import java.util.List;
 

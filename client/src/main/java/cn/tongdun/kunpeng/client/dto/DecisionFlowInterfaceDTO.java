@@ -1,5 +1,6 @@
-package cn.tongdun.kunpeng.api.engine.dto;
+package cn.tongdun.kunpeng.client.dto;
 
+import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import lombok.Data;
 
 /**

@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.convertor.rule;
 
-import cn.tongdun.kunpeng.api.engine.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 
 /**
