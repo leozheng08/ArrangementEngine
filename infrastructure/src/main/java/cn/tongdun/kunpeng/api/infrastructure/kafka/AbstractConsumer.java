@@ -73,6 +73,7 @@ public abstract class AbstractConsumer implements IConsumer {
     }
 
 
+
     // 如果需要批量消费，请实现此方法
     public void onBulkMessage(String topic, List<JSONObject> messages) {
         throw new RuntimeException("批量消费，请实现onBulkMessage方法");
