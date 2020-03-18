@@ -15,13 +15,13 @@ public interface IPolicyParseCheck {
      * @return
      * @throws Exception
      */
-    boolean checkRule(RuleDTO ruleDTO) throws Exception;
+    boolean checkRule(RuleDTO ruleDTO);
 
     /**
      * 决策流检查
-     * @param decisionFlowDTO
+     * @param content
      * @return
      * @throws Exception
      */
-    boolean checkFlow(DecisionFlowDTO decisionFlowDTO) throws Exception;
+    boolean checkFlow(String content);
 }
