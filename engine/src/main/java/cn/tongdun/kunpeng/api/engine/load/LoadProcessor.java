@@ -1,9 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.load;
 
-import cn.tongdun.kunpeng.api.engine.load.bypartner.ILoadByPartner;
-import cn.tongdun.kunpeng.api.engine.load.bypartner.LoadByPartnerPipeline;
-import cn.tongdun.tdframework.common.dto.Response;
 import cn.tongdun.tdframework.core.exception.SysException;
+import cn.tongdun.tdframework.core.pipeline.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -54,7 +52,7 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
         logger.info("mytest tenant:{}",tenant);
 
         //当加载不成功或失败时停止加载
-        Response result = pipelineExecutor.execute(LoadPipeline.NAME, ILoad.class, step -> step.load(),(isLoad,e)->{
+        Response result = pipelineExecutor.execute(LoadPipeline.NAME, ILoad.class, step -> step.load(),(isLoad, e)->{
             return e !=null|| (isLoad!=null && !isLoad);
         });
 

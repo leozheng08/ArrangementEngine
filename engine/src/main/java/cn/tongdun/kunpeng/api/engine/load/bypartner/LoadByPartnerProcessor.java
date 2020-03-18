@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.load.bypartner;
 
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
-import cn.tongdun.tdframework.common.dto.Response;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
+import cn.tongdun.tdframework.core.pipeline.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
