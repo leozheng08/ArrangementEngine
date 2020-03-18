@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
-import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
-
 import java.util.List;
 
 /**

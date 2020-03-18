@@ -5,7 +5,6 @@ import cn.fraudmetrix.module.tdrule.eval.Variable;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
-import cn.fraudmetrix.module.tdrule.rule.LocalRegexDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.ruledetail.FourCalculationDetail;
 import org.apache.commons.collections.CollectionUtils;
