@@ -25,8 +25,7 @@ public class CustomListValueKVRepository implements ICustomListValueKVRepository
 
     @Override
     public void removeCustomListValueData(CustomListValue customListValue){
-
-//        redisScoreKVRepository.zremrangeByLex(customListValue.getCustomListUuid(), customListValue.getExpireTime(), customListValue.getValue());
+        redisScoreKVRepository.zrem(customListValue.getCustomListUuid(),customListValue.getValue());
     }
 
 
