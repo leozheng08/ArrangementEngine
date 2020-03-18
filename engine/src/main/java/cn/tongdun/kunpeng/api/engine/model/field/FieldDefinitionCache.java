@@ -4,7 +4,6 @@ import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
-import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +14,6 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * @Author: liang.chen
@@ -42,7 +40,7 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
 
 
     @Autowired
-    private EventTypeCache eventTypeCacheRepository;
+    private EventTypeCache eventTypeCache;
 
     @PostConstruct
     public void init(){
@@ -130,7 +128,7 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
             return;
         }
         String eventType = field.getEventType();
-        Collection<EventType> eventTypeList=eventTypeCacheRepository.getEventTypes();
+        Collection<EventType> eventTypeList= eventTypeCache.getEventTypes();
 
         // 如果为null，是通用字段，放到所有事件类型列表中
         if (eventType == null || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
@@ -163,7 +161,7 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
         if (field == null) {
             return;
         }
-        Collection<EventType> eventTypeList=eventTypeCacheRepository.getEventTypes();
+        Collection<EventType> eventTypeList= eventTypeCache.getEventTypes();
         // 字段类型为All，为同一个partnerCode共用
         if (IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(field.getEventType())) {
             for (EventType et : eventTypeList) {

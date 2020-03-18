@@ -46,5 +46,11 @@
     where  is_deleted = 0 and status = 1
   </select>
 
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from event_type
+  </select>
+
 
 </mapper>
