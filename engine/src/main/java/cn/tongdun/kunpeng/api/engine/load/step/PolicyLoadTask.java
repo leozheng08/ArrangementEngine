@@ -22,6 +22,7 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +125,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
             //加载平台指标
             List<String> gaeaIds = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
-            if (null != gaeaIds) {
+            if (!CollectionUtils.isEmpty(gaeaIds)) {
                 policyIndicatrixItemCache.putList(policyUuid, gaeaIds);
             }
 
