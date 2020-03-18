@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.intf.adapter.dubbo;
 
+import cn.fraudmetrix.module.tdflow.exception.ParseException;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.DecisionFlowConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.client.api.IPolicyParseCheck;
@@ -23,7 +24,7 @@ public class PolicyParseCheckImpl implements IPolicyParseCheck{
     private DecisionFlowConvertor decisionFlowConvertor;
 
     @Override
-    public boolean checkRule(RuleDTO ruleDTO) throws Exception{
+    public boolean checkRule(RuleDTO ruleDTO) {
 
         ruleConvertor.convert(ruleDTO);
 
@@ -32,9 +33,10 @@ public class PolicyParseCheckImpl implements IPolicyParseCheck{
 
 
     @Override
-    public boolean checkFlow(DecisionFlowDTO decisionFlowDTO) throws Exception{
-
-        decisionFlowConvertor.convert(decisionFlowDTO);
+    public boolean checkFlow(String content) {
+        DecisionFlowDTO decisionFlowDTO = new DecisionFlowDTO();
+        decisionFlowDTO.setProcessContent(content);
+        decisionFlowConvertor.convert(decisionFlowDTO,false);
         return true;
     }
 }

@@ -37,6 +37,10 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
 
     @Override
     public DecisionFlow convert(DecisionFlowDTO decisionFlowDTO) {
+        return convert(decisionFlowDTO,true);
+    }
+
+    public DecisionFlow convert(DecisionFlowDTO decisionFlowDTO,boolean isZip){
         if (StringUtils.isBlank(decisionFlowDTO.getProcessContent())) {
             throw new ParseException("DecisionFlowConvertor convert error,decisionFlowUuid:" + decisionFlowDTO.getUuid());
         }
@@ -47,12 +51,14 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
         decisionFlow.setGmtModify(decisionFlowDTO.getGmtModify());
         decisionFlow.setDecisionFlowUuid(decisionFlowDTO.getUuid());
 
-        String processXml = null;
-        try {
-            processXml = CompressUtil.ungzip(decisionFlowDTO.getProcessContent());
-        } catch (Exception e) {
-            logger.error("DecisionFlowConvertor convert processContent error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
-            throw new ParseException("DecisionFlowConvertor convert error!Uuid:" + decisionFlowDTO.getUuid(), e);
+        String processXml = decisionFlowDTO.getProcessContent();
+        if(isZip) {//是否内容为压缩格式
+            try {
+                processXml = CompressUtil.ungzip(decisionFlowDTO.getProcessContent());
+            } catch (Exception e) {
+                logger.error("DecisionFlowConvertor convert processContent error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
+                throw new ParseException("DecisionFlowConvertor convert error!Uuid:" + decisionFlowDTO.getUuid(), e);
+            }
         }
 
         Graph graph = null;
