@@ -113,12 +113,6 @@
             </dependency>
 
 
-
-            <dependency>
-                <groupId>cn.tongdun</groupId>
-                <artifactId>tdframework-common</artifactId>
-                <version>${tdframework.version}</version>
-            </dependency>
             <dependency>
                 <groupId>cn.tongdun</groupId>
                 <artifactId>tdframework-core</artifactId>
