@@ -28,7 +28,7 @@ public class EventTypeRepository implements IEventTypeRepository {
     @Override
     public List<EventType> queryAll(){
 
-        List<EventTypeDO> eventTypeDOList= eventTypeDOMapper.selectAllAvailable();
+        List<EventTypeDO> eventTypeDOList= eventTypeDOMapper.selectAll();
 
         List<EventType> result = new ArrayList<EventType>();
         result = eventTypeDOList.stream().map(eventTypeDO->{

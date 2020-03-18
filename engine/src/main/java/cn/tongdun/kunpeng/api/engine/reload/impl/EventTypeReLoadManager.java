@@ -76,13 +76,16 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
      */
     @Override
     public boolean remove(EventTypeDO eventTypeDO){
-        try {
-            eventTypeCache.remove(eventTypeDO.getUuid());
-        } catch (Exception e){
-            logger.error("EventType remove failed, uuid:{}",eventTypeDO.getUuid(),e);
-            return false;
-        }
-        logger.debug("EventType remove success, uuid:{}",eventTypeDO.getUuid());
+        //事件类型删除或失效后，对应的策略仍可以正常调用，所有缓存中不需要删除
+        logger.debug("EventType remove ignore, uuid:{}",eventTypeDO.getUuid());
+
+//        try {
+//            eventTypeCache.remove(eventTypeDO.getUuid());
+//        } catch (Exception e){
+//            logger.error("EventType remove failed, uuid:{}",eventTypeDO.getUuid(),e);
+//            return false;
+//        }
+//        logger.debug("EventType remove success, uuid:{}",eventTypeDO.getUuid());
         return true;
     }
 

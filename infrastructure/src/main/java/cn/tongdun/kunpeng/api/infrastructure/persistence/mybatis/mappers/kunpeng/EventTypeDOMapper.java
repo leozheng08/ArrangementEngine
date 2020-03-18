@@ -18,6 +18,8 @@ public interface EventTypeDOMapper {
 
     List<EventTypeDO> selectAllAvailable();
 
+    List<EventTypeDO> selectAll();
+
     /**
      * 根据uuid查询
      * @param uuid
