@@ -131,6 +131,10 @@
             <artifactId>redis-client</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module-metrics</artifactId>
+        </dependency>
+        <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>

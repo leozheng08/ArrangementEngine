@@ -53,7 +53,8 @@ public class AppMain implements ApplicationContextAware {
         return context;
     }
 
-    private static boolean halt = false;
+    //默认为halt=true,当启动加载成功后，才设置为false
+    private static boolean halt = true;
 
     @Autowired
     Environment environment;
@@ -141,6 +142,11 @@ public class AppMain implements ApplicationContextAware {
         if (AppMain.context == null) {
             AppMain.context = applicationContext;
         }
+    }
+
+
+    public void setOk() {
+        halt = false;
     }
 }
 
