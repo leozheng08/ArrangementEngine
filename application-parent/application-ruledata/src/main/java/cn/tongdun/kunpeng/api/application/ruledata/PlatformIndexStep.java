@@ -46,6 +46,10 @@ public class PlatformIndexStep implements IRiskStep {
         // 1.取实时解析的gaea缓存
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
+        if(indicatrixs == null || indicatrixs.isEmpty()){
+            return true;
+        }
+
         Map<String, Object> activityParam = getGaeaFields(context);
 
         List<Long> indicatrixsParam = new ArrayList<>();
@@ -58,6 +62,10 @@ public class PlatformIndexStep implements IRiskStep {
             } catch (Exception e) {
                 continue;
             }
+        }
+
+        if(indicatrixsParam.isEmpty()){
+            return true;
         }
 
         try {
