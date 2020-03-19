@@ -53,12 +53,13 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     @Override
     public boolean addOrUpdate(RuleDO ruleDO){
         String uuid = ruleDO.getUuid();
-        logger.debug("RuleReLoadManager start, uuid:{}",uuid);
+        logger.debug("Rule reload start, uuid:{}",uuid);
         try {
             Long timestamp = ruleDO.getGmtModify().getTime();
             Rule oldRule = ruleCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
+                logger.debug("Rule reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -75,10 +76,10 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
         } catch (Exception e){
-            logger.error("RuleReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("Rule reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("RuleReLoadManager success, uuid:{}",uuid);
+        logger.debug("Rule reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -98,8 +99,10 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
         } catch (Exception e){
+            logger.error("Rule remove failed, uuid:{}",ruleDO.getUuid(),e);
             return false;
         }
+        logger.debug("Rule remove success, uuid:{}",ruleDO.getUuid());
         return true;
     }
 

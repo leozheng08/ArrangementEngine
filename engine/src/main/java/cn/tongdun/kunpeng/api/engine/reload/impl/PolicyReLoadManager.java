@@ -75,12 +75,13 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
     @Override
     public boolean addOrUpdate(PolicyDO policyDO){
         String uuid = policyDO.getUuid();
-        logger.debug("SubPolicyReLoadManager start, uuid:{}",uuid);
+        logger.debug("Policy reload start, uuid:{}",uuid);
         try {
             Long timestamp = policyDO.getGmtModify().getTime();
             Policy oldPolicy = policyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPolicy != null && oldPolicy.getModifiedVersion() >= timestamp) {
+                logger.debug("Policy reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -93,10 +94,10 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             Policy policy = policyConvertor.convert(policyDTO);
             policyCache.put(uuid,policy);
         } catch (Exception e){
-            logger.error("SubPolicyReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("Policy reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("SubPolicyReLoadManager success, uuid:{}",uuid);
+        logger.debug("Policy reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -112,8 +113,10 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             String policyUuid = policyDO.getUuid();
             removePolicy(policyUuid);
         } catch (Exception e){
+            logger.error("Policy remove failed, uuid:{}",policyDO.getUuid(),e);
             return false;
         }
+        logger.debug("Policy remove success, uuid:{}",policyDO.getUuid());
         return true;
     }
 
@@ -178,8 +181,10 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
             //级联删除各个子对象
             cascadeRemove(policyUuid);
         } catch (Exception e){
+            logger.error("Policy deactivate failed, uuid:{}",policyDO.getUuid(),e);
             return false;
         }
+        logger.debug("Policy deactivate success, uuid:{}",policyDO.getUuid());
         return true;
     }
 

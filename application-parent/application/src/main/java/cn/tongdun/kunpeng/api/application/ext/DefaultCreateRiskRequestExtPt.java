@@ -3,9 +3,7 @@ package cn.tongdun.kunpeng.api.application.ext;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
-import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.*;

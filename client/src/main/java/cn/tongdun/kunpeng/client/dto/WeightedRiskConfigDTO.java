@@ -23,7 +23,6 @@ public class WeightedRiskConfigDTO{
     /**
      * 权重属性
      *
-     * @see cn.tongdun.kunpeng.admin.domain.constant.PropertyTypeEnum
      */
     private String weightProperty;
 

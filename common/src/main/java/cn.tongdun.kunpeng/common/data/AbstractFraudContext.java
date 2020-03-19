@@ -4,7 +4,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
-import cn.tongdun.tdframework.common.extension.IBizScenario;
+import cn.tongdun.tdframework.core.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Sets;
 import lombok.Data;

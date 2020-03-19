@@ -1,8 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.eventtype;
 
-import cn.tongdun.kunpeng.api.engine.model.Entity;
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
-import cn.tongdun.tdframework.core.domain.EntityObject;
 import lombok.Data;
 
 /**

@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.common.data;
 
 
-import cn.tongdun.tdframework.common.extension.IBizScenario;
+import cn.tongdun.tdframework.core.extension.IBizScenario;
 import lombok.Data;
 
 /**

@@ -22,10 +22,6 @@
 
         <dependency>
             <groupId>cn.tongdun</groupId>
-            <artifactId>tdframework-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.tongdun</groupId>
             <artifactId>tdframework-core</artifactId>
         </dependency>
 

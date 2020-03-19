@@ -52,7 +52,7 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
     @Override
     public boolean addOrUpdate(DecisionFlowDO decisionFlowDO){
         String uuid = decisionFlowDO.getUuid();
-        logger.debug("DecisionFlowReLoadManager start, uuid:{}",uuid);
+        logger.debug("DecisionFlow reload start, uuid:{}",uuid);
         try {
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDecisionModeRepository.queryByPolicyUuid(decisionFlowDO.getUuid());
             if(policyDecisionModeDTO == null){
@@ -68,6 +68,7 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
             if(decisionMode instanceof DecisionFlow){
                 //缓存中的数据是相同版本或更新的，则不刷新
                 if(decisionMode.getModifiedVersion()  >= timestamp){
+                    logger.debug("DecisionFlow reload localCache is newest, ignore uuid:{}",uuid);
                     return true;
                 }
             }
@@ -85,10 +86,10 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
             DecisionFlow decisionFlow = decisionFlowConvertor.convert(decisionFlowDTO);
             decisionModeCache.put(uuid,decisionFlow);
         } catch (Exception e){
-            logger.error("DecisionFlowReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("DecisionFlow reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("DecisionFlowReLoadManager success, uuid:{}",uuid);
+        logger.debug("DecisionFlow reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -103,8 +104,10 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
         try {
             decisionModeCache.remove(decisionFlowDO.getUuid());
         } catch (Exception e){
+            logger.error("DecisionFlow remove failed, uuid:{}",decisionFlowDO.getUuid(),e);
             return false;
         }
+        logger.debug("DecisionFlow remove success, uuid:{}",decisionFlowDO.getUuid());
         return true;
     }
 

@@ -45,12 +45,13 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
     @Override
     public boolean addOrUpdate(InterfaceDefinitionDO interfaceDefinitionDO){
         String uuid = interfaceDefinitionDO.getUuid();
-        logger.debug("InterfaceReLoadManager start, uuid:{}",uuid);
+        logger.debug("InterfaceDefinition reload start, uuid:{}",uuid);
         try {
             Long timestamp = interfaceDefinitionDO.getGmtModify().getTime();
             InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && interfaceDefinition != null && interfaceDefinition.getModifiedVersion() >= timestamp) {
+                logger.debug("InterfaceDefinition reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -62,10 +63,10 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
 
             interfaceDefinitionCache.put(uuid, newInterfaceDefinition);
         } catch (Exception e){
-            logger.error("InterfaceReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("InterfaceDefinition reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("InterfaceReLoadManager success, uuid:{}",uuid);
+        logger.debug("InterfaceDefinition reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -80,8 +81,10 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
         try {
             interfaceDefinitionCache.remove(interfaceDefinitionDO.getUuid());
         } catch (Exception e){
+            logger.error("InterfaceDefinition remove failed, uuid:{}",interfaceDefinitionDO.getUuid(),e);
             return false;
         }
+        logger.debug("InterfaceDefinition remove success, uuid:{}",interfaceDefinitionDO.getUuid());
         return true;
     }
 

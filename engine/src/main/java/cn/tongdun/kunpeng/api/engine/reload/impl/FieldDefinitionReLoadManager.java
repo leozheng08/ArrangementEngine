@@ -45,12 +45,13 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
     @Override
     public boolean addOrUpdate(FieldDefinitionDO fieldDefinitionDO){
         String uuid = fieldDefinitionDO.getUuid();
-        logger.debug("FieldDefinitionReLoadManager start, uuid:{}",uuid);
+        logger.debug("FieldDefinition reload start, uuid:{}",uuid);
         try {
             Long timestamp = fieldDefinitionDO.getGmtModify().getTime();
             FieldDefinition oldFieldDefinition = fieldDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldFieldDefinition != null && oldFieldDefinition.getModifiedVersion() >= timestamp) {
+                logger.debug("FieldDefinition reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -62,10 +63,10 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
 
             fieldDefinitionCache.put(uuid, newFieldDefinition);
         } catch (Exception e){
-            logger.error("FieldDefinitionReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("FieldDefinition reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("FieldDefinitionReLoadManager success, uuid:{}",uuid);
+        logger.debug("FieldDefinition reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -80,8 +81,10 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
         try {
             fieldDefinitionCache.remove(fieldDefinitionDO.getUuid());
         } catch (Exception e){
+            logger.error("FieldDefinition remove failed, uuid:{}",fieldDefinitionDO.getUuid(),e);
             return false;
         }
+        logger.debug("FieldDefinition remove failed, uuid:{}",fieldDefinitionDO.getUuid());
         return true;
     }
 

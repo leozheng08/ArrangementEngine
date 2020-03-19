@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.engine.model.field;
 
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import cn.tongdun.kunpeng.common.data.IFieldDefinition;
-import cn.tongdun.tdframework.core.domain.EntityObject;
 import lombok.Data;
 
 import java.util.Date;

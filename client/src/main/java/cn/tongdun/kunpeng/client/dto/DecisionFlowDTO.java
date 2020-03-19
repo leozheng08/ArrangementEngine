@@ -59,6 +59,6 @@ public class DecisionFlowDTO extends CommonDTO {
     private Date gmtDelete;
 
 
-    private List<DecisionFlowInterfaceDTO> decisionFlowInterfaceList;
-    private List<DecisionFlowModelDTO> DecisionFlowModelList;
+//    private List<DecisionFlowInterfaceDTO> decisionFlowInterfaceList;
+//    private List<DecisionFlowModelDTO> DecisionFlowModelList;
 }

@@ -70,29 +70,38 @@ public class RawDomainEventHandle {
 
 
     private void putCustomListValueToRemoteCache(JSONObject rawEventMsg){
-        DomainEvent<CustomListValueDO> domainEvent = eventMsgParser.parse(rawEventMsg);
-        List<CustomListValueDO> listValueDOList = domainEvent.getData();
+        try {
+            DomainEvent<CustomListValueDO> domainEvent = eventMsgParser.parse(rawEventMsg);
+            List<CustomListValueDO> listValueDOList = domainEvent.getData();
 
-        if(listValueDOList == null || listValueDOList.isEmpty()){
-            return;
-        }
-
-        if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {//删除操作
-            for(CustomListValueDO customListValueDO:listValueDOList) {
-                customListValueKVRepository.removeCustomListValueData(new CustomListValue(customListValueDO.getCustomListUuid(),customListValueDO.getDataValue()));
+            if (listValueDOList == null || listValueDOList.isEmpty()) {
+                logger.debug("CustomListValue put remote cache error,list is empty:{}", rawEventMsg);
+                return;
             }
-        } else {//新增或修改操作
 
-            List<String> uuids = new ArrayList<>();
-            listValueDOList.forEach(value->{uuids.add(value.getUuid());});
+            if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {//删除操作
+                for (CustomListValueDO customListValueDO : listValueDOList) {
+                    customListValueKVRepository.removeCustomListValueData(new CustomListValue(customListValueDO.getCustomListUuid(), customListValueDO.getDataValue()));
+                    logger.debug("CustomListValue remove remote cache success,list uuid:{} data:{}",customListValueDO.getCustomListUuid(), customListValueDO.getDataValue());
+                }
+            } else {//新增或修改操作
 
-            List<CustomListValue> listValueList = customListValueRepository.selectByUuids(uuids);
-            for(CustomListValue customListValue:listValueList) {
-                customListValueKVRepository.putCustomListValueData(customListValue);
+                List<String> uuids = new ArrayList<>();
+                listValueDOList.forEach(value -> {
+                    uuids.add(value.getUuid());
+                });
+
+                List<CustomListValue> listValueList = customListValueRepository.selectByUuids(uuids);
+                for (CustomListValue customListValue : listValueList) {
+                    customListValueKVRepository.putCustomListValueData(customListValue);
+                    logger.debug("CustomListValue put remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
+                }
             }
+
+        } catch (Exception e){
+            logger.error("CustomListValue put remote cache error,event:{}",rawEventMsg,e);
+            throw e;
         }
-
-
     }
 
 

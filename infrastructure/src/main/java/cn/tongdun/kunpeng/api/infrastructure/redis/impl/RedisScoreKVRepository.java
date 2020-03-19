@@ -212,6 +212,12 @@ public class RedisScoreKVRepository implements IScoreKVRepository {
     }
 
     @Override
+    public boolean zrem(final String key, String... member){
+        Long res = kunPengRedisClient.zrem(key,member);
+        return res != null && res > 0;
+    }
+
+    @Override
     public boolean zremrangeByLex(String key, String min, String max) {
         Long res = kunPengRedisClient.zremrangeByLex(key, min, max);
         return res != null && res > 0;

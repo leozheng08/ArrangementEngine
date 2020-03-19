@@ -76,13 +76,14 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
     @Override
     public boolean addOrUpdate(PolicyDefinitionDO policyDefinitionDO){
         String uuid = policyDefinitionDO.getUuid();
-        logger.debug("PolicyDefinitionReLoadManager start, uuid:{}",uuid);
+        logger.debug("PolicyDefinition reload start, uuid:{}",uuid);
         boolean result = false;
         try {
             Long timestamp = policyDefinitionDO.getGmtModify().getTime();
             PolicyDefinition oldPolicyDefinition = policyDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPolicyDefinition != null && oldPolicyDefinition.getModifiedVersion() >= timestamp) {
+                logger.debug("PolicyDefinition reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -109,10 +110,10 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             }
 
         } catch (Exception e){
-            logger.error("PolicyDefinitionReLoadManager failed, uuid:{}",uuid,e);
+            logger.error("PolicyDefinition reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("PolicyDefinitionReLoadManager success, uuid:{}",uuid);
+        logger.debug("PolicyDefinition reload success, uuid:{}",uuid);
         return result;
     }
 
@@ -133,9 +134,12 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
 
             String policyUuid = policyDefinition.getCurrVersionUuid();
-            return policyReLoadManager.removePolicy(policyUuid);
+            boolean result = policyReLoadManager.removePolicy(policyUuid);
 
+            logger.debug("PolicyDefinition remove success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
+            return result;
         } catch (Exception e){
+            logger.error("PolicyDefinition remove failed, uuid:{}",policyDefinitionDO.getUuid(),e);
             return false;
         }
     }
@@ -157,9 +161,12 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
 
             String policyUuid = policyDefinition.getCurrVersionUuid();
-            return policyReLoadManager.removePolicy(policyUuid);
+            boolean result = policyReLoadManager.removePolicy(policyUuid);
 
+            logger.debug("PolicyDefinition deactivate success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
+            return result;
         } catch (Exception e){
+            logger.error("FieldDefinition deactivate failed, uuid:{}",policyDefinitionDO.getUuid(),e);
             return false;
         }
     }

@@ -52,7 +52,7 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
     }
 
     private boolean reload(String policyUuid){
-        logger.debug("PolicyIndexReLoadManager start, policyUuid:{}",policyUuid);
+        logger.debug("PolicyIndex reload start, policyUuid:{}",policyUuid);
         try {
             List<IndexDefinitionDTO> indexDefinitionDTOList = policyIndexRepository.queryByPolicyUuid(policyUuid);
             //缓存策略指标
@@ -66,10 +66,10 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
             }
 
         } catch (Exception e){
-            logger.error("PolicyIndexReLoadManager failed, policyUuid:{}",policyUuid,e);
+            logger.error("PolicyIndex reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PolicyIndexReLoadManager success, policyUuid:{}",policyUuid);
+        logger.debug("PolicyIndex reload success, policyUuid:{}",policyUuid);
         return true;
     }
 
