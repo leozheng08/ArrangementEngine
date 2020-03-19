@@ -29,7 +29,7 @@ public class LocalEnvironment implements ILocalEnvironment{
     private String dc;
 
     //当前租户名称
-    @Value("${tenant}")
+    @Value("${tenant:default}")
     private String tenant;
 
     private String ip;

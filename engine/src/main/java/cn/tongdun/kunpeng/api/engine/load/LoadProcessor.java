@@ -21,8 +21,6 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
 
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
-    @Value("${tenant}")
-    private String tenant;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -49,7 +47,6 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
 
 
     public void load(PipelineExecutor pipelineExecutor){
-        logger.info("mytest tenant:{}",tenant);
 
         //当加载不成功或失败时停止加载
         Response result = pipelineExecutor.execute(LoadPipeline.NAME, ILoad.class, step -> step.load(),(isLoad, e)->{

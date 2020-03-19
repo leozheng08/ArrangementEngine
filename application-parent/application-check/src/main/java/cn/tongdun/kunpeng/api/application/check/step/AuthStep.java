@@ -19,7 +19,7 @@ import java.util.Map;
  * @Date: 2020/2/17 下午11:09
  */
 @Component
-@Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 200)
+//@Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 200)
 public class AuthStep implements IRiskStep {
 
 
