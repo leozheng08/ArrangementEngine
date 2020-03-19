@@ -127,7 +127,7 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
      * @return
      */
     public boolean removePolicy(String policyUuid){
-        Policy policy = policyCache.get(policyUuid);
+        Policy policy = policyCache.remove(policyUuid);
         if(policy == null){
             return true;
         }
