@@ -27,6 +27,7 @@ public class AsyncEventStoreStep implements IRiskStep {
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
+        //任何事件都发，收
         QueueItem queueItem = new QueueItem(context,response,request);
         eventStoreMsgBus.addEvent(queueItem);
         return true;

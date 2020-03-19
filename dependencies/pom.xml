@@ -28,7 +28,7 @@
 
         <guava-version>20.0</guava-version>
         <tdframework.version>1.0.6-SNAPSHOT</tdframework.version>
-        <ddd.version>1.0.4</ddd.version>
+        <ddd.version>1.0-SNAPSHOT</ddd.version>
         <tdrule.version>0.0.2-SNAPSHOT</tdrule.version>
         <tdflow.version>0.0.1-SNAPSHOT</tdflow.version>
         <kunpeng-share.version>1.0-SNAPSHOT</kunpeng-share.version>

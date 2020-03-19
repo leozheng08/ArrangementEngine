@@ -30,7 +30,8 @@ public class Risk {
     @Phase(parallel = false,order = 600)
     public final static String RUN_ENGINE= "runEngine";
 
-    @Phase(parallel = false,order = 700)
+    // required = true 如果前面各个阶段中断运行后，output都需要运行
+    @Phase(parallel = false,order = 700, required = true)
     public final static String OUTPUT= "output";
 
 }
