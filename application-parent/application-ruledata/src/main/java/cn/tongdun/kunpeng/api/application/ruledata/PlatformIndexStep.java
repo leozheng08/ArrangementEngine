@@ -44,7 +44,7 @@ public class PlatformIndexStep implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         // 1.取实时解析的gaea缓存
-        List<String> indicatrixs = policyIndicatrixItemCache.getList("95dc4cf8462d49e383c8d1ab9b8cafe6");
+        List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
         Map<String, Object> activityParam = getGaeaFields(context);
 
