@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.client.api;
 
+import cn.tongdun.ddd.common.result.SingleResult;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 
@@ -15,7 +16,7 @@ public interface IPolicyParseCheck {
      * @return
      * @throws Exception
      */
-    boolean checkRule(RuleDTO ruleDTO);
+    SingleResult checkRule(RuleDTO ruleDTO);
 
     /**
      * 决策流检查
@@ -23,5 +24,5 @@ public interface IPolicyParseCheck {
      * @return
      * @throws Exception
      */
-    boolean checkFlow(String content);
+    SingleResult checkFlow(String content);
 }
