@@ -25,25 +25,29 @@ public class PolicyParseCheckImpl implements IPolicyParseCheck{
     private DecisionFlowConvertor decisionFlowConvertor;
 
     @Override
-    public SingleResult checkRule(RuleDTO ruleDTO) {
+    public SingleResult<Boolean> checkRule(RuleDTO ruleDTO) {
         try{
             ruleConvertor.convert(ruleDTO);
-            return SingleResult.success();
+            return SingleResult.success(true);
         }catch (Exception e){
-            return SingleResult.failure(500,e.getMessage());
+            SingleResult singleResult = SingleResult.failure(500,e.getMessage());
+            singleResult.setData(false);
+            return singleResult;
         }
     }
 
 
     @Override
-    public SingleResult checkFlow(String content) {
+    public SingleResult<Boolean> checkFlow(String content) {
         try{
             DecisionFlowDTO decisionFlowDTO = new DecisionFlowDTO();
             decisionFlowDTO.setProcessContent(content);
             decisionFlowConvertor.convert(decisionFlowDTO,false);
-            return SingleResult.success();
+            return SingleResult.success(true);
         }catch (Exception e){
-            return SingleResult.failure(500,e.getMessage());
+            SingleResult singleResult = SingleResult.failure(500,e.getMessage());
+            singleResult.setData(false);
+            return singleResult;
         }
     }
 }

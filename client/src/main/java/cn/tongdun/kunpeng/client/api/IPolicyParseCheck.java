@@ -16,7 +16,7 @@ public interface IPolicyParseCheck {
      * @return
      * @throws Exception
      */
-    SingleResult checkRule(RuleDTO ruleDTO);
+    SingleResult<Boolean> checkRule(RuleDTO ruleDTO);
 
     /**
      * 决策流检查
@@ -24,5 +24,5 @@ public interface IPolicyParseCheck {
      * @return
      * @throws Exception
      */
-    SingleResult checkFlow(String content);
+    SingleResult<Boolean> checkFlow(String content);
 }
