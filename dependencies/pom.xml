@@ -302,12 +302,12 @@
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>redis-client</artifactId>
                 <version>3.4.7</version>
-<!--                <exclusions>-->
-<!--                    <exclusion>-->
-<!--                        <groupId>cn.fraudmetrix</groupId>-->
-<!--                        <artifactId>module-metrics</artifactId>-->
-<!--                    </exclusion>-->
-<!--                </exclusions>-->
+                <exclusions>
+                    <exclusion>
+                        <groupId>cn.fraudmetrix</groupId>
+                        <artifactId>module-metrics</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>cn.fraudmetrix</groupId>
