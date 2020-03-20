@@ -47,6 +47,7 @@ public class PlatformIndexStep implements IRiskStep {
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
         if(indicatrixs == null || indicatrixs.isEmpty()){
+            logger.info("策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return true;
         }
 
@@ -65,6 +66,7 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         if(indicatrixsParam.isEmpty()){
+            logger.info("策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
             return true;
         }
 
@@ -85,11 +87,6 @@ public class PlatformIndexStep implements IRiskStep {
             for (String id : idStr.split(",")) {
                 indicatrixsParam.add(Long.parseLong(id));
             }
-            List<String> codeList = new ArrayList<>();
-            String codeStr = "c3b2fba3b64d5671,290a6efdee0b4724,daf4496d889628de,33744122d5934261,8b249be93f48da0d,03b3d4b9a94fa2bd,cfb3860347879efa,8b75e4c9cee31c9b,4eb75aa639c945a4,e3b68a0d447391ff";
-            for (String code : codeStr.split(",")) {
-                codeList.add(code);
-            }
             IndicatrixValQuery indicatrixValQuery = new IndicatrixValQuery();
             indicatrixValQuery.setBizId(context.getSeqId());
             indicatrixValQuery.setPartnerCode("demo");
@@ -98,7 +95,6 @@ public class PlatformIndexStep implements IRiskStep {
             indicatrixValQuery.setAppName(APP_NAME);
             indicatrixValQuery.setActivity(activityParam);
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
-            indicatrixValQuery.setMeaningCodes(codeList);
             /*************************************/
 
             PaasResult<List<GaeaIndicatrixVal>> indicatrixResult = null;
