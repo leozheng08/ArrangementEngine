@@ -64,4 +64,9 @@ public class Constant {
     }
 
 
+
+    public class Flow {
+        public static final String FLOW_PRE_CHECK = "flowPreCheck";
+    }
+
 }
