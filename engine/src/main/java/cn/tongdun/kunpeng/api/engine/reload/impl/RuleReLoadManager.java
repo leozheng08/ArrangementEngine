@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
+import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
@@ -9,12 +10,17 @@ import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
+import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @Author: liang.chen
@@ -114,6 +120,42 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     @Override
     public boolean deactivate(RuleDO ruleDO){
         return remove(ruleDO);
+    }
+
+
+    /**
+     * 批量变更时，则整个子策略重新加载
+     * @param ruleDOlist
+     * @return
+     */
+    @Override
+    public boolean batchUpdate(List<RuleDO> ruleDOlist){
+        if(ruleDOlist == null || ruleDOlist.isEmpty()){
+            return true;
+        }
+
+        //bizType -> Set<bizUuid>
+        HashMultimap<String,String> hashMultimap = HashMultimap.create();
+        for(RuleDO ruleDO : ruleDOlist) {
+            hashMultimap.put(ruleDO.getBizType(),ruleDO.getBizUuid());
+        }
+
+        for(String bizType : hashMultimap.keySet()){
+            if(BizTypeEnum.SUB_POLICY.name().toLowerCase().equalsIgnoreCase(bizType)){
+                Set<String> subPolicyUuids = hashMultimap.get(bizType);
+
+                if(subPolicyUuids == null || subPolicyUuids.isEmpty()){
+                    continue;
+                }
+
+                for(String subPolicyUuid : subPolicyUuids) {
+                    subPolicyReLoadManager.reloadByUuid(subPolicyUuid);
+                }
+            }
+            //其他bizType待后期扩展
+        }
+
+        return true;
     }
 
 }

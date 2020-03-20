@@ -22,7 +22,7 @@ public class FinishEventCache {
 
     @PostConstruct
     public void init(){
-        //设置缓存有效期
+        //设置缓存有效期10分钟
         CacheBuilder<String, Boolean> cacheBuilder = (CacheBuilder) CacheBuilder.newBuilder();
         cacheBuilder.expireAfterWrite(10, TimeUnit.MINUTES);
         cache = cacheBuilder.build();

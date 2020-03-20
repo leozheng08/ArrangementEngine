@@ -58,6 +58,7 @@ public class EventMsgParser {
 
         if(entity == null){
             domainEvent.setData(jsonArray);
+            domainEvent.setEntityClass(JSONObject.class);
 //            logger.debug("event entity is empty! event:{}",jsonObject.toString());
             return domainEvent;
         }
@@ -65,10 +66,11 @@ public class EventMsgParser {
         Class entityClass = entityMap.get(entity.toLowerCase());
         if(entityClass == null){
             domainEvent.setData(jsonArray);
+            domainEvent.setEntityClass(JSONObject.class);
 //            logger.debug("event entityClass not find! event:{}",jsonObject.toString());
             return domainEvent;
         }
-
+        domainEvent.setEntityClass(entityClass);
         List entityList = new ArrayList();
         if(jsonArray != null){
             for(Object obj:jsonArray){
@@ -79,6 +81,7 @@ public class EventMsgParser {
                 }
                 Object entityInst = data.toJavaObject(entityClass);
                 entityList.add(entityInst);
+
             }
         }
         domainEvent.setData(entityList);

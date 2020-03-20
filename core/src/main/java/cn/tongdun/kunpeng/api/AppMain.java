@@ -54,7 +54,7 @@ public class AppMain implements ApplicationContextAware {
     }
 
     //默认为halt=true,当启动加载成功后，才设置为false
-    private static boolean halt = true;
+    private boolean halt = true;
 
     @Autowired
     Environment environment;

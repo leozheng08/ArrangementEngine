@@ -17,7 +17,7 @@ import java.util.List;
 public class RedisKVRepository implements IKVRepository {
 
     @Autowired
-    private RedisClient kunPengRedisClient;
+    protected RedisClient kunPengRedisClient;
 
     @Override
     public boolean exists(String key) {

@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @Author: liang.chen
@@ -69,11 +71,24 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
         reloadFactory.register(PolicyDefinitionDO.class,this);
     }
 
+    @Override
+    public boolean create(PolicyDefinitionDO policyDefinitionDO){
+        return addOrUpdate(policyDefinitionDO);
+    }
+    @Override
+    public boolean update(PolicyDefinitionDO policyDefinitionDO){
+        return addOrUpdate(policyDefinitionDO);
+    }
+    @Override
+    public boolean activate(PolicyDefinitionDO policyDefinitionDO){
+        return addOrUpdate(policyDefinitionDO);
+    }
+
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(PolicyDefinitionDO policyDefinitionDO){
         String uuid = policyDefinitionDO.getUuid();
         logger.debug("PolicyDefinition reload start, uuid:{}",uuid);
@@ -119,19 +134,28 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
 
 
     /**
-     * 删除事件类型
+     * 删除事件类型,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
      * @param policyDefinitionDO
      * @return
      */
     @Override
     public boolean remove(PolicyDefinitionDO policyDefinitionDO){
+        return remove(policyDefinitionDO, policyDefinition -> {
+                    //标记删除状态
+                    policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
+                }
+        );
+    }
+
+    public boolean remove(PolicyDefinitionDO policyDefinitionDO, Consumer<PolicyDefinition> consumer){
         try {
             PolicyDefinition policyDefinition = policyDefinitionCache.get(policyDefinitionDO.getUuid());
             if(policyDefinition == null){
                 return policyReLoadManager.removePolicy(policyDefinitionDO.getCurrVersionUuid());
             }
-            //标记不删除状态
-            policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
+
+            //对policyDefinition修改相关状态
+            consumer.accept(policyDefinition);
 
             String policyUuid = policyDefinition.getCurrVersionUuid();
             boolean result = policyReLoadManager.removePolicy(policyUuid);
@@ -146,28 +170,16 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
 
 
     /**
-     * 关闭状态
+     * 关闭状态,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
      * @param policyDefinitionDO
      * @return
      */
     @Override
     public boolean deactivate(PolicyDefinitionDO policyDefinitionDO){
-        try {
-            PolicyDefinition policyDefinition = policyDefinitionCache.get(policyDefinitionDO.getUuid());
-            if(policyDefinition == null){
-                return policyReLoadManager.removePolicy(policyDefinitionDO.getCurrVersionUuid());
-            }
-            //标记不在用状态
-            policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
-
-            String policyUuid = policyDefinition.getCurrVersionUuid();
-            boolean result = policyReLoadManager.removePolicy(policyUuid);
-
-            logger.debug("PolicyDefinition deactivate success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
-            return result;
-        } catch (Exception e){
-            logger.error("FieldDefinition deactivate failed, uuid:{}",policyDefinitionDO.getUuid(),e);
-            return false;
-        }
+        return remove(policyDefinitionDO, policyDefinition -> {
+                    //标记不在用状态
+                    policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
+                }
+        );
     }
 }
