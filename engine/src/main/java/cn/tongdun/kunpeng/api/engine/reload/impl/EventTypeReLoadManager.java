@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
+import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,23 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
         reloadFactory.register(EventTypeDO.class,this);
     }
 
+    @Override
+    public boolean create(EventTypeDO eventTypeDO){
+        return addOrUpdate(eventTypeDO);
+    }
+    @Override
+    public boolean update(EventTypeDO eventTypeDO){
+        return addOrUpdate(eventTypeDO);
+    }
+    @Override
+    public boolean activate(EventTypeDO eventTypeDO){
+        return addOrUpdate(eventTypeDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(EventTypeDO eventTypeDO){
         String uuid = eventTypeDO.getUuid();
         logger.debug("EventType reload start, uuid:{}",uuid);
@@ -78,14 +91,6 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
     public boolean remove(EventTypeDO eventTypeDO){
         //事件类型删除或失效后，对应的策略仍可以正常调用，所有缓存中不需要删除
         logger.debug("EventType remove ignore, uuid:{}",eventTypeDO.getUuid());
-
-//        try {
-//            eventTypeCache.remove(eventTypeDO.getUuid());
-//        } catch (Exception e){
-//            logger.error("EventType remove failed, uuid:{}",eventTypeDO.getUuid(),e);
-//            return false;
-//        }
-//        logger.debug("EventType remove success, uuid:{}",eventTypeDO.getUuid());
         return true;
     }
 

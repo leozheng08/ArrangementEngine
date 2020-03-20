@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
 import cn.tongdun.kunpeng.share.dataobject.PolicyDecisionModeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +45,23 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
         reloadFactory.register(PolicyDecisionModeDO.class,this);
     }
 
+    @Override
+    public boolean create(PolicyDecisionModeDO policyDecisionModeDO){
+        return addOrUpdate(policyDecisionModeDO);
+    }
+    @Override
+    public boolean update(PolicyDecisionModeDO policyDecisionModeDO){
+        return addOrUpdate(policyDecisionModeDO);
+    }
+    @Override
+    public boolean activate(PolicyDecisionModeDO policyDecisionModeDO){
+        return addOrUpdate(policyDecisionModeDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(PolicyDecisionModeDO policyDecisionModeDO){
         String policyUuid = policyDecisionModeDO.getPolicyUuid();
         logger.debug("PolicyDecisionMode reload start, policyUuid:{}",policyUuid);

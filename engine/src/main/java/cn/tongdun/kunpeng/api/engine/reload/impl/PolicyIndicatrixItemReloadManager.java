@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
 import cn.tongdun.kunpeng.share.dataobject.PolicyIndicatrixItemDO;
+import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +43,23 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
         reloadFactory.register(PolicyIndicatrixItemDO.class,this);
     }
 
+    @Override
+    public boolean create(PolicyIndicatrixItemDO policyIndicatrixItemDO){
+        return addOrUpdate(policyIndicatrixItemDO);
+    }
+    @Override
+    public boolean update(PolicyIndicatrixItemDO policyIndicatrixItemDO){
+        return addOrUpdate(policyIndicatrixItemDO);
+    }
+    @Override
+    public boolean activate(PolicyIndicatrixItemDO policyIndicatrixItemDO){
+        return addOrUpdate(policyIndicatrixItemDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(PolicyIndicatrixItemDO policyIndicatrixItemDO){
         return reload(policyIndicatrixItemDO.getPolicyUuid());
     }

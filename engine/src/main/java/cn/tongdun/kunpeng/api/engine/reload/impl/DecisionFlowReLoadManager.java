@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
+import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +46,23 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowDO> {
         reloadFactory.register(DecisionFlowDO.class,this);
     }
 
+    @Override
+    public boolean create(DecisionFlowDO decisionFlowDO){
+        return addOrUpdate(decisionFlowDO);
+    }
+    @Override
+    public boolean update(DecisionFlowDO decisionFlowDO){
+        return addOrUpdate(decisionFlowDO);
+    }
+    @Override
+    public boolean activate(DecisionFlowDO decisionFlowDO){
+        return addOrUpdate(decisionFlowDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(DecisionFlowDO decisionFlowDO){
         String uuid = decisionFlowDO.getUuid();
         logger.debug("DecisionFlow reload start, uuid:{}",uuid);

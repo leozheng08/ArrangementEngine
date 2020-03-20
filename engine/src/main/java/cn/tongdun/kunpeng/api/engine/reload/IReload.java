@@ -8,24 +8,11 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
+ * 各个实体支持的动作参见 http://wiki.tongdun.me/pages/viewpage.action?pageId=34035142
  * @Author: liang.chen
  * @Date: 2019/12/10 下午4:30
  */
 public interface IReload<T> {
-
-//    //create创建,import导入,update修改,activate激活,recover恢复  都归此类操作
-//    boolean addOrUpdate(T t);
-//
-//    //删除
-//    boolean remove(T t);
-//
-//    //关闭
-//    boolean deactivate(T t);
-//
-//    //批量变更
-//    default boolean batchUpdate(List<T> list){
-//        throw new RuntimeException("not support");
-//    }
 
     boolean create(T t);
     boolean update(T t);
@@ -33,7 +20,7 @@ public interface IReload<T> {
     boolean deactivate(T t);
     boolean remove(T t);
 
-    default boolean BATCH_REMOVE(List<T> list) {
+    default boolean batchRemove(List<T> list) {
         if(list == null){
             return true;
         }
@@ -45,7 +32,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean BATCH_CREATE(List<T> list){
+    default boolean batchCreate(List<T> list){
         if(list == null){
             return true;
         }
@@ -57,7 +44,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean BATCH_UPDATE(List<T> list) {
+    default boolean batchUpdate(List<T> list) {
         if(list == null){
             return true;
         }
@@ -69,7 +56,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean BATCH_ACTIVATE(List<T> list) {
+    default boolean batchActivate(List<T> list) {
         if(list == null){
             return true;
         }
@@ -81,7 +68,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean BATCH_DEACTIVATE(List<T> list) {
+    default boolean batchDeactivate(List<T> list) {
         if(list == null){
             return true;
         }
@@ -95,21 +82,20 @@ public interface IReload<T> {
     };
 
 
-
-    default boolean importEvent(T t){
-        return create(t);
-    };
-
-    default boolean recover(T t){
-        throw new RuntimeException("not support");
-    };
+    //挑战者任务暂停
     default boolean suspend(T t){
         throw new RuntimeException("not support");
     };
+    //挑战者任务终止
     default boolean terminate(T t){
         throw new RuntimeException("not support");
     };
-    default boolean sort(){
+    //排序
+    default boolean sort(List<T> list){
+        throw new RuntimeException("not support");
+    };
+    //切换决策模式
+    default boolean switchDecisionMode(T t){
         throw new RuntimeException("not support");
     };
 

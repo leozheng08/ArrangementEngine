@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
+import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +48,23 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
         reloadFactory.register(DynamicScriptDO.class,this);
     }
 
+    @Override
+    public boolean create(DynamicScriptDO dynamicScriptDO){
+        return addOrUpdate(dynamicScriptDO);
+    }
+    @Override
+    public boolean update(DynamicScriptDO dynamicScriptDO){
+        return addOrUpdate(dynamicScriptDO);
+    }
+    @Override
+    public boolean activate(DynamicScriptDO dynamicScriptDO){
+        return addOrUpdate(dynamicScriptDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(DynamicScriptDO dynamicScriptDO){
         String uuid = dynamicScriptDO.getUuid();
         logger.debug("DynamicScript reload start, uuid:{}",uuid);

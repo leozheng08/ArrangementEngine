@@ -84,6 +84,33 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
         return addOrUpdate(policyDefinitionDO);
     }
 
+    /**
+     * 删除事件类型,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
+     * @param policyDefinitionDO
+     * @return
+     */
+    @Override
+    public boolean remove(PolicyDefinitionDO policyDefinitionDO){
+        return remove(policyDefinitionDO, policyDefinition -> {
+                    //标记删除状态
+                    policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
+                }
+        );
+    }
+
+    /**
+     * 关闭状态,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
+     * @param policyDefinitionDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyDefinitionDO policyDefinitionDO){
+        return remove(policyDefinitionDO, policyDefinition -> {
+                    //标记不在用状态
+                    policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
+                }
+        );
+    }
 
     /**
      * 更新事件类型
@@ -133,20 +160,6 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
     }
 
 
-    /**
-     * 删除事件类型,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
-     * @param policyDefinitionDO
-     * @return
-     */
-    @Override
-    public boolean remove(PolicyDefinitionDO policyDefinitionDO){
-        return remove(policyDefinitionDO, policyDefinition -> {
-                    //标记删除状态
-                    policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
-                }
-        );
-    }
-
     public boolean remove(PolicyDefinitionDO policyDefinitionDO, Consumer<PolicyDefinition> consumer){
         try {
             PolicyDefinition policyDefinition = policyDefinitionCache.get(policyDefinitionDO.getUuid());
@@ -169,17 +182,5 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
     }
 
 
-    /**
-     * 关闭状态,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
-     * @param policyDefinitionDO
-     * @return
-     */
-    @Override
-    public boolean deactivate(PolicyDefinitionDO policyDefinitionDO){
-        return remove(policyDefinitionDO, policyDefinition -> {
-                    //标记不在用状态
-                    policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
-                }
-        );
-    }
+
 }

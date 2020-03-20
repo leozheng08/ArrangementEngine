@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.IInterfaceDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinition;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinitionCache;
+import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
@@ -38,11 +39,23 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
         reloadFactory.register(InterfaceDefinitionDO.class,this);
     }
 
+    @Override
+    public boolean create(InterfaceDefinitionDO interfaceDefinitionDO){
+        return addOrUpdate(interfaceDefinitionDO);
+    }
+    @Override
+    public boolean update(InterfaceDefinitionDO interfaceDefinitionDO){
+        return addOrUpdate(interfaceDefinitionDO);
+    }
+    @Override
+    public boolean activate(InterfaceDefinitionDO interfaceDefinitionDO){
+        return addOrUpdate(interfaceDefinitionDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(InterfaceDefinitionDO interfaceDefinitionDO){
         String uuid = interfaceDefinitionDO.getUuid();
         logger.debug("InterfaceDefinition reload start, uuid:{}",uuid);

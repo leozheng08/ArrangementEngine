@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
+import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,11 +53,51 @@ public class RuleReLoadManager implements IReload<RuleDO> {
         reloadFactory.register(RuleDO.class,this);
     }
 
+    @Override
+    public boolean create(RuleDO ruleDO){
+        return addOrUpdate(ruleDO);
+    }
+    @Override
+    public boolean update(RuleDO ruleDO){
+        return addOrUpdate(ruleDO);
+    }
+    @Override
+    public boolean activate(RuleDO ruleDO){
+        return addOrUpdate(ruleDO);
+    }
+
+
+    @Override
+    public boolean batchRemove(List<RuleDO> list) {
+        return batchAddOrUpdate(list);
+    };
+    @Override
+    public boolean batchCreate(List<RuleDO> list){
+        return batchAddOrUpdate(list);
+    };
+    @Override
+    public boolean batchUpdate(List<RuleDO> list) {
+        return batchAddOrUpdate(list);
+    };
+    @Override
+    public boolean batchActivate(List<RuleDO> list) {
+        return batchAddOrUpdate(list);
+    };
+    @Override
+    public boolean batchDeactivate(List<RuleDO> list) {
+        return batchAddOrUpdate(list);
+    };
+    @Override
+    public boolean sort(List<RuleDO> list) {
+        return batchAddOrUpdate(list);
+    };
+
+
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(RuleDO ruleDO){
         String uuid = ruleDO.getUuid();
         logger.debug("Rule reload start, uuid:{}",uuid);
@@ -86,6 +127,40 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             return false;
         }
         logger.debug("Rule reload success, uuid:{}",uuid);
+        return true;
+    }
+
+    /**
+     * 批量变更时，则整个子策略重新加载
+     * @param ruleDOlist
+     * @return
+     */
+    public boolean batchAddOrUpdate(List<RuleDO> ruleDOlist){
+        if(ruleDOlist == null || ruleDOlist.isEmpty()){
+            return true;
+        }
+
+        //bizType -> Set<bizUuid>
+        HashMultimap<String,String> hashMultimap = HashMultimap.create();
+        for(RuleDO ruleDO : ruleDOlist) {
+            hashMultimap.put(ruleDO.getBizType(),ruleDO.getBizUuid());
+        }
+
+        for(String bizType : hashMultimap.keySet()){
+            if(BizTypeEnum.SUB_POLICY.name().toLowerCase().equalsIgnoreCase(bizType)){
+                Set<String> subPolicyUuids = hashMultimap.get(bizType);
+
+                if(subPolicyUuids == null || subPolicyUuids.isEmpty()){
+                    continue;
+                }
+
+                for(String subPolicyUuid : subPolicyUuids) {
+                    subPolicyReLoadManager.reloadByUuid(subPolicyUuid);
+                }
+            }
+            //其他bizType待后期扩展
+        }
+
         return true;
     }
 
@@ -123,39 +198,6 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     }
 
 
-    /**
-     * 批量变更时，则整个子策略重新加载
-     * @param ruleDOlist
-     * @return
-     */
-    @Override
-    public boolean batchUpdate(List<RuleDO> ruleDOlist){
-        if(ruleDOlist == null || ruleDOlist.isEmpty()){
-            return true;
-        }
 
-        //bizType -> Set<bizUuid>
-        HashMultimap<String,String> hashMultimap = HashMultimap.create();
-        for(RuleDO ruleDO : ruleDOlist) {
-            hashMultimap.put(ruleDO.getBizType(),ruleDO.getBizUuid());
-        }
-
-        for(String bizType : hashMultimap.keySet()){
-            if(BizTypeEnum.SUB_POLICY.name().toLowerCase().equalsIgnoreCase(bizType)){
-                Set<String> subPolicyUuids = hashMultimap.get(bizType);
-
-                if(subPolicyUuids == null || subPolicyUuids.isEmpty()){
-                    continue;
-                }
-
-                for(String subPolicyUuid : subPolicyUuids) {
-                    subPolicyReLoadManager.reloadByUuid(subPolicyUuid);
-                }
-            }
-            //其他bizType待后期扩展
-        }
-
-        return true;
-    }
 
 }

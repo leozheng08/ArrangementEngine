@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
+import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,23 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
         reloadFactory.register(FieldDefinitionDO.class,this);
     }
 
+    @Override
+    public boolean create(FieldDefinitionDO fieldDefinitionDO){
+        return addOrUpdate(fieldDefinitionDO);
+    }
+    @Override
+    public boolean update(FieldDefinitionDO fieldDefinitionDO){
+        return addOrUpdate(fieldDefinitionDO);
+    }
+    @Override
+    public boolean activate(FieldDefinitionDO fieldDefinitionDO){
+        return addOrUpdate(fieldDefinitionDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(FieldDefinitionDO fieldDefinitionDO){
         String uuid = fieldDefinitionDO.getUuid();
         logger.debug("FieldDefinition reload start, uuid:{}",uuid);

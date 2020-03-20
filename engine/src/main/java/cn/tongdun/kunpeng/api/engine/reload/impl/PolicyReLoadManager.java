@@ -68,11 +68,24 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
         reloadFactory.register(PolicyDO.class,this);
     }
 
+    @Override
+    public boolean create(PolicyDO policyDO){
+        return addOrUpdate(policyDO);
+    }
+    @Override
+    public boolean update(PolicyDO policyDO){
+        return addOrUpdate(policyDO);
+    }
+    @Override
+    public boolean activate(PolicyDO policyDO){
+        return addOrUpdate(policyDO);
+    }
+
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(PolicyDO policyDO){
         String uuid = policyDO.getUuid();
         logger.debug("Policy reload start, uuid:{}",uuid);
@@ -120,6 +133,34 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
         return true;
     }
 
+    /**
+     * 关闭状态
+     * @param policyDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyDO policyDO){
+        try {
+            String policyUuid = policyDO.getUuid();
+            Policy policy = policyCache.get(policyUuid);
+            if(policy == null){
+                return true;
+            }
+
+            //标记不在用状态
+            policy.setStatus(CommonStatusEnum.CLOSE.getCode());
+
+            //级联删除各个子对象
+            cascadeRemove(policyUuid);
+        } catch (Exception e){
+            logger.error("Policy deactivate failed, uuid:{}",policyDO.getUuid(),e);
+            return false;
+        }
+        logger.debug("Policy deactivate success, uuid:{}",policyDO.getUuid());
+        return true;
+    }
+
+
 
     /**
      * 级联删除各个子对象
@@ -160,35 +201,4 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
         }
         return true;
     }
-
-    /**
-     * 关闭状态
-     * @param policyDO
-     * @return
-     */
-    @Override
-    public boolean deactivate(PolicyDO policyDO){
-        try {
-            String policyUuid = policyDO.getUuid();
-            Policy policy = policyCache.get(policyUuid);
-            if(policy == null){
-                return true;
-            }
-
-            //标记不在用状态
-            policy.setStatus(CommonStatusEnum.CLOSE.getCode());
-
-            //级联删除各个子对象
-            cascadeRemove(policyUuid);
-        } catch (Exception e){
-            logger.error("Policy deactivate failed, uuid:{}",policyDO.getUuid(),e);
-            return false;
-        }
-        logger.debug("Policy deactivate success, uuid:{}",policyDO.getUuid());
-        return true;
-    }
-
-
-
-
 }

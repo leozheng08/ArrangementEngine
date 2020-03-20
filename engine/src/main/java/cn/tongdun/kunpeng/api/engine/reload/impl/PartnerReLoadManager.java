@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
+import cn.tongdun.kunpeng.share.dataobject.PolicyDecisionModeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,23 @@ public class PartnerReLoadManager implements IReload<Partner> {
         reloadFactory.register(Partner.class,this);
     }
 
+    @Override
+    public boolean create(Partner partnerDO){
+        return addOrUpdate(partnerDO);
+    }
+    @Override
+    public boolean update(Partner partnerDO){
+        return addOrUpdate(partnerDO);
+    }
+    @Override
+    public boolean activate(Partner partnerDO){
+        return addOrUpdate(partnerDO);
+    }
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(Partner partnerDO){
         String partnerCode = partnerDO.getPartnerCode();
         logger.debug("Partner reload start, partnerCode:{}",partnerCode);

@@ -22,7 +22,9 @@ public enum DomainEventTypeEnum {
     RECOVER("恢复"),
     SUSPEND("暂停"),
     TERMINATE("停止"),
-    SORT("排序");
+    SORT("排序"),
+    SWITCH_DECISION_MODE("切换决策模式");
+
 
 
     private String desc;

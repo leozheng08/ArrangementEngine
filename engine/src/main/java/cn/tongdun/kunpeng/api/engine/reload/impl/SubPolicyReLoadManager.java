@@ -49,11 +49,24 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
         reloadFactory.register(SubPolicyDO.class,this);
     }
 
+    @Override
+    public boolean create(SubPolicyDO subPolicyDO){
+        return addOrUpdate(subPolicyDO);
+    }
+    @Override
+    public boolean update(SubPolicyDO subPolicyDO){
+        return addOrUpdate(subPolicyDO);
+    }
+    @Override
+    public boolean activate(SubPolicyDO subPolicyDO){
+        return addOrUpdate(subPolicyDO);
+    }
+
+
     /**
      * 更新事件类型
      * @return
      */
-    @Override
     public boolean addOrUpdate(SubPolicyDO subPolicyDO){
         String uuid = subPolicyDO.getUuid();
         logger.debug("SubPolicy reload start, uuid:{}",uuid);
@@ -106,6 +119,16 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
         }
     }
 
+    /**
+     * 关闭状态
+     * @param subPolicyDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(SubPolicyDO subPolicyDO){
+        return remove(subPolicyDO);
+    }
+
     public boolean removeSubPolicy(String subPolicyUuid){
         SubPolicy subPolicy = subPolicyCache.remove(subPolicyUuid);
         if(subPolicy == null){
@@ -121,15 +144,5 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
             ruleCache.remove(rule.getUuid());
         }
         return true;
-    }
-
-    /**
-     * 关闭状态
-     * @param subPolicyDO
-     * @return
-     */
-    @Override
-    public boolean deactivate(SubPolicyDO subPolicyDO){
-        return remove(subPolicyDO);
     }
 }
