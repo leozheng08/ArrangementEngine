@@ -69,19 +69,43 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         try {
+//            IndicatrixValQuery indicatrixValQuery = new IndicatrixValQuery();
+//            indicatrixValQuery.setBizId(context.getSeqId());
+//            indicatrixValQuery.setPartnerCode(context.getPartnerCode());
+//            indicatrixValQuery.setEventType(context.getEventType());
+//            indicatrixValQuery.setEventId(context.getEventId());
+//            indicatrixValQuery.setAppName(APP_NAME);
+//            indicatrixValQuery.setActivity(activityParam);
+//            indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
+
+            /****************测试代码*********************/
+            //测试代码
+            indicatrixsParam = new ArrayList<>();
+            String idStr = "110765508504228841,110769923604820969,110770896230364137,110781052020081641,111057807721268201,111062910037558249,111063317698741225,111063641419318249,111156222018974697,111156970001560553";
+            for (String id : idStr.split(",")) {
+                indicatrixsParam.add(Long.parseLong(id));
+            }
+            List<String> codeList = new ArrayList<>();
+            String codeStr = "c3b2fba3b64d5671,290a6efdee0b4724,daf4496d889628de,33744122d5934261,8b249be93f48da0d,03b3d4b9a94fa2bd,cfb3860347879efa,8b75e4c9cee31c9b,4eb75aa639c945a4,e3b68a0d447391ff";
+            for (String code : codeStr.split(",")) {
+                codeList.add(code);
+            }
             IndicatrixValQuery indicatrixValQuery = new IndicatrixValQuery();
             indicatrixValQuery.setBizId(context.getSeqId());
-            indicatrixValQuery.setPartnerCode(context.getPartnerCode());
+            indicatrixValQuery.setPartnerCode("demo");
             indicatrixValQuery.setEventType(context.getEventType());
             indicatrixValQuery.setEventId(context.getEventId());
             indicatrixValQuery.setAppName(APP_NAME);
             indicatrixValQuery.setActivity(activityParam);
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
+            indicatrixValQuery.setMeaningCodes(codeList);
+            /*************************************/
 
             PaasResult<List<GaeaIndicatrixVal>> indicatrixResult = null;
             try {
                 // 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
+                logger.info("平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {
                 // 临时通过LocalcachePeriod配置项做下开关
                 if (ReasonCodeUtil.isTimeout(e)) {
