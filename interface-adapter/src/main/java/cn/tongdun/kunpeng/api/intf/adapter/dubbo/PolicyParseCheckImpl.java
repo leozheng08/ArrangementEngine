@@ -42,7 +42,7 @@ public class PolicyParseCheckImpl implements IPolicyParseCheck{
         try{
             DecisionFlowDTO decisionFlowDTO = new DecisionFlowDTO();
             decisionFlowDTO.setProcessContent(content);
-            decisionFlowConvertor.convert(decisionFlowDTO,false);
+            decisionFlowConvertor.convert(decisionFlowDTO,true);
             return SingleResult.success(true);
         }catch (Exception e){
             SingleResult singleResult = SingleResult.failure(500,e.getMessage());

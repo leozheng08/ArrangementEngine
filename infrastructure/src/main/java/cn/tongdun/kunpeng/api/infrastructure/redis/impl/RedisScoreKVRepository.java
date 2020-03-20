@@ -17,10 +17,8 @@ import java.util.*;
  * Created by lvyadong on 2020/02/20.
  */
 @Component
-public class RedisScoreKVRepository implements IScoreKVRepository {
+public class RedisScoreKVRepository extends RedisKVRepository implements IScoreKVRepository {
 
-    @Autowired
-    private RedisClient kunPengRedisClient;
 
     @Override
     public boolean zadd(String key, double score, String member) {

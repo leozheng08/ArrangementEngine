@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.rule.RuleBuilder;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
+import cn.tongdun.kunpeng.common.Constant;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -35,6 +36,13 @@ public class RuleEdgeCondition extends EdgeCondition {
         if (StringUtils.isBlank(ruleUuid)) {
             throw new ParseException("Edge id:" + edgeDesc.getId() + " rule condition tns:taskName is blank or tns:ruleUuid is blank!");
         }
+
+        //给管理域调用的预校验情况下，不做规则的校验。
+        Boolean flowPreCheck =  (Boolean) edgeDesc.getExtProperty(Constant.Flow.FLOW_PRE_CHECK);
+        if(flowPreCheck != null && flowPreCheck){
+            return;
+        }
+
         IRuleRepository ruleRepository = (IRuleRepository) SpringContextHolder.getBean("ruleRepository");
         RuleDTO ruleDTO = ruleRepository.queryFullByUuid(ruleUuid);
         this.rule = ruleBuilder.build(ruleDTO);

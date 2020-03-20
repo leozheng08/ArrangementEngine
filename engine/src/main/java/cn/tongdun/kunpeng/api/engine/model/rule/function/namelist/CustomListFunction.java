@@ -145,6 +145,9 @@ public class CustomListFunction extends AbstractFunction {
         }
     }
 
+    /**
+     * 匹配的时候允许中间夹杂其他字符。 比如“———办——证———”，用“办证”匹配返回的是true。
+     */
     private boolean fuzzyMatch(String text, String pattern) {
         int from = 0;
         for (char c : pattern.toCharArray()) {
