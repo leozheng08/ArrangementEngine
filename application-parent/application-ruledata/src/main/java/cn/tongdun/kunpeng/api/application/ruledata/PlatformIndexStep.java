@@ -71,31 +71,14 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         try {
-//            IndicatrixValQuery indicatrixValQuery = new IndicatrixValQuery();
-//            indicatrixValQuery.setBizId(context.getSeqId());
-//            indicatrixValQuery.setPartnerCode(context.getPartnerCode());
-//            indicatrixValQuery.setEventType(context.getEventType());
-//            indicatrixValQuery.setEventId(context.getEventId());
-//            indicatrixValQuery.setAppName(APP_NAME);
-//            indicatrixValQuery.setActivity(activityParam);
-//            indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
-
-            /****************测试代码*********************/
-            //测试代码
-            indicatrixsParam = new ArrayList<>();
-            String idStr = "110765508504228841,110769923604820969,110770896230364137,110781052020081641,111057807721268201,111062910037558249,111063317698741225,111063641419318249,111156222018974697,111156970001560553";
-            for (String id : idStr.split(",")) {
-                indicatrixsParam.add(Long.parseLong(id));
-            }
             IndicatrixValQuery indicatrixValQuery = new IndicatrixValQuery();
             indicatrixValQuery.setBizId(context.getSeqId());
-            indicatrixValQuery.setPartnerCode("demo");
+            indicatrixValQuery.setPartnerCode(context.getPartnerCode());
             indicatrixValQuery.setEventType(context.getEventType());
             indicatrixValQuery.setEventId(context.getEventId());
             indicatrixValQuery.setAppName(APP_NAME);
             indicatrixValQuery.setActivity(activityParam);
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
-            /*************************************/
 
             PaasResult<List<GaeaIndicatrixVal>> indicatrixResult = null;
             try {
