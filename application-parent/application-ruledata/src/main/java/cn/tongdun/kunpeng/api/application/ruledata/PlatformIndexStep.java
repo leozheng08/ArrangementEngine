@@ -47,6 +47,7 @@ public class PlatformIndexStep implements IRiskStep {
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
         if(indicatrixs == null || indicatrixs.isEmpty()){
+            logger.info("策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return true;
         }
 
@@ -65,6 +66,7 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         if(indicatrixsParam.isEmpty()){
+            logger.info("策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
             return true;
         }
 
@@ -82,6 +84,7 @@ public class PlatformIndexStep implements IRiskStep {
             try {
                 // 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
+                logger.info("平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {
                 // 临时通过LocalcachePeriod配置项做下开关
                 if (ReasonCodeUtil.isTimeout(e)) {
