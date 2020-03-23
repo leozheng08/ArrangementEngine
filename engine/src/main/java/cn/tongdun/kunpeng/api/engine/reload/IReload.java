@@ -20,7 +20,7 @@ public interface IReload<T> {
     boolean deactivate(T t);
     boolean remove(T t);
 
-    default boolean batchRemove(List<T> list) {
+    default boolean remove(List<T> list) {
         if(list == null){
             return true;
         }
@@ -32,7 +32,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean batchCreate(List<T> list){
+    default boolean create(List<T> list){
         if(list == null){
             return true;
         }
@@ -44,7 +44,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean batchUpdate(List<T> list) {
+    default boolean update(List<T> list) {
         if(list == null){
             return true;
         }
@@ -56,7 +56,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean batchActivate(List<T> list) {
+    default boolean activate(List<T> list) {
         if(list == null){
             return true;
         }
@@ -68,7 +68,7 @@ public interface IReload<T> {
         }
         return result;
     };
-    default boolean batchDeactivate(List<T> list) {
+    default boolean deactivate(List<T> list) {
         if(list == null){
             return true;
         }

@@ -68,23 +68,53 @@ public class RuleReLoadManager implements IReload<RuleDO> {
 
 
     @Override
-    public boolean batchRemove(List<RuleDO> list) {
+    public boolean remove(List<RuleDO> list) {
+        if(list == null || list.isEmpty()){
+            return true;
+        }
+        if(list.size() == 1){
+            remove(list.get(0));
+        }
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean batchCreate(List<RuleDO> list){
+    public boolean create(List<RuleDO> list){
+        if(list == null || list.isEmpty()){
+            return true;
+        }
+        if(list.size() == 1){
+            create(list.get(0));
+        }
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean batchUpdate(List<RuleDO> list) {
+    public boolean update(List<RuleDO> list) {
+        if(list == null || list.isEmpty()){
+            return true;
+        }
+        if(list.size() == 1){
+            update(list.get(0));
+        }
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean batchActivate(List<RuleDO> list) {
+    public boolean activate(List<RuleDO> list) {
+        if(list == null || list.isEmpty()){
+            return true;
+        }
+        if(list.size() == 1){
+            activate(list.get(0));
+        }
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean batchDeactivate(List<RuleDO> list) {
+    public boolean deactivate(List<RuleDO> list) {
+        if(list == null || list.isEmpty()){
+            return true;
+        }
+        if(list.size() == 1){
+            deactivate(list.get(0));
+        }
         return batchAddOrUpdate(list);
     };
     @Override

@@ -104,32 +104,8 @@ public class DomainEventHandle {
                     logger.warn("reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
                     return true;
                 }
-                if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.BATCH_CREATE.name())) {
-                    if(!reLoadManager.batchCreate(domainEvent.getData())){
-                        return false;
-                    }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.BATCH_ACTIVATE.name())) {
-                    if(!reLoadManager.batchActivate(domainEvent.getData())){
-                        return false;
-                    }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.BATCH_DEACTIVATE.name())) {
-                    if(!reLoadManager.batchDeactivate(domainEvent.getData())){
-                        return false;
-                    }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.BATCH_UPDATE.name())) {
-                    if(!reLoadManager.batchUpdate(domainEvent.getData())){
-                        return false;
-                    }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.BATCH_REMOVE.name())) {
-                    if(!reLoadManager.batchRemove(domainEvent.getData())){
-                        return false;
-                    }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.CREATE.name())) {
+                if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.CREATE.name())) {
                     if(!reLoadManager.create(domainEvent.getData())){
-                        return false;
-                    }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.UPDATE.name())) {
-                    if(!reLoadManager.update(domainEvent.getData())){
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.ACTIVATE.name())) {
@@ -138,6 +114,10 @@ public class DomainEventHandle {
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.DEACTIVATE.name())) {
                     if(!reLoadManager.deactivate(domainEvent.getData())){
+                        return false;
+                    }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.UPDATE.name())) {
+                    if(!reLoadManager.update(domainEvent.getData())){
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {
@@ -157,7 +137,7 @@ public class DomainEventHandle {
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.SWITCH_DECISION_MODE.name())) {
-                    if(!reLoadManager.suspend(domainEvent.getData())){
+                    if(!reLoadManager.switchDecisionMode(domainEvent.getData())){
                         return false;
                     }
                 } else {
