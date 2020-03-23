@@ -240,7 +240,12 @@
 
             <dependency>
                 <groupId>cn.tongdun.kunpeng</groupId>
-                <artifactId>kunpeng-share</artifactId>
+                <artifactId>kunpeng-share-common</artifactId>
+                <version>${kunpeng-share.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng</groupId>
+                <artifactId>kunpeng-share-dataobject</artifactId>
                 <version>${kunpeng-share.version}</version>
             </dependency>
             <!-- ddd end-->
