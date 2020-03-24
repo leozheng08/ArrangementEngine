@@ -85,13 +85,12 @@ public class KunpengStringUtils {
         if (str != null) {
             for (int i = 0; i < str.length(); i++) {
                 char c = str.charAt(i);
-                String s = str.substring(i, i + 1);
 
                 // A-Z
                 if (c >= 65 && c <= 90) {
-                    sb.append("_").append(s.toLowerCase());
+                    sb.append("_").append(String.valueOf(c).toLowerCase());
                 } else {
-                    sb.append(s);
+                    sb.append(c);
                 }
             }
         }
@@ -109,11 +108,11 @@ public class KunpengStringUtils {
                 if (s.length() > 0) {
                     // 首字母小写
                     if (i > 0) {
-                        sb.append(s.substring(0, 1).toUpperCase());
+                        sb.append( String.valueOf(s.charAt(0)).toUpperCase());
                     } else {
-                        sb.append(s.substring(0, 1));
+                        sb.append(String.valueOf(s.charAt(0)));
                     }
-                    sb.append(s.substring(1));
+                    sb.append(s.toCharArray(),1,s.length()-1);
                 }
             }
 
