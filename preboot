@@ -22,7 +22,7 @@ JVM_EXT_PARAM=" $JVM_EXT_PARAM -Djava.awt.headless=true -Djava.net.preferIPv4Sta
 
 JVM_EXT_PARAM=" $JVM_EXT_PARAM -server -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M -Xss256k -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=2 -XX:+ParallelRefProcEnabled"
 
-JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx6g -Xms6g"
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx3g -Xms3g"
 
 JVM_EXT_PARAM=" $JVM_EXT_PARAM -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps "
 
