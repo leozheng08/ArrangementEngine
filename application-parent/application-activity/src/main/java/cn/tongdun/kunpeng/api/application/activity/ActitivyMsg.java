@@ -24,7 +24,7 @@ import java.util.Set;
 public class ActitivyMsg implements IActitivyMsg {
 
     //交易流水号
-    private String sequenceId;
+    private String seqId;
 
     //消息发送时间
     private long produceTime;
@@ -46,7 +46,7 @@ public class ActitivyMsg implements IActitivyMsg {
     @Override
     @JSONField(serialize=false)
     public String getMessageKey(){
-        return sequenceId;
+        return seqId;
     }
 
     /**
