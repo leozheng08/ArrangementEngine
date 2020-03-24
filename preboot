@@ -4,6 +4,8 @@ BASE_DIR=`dirname $0`
 
 echo 'calling preboot script'
 
+export APP_OUTPUT=${app.output}
+
 # erase old env variables
 unset APP_EXT_PARAM
 unset JVM_EXT_PARAM
@@ -16,10 +18,15 @@ JVM_EXT_PARAM=''
 if [ "$ENV" = "smoke" ] || [ "$ENV" = "dev" ]; then
   JVM_EXT_PARAM=" -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8095,suspend=n $JVM_EXT_PARAM "
 fi
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses -Dfile.encoding=UTF-8 -DdisableIntlRMIStatTask=true"
 
-#JVM_EXT_PARAM="-Xmx2688M -Xms2688M -Xmn960M -Xss256K -XX:MaxMetaspaceSize=256M -XX:MetaspaceSize=256M -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+CMSClassUnloadingEnabled -XX:+ParallelRefProcEnabled -XX:+CMSScavengeBeforeRemark -XX:+HeapDumpOnOutOfMemoryError $JVM_EXT_PARAM "
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -server -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M -Xss256k -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=2 -XX:+ParallelRefProcEnabled"
 
-JVM_EXT_PARAM="-XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps $JVM_EXT_PARAM"
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx6g -Xms6g"
+
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps "
+
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$APP_OUTPUT/logs/"
 
 echo "JVM_EXT_PARAM=$JVM_EXT_PARAM"
 
