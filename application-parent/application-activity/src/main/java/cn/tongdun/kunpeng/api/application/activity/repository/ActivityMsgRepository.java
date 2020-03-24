@@ -6,6 +6,8 @@ import cn.fraudmetrix.module.kafka.util.ErrorHelper;
 import cn.tongdun.kunpeng.api.application.activity.IActivityMsgRepository;
 import cn.tongdun.kunpeng.api.application.util.CountUtil;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.errors.RecordTooLargeException;
@@ -14,9 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: liang.chen
@@ -36,7 +40,17 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
     @Autowired
     private IConfigRepository configRepository;
 
-    private Map<String, Integer> failedMessageCounter = new ConcurrentHashMap<>();
+    //topic+seq_id -> 失败数
+    private Cache<String, Integer> failedMessageCounterCache;
+
+
+    @PostConstruct
+    public void init(){
+        //设置缓存有效期10分钟
+        CacheBuilder<String, Integer> cacheBuilder = (CacheBuilder) CacheBuilder.newBuilder();
+        cacheBuilder.expireAfterWrite(10, TimeUnit.MINUTES);
+        failedMessageCounterCache = cacheBuilder.build();
+    }
 
     /**
      * 消息发送
@@ -80,11 +94,11 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
         }
 
         //重试三次仍失败，就不重试了
-        if (CountUtil.isBeyond(failedMessageCounter, topic + messageKey, 3)) {
-            failedMessageCounter.remove(topic + messageKey);
+        if (CountUtil.isBeyond(failedMessageCounterCache, topic + messageKey, 3)) {
+            failedMessageCounterCache.invalidate(topic + messageKey);
             logger.error("kafka produce message try 3 times also failed, topic:{}, seq_id:{}", topic, messageKey, exception);
             return;
         }
-        CountUtil.increase(failedMessageCounter, topic + messageKey);
+        CountUtil.increase(failedMessageCounterCache, topic + messageKey);
     }
 }
