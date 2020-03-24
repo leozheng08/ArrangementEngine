@@ -139,7 +139,8 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             //当前调用版本
             String newPolicyUuid = policyDefinition.getCurrVersionUuid();
             Policy oldPolicy = policyCache.get(newPolicyUuid);
-            if(oldPolicy != null){ //如果已存在，说明没有更新当前调用版本，只更新策略名称即可
+            if(oldPolicyDefinition != null && newPolicyUuid.equals(oldPolicyDefinition.getCurrVersionUuid())
+                    && oldPolicy!= null){
                 oldPolicy.setName(policyDefinition.getName());
                 result = true;
             } else {
@@ -147,6 +148,7 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
                 PolicyLoadTask task = new PolicyLoadTask(newPolicyUuid,policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
                 result = task.call();
             }
+
             if(result){
                 policyDefinitionCache.put(uuid,policyDefinition);
             }
