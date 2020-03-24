@@ -48,9 +48,6 @@ public class EventMsgPullRepository implements IDomainEventRepository {
         batchMap.put("rule",DomainEventTypeEnum.BATCH_ACTIVATE.name().toLowerCase());
         batchMap.put("rule",DomainEventTypeEnum.BATCH_DEACTIVATE.name().toLowerCase());
         batchMap.put("rule",DomainEventTypeEnum.SORT.name().toLowerCase());
-        batchMap.put("rule",DomainEventTypeEnum.BATCH_CREATE.name().toLowerCase());
-        batchMap.put("rule",DomainEventTypeEnum.BATCH_UPDATE.name().toLowerCase());
-        batchMap.put("rule",DomainEventTypeEnum.BATCH_REMOVE.name().toLowerCase());
     }
 
 
@@ -110,7 +107,7 @@ public class EventMsgPullRepository implements IDomainEventRepository {
             for(String batchEvent:batchEventList){
                 if(eventType.endsWith(batchEvent)){
                     String uuid = ((JSONObject)jsonArray.get(0)).getString("uuid");
-                    target.put(uuid+"_batch", createScoreValue(uuid,jsonArray,occurredTime));
+                    target.put(uuid+"_batch", createScoreValue(uuid,jsonObject,occurredTime));
                     isBatchEvent = true;
                     break;
                 }

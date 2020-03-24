@@ -39,6 +39,28 @@ public class RuleRepository implements IRuleRepository {
     @Autowired
     private RuleActionElementDOMapper ruleActionElementDOMapper;
 
+    @Override
+    public List<RuleDTO> queryByUuids(List<String> ruleUuids) {
+        List<RuleDO>  ruleDOList = ruleDOMapper.selectByUuids(ruleUuids);
+        if(ruleDOList == null) {
+            return null;
+        }
+
+        List<RuleDTO> result = null;
+        result = ruleDOList.stream().map(ruleDO->{
+            RuleDTO ruleDTO = new RuleDTO();
+            BeanUtils.copyProperties(ruleDO,ruleDTO);
+            parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());
+            //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
+            setRuleModifiedVersion(ruleDTO);
+            return ruleDTO;
+        }).collect(Collectors.toList());
+
+        //按下下级关系创建树
+        result = buildRuleTree(result);
+        return result;
+    }
+
 
     /**
      * 根据子策略uuid 查询查询Rule完整信息，包含下级的ruleConditionElements,ruleActionElements

@@ -47,4 +47,14 @@
      order by priority, gmt_create
   </select>
 
+  <select id="selectByUuids" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select
+      <include refid="Base_Column_List" />
+    from rule where is_deleted = 0  and status=1
+      and uuid in
+      <foreach collection="list" item="uuid" index="index"  open="(" separator="," close=")">
+        #{uuid}
+      </foreach>
+  </select>
+
 </mapper>

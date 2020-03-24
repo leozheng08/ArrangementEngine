@@ -63,6 +63,9 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
     @Autowired
     private SubPolicyReLoadManager subPolicyReLoadManager;
 
+    @Autowired
+    private PolicyDecisionModeReLoadManager policyDecisionModeReLoadManager;
+
     @PostConstruct
     public void init(){
         reloadFactory.register(PolicyDO.class,this);
@@ -199,6 +202,24 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
         for(SubPolicy subPolicy:subPolicyList){
             subPolicyReLoadManager.removeSubPolicy(subPolicy.getUuid());
         }
+        return true;
+    }
+
+
+    /**
+     * 更改策略执行模式
+     * @param policyDO
+     * @return
+     */
+    @Override
+    public boolean switchDecisionMode(PolicyDO policyDO){
+        try {
+            policyDecisionModeReLoadManager.switchDecisionMode(policyDO.getUuid(),policyDO.getGmtModify().getTime());
+        } catch (Exception e){
+            logger.error("Policy switchDecisionMode failed, uuid:{}",policyDO.getUuid(),e);
+            return false;
+        }
+        logger.debug("Policy switchDecisionMode success, uuid:{}",policyDO.getUuid());
         return true;
     }
 }

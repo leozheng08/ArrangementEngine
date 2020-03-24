@@ -117,9 +117,51 @@ public class RuleReLoadManager implements IReload<RuleDO> {
         }
         return batchAddOrUpdate(list);
     };
+
+    /**
+     * 排序只需要更新子策略中规则的顺序。
+     * @param ruleDOlist
+     * @return
+     */
     @Override
-    public boolean sort(List<RuleDO> list) {
-        return batchAddOrUpdate(list);
+    public boolean sort(List<RuleDO> ruleDOlist) {
+        try {
+            if(ruleDOlist == null || ruleDOlist.isEmpty()){
+                return true;
+            }
+
+            List<String> ruleUuids = new ArrayList<>();
+            for(RuleDO ruleDO : ruleDOlist) {
+                ruleUuids.add(ruleDO.getUuid());
+            }
+
+            List<RuleDTO> ruleDTOList = ruleRepository.queryByUuids(ruleUuids);
+
+            //bizType -> Set<bizUuid>
+            HashMultimap<String,String> hashMultimap = HashMultimap.create();
+            for(RuleDTO ruleDTO : ruleDTOList) {
+                hashMultimap.put(ruleDTO.getBizType(),ruleDTO.getBizUuid());
+            }
+
+            for(String bizType : hashMultimap.keySet()){
+                if(BizTypeEnum.SUB_POLICY.name().toLowerCase().equalsIgnoreCase(bizType)){
+                    Set<String> subPolicyUuids = hashMultimap.get(bizType);
+
+                    if(subPolicyUuids == null || subPolicyUuids.isEmpty()){
+                        continue;
+                    }
+
+                    for(String subPolicyUuid : subPolicyUuids) {
+                        subPolicyReLoadManager.reloadByUuid(subPolicyUuid);
+                    }
+                }
+                //其他bizType待后期扩展
+            }
+        } catch (Exception e){
+            logger.error("Rule batchAddOrUpdate failed",e);
+            return false;
+        }
+        return true;
     };
 
 
@@ -166,31 +208,53 @@ public class RuleReLoadManager implements IReload<RuleDO> {
      * @return
      */
     public boolean batchAddOrUpdate(List<RuleDO> ruleDOlist){
-        if(ruleDOlist == null || ruleDOlist.isEmpty()){
-            return true;
-        }
-
-        //bizType -> Set<bizUuid>
-        HashMultimap<String,String> hashMultimap = HashMultimap.create();
-        for(RuleDO ruleDO : ruleDOlist) {
-            hashMultimap.put(ruleDO.getBizType(),ruleDO.getBizUuid());
-        }
-
-        for(String bizType : hashMultimap.keySet()){
-            if(BizTypeEnum.SUB_POLICY.name().toLowerCase().equalsIgnoreCase(bizType)){
-                Set<String> subPolicyUuids = hashMultimap.get(bizType);
-
-                if(subPolicyUuids == null || subPolicyUuids.isEmpty()){
-                    continue;
-                }
-
-                for(String subPolicyUuid : subPolicyUuids) {
-                    subPolicyReLoadManager.reloadByUuid(subPolicyUuid);
-                }
+        try {
+            if(ruleDOlist == null || ruleDOlist.isEmpty()){
+                return true;
             }
-            //其他bizType待后期扩展
-        }
+            //bizType -> Set<bizUuid>
+            HashMultimap<String,String> hashMultimap = HashMultimap.create();
 
+            for(RuleDO ruleDO : ruleDOlist) {
+                String uuid = ruleDO.getUuid();
+                Long timestamp = ruleDO.getGmtModify().getTime();
+                Rule oldRule = ruleCache.get(uuid);
+                //缓存中的数据是相同版本或更新的，则不刷新
+                if(timestamp != null && oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
+                    logger.debug("Rule reload localCache is newest, ignore uuid:{}",uuid);
+                    return true;
+                }
+
+                RuleDTO ruleDTO = ruleRepository.queryFullByUuid(uuid);
+
+                //如果失效则删除缓存
+                if(ruleDTO == null || CommonStatusEnum.CLOSE.getCode() == ruleDTO.getStatus()){
+                    return remove(ruleDO);
+                }
+
+                Rule newRule = ruleConvertor.convert(ruleDTO);
+                ruleCache.put(uuid,newRule);
+                hashMultimap.put(ruleDTO.getBizType(),ruleDTO.getBizUuid());
+            }
+
+            for(String bizType : hashMultimap.keySet()){
+                if(BizTypeEnum.SUB_POLICY.name().toLowerCase().equalsIgnoreCase(bizType)){
+                    Set<String> subPolicyUuids = hashMultimap.get(bizType);
+
+                    if(subPolicyUuids == null || subPolicyUuids.isEmpty()){
+                        continue;
+                    }
+
+                    for(String subPolicyUuid : subPolicyUuids) {
+                        subPolicyReLoadManager.reloadByUuid(subPolicyUuid);
+                    }
+                }
+                //其他bizType待后期扩展
+            }
+        } catch (Exception e){
+            logger.error("Rule batchAddOrUpdate failed",e);
+            return false;
+        }
         return true;
     }
 

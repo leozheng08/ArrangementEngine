@@ -145,4 +145,15 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
         }
         return true;
     }
+
+
+    /**
+     * 子策略排序，对当前执行暂无影响，不处理
+     * @param list
+     * @return
+     */
+    @Override
+    public boolean sort(List<SubPolicyDO> list){
+        return true;
+    }
 }

@@ -9,6 +9,8 @@ public interface RuleDOMapper {
 
     RuleDO selectByUuid(String uuid);
 
+    List<RuleDO>  selectByUuids(List<String> uuids);
+
     List<RuleDO> selectByBizUuidBizType(@Param("bizUuid") String bizUuid, @Param("bizType") String bizType);
 
 }

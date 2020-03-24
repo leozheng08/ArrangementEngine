@@ -18,11 +18,15 @@ JVM_EXT_PARAM=''
 if [ "$ENV" = "smoke" ] || [ "$ENV" = "dev" ]; then
   JVM_EXT_PARAM=" -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8095,suspend=n $JVM_EXT_PARAM "
 fi
+if [ "$ENV" = "sandbox" ] then
+  JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx2560M -Xms2560M"
+else
+  JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx2560M -Xms2560M"
+fi
+
 JVM_EXT_PARAM=" $JVM_EXT_PARAM -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses -Dfile.encoding=UTF-8 -DdisableIntlRMIStatTask=true"
 
 JVM_EXT_PARAM=" $JVM_EXT_PARAM -server -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M -Xss256k -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=2 -XX:+ParallelRefProcEnabled"
-
-JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx2560M -Xms2560M"
 
 JVM_EXT_PARAM=" $JVM_EXT_PARAM -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps "
 

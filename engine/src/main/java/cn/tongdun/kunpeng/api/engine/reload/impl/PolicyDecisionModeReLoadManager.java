@@ -67,11 +67,24 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
         logger.debug("PolicyDecisionMode reload start, policyUuid:{}",policyUuid);
         try {
             Long timestamp = policyDecisionModeDO.getGmtModify().getTime();
+            switchDecisionMode(policyUuid,timestamp);
+        } catch (Exception e){
+            logger.error("PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
+            return false;
+        }
+        logger.debug("PolicyDecisionMode reload success, policyUuid:{}",policyUuid);
+        return true;
+    }
+
+
+    public boolean switchDecisionMode(String policyUuid,Long timestamp){
+        try {
             AbstractDecisionMode decisionMode = decisionModeCache.get(policyUuid);
 
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDecisionModeRepository.queryByPolicyUuid(policyUuid);
             if(policyDecisionModeDTO == null){
-                return remove(policyDecisionModeDO);
+                decisionModeCache.remove(policyUuid);
+                return true;
             }
             //当前策略是否按决策流执行
             if(DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())){
@@ -107,7 +120,6 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
             logger.error("PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PolicyDecisionMode reload success, policyUuid:{}",policyUuid);
         return true;
     }
 
