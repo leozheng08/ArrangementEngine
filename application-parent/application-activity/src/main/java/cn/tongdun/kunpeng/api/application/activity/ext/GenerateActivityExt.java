@@ -37,7 +37,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
 
         ActitivyMsg actitivy = new ActitivyMsg();
         actitivy.setProduceTime(System.currentTimeMillis());
-        actitivy.setSeqId(context.getSeqId());
+        actitivy.setSequenceId(context.getSeqId());
 
         actitivy.setActivity(encodeActivity(queueItem.getContext()));
         actitivy.setResponse(queueItem.getResponse());
@@ -67,7 +67,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
     private JSONObject getBaseField(AbstractFraudContext context){
         JSONObject result = new JSONObject();
         result.put("partnerCode",context.getPartnerCode());
-        result.put("seqId",context.getSeqId());
+        result.put("sequenceId",context.getSeqId());
         result.put("eventId",context.getEventId());
         result.put("eventType",context.getEventType());
         result.put("policyUuid",context.getPolicyUuid());
