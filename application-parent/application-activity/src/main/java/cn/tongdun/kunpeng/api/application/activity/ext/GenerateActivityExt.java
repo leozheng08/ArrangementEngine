@@ -74,6 +74,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         result.put("eventOccurTime",context.getEventOccurTime());
         result.put("policyVersion",context.getPolicyVersion());
         result.put("requestId",context.getRequestId());
+        result.put("appName","default");//兼容指标平台，给appName一个默认值
         return result;
     }
 
