@@ -1,12 +1,9 @@
 package cn.tongdun.kunpeng.common.util;
 
-import com.alibaba.fastjson.JSONObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestUtil {
 

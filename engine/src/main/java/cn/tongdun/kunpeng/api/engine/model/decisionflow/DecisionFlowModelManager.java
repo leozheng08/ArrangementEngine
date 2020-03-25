@@ -7,11 +7,12 @@ import cn.fraudmetrix.module.tdflow.model.node.AbstractBizNode;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,23 +37,23 @@ public class DecisionFlowModelManager extends AbstractBizNode {
         }
         try {
             decisionFlowModel = new DecisionFlowModel();
-            JSONObject json = JSONObject.parseObject(modelConfig);
-            decisionFlowModel.setUuid(json.getString("uuid"));
-            decisionFlowModel.setInputList(buildParaInfo(json.getJSONArray("inputs")));
-            decisionFlowModel.setOutputList(buildParaInfo(json.getJSONArray("outputs")));
+            Map json = JSON.parseObject(modelConfig, HashMap.class);
+            decisionFlowModel.setUuid(JsonUtil.getString(json,"uuid"));
+            decisionFlowModel.setInputList(buildParaInfo((List)json.get("inputs")));
+            decisionFlowModel.setOutputList(buildParaInfo((List)json.get("outputs")));
             boolean isNewModel = false;
             if (json.containsKey("newModel")) {
-                isNewModel = json.getBoolean("newModel");
+                isNewModel = JsonUtil.getBoolean(json,"newModel");
             }
             decisionFlowModel.setNewModel(isNewModel);
 
             boolean isRiskServiceOutput = false;
             if (json.containsKey("isRiskServiceOutput")) {
-                isRiskServiceOutput = json.getBoolean("isRiskServiceOutput");
+                isRiskServiceOutput = JsonUtil.getBoolean(json,"isRiskServiceOutput");
             }
 
             decisionFlowModel.setRiskServiceOutput(isRiskServiceOutput);
-            decisionFlowModel.setModelVersion(json.getString("modelVersion"));
+            decisionFlowModel.setModelVersion(JsonUtil.getString(json,"modelVersion"));
         } catch (Exception e) {
             throw new ParseException("modelConfig parse json error, modelConfig : " + modelConfig);
         }
@@ -81,16 +82,15 @@ public class DecisionFlowModelManager extends AbstractBizNode {
      * @param array
      * @return
      */
-    private List<ModelParamInfo> buildParaInfo(JSONArray array) {
+    private List<ModelParamInfo> buildParaInfo(List<Map> array) {
         if (null != array) {
             List<ModelParamInfo> list = Lists.newArrayList();
-            array.stream().forEach(o -> {
+            array.stream().forEach(json -> {
                 ModelParamInfo paramInfo = new ModelParamInfo();
-                JSONObject json = (JSONObject)o;
-                paramInfo.setField(json.getString("field"));
-                paramInfo.setRightField(json.getString("rightField"));
-                paramInfo.setRightFieldType(json.getString("rightFieldType"));
-                paramInfo.setRightFieldName(json.getString("rightFieldName"));
+                paramInfo.setField(JsonUtil.getString(json,"field"));
+                paramInfo.setRightField(JsonUtil.getString(json,"rightField"));
+                paramInfo.setRightFieldType(JsonUtil.getString(json,"rightFieldType"));
+                paramInfo.setRightFieldName(JsonUtil.getString(json,"rightFieldName"));
                 list.add(paramInfo);
             });
             return list;

@@ -4,12 +4,11 @@ package cn.tongdun.kunpeng.api.infrastructure.redis.impl;
 import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.engine.reload.IDomainEventRepository;
 import cn.tongdun.kunpeng.common.util.DateUtil;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.kv.IScoreKVRepository;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,15 +89,15 @@ public class EventMsgPullRepository implements IDomainEventRepository {
 
         for(IScoreValue scoreValue :scoreValueSet) {
             String value = scoreValue.getValue().toString();
-            JSONObject jsonObject = JSONObject.parseObject(value);
-            JSONArray jsonArray = jsonObject.getJSONArray("data");
+            Map jsonObject = JSON.parseObject(value,HashMap.class);
+            List<Map> jsonArray = (List<Map>)jsonObject.get("data");
             if(jsonArray == null || jsonArray.isEmpty()){
                 continue;
             }
 
-            String eventType = jsonObject.getString("eventType");
-            String entity = jsonObject.getString("entity");
-            Long occurredTime = jsonObject.getLong("occurredTime");
+            String eventType = JsonUtil.getString(jsonObject,"eventType");
+            String entity = JsonUtil.getString(jsonObject,"entity");
+            Long occurredTime = JsonUtil.getLong(jsonObject,"occurredTime");
 
 
             List<String> batchEventList =  batchMap.get(entity);
@@ -106,7 +105,7 @@ public class EventMsgPullRepository implements IDomainEventRepository {
             //不做拆分的批量动作
             for(String batchEvent:batchEventList){
                 if(eventType.endsWith(batchEvent)){
-                    String uuid = ((JSONObject)jsonArray.get(0)).getString("uuid");
+                    String uuid = JsonUtil.getString(((Map)jsonArray.get(0)),"uuid");
                     target.put(uuid+"_batch", createScoreValue(uuid,jsonObject,occurredTime));
                     isBatchEvent = true;
                     break;
@@ -117,16 +116,15 @@ public class EventMsgPullRepository implements IDomainEventRepository {
             }
 
 
-            for(Object obj:jsonArray) {
-                JSONObject data = (JSONObject)obj;
-                String uuid = data.getString("uuid");
+            for(Map data :jsonArray) {
+                String uuid = JsonUtil.getString(data,"uuid");
                 IScoreValue oldScoreValue = target.get(uuid);
                 if(oldScoreValue == null || oldScoreValue.getScore()<occurredTime){
-                    JSONObject targetJson = new JSONObject();
+                    Map targetJson = new HashMap();
                     targetJson.put("eventType",eventType);
                     targetJson.put("entity",entity);
                     targetJson.put("occurredTime",occurredTime);
-                    JSONArray targetDatas = new JSONArray();
+                    List targetDatas = new ArrayList();
                     targetDatas.add(data);
                     targetJson.put("data",targetDatas);
 
@@ -136,7 +134,7 @@ public class EventMsgPullRepository implements IDomainEventRepository {
         }
 
         return target.values().stream().map(scoreValue ->{
-            return scoreValue.getValue().toString();
+            return JSON.toJSONString(scoreValue.getValue());
         }).collect(Collectors.toList());
     }
 

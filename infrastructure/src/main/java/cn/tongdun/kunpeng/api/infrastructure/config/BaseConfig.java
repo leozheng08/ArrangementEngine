@@ -3,8 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.config;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,9 +46,9 @@ public class BaseConfig implements IBaseConfig{
             }
 
             try{
-                JSONObject json = JSONObject.parseObject(businessEventTypeJson);
+                Map<String,Object> json = JSON.parseObject(businessEventTypeJson,HashMap.class);
                 for(Map.Entry<String, Object> entry:json.entrySet()){
-                    JSONArray array = (JSONArray)entry.getValue();
+                    List array = (List)entry.getValue();
                     if(array == null){
                         continue;
                     }

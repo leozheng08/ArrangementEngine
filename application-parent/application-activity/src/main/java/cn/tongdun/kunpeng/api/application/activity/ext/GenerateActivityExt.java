@@ -7,13 +7,9 @@ import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.BizScenario;
 import cn.tongdun.kunpeng.common.data.QueueItem;
 import cn.tongdun.tdframework.core.extension.Extension;
-import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
-import com.alibaba.fastjson.JSONObject;
 
-import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -51,10 +47,10 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
     /**
      * 提取FraudContext中所有的系统字段和扩展字段
      */
-    private JSONObject encodeRequest(AbstractFraudContext context) {
+    private Map encodeRequest(AbstractFraudContext context) {
 
         //取得上下文中基础的字段
-        JSONObject result = getBaseField(context);
+        Map result = getBaseField(context);
 
         // 获取字段值
         Map<String, Object> fieldValues = context.getFieldValues();
@@ -64,8 +60,8 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         return result;
     }
 
-    private JSONObject getBaseField(AbstractFraudContext context){
-        JSONObject result = new JSONObject();
+    private Map getBaseField(AbstractFraudContext context){
+        Map result = new HashMap();
         result.put("partnerCode",context.getPartnerCode());
         result.put("sequenceId",context.getSeqId());
         result.put("eventId",context.getEventId());

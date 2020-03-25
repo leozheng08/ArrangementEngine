@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.engine;
 
-
-import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
@@ -16,9 +14,9 @@ import cn.tongdun.kunpeng.common.data.PolicyResponse;
 import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
-import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +155,7 @@ public class ParallelEngine extends DecisionTool {
             if (future.isDone() && !future.isCancelled()) {
                 try {
                     SubPolicyResponse subPolicyResponse = future.get();
-                    logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
+                    logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSON.toJSONString(subPolicyResponse));
                     subPolicyResponseList.add(subPolicyResponse);
                 } catch (InterruptedException e) {
                     logger.error("获取规则引擎执行结果被中断", e);

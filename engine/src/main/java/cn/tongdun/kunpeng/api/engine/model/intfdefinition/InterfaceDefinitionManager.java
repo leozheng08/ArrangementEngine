@@ -7,11 +7,12 @@ import cn.fraudmetrix.module.tdflow.model.node.AbstractBizNode;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,14 +40,14 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
         }
         try {
             decisionFlowInterface = new DecisionFlowInterface();
-            JSONObject json = JSONObject.parseObject(interfaceTaskConfig);
-            decisionFlowInterface.setUuid(json.getString("uuid"));
-            decisionFlowInterface.setName(json.getString("name"));
+            Map json = JSON.parseObject(interfaceTaskConfig, HashMap.class);
+            decisionFlowInterface.setUuid(JsonUtil.getString(json,"uuid"));
+            decisionFlowInterface.setName(JsonUtil.getString(json,"name"));
             decisionFlowInterface.setIndexUuids(indexUuids);
             decisionFlowInterface.setFields(fields);
-            decisionFlowInterface.setInputParams(buildParaInfo(json.getJSONArray("inputs")));
-            decisionFlowInterface.setOutputParams(buildParaInfo(json.getJSONArray("outputs")));
-            decisionFlowInterface.setRiskServiceOutput(json.getBoolean("isRiskServiceOutput"));
+            decisionFlowInterface.setInputParams(buildParaInfo((List<Map>)json.get("inputs")));
+            decisionFlowInterface.setOutputParams(buildParaInfo((List<Map>)json.get("outputs")));
+            decisionFlowInterface.setRiskServiceOutput(JsonUtil.getBoolean(json,"isRiskServiceOutput"));
         } catch (Exception e) {
             throw new ParseException("interfaceTaskConfig parse json error, interfaceTaskConfig : " + interfaceTaskConfig);
         }
@@ -75,33 +76,32 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
      * @param array
      * @return
      */
-    private List<InterfaceDefinitionParamInfo> buildParaInfo(JSONArray array) {
+    private List<InterfaceDefinitionParamInfo> buildParaInfo(List<Map> array) {
         if (null != array) {
             List<InterfaceDefinitionParamInfo> list = Lists.newArrayList();
-            array.stream().forEach(o -> {
+            array.stream().forEach(json -> {
                 InterfaceDefinitionParamInfo paramInfo = new InterfaceDefinitionParamInfo();
-                JSONObject json = (JSONObject)o;
-                paramInfo.setInterfaceField(json.getString("interface_field"));
-                paramInfo.setInterfaceType(json.getString("interface_type"));
+                paramInfo.setInterfaceField(JsonUtil.getString(json,"interface_field"));
+                paramInfo.setInterfaceType(JsonUtil.getString(json,"interface_type"));
 
                 boolean isNecessary = false;
                 if (json.containsKey("necessary")) {
-                    isNecessary = json.getBoolean("necessary");
+                    isNecessary = JsonUtil.getBoolean(json,"necessary");
                 }
                 boolean isArray = false;
                 if (json.containsKey("isArray")) {
-                    isArray = json.getBoolean("isArray");
+                    isArray = JsonUtil.getBoolean(json,"isArray");
                 }
 
                 if (json.containsKey("type")) {
-                    paramInfo.setType(json.getString("type"));
+                    paramInfo.setType(JsonUtil.getString(json,"type"));
                 }
 
                 if (json.containsKey("selectType")) {
-                    paramInfo.setType(json.getString("selectType"));
+                    paramInfo.setType(JsonUtil.getString(json,"selectType"));
                 }
 
-                paramInfo.setRuleField(json.getString("rule_field"));
+                paramInfo.setRuleField(JsonUtil.getString(json,"rule_field"));
                 paramInfo.setNecessary(isNecessary);
                 paramInfo.setArray(isArray);
 

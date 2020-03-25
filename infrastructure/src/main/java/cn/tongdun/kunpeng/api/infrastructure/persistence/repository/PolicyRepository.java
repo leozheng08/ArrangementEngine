@@ -4,10 +4,9 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.*;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -67,10 +64,9 @@ public class PolicyRepository implements IPolicyRepository{
             }
             try{
                 //[{"ratio":40.0,"versionUuid":"b225f25f34044a9a9a6929ce12703068"},{"ratio":60.0,"versionUuid":"efa8c9ea504f413caf0634dbab760583"}]
-                JSONArray jsonarray = JSONArray.parseArray(config);
-                for(Object obj:jsonarray){
-                    JSONObject jsonObject = (JSONObject)obj;
-                    String versionUuid = jsonObject.getString("versionUuid");
+                List<HashMap> jsonarray = JSON.parseArray(config, HashMap.class);
+                for(Map jsonObject:jsonarray){
+                    String versionUuid = JsonUtil.getString(jsonObject,"versionUuid");
                     if(StringUtils.isNotBlank(versionUuid)){
                         policyUuidList.add(versionUuid);
                     }

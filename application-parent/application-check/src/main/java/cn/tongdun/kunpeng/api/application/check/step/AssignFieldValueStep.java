@@ -14,11 +14,9 @@ import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.util.DateUtil;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -136,8 +134,8 @@ public class AssignFieldValueStep implements IRiskStep {
     }
 
 
-    public static JSONObject camelJson(JSONObject o) {
-        JSONObject rst = new JSONObject();
+    public static Map<String,Object> camelJson(Map<String,Object> o) {
+        Map rst = new HashMap();
         for (String key : o.keySet()) {
             Object r = o.get(key);
             Object mr = getObject(r);
@@ -150,12 +148,12 @@ public class AssignFieldValueStep implements IRiskStep {
         if (isNormalField(r)) {
             return r;
         }
-        if (r instanceof JSONObject) {
-            JSONObject n = camelJson((JSONObject) r);
+        if (r instanceof Map) {
+            Map n = camelJson((Map) r);
             return n;
         }
-        if (r instanceof JSONArray) {
-            JSONArray aa = (JSONArray) r;
+        if (r instanceof List) {
+            List aa = (List) r;
             for (int i = 0; i < aa.size(); i++) {
                 aa.set(i, getObject(aa.get(i)));
             }
@@ -263,11 +261,11 @@ public class AssignFieldValueStep implements IRiskStep {
                     }
 
                     // 把系统对象的名称加进来，整体组装成大JSON
-                    JSONObject fieldInfo = new JSONObject();
-                    JSONObject fieldValueJson = JSONObject.parseObject(requestValue.toString());
+                    Map fieldInfo = new HashMap();
+                    Map<String,Object> fieldValueJson = JSON.parseObject(requestValue.toString(),HashMap.class);
                     fieldInfo.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldCode), fieldValueJson);
                     // 拍平入参JSON
-                    Map<String, Object> flattenedJsonInfo = JsonUtil.getFlattenedInfo(fieldInfo.toJSONString());
+                    Map<String, Object> flattenedJsonInfo = JsonUtil.getFlattenedInfo(JSON.toJSONString(fieldInfo));
                     fields.putAll(flattenedJsonInfo);
                     // 原始JSON也保存一份
                     fields.put(fieldCode, camelJson(fieldValueJson));

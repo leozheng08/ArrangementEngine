@@ -2,8 +2,8 @@ package cn.tongdun.kunpeng.api.engine.reload;
 
 import cn.tongdun.ddd.common.domain.CommonEntity;
 import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -168,9 +168,9 @@ public class DomainEventHandle {
         for(Object obj:list) {
             String uuid = null;
             Long gmtModifyTmp = null;
-            if(obj instanceof JSONObject){
-                uuid = ((JSONObject)obj).getString("uuid");
-                gmtModifyTmp = ((JSONObject)obj).getLong("gmtModify");
+            if(obj instanceof Map){
+                uuid = JsonUtil.getString((Map)obj,"uuid");
+                gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
             } else if(obj instanceof CommonEntity) {
                 CommonEntity commonEntity = (CommonEntity) obj;
                 uuid = commonEntity.getUuid();
@@ -216,9 +216,9 @@ public class DomainEventHandle {
         for(Object obj:list) {
             String uuid = null;
             Long gmtModifyTmp = null;
-            if(obj instanceof JSONObject){
-                uuid = ((JSONObject)obj).getString("uuid");
-                gmtModifyTmp = ((JSONObject)obj).getLong("gmtModify");
+            if(obj instanceof Map){
+                uuid = JsonUtil.getString((Map)obj,"uuid");
+                gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
             } else if(obj instanceof CommonEntity) {
                 CommonEntity commonEntity = (CommonEntity) obj;
                 uuid = commonEntity.getUuid();

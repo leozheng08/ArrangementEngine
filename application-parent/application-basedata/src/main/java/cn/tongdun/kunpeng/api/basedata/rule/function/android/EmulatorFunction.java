@@ -8,14 +8,14 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.ruledetail.AndroidEmulatorDetail;
 import cn.tongdun.kunpeng.common.Constant;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EmulatorFunction extends AbstractFunction {
@@ -397,12 +397,12 @@ public class EmulatorFunction extends AbstractFunction {
         if (deviceInfo.get("wifiList") != null) {
             String wifiListString = (String) deviceInfo.get("wifiList");
             try {
-                JSONArray wifiJsonList = JSON.parseArray(wifiListString);
+                List<HashMap> wifiJsonList = JSON.parseArray(wifiListString,HashMap.class);
                 if (wifiJsonList.size() == 1) {
-                    JSONObject object = wifiJsonList.getJSONObject(0);
-                    if (StringUtils.equalsIgnoreCase(object.getString("wifi_ssid"), "WiredSSID")
-                            || StringUtils.equalsIgnoreCase(object.getString("wifi_ssid"), "MEmuWiFi")
-                            || StringUtils.equalsIgnoreCase(object.getString("wifi_ssid"), "Windroye")) {
+                    Map object = wifiJsonList.get(0);
+                    if (StringUtils.equalsIgnoreCase(JsonUtil.getString(object,"wifi_ssid"), "WiredSSID")
+                            || StringUtils.equalsIgnoreCase(JsonUtil.getString(object,"wifi_ssid"), "MEmuWiFi")
+                            || StringUtils.equalsIgnoreCase(JsonUtil.getString(object,"wifi_ssid"), "Windroye")) {
                         score += 100;
                         reasons.put("wiredssid_wired_hit", 100);
                     }

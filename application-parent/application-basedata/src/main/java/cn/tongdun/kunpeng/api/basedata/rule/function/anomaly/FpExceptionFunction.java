@@ -10,13 +10,14 @@ import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.api.ruledetail.FpExceptionDetail;
 import cn.tongdun.kunpeng.common.Constant;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.base.Splitter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class FpExceptionFunction extends AbstractFunction {
                 return new FunctionResult(false);
             }
             try {
-                JSONObject obj = JSONObject.parseObject(result);
+                Map obj = JSON.parseObject(result, HashMap.class);
                 code = (String) obj.get("code");
             }
             catch (Exception e) {

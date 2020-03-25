@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.reload;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
 import cn.tongdun.kunpeng.share.json.JSON;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
