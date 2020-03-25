@@ -81,7 +81,15 @@ public class RawDomainEventHandle {
 
             if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {//删除操作
                 for (CustomListValueDO customListValueDO : listValueDOList) {
-                    customListValueKVRepository.removeCustomListValueData(new CustomListValue(customListValueDO.getCustomListUuid(), customListValueDO.getDataValue()));
+
+                    Integer type = customListValueDO.getColumnType();
+                    String value = null;
+                    if (type != null && type ==1) {
+                        value = customListValueDO.getColumnValues();
+                    } else {
+                        value = customListValueDO.getDataValue();
+                    }
+                    customListValueKVRepository.removeCustomListValueData(new CustomListValue(customListValueDO.getCustomListUuid(),value));
                     logger.debug("CustomListValue remove remote cache success,list uuid:{} data:{}",customListValueDO.getCustomListUuid(), customListValueDO.getDataValue());
                 }
             } else {//新增或修改操作
