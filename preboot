@@ -23,9 +23,9 @@ let memTotal=`cat /proc/meminfo |grep MemTotal|awk '{printf "%d", $2/1024/1024 }
 if [ $memTotal -ge 14 ]; then
     JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx11g -Xms11g -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
 elif [ $memTotal -ge 8 ]; then
-    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx6g -Xms6g -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=128M"
+    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx6g -Xms6g -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
 elif [ $memTotal -ge 4 ]; then
-    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx2560M -Xms2560M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=128M"
+    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx2560M -Xms2560M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
 else
     JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx512M -Xms512M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=128M"
 fi
