@@ -37,7 +37,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
 
         ActitivyMsg actitivy = new ActitivyMsg();
         actitivy.setProduceTime(System.currentTimeMillis());
-        actitivy.setSeqId(context.getSeqId());
+        actitivy.setSequenceId(context.getSeqId());
 
         actitivy.setRequest(encodeRequest(queueItem.getContext()));
         actitivy.setResponse(queueItem.getResponse());
