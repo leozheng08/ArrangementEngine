@@ -79,6 +79,7 @@ public class PlatformIndexStep implements IRiskStep {
             indicatrixValQuery.setAppName(APP_NAME);
             indicatrixValQuery.setActivity(activityParam);
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
+            indicatrixValQuery.setNeedDetail(true);
 
             PaasResult<List<GaeaIndicatrixVal>> indicatrixResult = null;
             try {
