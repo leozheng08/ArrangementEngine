@@ -18,15 +18,21 @@ JVM_EXT_PARAM=''
 if [ "$ENV" = "smoke" ] || [ "$ENV" = "dev" ]; then
   JVM_EXT_PARAM=" -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8095,suspend=n $JVM_EXT_PARAM "
 fi
-if [ "$ENV" = "sandbox" ] then
-  JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx2560M -Xms2560M"
+
+let memTotal=`cat /proc/meminfo |grep MemTotal|awk '{printf "%d", $2/1024/1024 }'`
+if [ $memTotal -ge 14 ]; then
+    JAVA_MEM_OPTS="$JAVA_MEM_OPTS -Xmx11g -Xms11g -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
+elif [ $memTotal -ge 8 ]; then
+    JAVA_MEM_OPTS="$JAVA_MEM_OPTS -Xmx6g -Xms6g -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=128M"
+elif [ $memTotal -gt 4 ]; then
+    JAVA_MEM_OPTS="$JAVA_MEM_OPTS -Xmx2560M -Xms2560M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=128M"
 else
-  JVM_EXT_PARAM=" $JVM_EXT_PARAM -Xmx2560M -Xms2560M"
+    JAVA_MEM_OPTS="$JAVA_MEM_OPTS -Xmx512M -Xms512M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=128M"
 fi
 
 JVM_EXT_PARAM=" $JVM_EXT_PARAM -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses -Dfile.encoding=UTF-8 -DdisableIntlRMIStatTask=true"
 
-JVM_EXT_PARAM=" $JVM_EXT_PARAM -server -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M -Xss256k -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=2 -XX:+ParallelRefProcEnabled"
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -server -Xss256k -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=2 -XX:+ParallelRefProcEnabled"
 
 JVM_EXT_PARAM=" $JVM_EXT_PARAM -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps "
 
