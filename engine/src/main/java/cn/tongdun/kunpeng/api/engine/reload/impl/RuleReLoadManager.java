@@ -28,7 +28,7 @@ import java.util.Set;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class RuleReLoadManager implements IReload<RuleDO> {
+public class RuleReLoadManager implements IReload<RuleDTO> {
 
     private Logger logger = LoggerFactory.getLogger(RuleReLoadManager.class);
 
@@ -50,25 +50,25 @@ public class RuleReLoadManager implements IReload<RuleDO> {
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(RuleDO.class,this);
+        reloadFactory.register(RuleDTO.class,this);
     }
 
     @Override
-    public boolean create(RuleDO ruleDO){
+    public boolean create(RuleDTO ruleDO){
         return addOrUpdate(ruleDO);
     }
     @Override
-    public boolean update(RuleDO ruleDO){
+    public boolean update(RuleDTO ruleDO){
         return addOrUpdate(ruleDO);
     }
     @Override
-    public boolean activate(RuleDO ruleDO){
+    public boolean activate(RuleDTO ruleDO){
         return addOrUpdate(ruleDO);
     }
 
 
     @Override
-    public boolean remove(List<RuleDO> list) {
+    public boolean remove(List<RuleDTO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -78,7 +78,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean create(List<RuleDO> list){
+    public boolean create(List<RuleDTO> list){
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -88,7 +88,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean update(List<RuleDO> list) {
+    public boolean update(List<RuleDTO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -98,7 +98,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean activate(List<RuleDO> list) {
+    public boolean activate(List<RuleDTO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -108,7 +108,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean deactivate(List<RuleDO> list) {
+    public boolean deactivate(List<RuleDTO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -124,14 +124,14 @@ public class RuleReLoadManager implements IReload<RuleDO> {
      * @return
      */
     @Override
-    public boolean sort(List<RuleDO> ruleDOlist) {
+    public boolean sort(List<RuleDTO> ruleDOlist) {
         try {
             if(ruleDOlist == null || ruleDOlist.isEmpty()){
                 return true;
             }
 
             List<String> ruleUuids = new ArrayList<>();
-            for(RuleDO ruleDO : ruleDOlist) {
+            for(RuleDTO ruleDO : ruleDOlist) {
                 ruleUuids.add(ruleDO.getUuid());
             }
 
@@ -170,7 +170,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
      * 更新事件类型
      * @return
      */
-    public boolean addOrUpdate(RuleDO ruleDO){
+    public boolean addOrUpdate(RuleDTO ruleDO){
         String uuid = ruleDO.getUuid();
         logger.debug("Rule reload start, uuid:{}",uuid);
         try {
@@ -207,7 +207,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
      * @param ruleDOlist
      * @return
      */
-    public boolean batchAddOrUpdate(List<RuleDO> ruleDOlist){
+    public boolean batchAddOrUpdate(List<RuleDTO> ruleDOlist){
         try {
             if(ruleDOlist == null || ruleDOlist.isEmpty()){
                 return true;
@@ -215,7 +215,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
             //bizType -> Set<bizUuid>
             HashMultimap<String,String> hashMultimap = HashMultimap.create();
 
-            for(RuleDO ruleDO : ruleDOlist) {
+            for(RuleDTO ruleDO : ruleDOlist) {
                 String uuid = ruleDO.getUuid();
                 Long timestamp = ruleDO.getGmtModify().getTime();
                 Rule oldRule = ruleCache.get(uuid);
@@ -265,7 +265,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
      * @return
      */
     @Override
-    public boolean remove(RuleDO ruleDO){
+    public boolean remove(RuleDTO ruleDO){
         try {
             Rule rule = ruleCache.remove(ruleDO.getUuid());
             if(rule == null){
@@ -287,7 +287,7 @@ public class RuleReLoadManager implements IReload<RuleDO> {
      * @return
      */
     @Override
-    public boolean deactivate(RuleDO ruleDO){
+    public boolean deactivate(RuleDTO ruleDO){
         return remove(ruleDO);
     }
 

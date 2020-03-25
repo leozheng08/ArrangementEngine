@@ -114,6 +114,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 //并行子策略
                 ParallelSubPolicy parallelSubPolicy = new ParallelSubPolicy();
                 parallelSubPolicy.setPolicyUuid(policyUuid);
+                parallelSubPolicy.setGmtModify(policyDecisionModeDTO.getGmtModify());
                 decisionModeCache.put(policyUuid,parallelSubPolicy);
             }
         } catch (Exception e){

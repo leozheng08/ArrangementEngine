@@ -1,9 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
 import cn.tongdun.kunpeng.share.json.JSON;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class EventMsgParser {
         put("policy_definition", PolicyDefinitionDO.class);
         put("policy", PolicyDO.class);
         put("sub_policy", SubPolicyDO.class);
-        put("rule", RuleDO.class);
+        put("rule", RuleDTO.class);
         put("decision_flow", DecisionFlowDO.class);
         put("index_definition", IndexDefinitionDO.class);
         put("policy_decision_mode", PolicyDecisionModeDO.class);

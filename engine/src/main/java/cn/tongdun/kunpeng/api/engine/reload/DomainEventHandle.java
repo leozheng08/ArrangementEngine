@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.reload;
 
 import cn.tongdun.ddd.common.domain.CommonEntity;
 import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
 import org.apache.commons.lang3.StringUtils;
@@ -137,7 +138,11 @@ public class DomainEventHandle {
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.SWITCH_DECISION_MODE.name())) {
-                    if(!reLoadManager.switchDecisionMode(domainEvent.getData())){
+                    List list = domainEvent.getData();
+                    if(list == null || list.isEmpty()){
+                        return true;
+                    }
+                    if(!reLoadManager.switchDecisionMode(list.get(0))){
                         return false;
                     }
                 } else {
@@ -177,8 +182,14 @@ public class DomainEventHandle {
                 if(commonEntity.getGmtModify() != null) {
                     gmtModifyTmp = commonEntity.getGmtModify().getTime();
                 }
+            } else if(obj instanceof CommonDTO) {
+                CommonDTO commonDTO = (CommonDTO) obj;
+                uuid = commonDTO.getUuid();
+                if(commonDTO.getGmtModify() != null) {
+                    gmtModifyTmp = commonDTO.getGmtModify().getTime();
+                }
             } else {
-                logger.warn("不能识别的对象,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
+                logger.warn("不能识别的对象 ,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
                 continue;
             }
 
@@ -224,6 +235,12 @@ public class DomainEventHandle {
                 uuid = commonEntity.getUuid();
                 if(commonEntity.getGmtModify() != null) {
                     gmtModifyTmp = commonEntity.getGmtModify().getTime();
+                }
+            } else if(obj instanceof CommonDTO) {
+                CommonDTO commonDTO = (CommonDTO) obj;
+                uuid = commonDTO.getUuid();
+                if(commonDTO.getGmtModify() != null) {
+                    gmtModifyTmp = commonDTO.getGmtModify().getTime();
                 }
             } else {
                 logger.warn("不能识别的对象,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
