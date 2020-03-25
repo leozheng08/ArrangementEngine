@@ -4,8 +4,9 @@ import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueKVRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 对接收kunpeng-admin的领域事件做处理
@@ -44,13 +46,13 @@ public class RawDomainEventHandle {
     /**
      * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
      */
-    public void handleRawMessage(JSONObject rawEventMsg){
+    public void handleRawMessage(Map rawEventMsg){
         try {
             if (rawEventMsg == null) {
                 return;
             }
 
-            String entityName = rawEventMsg.getString("entity");
+            String entityName = JsonUtil.getString(rawEventMsg,"entity");
             if (StringUtils.isBlank(entityName)) {
                 return;
             }
@@ -69,7 +71,7 @@ public class RawDomainEventHandle {
     }
 
 
-    private void putCustomListValueToRemoteCache(JSONObject rawEventMsg){
+    private void putCustomListValueToRemoteCache(Map rawEventMsg){
         try {
             DomainEvent<CustomListValueDO> domainEvent = eventMsgParser.parse(rawEventMsg);
             List<CustomListValueDO> listValueDOList = domainEvent.getData();
@@ -107,8 +109,8 @@ public class RawDomainEventHandle {
 
 
     //将领域事件保存到redis，供kunpeng-api每个主机从redis中拉取事件列表
-    private void putEventMsgToRemoteCache(JSONObject rawEventMsg){
-        domainEventRepository.putEventMsgToRemoteCache(rawEventMsg.toJSONString(),rawEventMsg.getLong("occurredTime"));
+    private void putEventMsgToRemoteCache(Map rawEventMsg){
+        domainEventRepository.putEventMsgToRemoteCache(JSON.toJSONString(rawEventMsg),JsonUtil.getLong(rawEventMsg,"occurredTime"));
     }
 
 

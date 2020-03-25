@@ -2,10 +2,59 @@ package cn.tongdun.kunpeng.common.util;
 
 import com.github.wnameless.json.flattener.JsonFlattener;
 import com.google.common.base.CaseFormat;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
 public class JsonUtil {
+
+    public static String getString(Map map,String key){
+        Object value = map.get(key);
+        if(value == null){
+            return null;
+        }
+        return value.toString();
+    }
+
+    public static Long getLong(Map map,String key){
+        Object value = map.get(key);
+        if(value == null){
+            return null;
+        }
+        return Long.parseLong(value.toString());
+    }
+
+    public static Integer getInteger(Map map,String key){
+        Object value = map.get(key);
+        if(value == null){
+            return null;
+        }
+        return Integer.parseInt(value.toString());
+    }
+
+    public static Double getDouble(Map map,String key){
+        Object value = map.get(key);
+        if(value == null){
+            return null;
+        }
+        return Double.parseDouble(value.toString());
+    }
+
+    public static Boolean getBoolean(Map map,String key){
+        Object value = map.get(key);
+        if(value == null){
+            return null;
+        }
+        String str = value.toString();
+        if(StringUtils.isBlank(str)){
+            return false;
+        }
+        if(str.equals("1") || str.equalsIgnoreCase("true")){
+            return true;
+        }
+        return false;
+    }
+
 
     public static Map<String, Object> getFlattenedInfo(String source) {
         Map<String, Object> ds = JsonFlattener.flattenAsMap(source);

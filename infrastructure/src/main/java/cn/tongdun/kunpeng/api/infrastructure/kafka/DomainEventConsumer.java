@@ -1,11 +1,11 @@
 package cn.tongdun.kunpeng.api.infrastructure.kafka;
 
-import cn.tongdun.kunpeng.api.engine.reload.DomainEventHandle;
 import cn.tongdun.kunpeng.api.engine.reload.RawDomainEventHandle;
-import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 public class DomainEventConsumer extends AbstractConsumer {
 
@@ -20,7 +20,7 @@ public class DomainEventConsumer extends AbstractConsumer {
     }
 
     @Override
-    public void onMessage(String topic, JSONObject message) {
+    public void onMessage(String topic, Map message) {
         rawDomainEventHandle.handleRawMessage(message);
     }
 

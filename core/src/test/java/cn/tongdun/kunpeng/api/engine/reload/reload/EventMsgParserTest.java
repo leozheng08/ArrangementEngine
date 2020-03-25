@@ -2,9 +2,12 @@ package cn.tongdun.kunpeng.api.engine.reload.reload;
 
 import cn.tongdun.kunpeng.api.engine.reload.DomainEvent;
 import cn.tongdun.kunpeng.api.engine.reload.EventMsgParser;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
 
 /**
  * EventMsgParser Tester.
@@ -23,12 +26,8 @@ public class EventMsgParserTest {
     public void after() throws Exception {
     }
 
-    /**
-     * Method: parse(String event)
-     */
-    @Test
-    public void testParse() throws Exception {
-        EventMsgParser parser = new EventMsgParser();
+
+    private String getEventJson(){
         String event = "{\n" +
                 "  \"occurredTime\": 1579074305123,\n" +
                 "  \"eventType\": \"PolicyCreatedEvent\",\n" +
@@ -41,11 +40,30 @@ public class EventMsgParserTest {
                 "      \"partnerCode\": \"demo\",\n" +
                 "      \"eventType\": \"loan\",\n" +
                 "      \"eventId\": \"test\",\n" +
-                "      \"appName\": \"ios\"\n" +
+                "      \"appName\": \"ios\",\n" +
+                "      \"a1\": true,\n" +
+                "      \"a2\": 123,\n" +
+                "      \"a3\": 123456789012345678\n" +
                 "  }\n" +
                 "  ]\n" +
                 "}";
-        DomainEvent domainEvent = parser.parse(event);
+        return event;
+    }
+
+    /**
+     * Method: parse(String event)
+     */
+    @Test
+    public void testParse() throws Exception {
+        EventMsgParser parser = new EventMsgParser();
+
+        DomainEvent domainEvent = parser.parse(getEventJson());
+    }
+
+    @Test
+    public void testJson(){
+        HashMap map = JSON.parseObject(getEventJson(), HashMap.class);
+        System.out.println(map);
     }
 
 

@@ -8,10 +8,11 @@ import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDOMapper;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDOMapper;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDOMapper;
+import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -309,8 +308,8 @@ public class RuleRepository implements IRuleRepository {
             return;
         }
         try {
-            JSONObject jsonObject = JSONObject.parseObject(riskConfig);
-            String mode = jsonObject.getString("mode");
+            Map jsonObject = JSON.parseObject(riskConfig, HashMap.class);
+            String mode = JsonUtil.getString(jsonObject,"mode");
             if(StringUtils.isBlank(mode)) {
                 return;
             }
@@ -318,16 +317,16 @@ public class RuleRepository implements IRuleRepository {
             switch (mode){
                 case "FirstMatch":
                 case "WorstMatch":
-                    ruleDTO.setRiskDecision(jsonObject.getString("riskDecision"));
+                    ruleDTO.setRiskDecision(JsonUtil.getString(jsonObject,"riskDecision"));
                     break;
                 case "Weighted":
                     WeightedRiskConfigDTO weighted = new WeightedRiskConfigDTO();
-                    weighted.setBaseWeight(jsonObject.getDouble("baseWeight"));
-                    weighted.setWeightRatio(jsonObject.getDouble("weightRatio"));
-                    weighted.setWeightProperty(jsonObject.getString("weightProperty"));
-                    weighted.setWeightPropertyValue(jsonObject.getString("weightPropertyValue"));
-                    weighted.setLowerLimitScore(jsonObject.getInteger("lowerLimitScore"));
-                    weighted.setUpperLimitScore(jsonObject.getInteger("upperLimitScore"));
+                    weighted.setBaseWeight(JsonUtil.getDouble(jsonObject,"baseWeight"));
+                    weighted.setWeightRatio(JsonUtil.getDouble(jsonObject,"weightRatio"));
+                    weighted.setWeightProperty(JsonUtil.getString(jsonObject,"weightProperty"));
+                    weighted.setWeightPropertyValue(JsonUtil.getString(jsonObject,"weightPropertyValue"));
+                    weighted.setLowerLimitScore(JsonUtil.getInteger(jsonObject,"lowerLimitScore"));
+                    weighted.setUpperLimitScore(JsonUtil.getInteger(jsonObject,"upperLimitScore"));
                     ruleDTO.setWeightedRiskConfigDTO(weighted);
                     break;
                 default:

@@ -3,8 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.kafka;
 import cn.fraudmetrix.module.kafka.consumer.IConsumer;
 import cn.fraudmetrix.module.kafka.object.RetryLaterException;
 import cn.tongdun.kunpeng.share.config.DynamicConfigRepository;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -13,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 仅适用于以下topic的消费者，其它topic请自行实现IConsumer接口 forseti_api_raw_activity forseti_api_raw_activity2
@@ -35,12 +36,12 @@ public abstract class AbstractConsumer implements IConsumer {
         }
         String clsName = this.getClass().getSimpleName();
         String topic = "";
-        List<JSONObject> bulkMessages = new ArrayList<>();
+        List<Map> bulkMessages = new ArrayList<>();
         for (ConsumerRecord<String, byte[]> record : messages) {
             String message = new String(record.value(), UTF8);
             try {
                 topic = record.topic();
-                JSONObject msgItem = JSONObject.parseObject(message);
+                Map msgItem = JSON.parseObject(message, HashMap.class);
                 if (msgItem == null) {
                     logger.warn("{} Receive a blank message for {} topic, message detail:{}", clsName, topic, message);
                     continue;
@@ -75,12 +76,12 @@ public abstract class AbstractConsumer implements IConsumer {
 
 
     // 如果需要批量消费，请实现此方法
-    public void onBulkMessage(String topic, List<JSONObject> messages) {
+    public void onBulkMessage(String topic, List<Map> messages) {
         throw new RuntimeException("批量消费，请实现onBulkMessage方法");
     }
 
     // 如果需要单一消费，请实现此方法
-    public void onMessage(String topic, JSONObject message) {
+    public void onMessage(String topic, Map message) {
         throw new RuntimeException("单一消费，请实现onMessage方法");
     }
 

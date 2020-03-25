@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -43,22 +43,22 @@ public class EventMsgParser {
     public DomainEvent parse(String event){
         event = event.replaceAll("DISABLED","0");
         event = event.replaceAll("ENABLED","1");
-        JSONObject jsonObject = JSONObject.parseObject(event);
-        return parse(jsonObject);
+        Map map = JSON.parseObject(event,HashMap.class);
+        return parse(map);
     }
 
-    public DomainEvent parse(JSONObject jsonObject){
+    public DomainEvent parse(Map jsonObject){
 
-        String entity = jsonObject.getString("entity");
+        String entity = JsonUtil.getString(jsonObject,"entity");
         DomainEvent domainEvent = new DomainEvent();
-        domainEvent.setOccurredTime(jsonObject.getLong("occurredTime"));
+        domainEvent.setOccurredTime(JsonUtil.getLong(jsonObject,"occurredTime"));
         domainEvent.setEntity(entity);
-        domainEvent.setEventType(jsonObject.getString("eventType"));
-        JSONArray jsonArray = jsonObject.getJSONArray("data");
+        domainEvent.setEventType(JsonUtil.getString(jsonObject,"eventType"));
+        List<Map> jsonArray = (List<Map>)jsonObject.get("data");
 
         if(entity == null){
             domainEvent.setData(jsonArray);
-            domainEvent.setEntityClass(JSONObject.class);
+            domainEvent.setEntityClass(Map.class);
 //            logger.debug("event entity is empty! event:{}",jsonObject.toString());
             return domainEvent;
         }
@@ -66,66 +66,25 @@ public class EventMsgParser {
         Class entityClass = entityMap.get(entity.toLowerCase());
         if(entityClass == null){
             domainEvent.setData(jsonArray);
-            domainEvent.setEntityClass(JSONObject.class);
+            domainEvent.setEntityClass(Map.class);
 //            logger.debug("event entityClass not find! event:{}",jsonObject.toString());
             return domainEvent;
         }
         domainEvent.setEntityClass(entityClass);
         List entityList = new ArrayList();
         if(jsonArray != null){
-            for(Object obj:jsonArray){
-                JSONObject data = (JSONObject)obj;
-                Long gmtModify = data.getLong("gmtModify");
+            for(Map data:jsonArray){
+                Long gmtModify = JsonUtil.getLong(data,"gmtModify");
                 if(gmtModify == null || gmtModify< domainEvent.getOccurredTime()) {
                     data.put("gmtModify", domainEvent.getOccurredTime());
                 }
-                Object entityInst = data.toJavaObject(entityClass);
+                Object entityInst = JSON.parseObject(JSON.toJSONString(data),entityClass);
                 entityList.add(entityInst);
 
             }
         }
         domainEvent.setData(entityList);
 
-        return domainEvent;
-    }
-
-
-
-    public SingleDomainEvent parseSingleDomainEvent(String event){
-        event = event.replaceAll("DISABLED","0");
-        event = event.replaceAll("ENABLED","1");
-
-        JSONObject jsonObject = JSONObject.parseObject(event);
-        String entity = jsonObject.getString("entity");
-        SingleDomainEvent domainEvent = new SingleDomainEvent();
-        domainEvent.setOccurredTime(jsonObject.getLong("occurredTime"));
-        domainEvent.setEntity(entity);
-        domainEvent.setEventType(jsonObject.getString("eventType"));
-        JSONArray jsonArray = jsonObject.getJSONArray("data");
-
-        if(entity == null){
-            domainEvent.setData(jsonArray);
-//            logger.debug("event entity is empty! event:{}",event);
-            return domainEvent;
-        }
-
-        Class entityClass = entityMap.get(entity.toLowerCase());
-        if(entityClass == null){
-            domainEvent.setData(jsonArray);
-//            logger.debug("event entityClass not find! event:{}",event);
-            return domainEvent;
-        }
-
-
-        if(jsonArray != null && !jsonArray.isEmpty()){
-            JSONObject data = (JSONObject)jsonArray.get(0);
-            Long gmtModify = data.getLong("gmtModify");
-            if(gmtModify == null || gmtModify< domainEvent.getOccurredTime()) {
-                data.put("gmtModify", domainEvent.getOccurredTime());
-            }
-            Object entityInst = data.toJavaObject(entityClass);
-            domainEvent.setData(entityInst);
-        }
         return domainEvent;
     }
 }
