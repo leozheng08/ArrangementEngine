@@ -39,7 +39,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         actitivy.setProduceTime(System.currentTimeMillis());
         actitivy.setSeqId(context.getSeqId());
 
-        actitivy.setActivity(encodeActivity(queueItem.getContext()));
+        actitivy.setRequest(encodeRequest(queueItem.getContext()));
         actitivy.setResponse(queueItem.getResponse());
         actitivy.setSubReasonCodes(context.getSubReasonCodes());
         return actitivy;
@@ -51,7 +51,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
     /**
      * 提取FraudContext中所有的系统字段和扩展字段
      */
-    private JSONObject encodeActivity(AbstractFraudContext context) {
+    private JSONObject encodeRequest(AbstractFraudContext context) {
 
         //取得上下文中基础的字段
         JSONObject result = getBaseField(context);

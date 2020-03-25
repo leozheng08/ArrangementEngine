@@ -30,7 +30,7 @@ public class ActitivyMsg implements IActitivyMsg {
     private long produceTime;
 
     //经处理后的各字段值，包含请求入参映射的字段值，或groovy脚本生成的字段值
-    private Map<String,Object> activity;
+    private Map<String,Object> request;
 
     //应答内容
     private IRiskResponse response;
