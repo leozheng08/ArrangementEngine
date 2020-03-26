@@ -29,6 +29,7 @@ public class EventMsgParser {
         put("rule", RuleDTO.class);
         put("decision_flow", DecisionFlowDO.class);
         put("index_definition", IndexDefinitionDO.class);
+        put("index", IndexDefinitionDO.class);
         put("policy_decision_mode", PolicyDecisionModeDO.class);
         put("field_definition", FieldDefinitionDO.class);
         put("field", FieldDefinitionDO.class);

@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -20,9 +21,10 @@ import java.util.List;
  * @Author: liang.chen
  * @Date: 2020/3/11 下午3:56
  */
+@Component
 public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatrixItemDO> {
 
-    private Logger logger = LoggerFactory.getLogger(PolicyIndexReLoadManager.class);
+    private Logger logger = LoggerFactory.getLogger(PolicyIndicatrixItemReloadManager.class);
 
     @Autowired
     private IPlatformIndexRepository policyIndicatrixItemRepository;
@@ -64,7 +66,7 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
         return reload(policyIndicatrixItemDO.getPolicyUuid());
     }
 
-    private boolean reload(String policyUuid){
+    public boolean reload(String policyUuid){
         logger.debug("PlatformIndex reload start, policyUuid:{}",policyUuid);
         try {
             List<String> policyIndicatrixItemDTOList = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
