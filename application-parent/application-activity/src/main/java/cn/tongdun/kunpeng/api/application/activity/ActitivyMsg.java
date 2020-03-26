@@ -1,17 +1,11 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
-import cn.tongdun.kunpeng.api.application.step.ext.response.haiwai.RiskResponse;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.common.data.SubReasonCode;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.NameFilter;
-import com.alibaba.fastjson.serializer.SerializeFilter;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import cn.tongdun.kunpeng.share.json.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +38,7 @@ public class ActitivyMsg implements IActitivyMsg {
      * @return
      */
     @Override
-    @JSONField(serialize=false)
+    @JsonIgnore
     public String getMessageKey(){
         return sequenceId;
     }
@@ -55,6 +49,6 @@ public class ActitivyMsg implements IActitivyMsg {
      */
     @Override
     public String toJsonString(){
-        return JSON.toJSONString(this,SerializerFeature.DisableCircularReferenceDetect);
+        return JSON.toJSONString(this);
     }
 }

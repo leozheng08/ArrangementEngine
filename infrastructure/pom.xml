@@ -91,13 +91,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- json start -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        <!-- json end -->
-
         <!-- ddd start -->
         <dependency>
             <groupId>cn.tongdun.ddd</groupId>

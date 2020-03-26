@@ -2,6 +2,8 @@ package cn.tongdun.kunpeng.api.application.step.ext.response;
 
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.*;
+import cn.tongdun.kunpeng.share.json.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     private String                    subReasonCodes;                              //原因子码
 
 
-    @JSONField(serialize = false, deserialize = false)
+    @JsonIgnore
     private IRiskResponseFactory factory;
 
     @Override
@@ -141,7 +143,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
      */
     @Override
     public String toJsonString(){
-        return JSON.toJSONString(this, SerializerFeature.DisableCircularReferenceDetect);
+        return JSON.toJSONString(this);
     }
 
     @Override

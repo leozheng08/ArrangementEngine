@@ -251,14 +251,6 @@
             <!-- ddd end-->
 
 
-            <!-- json start -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>1.2.67</version>
-            </dependency>
-            <!-- json end -->
-
 
             <dependency>
                 <groupId>com.google.guava</groupId>

@@ -1,8 +1,7 @@
 package cn.tongdun.kunpeng.client.data;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.ValueFilter;
-import org.apache.commons.lang3.StringUtils;
+import cn.tongdun.kunpeng.share.json.JSON;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -13,6 +12,7 @@ import java.util.*;
  * @Author: liang.chen
  * @Date: 2020/2/28 下午5:43
  */
+@JsonSerialize(using = CustomSerializer.class)
 public class RiskRequest implements Serializable {
 
     private static final Field[] fields = RiskRequest.class.getDeclaredFields();
@@ -354,24 +354,7 @@ public class RiskRequest implements Serializable {
 
     @Override
     public String toString(){
-        ValueFilter valueFilter = new ValueFilter(){
-            @Override
-            public Object process(Object object, String name, Object value){
-                if("secretKey".equals(name)){
-                    if(value == null){
-                        return null;
-                    }
-                    if (StringUtils.isBlank(value.toString()) || StringUtils.length(value.toString()) != 32) {
-                        return secretKey;
-                    }
-                    return StringUtils.left(secretKey, 6).concat(
-                            StringUtils.removeStart(StringUtils.leftPad(StringUtils.right(secretKey, 6),
-                                    StringUtils.length(secretKey), "*"), "******"));
-                }
-                return value;
-            }
-        };
-        return JSONObject.toJSONString(this, new ValueFilter[]{valueFilter});
+        return JSON.toJSONString(this);
     }
 
 }
