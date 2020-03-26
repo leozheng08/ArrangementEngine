@@ -39,6 +39,9 @@ public class RuleReLoadManager implements IReload<RuleDO> {
     private SubPolicyReLoadManager subPolicyReLoadManager;
 
     @Autowired
+    private PolicyIndicatrixItemReloadManager policyIndicatrixItemReloadManager;
+
+    @Autowired
     private RuleCache ruleCache;
 
     @Autowired

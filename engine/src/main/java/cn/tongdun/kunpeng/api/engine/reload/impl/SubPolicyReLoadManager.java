@@ -44,6 +44,9 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
     @Autowired
     private RuleCache ruleCache;
 
+    @Autowired
+    private PolicyIndicatrixItemReloadManager policyIndicatrixItemReloadManager;
+
     @PostConstruct
     public void init(){
         reloadFactory.register(SubPolicyDO.class,this);
@@ -99,6 +102,9 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyDO> {
 
         SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDTO);
         subPolicyCache.put(subPolicyUuid,subPolicy);
+
+        //刷新引用到的平台指标
+        policyIndicatrixItemReloadManager.reload(subPolicyDTO.getPolicyUuid());
     }
 
 

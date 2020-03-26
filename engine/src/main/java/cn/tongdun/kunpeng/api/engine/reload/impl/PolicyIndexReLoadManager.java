@@ -37,6 +37,8 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
     private PolicyIndexConvertor policyIndexConvertor;
     @Autowired
     private ReloadFactory reloadFactory;
+    @Autowired
+    private PolicyIndicatrixItemReloadManager policyIndicatrixItemReloadManager;
 
     @PostConstruct
     public void init(){
@@ -61,7 +63,11 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
      * @return
      */
     public boolean addOrUpdate(IndexDefinitionDO indexDefinitionDO){
-        return reload(indexDefinitionDO.getPolicyUuid());
+        IndexDefinitionDTO indexDefinitionDTO = policyIndexRepository.queryByUuid(indexDefinitionDO.getUuid());
+        if(indexDefinitionDTO == null){
+            return true;
+        }
+        return reload(indexDefinitionDTO.getPolicyUuid());
     }
 
     private boolean reload(String policyUuid){
@@ -77,6 +83,9 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
             } else {
                 policyIndexCache.removeList(policyUuid);
             }
+
+            //刷新引用到的平台指标
+            policyIndicatrixItemReloadManager.reload(policyUuid);
 
         } catch (Exception e){
             logger.error("PolicyIndex reload failed, policyUuid:{}",policyUuid,e);
@@ -94,7 +103,11 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionDO> {
      */
     @Override
     public boolean remove(IndexDefinitionDO indexDefinitionDO){
-        return reload(indexDefinitionDO.getPolicyUuid());
+        IndexDefinitionDTO indexDefinitionDTO = policyIndexRepository.queryByUuid(indexDefinitionDO.getUuid());
+        if(indexDefinitionDTO == null){
+            return true;
+        }
+        return reload(indexDefinitionDTO.getPolicyUuid());
     }
 
 
