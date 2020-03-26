@@ -164,7 +164,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
                 ActionDesc actionDesc = new ActionDesc();
                 actionDesc.setId(++i);
                 actionDesc.setType("assignment");
-                actionDesc.setParams(obj.toString());
+                actionDesc.setParams(JSON.toJSONString(obj));
                 actionDescList.add(actionDesc);
             }
         }

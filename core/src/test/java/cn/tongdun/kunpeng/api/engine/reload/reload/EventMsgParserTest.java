@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.reload.DomainEvent;
 import cn.tongdun.kunpeng.api.engine.reload.EventMsgParser;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import cn.tongdun.kunpeng.share.json.JSON;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.junit.After;
 import org.junit.Before;
@@ -75,9 +76,14 @@ public class EventMsgParserTest {
         return event;
     }
 
+    private String getRuleJson2(){
+        String event = "{\"template\":\"pattern/functionKit\",\"operator\":\"xiyu.wang@tongdun.cn\",\"ruleCustomId\":\"12462\",\"ruleType\":\"ONLINE\",\"id\":12462,\"locked\":false,\"creator\":\"xiyu.wang@tongdun.cn\",\"hasAutoAddToCustomListRecord\":false,\"policyDefinitionUuid\":\"672be6d5a5d248f3b5517f9d364a7ad1\",\"gmtCreate\":1585107021000,\"priority\":0,\"policyUuid\":\"e760d5b70059411e9699527804789be7\",\"name\":\"函数工具箱\",\"pilotRun\":false}";
+        return event;
+    }
+
     @Test
     public void testRule(){
-        String json = getRuleJson();
+        String json = getRuleJson2();
         JSON.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         JSON.getObjectMapper().configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
         JSON.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS,false);
@@ -86,8 +92,17 @@ public class EventMsgParserTest {
         JSON.getObjectMapper().configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL,true);
         JSON.getObjectMapper().configure(DeserializationFeature.EAGER_DESERIALIZER_FETCH,false);
 
+        //过滤为null的属性、如上面的student中对address设为“” 此处任然可以打印出来
+        JSON.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
 
         RuleDO ruleDO = JSON.parseObject(json,RuleDO.class);
         System.out.println(ruleDO);
+        System.out.println();
+        System.out.println(JSON.toJSONString(ruleDO));
+        JSON.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        System.out.println();
+        System.out.println(JSON.toJSONString(ruleDO));
+
     }
 } 

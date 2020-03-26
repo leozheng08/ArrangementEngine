@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.reload.reload;
+package cn.tongdun.kunpeng.api.engine.reload;
 
 import cn.tongdun.kunpeng.api.engine.reload.DomainEvent;
 import cn.tongdun.kunpeng.api.engine.reload.EventMsgParser;
