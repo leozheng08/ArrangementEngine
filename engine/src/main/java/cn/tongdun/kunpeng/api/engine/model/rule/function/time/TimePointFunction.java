@@ -63,7 +63,11 @@ public class TimePointFunction extends AbstractFunction {
 
         Date date = DateUtil.getDateValue(context.get(calcField));
         if (null == date) {
-            return new FunctionResult(false);
+            if (needJudge) {
+                return new FunctionResult(false);
+            } else{
+                return new FunctionResult(Double.NaN);
+            }
         }
 
         int dateValue = 0;
