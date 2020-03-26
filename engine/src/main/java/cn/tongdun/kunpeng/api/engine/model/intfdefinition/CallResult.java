@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
+import cn.tongdun.kunpeng.share.json.JSON;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class CallResult {
 
-    @JSONField(name="external_interface_call_result")
+    @JsonProperty("external_interface_call_result")
     private List<ApplicationResult> applicationResultList = new CopyOnWriteArrayList<>();   //dubbo应用调用列表
 
     private Map<String,Integer> applicationNameMap = new HashMap<>();
@@ -26,7 +26,7 @@ public class CallResult {
         this.applicationResultList = applicationResultList;
     }
 
-    public JSONObject getOutputParams(String applicationName, String interfaceName, String methodName){
+    public Map getOutputParams(String applicationName, String interfaceName, String methodName){
         Integer index = applicationNameMap.get(applicationName);
         if(index != null ){
             ApplicationResult applicationResult =  this.applicationResultList.get(index);
@@ -59,10 +59,10 @@ public class CallResult {
  */
 class ApplicationResult {
 
-    @JSONField(name="application")
+    @JsonProperty("application")
     private String application;                 //dubbo服务所属应用
 
-    @JSONField(name="interface_call_list")
+    @JsonProperty("interface_call_list")
     private List<InterfaceResult> interfaceResultList = new CopyOnWriteArrayList<>(); //dubbo接口调用列表
 
 
@@ -133,10 +133,10 @@ class ApplicationResult {
  */
 class InterfaceResult {
 
-    @JSONField(name="type")
+    @JsonProperty("type")
     private String type;                    //dubbo服务类型
 
-    @JSONField(name="details")              //dubbo服务调用具体情况
+    @JsonProperty("details")              //dubbo服务调用具体情况
     private List<InterfaceParams> interfaceParamsList = new CopyOnWriteArrayList<>();
 
     private Map<String,Integer>  interfaceParamsMap = new HashMap<>();
@@ -197,29 +197,29 @@ class InterfaceResult {
  */
 class InterfaceParams {
 
-    @JSONField(name="input_parameters")
-    private JSONObject    inputParams;       //用户输入参数, 规则引擎字段
-    @JSONField(name="result")
-    private JSONObject    outputParams;      //三方输出结果
+    @JsonProperty("input_parameters")
+    private Map    inputParams;       //用户输入参数, 规则引擎字段
+    @JsonProperty("result")
+    private Map    outputParams;      //三方输出结果
 
-    public JSONObject getInputParams() {
+    public Map getInputParams() {
         return inputParams;
     }
 
-    public void setInputParams(JSONObject inputParams) {
+    public void setInputParams(Map inputParams) {
         this.inputParams = inputParams;
     }
 
-    public JSONObject getOutputParams() {
+    public Map getOutputParams() {
         return outputParams;
     }
 
-    public void setOutputParams(JSONObject outputParams) {
+    public void setOutputParams(Map outputParams) {
         this.outputParams = outputParams;
     }
 
     @Override
     public String toString() {
-        return String.format("input:%s,result:%s", inputParams.toJSONString(),outputParams.toJSONString());
+        return String.format("input:%s,result:%s", JSON.toJSONString(inputParams),JSON.toJSONString(outputParams));
     }
 }

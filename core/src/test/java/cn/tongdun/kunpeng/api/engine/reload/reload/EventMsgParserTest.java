@@ -4,15 +4,12 @@ import cn.tongdun.kunpeng.api.engine.reload.DomainEvent;
 import cn.tongdun.kunpeng.api.engine.reload.EventMsgParser;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import cn.tongdun.kunpeng.share.json.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import lombok.Data;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * EventMsgParser Tester.
@@ -93,11 +90,4 @@ public class EventMsgParserTest {
         RuleDO ruleDO = JSON.parseObject(json,RuleDO.class);
         System.out.println(ruleDO);
     }
-
-
-
-
-
-
-
 } 
