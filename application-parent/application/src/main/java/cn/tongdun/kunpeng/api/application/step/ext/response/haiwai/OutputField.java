@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.application.step.ext.response.haiwai;
 
 import cn.tongdun.kunpeng.client.data.IOutputField;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -10,6 +10,8 @@ import com.alibaba.fastjson.annotation.JSONField;
 public class OutputField implements IOutputField{
 
     private static final long    serialVersionUID = -3320502789769293390L;
+
+    @JsonProperty("field_name")
     private String fieldName;
     private Object value;
     private String type;
@@ -26,13 +28,11 @@ public class OutputField implements IOutputField{
     }
 
     @Override
-    @JSONField(name="field_name")
     public String getFieldName() {
         return fieldName;
     }
 
     @Override
-    @JSONField(name="field_name")
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }

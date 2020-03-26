@@ -2,10 +2,6 @@ package cn.tongdun.kunpeng.api.application.step.ext.response;
 
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.*;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.Data;
 
 import java.util.List;

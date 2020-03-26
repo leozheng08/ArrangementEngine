@@ -7,17 +7,15 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.ReasonCode;
 import cn.tongdun.kunpeng.common.data.SubReasonCode;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -41,7 +39,7 @@ public class ReasonCodeStep implements IRiskStep {
             response.setReasonCode(ReasonCode.INTERNAL_ERROR.toString());
         }
 
-        String respStr = JSON.toJSONString(response, SerializerFeature.DisableCircularReferenceDetect);
+        String respStr = JSON.toJSONString(response);
         logger.warn("partner:{}, RESP_F:{}", context.getPartnerCode(), respStr);
         return true;
     }

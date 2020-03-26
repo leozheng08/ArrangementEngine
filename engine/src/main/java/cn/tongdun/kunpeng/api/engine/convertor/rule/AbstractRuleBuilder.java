@@ -20,12 +20,13 @@ import cn.tongdun.kunpeng.client.dto.RuleActionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
-import com.alibaba.fastjson.JSONArray;
+import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -154,7 +155,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             if (StringUtils.isBlank(params)) {
                 continue;
             }
-            JSONArray array = JSONArray.parseArray(params);
+            List array = JSON.parseArray(params, HashMap.class);
             if (array.isEmpty()) {
                 continue;
             }
@@ -188,7 +189,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             functionDesc.setConditionUuid(elementDTO.getUuid());
             functionDesc.setDescription(elementDTO.getDescription());
             functionDesc.setRuleUuid(elementDTO.getBizUuid());
-            List<FunctionParam> paramList = JSONArray.parseArray(elementDTO.getParams(), FunctionParam.class);
+            List<FunctionParam> paramList = JSON.parseArray(elementDTO.getParams(), FunctionParam.class);
             functionDesc.setParamList(paramList);
             functionDescList.add(functionDesc);
             functionDesc.putExtProperty(RuleConstant.FUNC_DESC_PARAMS_ALL,"true");
