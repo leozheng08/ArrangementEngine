@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.policy.definition;
 
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import lombok.Data;
  * 策略定义。将会放到缓存中，属性尽量简化，不要保留跟策略运行无关的属性
  */
 @Data
-public class PolicyDefinition extends VersionedEntity {
+public class PolicyDefinition extends StatusEntity {
 
 
 
@@ -62,15 +63,4 @@ public class PolicyDefinition extends VersionedEntity {
      */
     private String currVersion;
     private String currVersionUuid;
-
-    /**
-     * 状态
-     * 0：已关闭
-     * 1：已启用
-     */
-
-    private Integer status;
-
-    private boolean deleted;
-
 }

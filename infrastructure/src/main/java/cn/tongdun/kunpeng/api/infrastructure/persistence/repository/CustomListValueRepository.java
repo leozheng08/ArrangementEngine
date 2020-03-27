@@ -115,7 +115,11 @@ public class CustomListValueRepository implements ICustomListValueRepository {
         if (StringUtils.isBlank(value)) {
             return null;
         }
-        return new CustomListValue(listValueDO.getCustomListUuid(),value, expireTime);
+        CustomListValue customListValue = new CustomListValue(listValueDO.getCustomListUuid(),value, expireTime);
+        customListValue.setUuid(listValueDO.getUuid());
+        customListValue.setGmtModify(listValueDO.getGmtModify());
+        customListValue.setDeleted(listValueDO.isDeleted());
+        return customListValue;
     }
 
 

@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.reload;
 
 import cn.tongdun.ddd.common.domain.CommonEntity;
 import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.DomainEventDO;
 import cn.tongdun.kunpeng.client.dto.CommonDTO;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
@@ -109,15 +110,15 @@ public class DomainEventHandle {
                     if(!reLoadManager.create(domainEvent.getData())){
                         return false;
                     }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.ACTIVATE.name())) {
-                    if(!reLoadManager.activate(domainEvent.getData())){
-                        return false;
-                    }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.DEACTIVATE.name())) {
                     if(!reLoadManager.deactivate(domainEvent.getData())){
                         return false;
                     }
-                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.UPDATE.name())) {
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.ACTIVATE.name())) {
+                    if(!reLoadManager.activate(domainEvent.getData())){
+                        return false;
+                    }
+                }  else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.UPDATE.name())) {
                     if(!reLoadManager.update(domainEvent.getData())){
                         return false;
                     }
@@ -130,11 +131,19 @@ public class DomainEventHandle {
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.SUSPEND.name())) {
-                    if(!reLoadManager.suspend(domainEvent.getData())){
+                    List list = domainEvent.getData();
+                    if(list == null || list.isEmpty()){
+                        return true;
+                    }
+                    if(!reLoadManager.suspend(list.get(0))){
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.TERMINATE.name())) {
-                    if(!reLoadManager.terminate(domainEvent.getData())){
+                    List list = domainEvent.getData();
+                    if(list == null || list.isEmpty()){
+                        return true;
+                    }
+                    if(!reLoadManager.terminate(list.get(0))){
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.SWITCH_DECISION_MODE.name())) {
@@ -176,17 +185,11 @@ public class DomainEventHandle {
             if(obj instanceof Map){
                 uuid = JsonUtil.getString((Map)obj,"uuid");
                 gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
-            } else if(obj instanceof CommonEntity) {
-                CommonEntity commonEntity = (CommonEntity) obj;
-                uuid = commonEntity.getUuid();
-                if(commonEntity.getGmtModify() != null) {
-                    gmtModifyTmp = commonEntity.getGmtModify().getTime();
-                }
-            } else if(obj instanceof CommonDTO) {
-                CommonDTO commonDTO = (CommonDTO) obj;
-                uuid = commonDTO.getUuid();
-                if(commonDTO.getGmtModify() != null) {
-                    gmtModifyTmp = commonDTO.getGmtModify().getTime();
+            } else if(obj instanceof DomainEventDO) {
+                DomainEventDO domainEventDO = (DomainEventDO) obj;
+                uuid = domainEventDO.getUuid();
+                if(domainEventDO.getGmtModify() != null) {
+                    gmtModifyTmp = domainEventDO.getGmtModify().getTime();
                 }
             } else {
                 logger.warn("不能识别的对象 ,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
@@ -230,17 +233,11 @@ public class DomainEventHandle {
             if(obj instanceof Map){
                 uuid = JsonUtil.getString((Map)obj,"uuid");
                 gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
-            } else if(obj instanceof CommonEntity) {
-                CommonEntity commonEntity = (CommonEntity) obj;
-                uuid = commonEntity.getUuid();
-                if(commonEntity.getGmtModify() != null) {
-                    gmtModifyTmp = commonEntity.getGmtModify().getTime();
-                }
-            } else if(obj instanceof CommonDTO) {
-                CommonDTO commonDTO = (CommonDTO) obj;
-                uuid = commonDTO.getUuid();
-                if(commonDTO.getGmtModify() != null) {
-                    gmtModifyTmp = commonDTO.getGmtModify().getTime();
+            } else if(obj instanceof DomainEventDO) {
+                DomainEventDO domainEventDO = (DomainEventDO) obj;
+                uuid = domainEventDO.getUuid();
+                if(domainEventDO.getGmtModify() != null) {
+                    gmtModifyTmp = domainEventDO.getGmtModify().getTime();
                 }
             } else {
                 logger.warn("不能识别的对象,eventType:{}, obj:{}",domainEvent.getEventType(),obj);

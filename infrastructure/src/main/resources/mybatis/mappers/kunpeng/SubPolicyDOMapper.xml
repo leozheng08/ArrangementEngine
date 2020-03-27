@@ -35,7 +35,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from sub_policy t where t.uuid = #{uuid} and is_deleted = 0
+    from sub_policy t where t.uuid = #{uuid}
   </select>
 
   <select id="selectListByPolicyUuid" resultMap="BaseResultMap" >

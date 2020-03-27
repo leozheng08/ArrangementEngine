@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.RuleEventDO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
@@ -28,7 +29,7 @@ import java.util.Set;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class RuleReLoadManager implements IReload<RuleDTO> {
+public class RuleReLoadManager implements IReload<RuleEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(RuleReLoadManager.class);
 
@@ -53,25 +54,25 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(RuleDTO.class,this);
+        reloadFactory.register(RuleEventDO.class,this);
     }
 
     @Override
-    public boolean create(RuleDTO ruleDO){
-        return addOrUpdate(ruleDO);
+    public boolean create(RuleEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
     @Override
-    public boolean update(RuleDTO ruleDO){
-        return addOrUpdate(ruleDO);
+    public boolean update(RuleEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
     @Override
-    public boolean activate(RuleDTO ruleDO){
-        return addOrUpdate(ruleDO);
+    public boolean activate(RuleEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
 
 
     @Override
-    public boolean remove(List<RuleDTO> list) {
+    public boolean remove(List<RuleEventDO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -81,7 +82,7 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean create(List<RuleDTO> list){
+    public boolean create(List<RuleEventDO> list){
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -91,7 +92,7 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean update(List<RuleDTO> list) {
+    public boolean update(List<RuleEventDO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -101,7 +102,7 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean activate(List<RuleDTO> list) {
+    public boolean activate(List<RuleEventDO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -111,7 +112,7 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
         return batchAddOrUpdate(list);
     };
     @Override
-    public boolean deactivate(List<RuleDTO> list) {
+    public boolean deactivate(List<RuleEventDO> list) {
         if(list == null || list.isEmpty()){
             return true;
         }
@@ -123,19 +124,19 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
 
     /**
      * 排序只需要更新子策略中规则的顺序。
-     * @param ruleDOlist
+     * @param eventDOlist
      * @return
      */
     @Override
-    public boolean sort(List<RuleDTO> ruleDOlist) {
+    public boolean sort(List<RuleEventDO> eventDOlist) {
         try {
-            if(ruleDOlist == null || ruleDOlist.isEmpty()){
+            if(eventDOlist == null || eventDOlist.isEmpty()){
                 return true;
             }
 
             List<String> ruleUuids = new ArrayList<>();
-            for(RuleDTO ruleDO : ruleDOlist) {
-                ruleUuids.add(ruleDO.getUuid());
+            for(RuleEventDO eventDO : eventDOlist) {
+                ruleUuids.add(eventDO.getUuid());
             }
 
             List<RuleDTO> ruleDTOList = ruleRepository.queryByUuids(ruleUuids);
@@ -173,11 +174,11 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
      * 更新事件类型
      * @return
      */
-    public boolean addOrUpdate(RuleDTO ruleDO){
-        String uuid = ruleDO.getUuid();
+    public boolean addOrUpdate(RuleEventDO eventDO){
+        String uuid = eventDO.getUuid();
         logger.debug("Rule reload start, uuid:{}",uuid);
         try {
-            Long timestamp = ruleDO.getGmtModify().getTime();
+            Long timestamp = eventDO.getGmtModify().getTime();
             Rule oldRule = ruleCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
@@ -188,8 +189,8 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
             RuleDTO ruleDTO = ruleRepository.queryFullByUuid(uuid);
 
             //如果失效则删除缓存
-            if(ruleDTO == null || CommonStatusEnum.CLOSE.getCode() == ruleDTO.getStatus()){
-                return remove(ruleDO);
+            if(ruleDTO == null || !ruleDTO.isValid()){
+                return remove(eventDO);
             }
 
             Rule newRule = ruleConvertor.convert(ruleDTO);
@@ -207,20 +208,20 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
 
     /**
      * 批量变更时，则整个子策略重新加载
-     * @param ruleDOlist
+     * @param eventDOlist
      * @return
      */
-    public boolean batchAddOrUpdate(List<RuleDTO> ruleDOlist){
+    public boolean batchAddOrUpdate(List<RuleEventDO> eventDOlist){
         try {
-            if(ruleDOlist == null || ruleDOlist.isEmpty()){
+            if(eventDOlist == null || eventDOlist.isEmpty()){
                 return true;
             }
             //bizType -> Set<bizUuid>
             HashMultimap<String,String> hashMultimap = HashMultimap.create();
 
-            for(RuleDTO ruleDO : ruleDOlist) {
-                String uuid = ruleDO.getUuid();
-                Long timestamp = ruleDO.getGmtModify().getTime();
+            for(RuleEventDO eventDO : eventDOlist) {
+                String uuid = eventDO.getUuid();
+                Long timestamp = eventDO.getGmtModify().getTime();
                 Rule oldRule = ruleCache.get(uuid);
                 //缓存中的数据是相同版本或更新的，则不刷新
                 if(timestamp != null && oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
@@ -232,7 +233,7 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
 
                 //如果失效则删除缓存
                 if(ruleDTO == null || CommonStatusEnum.CLOSE.getCode() == ruleDTO.getStatus()){
-                    return remove(ruleDO);
+                    return remove(eventDO);
                 }
 
                 Rule newRule = ruleConvertor.convert(ruleDTO);
@@ -264,34 +265,34 @@ public class RuleReLoadManager implements IReload<RuleDTO> {
 
     /**
      * 删除事件类型
-     * @param ruleDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(RuleDTO ruleDO){
+    public boolean remove(RuleEventDO eventDO){
         try {
-            Rule rule = ruleCache.remove(ruleDO.getUuid());
+            Rule rule = ruleCache.remove(eventDO.getUuid());
             if(rule == null){
                 return true;
             }
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
         } catch (Exception e){
-            logger.error("Rule remove failed, uuid:{}",ruleDO.getUuid(),e);
+            logger.error("Rule remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("Rule remove success, uuid:{}",ruleDO.getUuid());
+        logger.debug("Rule remove success, uuid:{}",eventDO.getUuid());
         return true;
     }
 
     /**
      * 关闭状态
-     * @param ruleDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(RuleDTO ruleDO){
-        return remove(ruleDO);
+    public boolean deactivate(RuleEventDO eventDO){
+        return remove(eventDO);
     }
 
 

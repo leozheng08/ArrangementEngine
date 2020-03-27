@@ -46,6 +46,6 @@
     select
     <include refid="Base_Column_List" />
     from interface_definition
-    where uuid = #{uuid,jdbcType=CHAR} and is_deleted = 0
+    where uuid = #{uuid,jdbcType=CHAR}
   </select>
 </mapper>

@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.field;
 
-import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import java.util.Date;
  *
  */
 @Data
-public class FieldDefinition extends VersionedEntity implements IFieldDefinition {
+public class FieldDefinition extends StatusEntity implements IFieldDefinition {
     private static final long serialVersionUID = 8963907847949013871L;
 
     /**
@@ -70,19 +70,9 @@ public class FieldDefinition extends VersionedEntity implements IFieldDefinition
     private boolean velocityField;
 
     /**
-     * 是否被审核通过，1为通过，-1为未通过，0为未审核 status
-     */
-    private Integer status;
-
-    /**
      * 字段的使用场景 usage_scene
      */
     private String usageScene;
-
-    /**
-     * 是否已删除 is_deleted
-     */
-    private boolean deleted;
 
 
     @Override

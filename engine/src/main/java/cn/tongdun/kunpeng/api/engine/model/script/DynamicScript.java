@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.script;
 
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import lombok.Data;
  * @Date: 2019/12/16 下午3:21
  */
 @Data
-public class DynamicScript extends VersionedEntity {
+public class DynamicScript extends StatusEntity {
 
     /**
      * 名称 script_name
@@ -39,16 +40,6 @@ public class DynamicScript extends VersionedEntity {
      * 事件类型 event_type
      */
     private String eventType;
-
-    /**
-     * 状态 1:已启用 0:未启用 status
-     */
-    private Integer status;
-
-    /**
-     * 是否已删除 is_deleted
-     */
-    private boolean deleted;
 
     /**
      * 脚本类型 groovy script_type

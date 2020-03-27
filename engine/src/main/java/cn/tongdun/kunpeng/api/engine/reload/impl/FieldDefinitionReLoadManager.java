@@ -6,9 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
-import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
-import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.FieldDefinitionEventDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> {
+public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(FieldDefinitionReLoadManager.class);
 
@@ -36,31 +34,31 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(FieldDefinitionDO.class,this);
+        reloadFactory.register(FieldDefinitionEventDO.class,this);
     }
 
     @Override
-    public boolean create(FieldDefinitionDO fieldDefinitionDO){
-        return addOrUpdate(fieldDefinitionDO);
+    public boolean create(FieldDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
     @Override
-    public boolean update(FieldDefinitionDO fieldDefinitionDO){
-        return addOrUpdate(fieldDefinitionDO);
+    public boolean update(FieldDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
     @Override
-    public boolean activate(FieldDefinitionDO fieldDefinitionDO){
-        return addOrUpdate(fieldDefinitionDO);
+    public boolean activate(FieldDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
 
     /**
      * 更新事件类型
      * @return
      */
-    public boolean addOrUpdate(FieldDefinitionDO fieldDefinitionDO){
-        String uuid = fieldDefinitionDO.getUuid();
+    public boolean addOrUpdate(FieldDefinitionEventDO eventDO){
+        String uuid = eventDO.getUuid();
         logger.debug("FieldDefinition reload start, uuid:{}",uuid);
         try {
-            Long timestamp = fieldDefinitionDO.getGmtModify().getTime();
+            Long timestamp = eventDO.getModifiedVersion();
             FieldDefinition oldFieldDefinition = fieldDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldFieldDefinition != null && oldFieldDefinition.getModifiedVersion() >= timestamp) {
@@ -70,8 +68,8 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
 
             FieldDefinition newFieldDefinition = fieldDefinitionRepository.queryByUuid(uuid);
             //如果失效则删除缓存
-            if(newFieldDefinition == null || CommonStatusEnum.CLOSE.getCode() == newFieldDefinition.getStatus()){
-                return remove(fieldDefinitionDO);
+            if(newFieldDefinition == null || !newFieldDefinition.isValid()){
+                return remove(eventDO);
             }
 
             fieldDefinitionCache.put(uuid, newFieldDefinition);
@@ -86,29 +84,29 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionDO> 
 
     /**
      * 删除事件类型
-     * @param fieldDefinitionDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(FieldDefinitionDO fieldDefinitionDO){
+    public boolean remove(FieldDefinitionEventDO eventDO){
         try {
-            fieldDefinitionCache.remove(fieldDefinitionDO.getUuid());
+            fieldDefinitionCache.remove(eventDO.getUuid());
         } catch (Exception e){
-            logger.error("FieldDefinition remove failed, uuid:{}",fieldDefinitionDO.getUuid(),e);
+            logger.error("FieldDefinition remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("FieldDefinition remove failed, uuid:{}",fieldDefinitionDO.getUuid());
+        logger.debug("FieldDefinition remove failed, uuid:{}",eventDO.getUuid());
         return true;
     }
 
 
     /**
      * 关闭状态
-     * @param fieldDefinitionDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(FieldDefinitionDO fieldDefinitionDO){
-        return remove(fieldDefinitionDO);
+    public boolean deactivate(FieldDefinitionEventDO eventDO){
+        return remove(eventDO);
     }
 }

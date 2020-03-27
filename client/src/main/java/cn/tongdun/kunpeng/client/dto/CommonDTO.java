@@ -13,4 +13,25 @@ public class CommonDTO implements Serializable {
     protected String          uuid;
     private Date gmtCreate;
     private Date gmtModify;
+
+
+    /**
+     * 是否被审核通过，1为通过，-1为未通过，0为未审核 status
+     */
+    private Integer status;
+    /**
+     * 是否已删除 is_deleted
+     */
+    private boolean deleted;
+
+    public boolean isValid(){
+        if(status != null && status.equals(1)) {
+            return false;
+        }
+        if(deleted) {
+            return false;
+        }
+
+        return true;
+    }
 }

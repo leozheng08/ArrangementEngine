@@ -165,7 +165,7 @@ public class RuleRepository implements IRuleRepository {
     @Override
     public RuleDTO queryFullByUuid(String ruleUuid) {
 
-        RuleDO ruleDO = ruleDOMapper.selectByUuid(ruleUuid);
+        RuleDO ruleDO = ruleDOMapper.selectEnabledByUuid(ruleUuid);
         if(ruleDO == null){
             return null;
         }

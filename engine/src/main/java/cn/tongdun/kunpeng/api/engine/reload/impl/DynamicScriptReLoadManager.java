@@ -9,9 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
-import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
-import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.DynamicScriptEventDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
+public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(SubPolicyReLoadManager.class);
 
@@ -45,31 +43,31 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(DynamicScriptDO.class,this);
+        reloadFactory.register(DynamicScriptEventDO.class,this);
     }
 
     @Override
-    public boolean create(DynamicScriptDO dynamicScriptDO){
-        return addOrUpdate(dynamicScriptDO);
+    public boolean create(DynamicScriptEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
     @Override
-    public boolean update(DynamicScriptDO dynamicScriptDO){
-        return addOrUpdate(dynamicScriptDO);
+    public boolean update(DynamicScriptEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
     @Override
-    public boolean activate(DynamicScriptDO dynamicScriptDO){
-        return addOrUpdate(dynamicScriptDO);
+    public boolean activate(DynamicScriptEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
 
     /**
      * 更新事件类型
      * @return
      */
-    public boolean addOrUpdate(DynamicScriptDO dynamicScriptDO){
-        String uuid = dynamicScriptDO.getUuid();
+    public boolean addOrUpdate(DynamicScriptEventDO eventDO){
+        String uuid = eventDO.getUuid();
         logger.debug("DynamicScript reload start, uuid:{}",uuid);
         try {
-            Long timestamp = dynamicScriptDO.getGmtModify().getTime();
+            Long timestamp = eventDO.getModifiedVersion();
             WrappedGroovyObject oldWrappedGroovyObject = groovyObjectCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldWrappedGroovyObject != null && oldWrappedGroovyObject.getModifiedVersion() >= timestamp) {
@@ -79,8 +77,8 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
 
             DynamicScript dynamicScript = dynamicScriptRepository.queryByUuid(uuid);
             //如果失效则删除缓存
-            if(dynamicScript == null || CommonStatusEnum.CLOSE.getCode() == dynamicScript.getStatus()){
-                return remove(dynamicScriptDO);
+            if(dynamicScript == null || !dynamicScript.isValid()){
+                return remove(eventDO);
             }
 
             groovyCompileManager.addOrUpdate(dynamicScript);
@@ -95,29 +93,29 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptDO> {
 
     /**
      * 删除事件类型
-     * @param dynamicScriptDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(DynamicScriptDO dynamicScriptDO){
+    public boolean remove(DynamicScriptEventDO eventDO){
         try {
-            groovyCompileManager.remove(dynamicScriptDO.getUuid());
+            groovyCompileManager.remove(eventDO.getUuid());
         } catch (Exception e){
-            logger.error("DynamicScript remove failed, uuid:{}",dynamicScriptDO.getUuid(),e);
+            logger.error("DynamicScript remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("DynamicScript remove success, uuid:{}",dynamicScriptDO.getUuid());
+        logger.debug("DynamicScript remove success, uuid:{}",eventDO.getUuid());
         return true;
     }
 
 
     /**
      * 关闭状态
-     * @param dynamicScriptDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(DynamicScriptDO dynamicScriptDO){
-        return remove(dynamicScriptDO);
+    public boolean deactivate(DynamicScriptEventDO eventDO){
+        return remove(eventDO);
     }
 }

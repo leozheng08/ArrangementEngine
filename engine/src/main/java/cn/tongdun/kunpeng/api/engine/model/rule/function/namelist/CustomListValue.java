@@ -1,9 +1,11 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
+
 /**
  * Created by lvyadong on 2020/01/17.
  */
-public class CustomListValue {
+public class CustomListValue extends StatusEntity{
 
     private String customListUuid;
     private String value;

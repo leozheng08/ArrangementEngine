@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.*;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
@@ -23,22 +24,23 @@ public class EventMsgParser {
     private Logger logger = LoggerFactory.getLogger(EventMsgParser.class);
 
     private Map<String,Class> entityMap = new HashMap<String,Class>(){{
-        put("policy_definition", PolicyDefinitionDO.class);
-        put("policy", PolicyDO.class);
-        put("sub_policy", SubPolicyDO.class);
-        put("rule", RuleDTO.class);
-        put("decision_flow", DecisionFlowDO.class);
-        put("index_definition", IndexDefinitionDO.class);
-        put("index", IndexDefinitionDO.class);
-        put("policy_decision_mode", PolicyDecisionModeDO.class);
-        put("field_definition", FieldDefinitionDO.class);
-        put("field", FieldDefinitionDO.class);
-        put("event_type", EventTypeDO.class);
-        put("dynamic_script", DynamicScriptDO.class);
-        put("custom_list_value", CustomListValueDO.class);
-        put("interface_definition",InterfaceDefinitionDO.class);
-        put("policy_challenger",PolicyChallengerDO.class);
-        put("event_type",EventTypeDO.class);
+        put("policy_definition", PolicyDefinitionEventDO.class);
+        put("policy", PolicyEventDO.class);
+        put("sub_policy", SubPolicyEventDO.class);
+        put("rule", RuleEventDO.class);
+        put("decision_flow", DecisionFlowEventDO.class);
+        put("index_definition", IndexDefinitionEventDO.class);
+        put("index", IndexDefinitionEventDO.class);
+        put("policy_decision_mode", PolicyDecisionModeEventDO.class);
+        put("field_definition", FieldDefinitionEventDO.class);
+        put("field", FieldDefinitionEventDO.class);
+        put("dynamic_script", DynamicScriptEventDO.class);
+        put("interface_definition",InterfaceDefinitionEventDO.class);
+        put("policy_challenger",PolicyChallengerEventDO.class);
+        put("event_type",EventTypeEventDO.class);
+        put("partner",PartnerEventDO.class);
+
+        put("custom_list_value",CustomListValueEventDO.class);
     }};
 
 

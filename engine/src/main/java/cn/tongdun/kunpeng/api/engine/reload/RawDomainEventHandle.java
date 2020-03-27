@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueKVRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.CustomListValueEventDO;
 import cn.tongdun.kunpeng.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
 import cn.tongdun.kunpeng.share.json.JSON;
@@ -73,53 +74,36 @@ public class RawDomainEventHandle {
 
     private void putCustomListValueToRemoteCache(Map rawEventMsg){
         try {
-            DomainEvent<CustomListValueDO> domainEvent = eventMsgParser.parse(rawEventMsg);
-            List<CustomListValueDO> listValueDOList = domainEvent.getData();
+            DomainEvent<CustomListValueEventDO> domainEvent = eventMsgParser.parse(rawEventMsg);
+            List<CustomListValueEventDO> listValueDOList = domainEvent.getData();
 
             if (listValueDOList == null || listValueDOList.isEmpty()) {
                 logger.debug("CustomListValue put remote cache error,list is empty:{}", rawEventMsg);
                 return;
             }
 
-            if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {//删除操作
-                for (CustomListValueDO customListValueDO : listValueDOList) {
-
-                    Integer type = customListValueDO.getColumnType();
-                    String value = null;
-                    if (type != null && type ==1) {
-                        value = customListValueDO.getColumnValues();
-                    } else {
-                        value = customListValueDO.getDataValue();
-                    }
-                    customListValueKVRepository.removeCustomListValueData(new CustomListValue(customListValueDO.getCustomListUuid(),value));
-                    logger.debug("CustomListValue remove remote cache success,list uuid:{} data:{}",customListValueDO.getCustomListUuid(), customListValueDO.getDataValue());
-                }
-            } else {//新增或修改操作
-
-                List<String> uuids = new ArrayList<>();
-                listValueDOList.forEach(value -> {
-                    uuids.add(value.getUuid());
-                });
-
-                List<CustomListValue> listValueList = customListValueRepository.selectByUuids(uuids);
-                for (CustomListValue customListValue : listValueList) {
+            List<String> uuids = new ArrayList<>();
+            listValueDOList.forEach(value -> {
+                uuids.add(value.getUuid());
+            });
+            List<CustomListValue> listValueList = customListValueRepository.selectByUuids(uuids);
+            for (CustomListValue customListValue : listValueList) {
+                if (customListValue.isValid()) {
                     customListValueKVRepository.putCustomListValueData(customListValue);
                     logger.debug("CustomListValue put remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
+                } else {
+                    customListValueKVRepository.removeCustomListValueData(customListValue);
+                    logger.debug("CustomListValue remove remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
                 }
             }
-
         } catch (Exception e){
             logger.error("CustomListValue put remote cache error,event:{}",rawEventMsg,e);
             throw e;
         }
     }
 
-
-
     //将领域事件保存到redis，供kunpeng-api每个主机从redis中拉取事件列表
     private void putEventMsgToRemoteCache(Map rawEventMsg){
         domainEventRepository.putEventMsgToRemoteCache(JSON.toJSONString(rawEventMsg),JsonUtil.getLong(rawEventMsg,"occurredTime"));
     }
-
-
 }

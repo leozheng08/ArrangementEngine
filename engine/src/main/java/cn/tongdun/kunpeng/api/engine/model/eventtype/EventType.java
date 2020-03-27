@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.eventtype;
 
-import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import lombok.Data;
 
 /**
@@ -8,7 +8,7 @@ import lombok.Data;
  * @Date: 2019/12/11 下午1:42
  */
 @Data
-public class EventType extends VersionedEntity {
+public class EventType extends StatusEntity {
 
     private long id;                    /* 全局唯一ID*/
 
