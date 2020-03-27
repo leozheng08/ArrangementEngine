@@ -34,6 +34,7 @@
         <kunpeng-share.version>1.0-SNAPSHOT</kunpeng-share.version>
         <common.arch.version>2.0.2</common.arch.version>
         <module.kafka.version>3.1.0</module.kafka.version>
+        <module.metrics.version>2.1.8</module.metrics.version>
 
         <lz4.version>1.7.1</lz4.version>
 
@@ -293,29 +294,45 @@
                 <version>3.26.0-GA</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>module-metrics</artifactId>
+                <version>${module.metrics.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- module start -->
 
             <dependency>
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>redis-client</artifactId>
                 <version>3.4.7</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cn.fraudmetrix</groupId>
-                        <artifactId>module-metrics</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
-            <dependency>
-                <groupId>cn.fraudmetrix</groupId>
-                <artifactId>module-metrics</artifactId>
-                <version>2.1.9</version>
-            </dependency>
-
             <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
                 <version>2.9.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>module-prometheus</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-core</artifactId>
+                <version>1.1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>1.1.6</version>
             </dependency>
 
             <!-- module end -->

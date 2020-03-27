@@ -121,6 +121,20 @@
             <artifactId>kafka-clients</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
         <!-- module end -->
 
         <dependency>
