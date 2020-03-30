@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.infrastructure.metrics;
 
-import cn.fraudmetrix.metrics.*;
 import cn.fraudmetrix.metrics.prometheus.PromCounter;
 import cn.fraudmetrix.metrics.prometheus.PromDistributionSummary;
 import cn.fraudmetrix.metrics.prometheus.PromTimer;
@@ -28,9 +27,9 @@ public class MetricsImpl implements IMetrics{
     private PrometheusTool prometheusTool;
 
     @Override
-    public void counter(String key,String counterName,String... tags){
+    public void counter(String counterName,String... tags){
         try {
-            PromCounter promCounter =prometheusTool.promeCounter(counterName,tags);
+            PromCounter promCounter =prometheusTool.promeCounter(counterName, tags);
             promCounter.mark();
         }catch (Exception e){
             logger.error("counter error",e);
@@ -39,7 +38,7 @@ public class MetricsImpl implements IMetrics{
 
 
     @Override
-    public void summary(String key,String counterName,long num,String... tags){
+    public void summary(String counterName,long num,String... tags){
         try {
             PromDistributionSummary promDistributionSummary =prometheusTool.promeDistributionSummary(counterName,tags);
             promDistributionSummary.record(num);
@@ -51,7 +50,7 @@ public class MetricsImpl implements IMetrics{
 
 
     @Override
-    public ITimeContext timer(String key, String timerName, String... tags){
+    public ITimeContext timer(String timerName, String... tags){
         try {
             PromTimer promTimer = prometheusTool.promTimer(timerName, tags);
 
@@ -79,7 +78,7 @@ public class MetricsImpl implements IMetrics{
 
 
     @Override
-    public ITimeContext metricTimer(String key, String timerName, String... tags){
+    public ITimeContext metricTimer(String timerName, String... tags){
         try {
             PromTimer promTimer = prometheusTool.promHistogramTimer(timerName, tags);
 
