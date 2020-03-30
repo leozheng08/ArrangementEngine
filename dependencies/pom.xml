@@ -136,6 +136,18 @@
                 <groupId>cn.tongdun</groupId>
                 <artifactId>common-arch</artifactId>
                 <version>${common.arch.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.9</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- compress -->
@@ -349,6 +361,12 @@
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>holmes-share</artifactId>
                 <version>2.0.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
 
