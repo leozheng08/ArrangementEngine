@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.application.activity;
 
 import cn.tongdun.kunpeng.api.application.msg.EventStoreMsgBus;
 import cn.tongdun.kunpeng.common.data.QueueItem;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,9 @@ public class ActivityStoreKafkaManager {
     @Autowired
     private EventStoreMsgBus eventStoreMsgBus;
 
+    @Autowired
+    private IMetrics metrics;
+
 
     private List<WorkerThread> workers = new ArrayList<>();
 
@@ -43,6 +47,8 @@ public class ActivityStoreKafkaManager {
         BlockingQueue<QueueItem> memoryQueue = new LinkedBlockingDeque<>(IN_MEMORY_COUNT);
 
         eventStoreMsgBus.addBlockingQueue(worker.getName(), worker.getFilter(),memoryQueue);
+
+        metrics.gaugeCollectionSize("activity.memoryQueue.size",memoryQueue);
 
         // 启动Worker的线程
         for (int i = 0; i < threadCount; i++) {

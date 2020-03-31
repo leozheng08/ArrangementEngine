@@ -6,11 +6,14 @@ import cn.fraudmetrix.metrics.prometheus.PromTimer;
 import cn.fraudmetrix.metrics.prometheus.PrometheusTool;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
+import io.micrometer.core.instrument.Tags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -102,6 +105,11 @@ public class MetricsImpl implements IMetrics{
                 return 0;
             }
         };
+    }
+
+    @Override
+    public void gaugeCollectionSize(String name, Collection collection){
+        prometheusTool.gaugeCollectionSize(name, Tags.empty(), collection);
     }
 }
 

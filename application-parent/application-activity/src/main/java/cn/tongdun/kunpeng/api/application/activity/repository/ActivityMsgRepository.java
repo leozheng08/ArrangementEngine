@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.kafka.util.ErrorHelper;
 import cn.tongdun.kunpeng.api.application.activity.IActivityMsgRepository;
 import cn.tongdun.kunpeng.api.application.util.CountUtil;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.kafka.clients.producer.Callback;
@@ -44,6 +45,10 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
     private Cache<String, Integer> failedMessageCounterCache;
 
 
+    @Autowired
+    private IMetrics metrics;
+
+
     @PostConstruct
     public void init(){
         //设置缓存有效期10分钟
@@ -68,19 +73,23 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
                         if (configRepository.getBooleanProperty("kafka.print.detail")) {
                             logger.info("send kafka topic ok: {}, data: {}", topic, message);
                         }
+                        metrics.counter("kafka.sent.success");
                         return;
                     }
                     if (ErrorHelper.isRecoverable(e)) {
                         //重试
                         addRedoException(topic, messageKey,message, e);
                     } else {
+                        metrics.counter("kafka.sent.error");
                         logger.error("kafka produce error, can't recover, topic:{}, seqId:{}", topic,messageKey,e);
                     }
                 }
             });
         } catch (ProducerException e) {
+            metrics.counter("kafka.sent.error");
             logger.error("kafka produce throw ProducerException, topic:{}, seqId:{}", topic,messageKey,e);
         } catch (UnsupportedEncodingException e) {
+            metrics.counter("kafka.sent.error");
             logger.error("kafka produce throw UnsupportedEncodingException, topic:{}, seqId:{}", topic,messageKey,e);
         }
     }
@@ -90,6 +99,7 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
 
         if (exception instanceof RecordTooLargeException) {
             logger.error("kafka produce too large message, topic:{}, seq_id:{}, size:{}",topic,messageKey,message.length());
+            metrics.counter("kafka.sent.error");
             return;
         }
 
@@ -97,6 +107,7 @@ public class ActivityMsgRepository implements IActivityMsgRepository{
         if (CountUtil.isBeyond(failedMessageCounterCache, topic + messageKey, 3)) {
             failedMessageCounterCache.invalidate(topic + messageKey);
             logger.error("kafka produce message try 3 times also failed, topic:{}, seq_id:{}", topic, messageKey, exception);
+            metrics.counter("kafka.sent.error");
             return;
         }
         CountUtil.increase(failedMessageCounterCache, topic + messageKey);

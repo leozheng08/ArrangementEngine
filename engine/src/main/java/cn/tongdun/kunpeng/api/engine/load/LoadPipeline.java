@@ -27,7 +27,7 @@ public class LoadPipeline {
 
     //预热处理
     @Phase(parallel = true, order = 400, poolSize = 4, queueSize = 10,timeOut = 0)
-    public final static String WARN = "warn";
+    public final static String warmup = "warmup";
 
     //打开OK页面
     @Phase(parallel = true, order = 500)

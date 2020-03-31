@@ -12,6 +12,8 @@ import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,7 @@ import java.util.Set;
 @Component
 @Step(pipeline = Risk.NAME,phase = Risk.OUTPUT,order = 1100)
 public class ReasonCodeStep implements IRiskStep {
+    Logger logger = LoggerFactory.getLogger(ReasonCodeStep.class);
 
     @Autowired
     private ExtensionExecutor extensionExecutor;
@@ -40,7 +43,7 @@ public class ReasonCodeStep implements IRiskStep {
         }
 
         String respStr = JSON.toJSONString(response);
-        logger.warn("partner:{}, RESP_F:{}", context.getPartnerCode(), respStr);
+        logger.info("partner:{}, RESP_F:{}", context.getPartnerCode(), respStr);
         return true;
     }
 
