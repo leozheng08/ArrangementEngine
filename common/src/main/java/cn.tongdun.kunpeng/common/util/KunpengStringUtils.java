@@ -102,13 +102,11 @@ public class KunpengStringUtils {
     public static String underline2camel(String str) {
         StringBuilder sb = new StringBuilder();
 
-        int count = 0;
         boolean isFirst = false;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
 
             if(c == '_'){
-                count ++;
                 isFirst = true;
                 continue;
             }
