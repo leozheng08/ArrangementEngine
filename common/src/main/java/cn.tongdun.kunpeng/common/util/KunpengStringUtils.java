@@ -3,6 +3,11 @@ package cn.tongdun.kunpeng.common.util;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 /**
  * Created by caipeichao on 2015/1/15.
  */
@@ -81,18 +86,19 @@ public class KunpengStringUtils {
      * @param str
      */
     public static String camel2underline(String str) {
+        if(str == null){
+            return null;
+        }
+
         StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
 
-        if (str != null) {
-            for (int i = 0; i < str.length(); i++) {
-                char c = str.charAt(i);
-
-                // A-Z
-                if (c >= 65 && c <= 90) {
-                    sb.append("_").append((char) (c+32));
-                } else {
-                    sb.append(c);
-                }
+            // A-Z
+            if (c >= 65 && c <= 90) {
+                sb.append("_").append((char) (c+32));
+            } else {
+                sb.append(c);
             }
         }
 
@@ -100,8 +106,11 @@ public class KunpengStringUtils {
     }
 
     public static String underline2camel(String str) {
-        StringBuilder sb = new StringBuilder();
+        if(str == null){
+            return null;
+        }
 
+        StringBuilder sb = new StringBuilder();
         boolean isFirst = false;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
