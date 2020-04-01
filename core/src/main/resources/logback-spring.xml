@@ -64,20 +64,39 @@
         </triggeringPolicy>
     </appender>
 
+
+    <!-- 异步输出 -->
+    <appender name ="ASYNC_APP" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>20</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="FILE"/>
+    </appender>
+    <appender name ="ASYNC_ERROR" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>20</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="ERROR_FILE"/>
+    </appender>
+
     <!--<logger name="cn.tongdun.tdframework" level="DEBUG"/>-->
     <!--<logger name="cn.tongdun.kunpeng.api.engine.reload" level="DEBUG"/>-->
 
     <if condition='p("CONSOLE_LEVEL").equals("OFF")'>
         <then>
-            <root level="INFO">
-                <appender-ref ref="FILE"/>
-                <appender-ref ref="ERROR_FILE"/>
+            <root level="ERROR">
+                <appender-ref ref="ASYNC_APP"/>
+                <appender-ref ref="ASYNC_ERROR"/>
             </root>
         </then>
         <else>
             <root level="${CONSOLE_LEVEL:-INFO}">
-                <appender-ref ref="FILE"/>
-                <appender-ref ref="ERROR_FILE"/>
+                <appender-ref ref="ASYNC_APP"/>
+                <appender-ref ref="ASYNC_ERROR"/>
                 <appender-ref ref="CONSOLE"/>
             </root>
         </else>
