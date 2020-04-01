@@ -20,7 +20,7 @@
         <module>infrastructure</module>
         <module>application-parent</module>
         <module>interface-adapter</module>
-        <module>core-spring-boot-autoconfigure</module>
+        <module>starters</module>
 
     </modules>
 

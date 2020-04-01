@@ -80,7 +80,7 @@ public class KunpengStringUtils {
      * @param str
      */
     public static String camel2underline(String str) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         if (str != null) {
             for (int i = 0; i < str.length(); i++) {
@@ -88,7 +88,7 @@ public class KunpengStringUtils {
 
                 // A-Z
                 if (c >= 65 && c <= 90) {
-                    sb.append("_").append(String.valueOf(c).toLowerCase());
+                    sb.append("_").append((char) (c+32));
                 } else {
                     sb.append(c);
                 }
@@ -99,24 +99,45 @@ public class KunpengStringUtils {
     }
 
     public static String underline2camel(String str) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
-        if (str != null && str.length() > 0) {
-            String[] arr = str.split("_");
-            for (int i = 0; i < arr.length; i++) {
-                String s = arr[i];
-                if (s.length() > 0) {
-                    // 首字母小写
-                    if (i > 0) {
-                        sb.append( String.valueOf(s.charAt(0)).toUpperCase());
-                    } else {
-                        sb.append(String.valueOf(s.charAt(0)));
-                    }
-                    sb.append(s.toCharArray(),1,s.length()-1);
-                }
+        int count = 0;
+        boolean isFirst = false;
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+
+            if(c == '_'){
+                count ++;
+                isFirst = true;
+                continue;
             }
-
+            if (isFirst && c >= 97 && c <= 122) {
+                sb.append((char)(c-32));
+            } else {
+                sb.append(c);
+            }
+            isFirst = false;
         }
+
+//        if (str != null && str.length() > 0) {
+//            String[] arr = str.split("_");
+//            for (int i = 0; i < arr.length; i++) {
+//                String s = arr[i];
+//                if (s.length() > 0) {
+//                    // 首字母小写
+//                    if (i > 0) {
+//                        char c = s.charAt(0);
+//                        if (c >= 97 && c <= 122) {
+//                            sb.append((char)(c-32));
+//                        }
+//                    } else {
+//                        sb.append(String.valueOf(s.charAt(0)));
+//                    }
+//                    sb.append(s.toCharArray(),1,s.length()-1);
+//                }
+//            }
+//
+//        }
         return sb.toString();
     }
 

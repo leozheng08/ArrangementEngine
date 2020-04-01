@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.tongdun.kunpeng.api.springboot.autoconfig.i18n.I18nMessageConvertAspectAutoConfiguration,\
-  cn.tongdun.kunpeng.api.springboot.autoconfig.mybatis.MybatisAutoConfiguration,cn.tongdun.kunpeng.api.springboot.autoconfig.dubbo.DubboAutoConfiguration,\
-  cn.tongdun.kunpeng.api.springboot.autoconfig.tx.TransactionAutoConfiguration,org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration

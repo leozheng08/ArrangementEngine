@@ -24,17 +24,17 @@ public class MybatisSqlSessionFactoryConfiguration implements ImportBeanDefiniti
 
 //    <bean id="kunpengApiSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 //        <property name="configLocation" value="classpath:mybatis/mysql-sqlmap-config.xml"/>
-//        <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml"/>
+//        <property name="mapperLocations" value="classpath:mybatis/mappers/kunpeng/*.xml"/>
 //        <property name="typeAliasesPackage" value="cn.tongdun.kunpeng.share.dataobject"/>
-//        <property name="dataSource" ref="dataSource"/>
+//        <property name="dataSource" ref="kunpengApiDataSource"/>
 //    </bean>
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         RootBeanDefinition beanDefinition = new RootBeanDefinition(SqlSessionFactoryBean.class);
-        beanDefinition.getPropertyValues().add("configLocation", "${mybatis.configLocation:classpath:mybatis/mybatis-config.xml}");
-        beanDefinition.getPropertyValues().add("mapperLocations", "${mybatis.mapperLocations:classpath:mybatis/mappers/*.xml}");
-        beanDefinition.getPropertyValues().add("typeAliasesPackage", "${mybatis.typeAliasesPackage:cn.tongdun.kunpeng.share.dataobject}");
-        beanDefinition.getPropertyValues().add("dataSource", new RuntimeBeanReference("dataSource"));
+        beanDefinition.getPropertyValues().add("configLocation", "${kunpeng.api.mybatis.configLocation:classpath:mybatis/mysql-sqlmap-config.xml}");
+        beanDefinition.getPropertyValues().add("mapperLocations", "${kunpeng.api.mybatis.mapperLocations:classpath:mybatis/mappers/kunpeng/*.xml}");
+        beanDefinition.getPropertyValues().add("typeAliasesPackage", "${kunpeng.api.mybatis.typeAliasesPackage:cn.tongdun.kunpeng.share.dataobject}");
+        beanDefinition.getPropertyValues().add("dataSource", new RuntimeBeanReference("kunpengApiDataSource"));
 
         registry.registerBeanDefinition("kunpengApiSqlSessionFactory", beanDefinition);
 

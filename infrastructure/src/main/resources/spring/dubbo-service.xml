@@ -15,22 +15,6 @@
         <dubbo:parameter key="threads" value="20" />
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:consumer>
-    <!--用于dubbo泛化调用-->
-    <bean id="referenceConfig" class="com.alibaba.dubbo.config.ReferenceConfig" autowire="byType">
-        <property name="application">
-            <bean class="com.alibaba.dubbo.config.ApplicationConfig" autowire="byType">
-                <property name="name" value="forseti-api-generic"/>
-                <property name="registry">
-                    <bean class="com.alibaba.dubbo.config.RegistryConfig" autowire="byType">
-                        <property name="address" value="${dubbo.zookeeper.generic}"/>
-                        <property name="protocol" value="zookeeper"/>
-                        <property name="group" value="${dubbo.zookeeper.root}"/>
-                    </bean>
-                </property>
-            </bean>
-        </property>
-        <property name="generic" value="true"/>
-    </bean>
 
     <dubbo:reference id="holmesService" interface="cn.fraudmetrix.holmes.service.intf.ICalculateService"
                      version="${holmes.dubbo.version}" retries="0" timeout="${holmes.dubbo.timeout}" connections="2" >
