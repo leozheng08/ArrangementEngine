@@ -27,7 +27,7 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
 
-    //过滤条件,在入到队列之前过滤
+    //过滤条件,在入队列之前过滤
     @Override
     public Predicate<QueueItem> getFilter(){
         return (item)->{
