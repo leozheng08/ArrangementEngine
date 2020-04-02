@@ -83,8 +83,10 @@
         <appender-ref ref ="ERROR_FILE"/>
     </appender>
 
-    <!--<logger name="cn.tongdun.tdframework" level="DEBUG"/>-->
+    <logger name="cn.tongdun.tdframework" level="ERROR"/>
     <!--<logger name="cn.tongdun.kunpeng.api.engine.reload" level="DEBUG"/>-->
+    <logger name="cn.tongdun.kunpeng" level="ERROR"/>
+    <logger name="cn.tongdun.ddd" level="ERROR"/>-->
 
     <if condition='p("CONSOLE_LEVEL").equals("OFF")'>
         <then>
