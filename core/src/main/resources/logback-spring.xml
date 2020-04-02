@@ -96,7 +96,7 @@
             </root>
         </then>
         <else>
-            <root level="${CONSOLE_LEVEL:ERROR}">
+            <root level="${CONSOLE_LEVEL:-ERROR}">
                 <appender-ref ref="ASYNC_APP"/>
                 <appender-ref ref="ASYNC_ERROR"/>
                 <appender-ref ref="CONSOLE"/>
