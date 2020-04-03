@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
  * @date 2020/3/13 2:21 下午
  **/
 @Configuration
-@Import({ApplicationConfigConfiguration.class, RegistryConfigConfiguration.class})
+@Import({ApplicationConfigConfiguration.class, RegistryConfigConfiguration.class,ReferenceConfigConfiguration.class})
 public class DubboAutoConfiguration {
 
 }

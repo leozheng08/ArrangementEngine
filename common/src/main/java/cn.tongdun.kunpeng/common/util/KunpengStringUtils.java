@@ -85,7 +85,7 @@ public class KunpengStringUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(str.length()+5);
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
 
@@ -105,7 +105,7 @@ public class KunpengStringUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(str.length());
         boolean isFirst = false;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
