@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 设置上下文中的字段值
@@ -54,6 +55,13 @@ public class AssignFieldValueStep implements IRiskStep {
     };
 
     private static final Set<String> normalFields = Sets.newHashSet("int", "double", "boolean", "string", "float", "integer", "long");
+
+
+    /**
+     * 骆峰转下划线的字段缓存
+     */
+    private Map<String, String> camel2underlineCache = new ConcurrentHashMap<>(1000);
+    private Map<String, String> underline2camelCache = new ConcurrentHashMap<>(1000);
 
     @Autowired
     private PartnerCache partnerCache;
@@ -122,7 +130,7 @@ public class AssignFieldValueStep implements IRiskStep {
 
                 Object requestValue = request.get(fieldCode);
                 if(requestValue == null) {
-                    String underlineStr = KunpengStringUtils.camel2underline(fieldCode);
+                    String underlineStr = camel2underline(fieldCode);
                     requestValue = request.get(underlineStr);
                 }
                 if (requestValue == null) {
@@ -134,17 +142,17 @@ public class AssignFieldValueStep implements IRiskStep {
     }
 
 
-    public static Map<String,Object> camelJson(Map<String,Object> o) {
+    public Map<String,Object> camelJson(Map<String,Object> o) {
         Map rst = new HashMap();
         for (String key : o.keySet()) {
             Object r = o.get(key);
             Object mr = getObject(r);
-            rst.put(KunpengStringUtils.underline2camel(key), mr);
+            rst.put(underline2camel(key), mr);
         }
         return rst;
     }
 
-    private static Object getObject(Object r) {
+    private Object getObject(Object r) {
         if (isNormalField(r)) {
             return r;
         }
@@ -309,4 +317,44 @@ public class AssignFieldValueStep implements IRiskStep {
         return fieldValue;
     }
 
+
+
+
+    /**
+     * 把驼峰命名的字符转成下划线的方式，比如ipAddress->ip_address
+     *
+     * @param str
+     */
+    private String camel2underline(String str) {
+        if(str == null){
+            return null;
+        }
+        String result = camel2underlineCache.get(str);
+        if(result != null){
+            return result;
+        }
+
+        result = KunpengStringUtils.camel2underline(str);
+        if(result != null){
+            camel2underlineCache.put(str,result);
+        }
+        return result;
+    }
+
+    private String underline2camel(String str) {
+        if(str == null){
+            return null;
+        }
+
+        String result = underline2camelCache.get(str);
+        if(result != null){
+            return result;
+        }
+
+        result = KunpengStringUtils.underline2camel(str);
+        if(result != null){
+            underline2camelCache.put(str,result);
+        }
+        return result;
+    }
 }

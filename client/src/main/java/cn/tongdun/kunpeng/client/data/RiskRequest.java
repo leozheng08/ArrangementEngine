@@ -17,12 +17,20 @@ public class RiskRequest implements Serializable {
 
     private static final Field[] fields = RiskRequest.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length);
+    private static final Map<String,Method> fieldGetMethodMap = new HashMap<>();
     static {
         Set<String> includeTypes =new HashSet<String>(){{add("int");add("integer");add("string");add("double");add("long");add("float");add("boolean");}};
         for (Field field : fields) {
             String simTypeName = field.getType().getSimpleName();
             if (includeTypes.contains(simTypeName.toLowerCase())) {
                 fieldNames.add(field.getName());
+                String methodName = "get" + upperCaseFirstChar(field.getName());
+                try {
+                    Method method = RiskRequest.class.getMethod(methodName);
+                    fieldGetMethodMap.put(field.getName(),method);
+                } catch (Exception e) {
+                    // ignore
+                }
             }
         }
     }
@@ -302,7 +310,7 @@ public class RiskRequest implements Serializable {
         this.extAttrs.put(attrName,value);
     }
 
-    private String upperCaseFirstChar(String x) {
+    private static String upperCaseFirstChar(String x) {
         if (x == null) {return null;}
         if (x.isEmpty()) {return "";}
         String firstChar = x.substring(0, 1);
@@ -319,11 +327,10 @@ public class RiskRequest implements Serializable {
             return "null";
         }
 
-        if (fieldNames.contains(key)) {
-            String methodName = "get" + upperCaseFirstChar(key);
+        Method getMethod = fieldGetMethodMap.get(key);
+        if (getMethod != null) {
             try {
-                Method method = this.getClass().getMethod(methodName);
-                Object value = method.invoke(this);
+                Object value = getMethod.invoke(this);
                 if (value != null) {
                     return value;
                 }

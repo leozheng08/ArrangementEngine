@@ -74,24 +74,26 @@ public class KunpengStringUtils {
         return sb.toString();
     }
 
+
     /**
      * 把驼峰命名的字符转成下划线的方式，比如ipAddress->ip_address
-     * 
+     *
      * @param str
      */
     public static String camel2underline(String str) {
+        if(str == null){
+            return null;
+        }
+
         StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
 
-        if (str != null) {
-            for (int i = 0; i < str.length(); i++) {
-                char c = str.charAt(i);
-
-                // A-Z
-                if (c >= 65 && c <= 90) {
-                    sb.append("_").append((char) (c+32));
-                } else {
-                    sb.append(c);
-                }
+            // A-Z
+            if (c >= 65 && c <= 90) {
+                sb.append("_").append((char) (c+32));
+            } else {
+                sb.append(c);
             }
         }
 
@@ -99,15 +101,16 @@ public class KunpengStringUtils {
     }
 
     public static String underline2camel(String str) {
-        StringBuilder sb = new StringBuilder();
+        if(str == null){
+            return null;
+        }
 
-        int count = 0;
+        StringBuilder sb = new StringBuilder();
         boolean isFirst = false;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
 
             if(c == '_'){
-                count ++;
                 isFirst = true;
                 continue;
             }
@@ -118,26 +121,6 @@ public class KunpengStringUtils {
             }
             isFirst = false;
         }
-
-//        if (str != null && str.length() > 0) {
-//            String[] arr = str.split("_");
-//            for (int i = 0; i < arr.length; i++) {
-//                String s = arr[i];
-//                if (s.length() > 0) {
-//                    // 首字母小写
-//                    if (i > 0) {
-//                        char c = s.charAt(0);
-//                        if (c >= 97 && c <= 122) {
-//                            sb.append((char)(c-32));
-//                        }
-//                    } else {
-//                        sb.append(String.valueOf(s.charAt(0)));
-//                    }
-//                    sb.append(s.toCharArray(),1,s.length()-1);
-//                }
-//            }
-//
-//        }
         return sb.toString();
     }
 
