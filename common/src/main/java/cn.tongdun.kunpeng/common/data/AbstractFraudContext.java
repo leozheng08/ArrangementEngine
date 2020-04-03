@@ -24,15 +24,35 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private static final Field[] classFields = AbstractFraudContext.class.getDeclaredFields();
     private static final Set<String> classFieldNames = new HashSet<>(classFields.length / 3);
 
+    private static final Map<String,Method> fieldGetMethodMap = new HashMap<>();
+    private static final Map<String,Method> fieldSetMethodMap = new HashMap<>();
+
     static {
         Set<String> includeTypes = Sets.newHashSet("int", "integer", "string", "double", "long", "float", "date", "boolean");
         for (Field field : classFields) {
             String simTypeName = field.getType().getSimpleName();
             if (includeTypes.contains(simTypeName.toLowerCase())) {
                 classFieldNames.add(field.getName());
+
+                String getMethodName = "get" + KunpengStringUtils.upperCaseFirstChar(field.getName());
+                try {
+                    Method method = RiskRequest.class.getMethod(getMethodName);
+                    fieldGetMethodMap.put(field.getName(),method);
+                } catch (Exception e) {
+                    // ignore
+                }
+
+                String setMethodName = "set" + KunpengStringUtils.upperCaseFirstChar(field.getName());
+                try {
+                    Method method = RiskRequest.class.getMethod(setMethodName);
+                    fieldSetMethodMap.put(field.getName(),method);
+                } catch (Exception e) {
+                    // ignore
+                }
             }
         }
     }
+
 
     /*************系统级入参（由合作方传的参数，但不需要字段管理中定义） start******************/
     /**
@@ -274,11 +294,10 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             return;
         }
 
-        if (classFieldNames.contains(key)) {
+        Method setMethod = fieldSetMethodMap.get(key);
+        if (setMethod != null) {
             try {
-                String methodName = "set" + KunpengStringUtils.upperCaseFirstChar(key);
-                Method method = this.getClass().getDeclaredMethod(methodName, o.getClass());
-                method.invoke(this, o);
+                setMethod.invoke(this, o);
             } catch (Exception ex) {
                 // 没有找到系统字段
             }
@@ -317,11 +336,10 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             return sysVal;
         }
 
-        if (classFieldNames.contains(key)) {
-            String methodName = "get" + KunpengStringUtils.upperCaseFirstChar(key);
+        Method getMethod = fieldGetMethodMap.get(key);
+        if (getMethod != null) {
             try {
-                Method method = this.getClass().getMethod(methodName);
-                Object value = method.invoke(this);
+                Object value = getMethod.invoke(this);
                 if (value != null) {
                     return value;
                 }

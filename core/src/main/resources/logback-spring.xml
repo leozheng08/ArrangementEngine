@@ -83,20 +83,20 @@
         <appender-ref ref ="ERROR_FILE"/>
     </appender>
 
-    <logger name="cn.tongdun.tdframework" level="ERROR"/>
+    <logger name="cn.tongdun.tdframework" level="INFO"/>
     <!--<logger name="cn.tongdun.kunpeng.api.engine.reload" level="DEBUG"/>-->
-    <logger name="cn.tongdun" level="ERROR"/>
-    <logger name="org.apache.kafka" level="ERROR"/>
+    <logger name="cn.tongdun" level="INFO"/>
+    <logger name="org.apache.kafka" level="INFO"/>
 
     <if condition='p("CONSOLE_LEVEL").equals("OFF")'>
         <then>
-            <root level="ERROR">
+            <root level="INFO">
                 <appender-ref ref="ASYNC_APP"/>
                 <appender-ref ref="ASYNC_ERROR"/>
             </root>
         </then>
         <else>
-            <root level="${CONSOLE_LEVEL:-ERROR}">
+            <root level="${CONSOLE_LEVEL:-INFO}">
                 <appender-ref ref="ASYNC_APP"/>
                 <appender-ref ref="ASYNC_ERROR"/>
                 <appender-ref ref="CONSOLE"/>
