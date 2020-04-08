@@ -173,9 +173,10 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private RiskRequest riskRequest;
 
     /**
-     * 本次请求适用的字段列表
+     * 本次请求适用的字段列表，每次初始化的时候再设置进来
      */
-    private List<IFieldDefinition> fieldDefinitions = new ArrayList<>();
+    //private List<IFieldDefinition> fieldDefinitions;
+    private Map<String,IFieldDefinition> fieldDefinitionMap;
 
     /**
      * 字段值

@@ -74,17 +74,14 @@ public class VelocityHelper {
             return fieldCode;
         }
 
-        List<IFieldDefinition> fieldDefinitions = context.getFieldDefinitions();
-        if (null == fieldDefinitions || fieldDefinitions.isEmpty()) {
+        Map<String,IFieldDefinition> fieldDefinitionMap=context.getFieldDefinitionMap();
+        if (null == fieldDefinitionMap || fieldDefinitionMap.isEmpty()) {
             return fieldCode;
         }
-
-        for (IFieldDefinition fieldDefinition : fieldDefinitions) {
-            if (fieldCode.equals(fieldDefinition.getFieldCode())) {
-                return fieldDefinition.getDisplayName();
-            }
+        IFieldDefinition fieldDefinition=fieldDefinitionMap.get(fieldCode);
+        if (null!=fieldDefinition){
+            return fieldDefinition.getDisplayName();
         }
-
         return fieldCode;
     }
 
