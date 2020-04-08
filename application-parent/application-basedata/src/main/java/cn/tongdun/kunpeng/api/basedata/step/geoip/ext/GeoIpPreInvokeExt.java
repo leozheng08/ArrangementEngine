@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.basedata.step.geoip.ext;
 
-import cn.tongdun.kunpeng.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 
 /**

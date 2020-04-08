@@ -1,10 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
-import cn.tongdun.ddd.common.domain.CommonEntity;
-import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.api.common.data.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.DomainEventDO;
-import cn.tongdun.kunpeng.client.dto.CommonDTO;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

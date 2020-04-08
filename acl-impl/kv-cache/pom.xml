@@ -12,7 +12,6 @@
     <artifactId>kv-cache</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>kv-cache-ignore</module>
         <module>kv-cache-redis</module>
     </modules>
 

@@ -6,8 +6,8 @@ import cn.fraudmetrix.module.tdflow.model.edge.EdgeCondition;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
-import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;

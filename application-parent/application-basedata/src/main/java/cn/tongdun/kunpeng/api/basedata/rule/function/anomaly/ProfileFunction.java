@@ -5,7 +5,7 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
-import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.api.common.Constant;
 
 import java.util.Map;
 

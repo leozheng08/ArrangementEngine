@@ -1,12 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
-import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueKVRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.CustomListValueEventDO;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
-import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

@@ -3,12 +3,10 @@ package cn.tongdun.kunpeng.api.engine.model.rule.util;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: liang.chen

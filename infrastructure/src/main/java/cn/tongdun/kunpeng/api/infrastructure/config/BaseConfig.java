@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.config;
 
-import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.config.IBaseConfig;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;

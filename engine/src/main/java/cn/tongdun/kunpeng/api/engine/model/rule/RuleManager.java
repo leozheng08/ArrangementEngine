@@ -2,10 +2,10 @@ package cn.tongdun.kunpeng.api.engine.model.rule;
 
 import cn.fraudmetrix.module.tdrule.rule.RuleResult;
 import cn.tongdun.kunpeng.api.engine.IExecutor;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.data.RuleResponse;
-import cn.tongdun.kunpeng.common.data.ReasonCode;
-import cn.tongdun.kunpeng.common.data.SubReasonCode;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.RuleResponse;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

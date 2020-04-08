@@ -5,7 +5,7 @@ import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.*;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 

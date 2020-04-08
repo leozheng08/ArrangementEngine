@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.application.step.ext.response;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.application.step.ext.ICreateRiskResponseExtPt;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 

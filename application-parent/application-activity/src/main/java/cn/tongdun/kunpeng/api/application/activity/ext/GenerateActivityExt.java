@@ -3,9 +3,9 @@ package cn.tongdun.kunpeng.api.application.activity.ext;
 import cn.tongdun.kunpeng.api.application.activity.ActitivyMsg;
 import cn.tongdun.kunpeng.api.application.activity.IActitivyMsg;
 import cn.tongdun.kunpeng.api.application.activity.IGenerateActivityExtPt;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.data.BizScenario;
-import cn.tongdun.kunpeng.common.data.QueueItem;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.tdframework.core.extension.Extension;
 
 import java.lang.reflect.Method;

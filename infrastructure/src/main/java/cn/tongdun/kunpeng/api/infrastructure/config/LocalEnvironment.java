@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.config;
 
-import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
-import cn.tongdun.kunpeng.common.util.NetWorkUtil;
+import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
+import cn.tongdun.kunpeng.api.common.util.NetWorkUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

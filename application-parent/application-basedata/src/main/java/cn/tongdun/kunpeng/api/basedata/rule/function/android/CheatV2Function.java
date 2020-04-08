@@ -10,7 +10,7 @@ import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.basedata.service.fp.Anomaly;
 import cn.tongdun.kunpeng.api.basedata.service.fp.ContainCheatingApps;
 import cn.tongdun.kunpeng.api.ruledetail.AndroidCheatAppDetail;
-import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.api.common.Constant;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

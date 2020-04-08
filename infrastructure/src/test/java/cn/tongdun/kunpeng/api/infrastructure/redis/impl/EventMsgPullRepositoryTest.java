@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.redis.impl;
 
 
-import cn.tongdun.kunpeng.common.util.TestUtil;
+import cn.tongdun.kunpeng.api.common.util.TestUtil;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;

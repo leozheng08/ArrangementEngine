@@ -14,13 +14,25 @@
 
     <dependencies>
         <dependency>
+            <groupId>cn.tongdun.kunpeng</groupId>
+            <artifactId>kunpeng-share-common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>engine</artifactId>
+            <artifactId>acl-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>common</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.fraudmetrix</groupId>

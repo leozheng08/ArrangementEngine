@@ -1,9 +1,7 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
-import cn.tongdun.kunpeng.common.data.QueueItem;
+import cn.tongdun.kunpeng.api.common.data.QueueItem;
 
-import java.util.Map;
-import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 /**

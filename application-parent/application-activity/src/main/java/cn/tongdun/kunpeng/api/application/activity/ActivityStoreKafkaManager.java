@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
 import cn.tongdun.kunpeng.api.application.msg.EventStoreMsgBus;
-import cn.tongdun.kunpeng.common.data.QueueItem;
+import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

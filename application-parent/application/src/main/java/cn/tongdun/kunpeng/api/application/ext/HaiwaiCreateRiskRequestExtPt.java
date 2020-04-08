@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.application.ext;
 
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import org.apache.commons.lang3.StringUtils;
 

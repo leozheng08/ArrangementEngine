@@ -1,16 +1,13 @@
 package cn.tongdun.kunpeng.api.application.msg;
 
-import cn.tongdun.kunpeng.common.data.QueueItem;
+import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 /**
