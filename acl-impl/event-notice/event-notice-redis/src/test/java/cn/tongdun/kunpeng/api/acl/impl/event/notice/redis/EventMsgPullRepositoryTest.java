@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.infrastructure.redis.impl;
+package cn.tongdun.kunpeng.api.acl.impl.event.notice.redis;
 
 
 import cn.tongdun.kunpeng.api.common.util.TestUtil;

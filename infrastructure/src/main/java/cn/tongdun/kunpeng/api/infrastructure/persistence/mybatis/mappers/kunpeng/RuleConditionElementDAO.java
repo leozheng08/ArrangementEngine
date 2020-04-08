@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface RuleConditionElementDOMapper {
+public interface RuleConditionElementDAO {
 
     List<RuleConditionElementDO> selectByBizUuidBizType(@Param("bizUuid") String bizUuid, @Param("bizType") String bizType);
 

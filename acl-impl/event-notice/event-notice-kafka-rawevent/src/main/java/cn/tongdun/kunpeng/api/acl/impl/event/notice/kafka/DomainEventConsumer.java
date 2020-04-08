@@ -1,6 +1,6 @@
-package cn.tongdun.kunpeng.api.infrastructure.kafka;
+package cn.tongdun.kunpeng.api.acl.impl.event.notice.kafka;
 
-import cn.tongdun.kunpeng.api.engine.reload.RawDomainEventHandle;
+import cn.tongdun.kunpeng.api.acl.api.event.notice.IRawDomainEventHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ public class DomainEventConsumer extends AbstractConsumer {
     private static final Logger                     logger                   = LoggerFactory.getLogger(DomainEventConsumer.class);
 
     @Autowired
-    private RawDomainEventHandle rawDomainEventHandle;
+    private IRawDomainEventHandle rawDomainEventHandle;
 
     @Override
     protected boolean batchConsume() {

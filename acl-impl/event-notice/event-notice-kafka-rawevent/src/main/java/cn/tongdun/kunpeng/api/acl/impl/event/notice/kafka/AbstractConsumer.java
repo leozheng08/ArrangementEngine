@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.infrastructure.kafka;
+package cn.tongdun.kunpeng.api.acl.impl.event.notice.kafka;
 
 import cn.fraudmetrix.module.kafka.consumer.IConsumer;
 import cn.fraudmetrix.module.kafka.object.RetryLaterException;

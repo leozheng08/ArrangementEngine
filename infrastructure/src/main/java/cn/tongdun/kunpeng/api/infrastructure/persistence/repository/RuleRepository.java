@@ -5,9 +5,9 @@ import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDAO;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDAO;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDAO;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO;
@@ -32,15 +32,15 @@ public class RuleRepository implements IRuleRepository {
     private Logger logger = LoggerFactory.getLogger(RuleRepository.class);
 
     @Autowired
-    private RuleDOMapper ruleDOMapper;
+    private RuleDAO ruleruleDAO;
     @Autowired
-    private RuleConditionElementDOMapper ruleConditionElementDOMapper;
+    private RuleConditionElementDAO ruleConditionElementDAO;
     @Autowired
-    private RuleActionElementDOMapper ruleActionElementDOMapper;
+    private RuleActionElementDAO ruleActionElementDAO;
 
     @Override
     public List<RuleDTO> queryByUuids(List<String> ruleUuids) {
-        List<RuleDO>  ruleDOList = ruleDOMapper.selectByUuids(ruleUuids);
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByUuids(ruleUuids);
         if(ruleDOList == null) {
             return null;
         }
@@ -68,7 +68,7 @@ public class RuleRepository implements IRuleRepository {
      */
     @Override
     public List<RuleDTO> queryFullBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
 
         if(ruleDOList == null) {
             return null;
@@ -117,7 +117,7 @@ public class RuleRepository implements IRuleRepository {
 
     @Override
     public List<RuleDTO> queryBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
 
         if(ruleDOList == null) {
             return null;
@@ -165,7 +165,7 @@ public class RuleRepository implements IRuleRepository {
     @Override
     public RuleDTO queryFullByUuid(String ruleUuid) {
 
-        RuleDO ruleDO = ruleDOMapper.selectEnabledByUuid(ruleUuid);
+        RuleDO ruleDO = ruleruleDAO.selectEnabledByUuid(ruleUuid);
         if(ruleDO == null){
             return null;
         }
@@ -204,7 +204,7 @@ public class RuleRepository implements IRuleRepository {
 
     //查询规则条件
     public List<RuleConditionElementDTO> queryRuleConditionElementDTOByRuleUuid(String ruleUuid) {
-        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDOMapper.selectByBizUuidBizType(ruleUuid, "rule");
+        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDAO.selectByBizUuidBizType(ruleUuid, "rule");
         if (ruleConditionElementDOList == null) {
             return null;
         }
@@ -223,7 +223,7 @@ public class RuleRepository implements IRuleRepository {
 
     //查询规则动作
     public List<RuleActionElementDTO> queryRuleActionElementDTOByRuleUuid(String ruleUuid) {
-        List<RuleActionElementDO> ruleActionElementDOList = ruleActionElementDOMapper.selectByRuleUuid(ruleUuid);
+        List<RuleActionElementDO> ruleActionElementDOList = ruleActionElementDAO.selectByRuleUuid(ruleUuid);
         if (ruleActionElementDOList == null) {
             return null;
         }

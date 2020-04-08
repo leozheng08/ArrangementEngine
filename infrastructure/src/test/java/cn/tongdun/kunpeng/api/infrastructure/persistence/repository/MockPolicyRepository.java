@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDAO;
 import cn.tongdun.kunpeng.client.dto.RuleActionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
@@ -24,7 +24,7 @@ import java.util.Set;
 public class MockPolicyRepository implements IPolicyRepository{
 
     @Autowired
-    private PolicyDOMapper policyDOMapper;
+    private PolicyDAO policyDAO;
 
     //取得所有策略清单
     @Override

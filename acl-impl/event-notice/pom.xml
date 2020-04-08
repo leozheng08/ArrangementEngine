@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>domain-event-notice</artifactId>
+    <artifactId>event-notice</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>domain-event-notice-redis</module>
-        <module>domain-event-notice-zk</module>
+        <module>event-notice-redis</module>
+        <module>event-notice-zk</module>
         <module>event-notice-kafka-rawevent</module>
     </modules>
 

@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.DecisionFlowInterfaceDO;
 
 import java.util.List;
 
-public interface DecisionFlowInterfaceDOMapper {
+public interface DecisionFlowInterfaceDAO {
 
     List<DecisionFlowInterfaceDO> selectByDecisionFlowUuid(String decisionFlowUuid);
 

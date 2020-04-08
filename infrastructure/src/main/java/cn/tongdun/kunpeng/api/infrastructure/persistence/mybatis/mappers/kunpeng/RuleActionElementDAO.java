@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface RuleActionElementDOMapper {
+public interface RuleActionElementDAO {
 
     List<RuleActionElementDO> selectByRuleUuid(@Param("ruleUuid") String ruleUuid);
 

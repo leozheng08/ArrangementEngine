@@ -2,8 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.EventTypeDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.EventTypeDAO;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +21,13 @@ public class EventTypeRepository implements IEventTypeRepository {
 
 
     @Autowired
-    private EventTypeDOMapper eventTypeDOMapper;
+    private EventTypeDAO eventTypeDAO;
 
 
     @Override
     public List<EventType> queryAll(){
 
-        List<EventTypeDO> eventTypeDOList= eventTypeDOMapper.selectAll();
+        List<EventTypeDO> eventTypeDOList= eventTypeDAO.selectAll();
 
         List<EventType> result = new ArrayList<EventType>();
         result = eventTypeDOList.stream().map(eventTypeDO->{
@@ -44,7 +43,7 @@ public class EventTypeRepository implements IEventTypeRepository {
 
     @Override
     public EventType queryByUuid(String uuid){
-        EventTypeDO eventTypeDO = eventTypeDOMapper.selectByUuid(uuid);
+        EventTypeDO eventTypeDO = eventTypeDAO.selectByUuid(uuid);
         if(eventTypeDO == null){
             return null;
         }

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface AdminPartnerDOMapper {
+public interface AdminPartnerDAO {
 
     public AdminPartnerDO selectByPartnerCode(String partnerCode);
 

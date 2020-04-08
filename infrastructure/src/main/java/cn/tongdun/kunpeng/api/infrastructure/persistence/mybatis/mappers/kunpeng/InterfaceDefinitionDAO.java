@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface InterfaceDefinitionDOMapper {
+public interface InterfaceDefinitionDAO {
 
     /**
      * 查询所有在用的

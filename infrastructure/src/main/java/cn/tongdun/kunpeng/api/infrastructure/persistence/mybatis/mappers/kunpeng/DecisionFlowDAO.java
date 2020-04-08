@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpen
 
 import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 
-public interface DecisionFlowDOMapper {
+public interface DecisionFlowDAO {
 
     DecisionFlowDO selectByUuid(String uuid);
 

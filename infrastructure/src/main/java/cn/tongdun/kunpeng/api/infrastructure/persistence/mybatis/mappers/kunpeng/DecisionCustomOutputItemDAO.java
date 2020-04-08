@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.DecisionCustomOutputItemDO;
 
 import java.util.List;
 
-public interface DecisionCustomOutputItemDOMapper {
+public interface DecisionCustomOutputItemDAO {
 
     List<DecisionCustomOutputItemDO> selectByOutputUuid(String outputUuid);
 

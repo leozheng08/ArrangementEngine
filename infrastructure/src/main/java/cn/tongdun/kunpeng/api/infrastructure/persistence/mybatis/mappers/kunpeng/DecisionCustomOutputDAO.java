@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.DecisionCustomOutputDO;
 
 import java.util.List;
 
-public interface DecisionCustomOutputDOMapper {
+public interface DecisionCustomOutputDAO {
 
     /**
      * 查询未删除的

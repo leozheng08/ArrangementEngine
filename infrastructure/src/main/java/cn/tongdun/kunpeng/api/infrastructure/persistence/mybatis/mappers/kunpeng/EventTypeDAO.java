@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Set;
 
-public interface EventTypeDOMapper {
+public interface EventTypeDAO {
 
     /**
      * 查询可用的类型

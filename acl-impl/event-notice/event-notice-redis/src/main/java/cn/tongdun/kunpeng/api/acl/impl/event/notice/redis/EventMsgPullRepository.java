@@ -1,8 +1,6 @@
-package cn.tongdun.kunpeng.api.acl.impl.domain.event.notice.redis;
+package cn.tongdun.kunpeng.api.acl.impl.event.notice.redis;
 
-
-
-import cn.tongdun.kunpeng.api.acl.api.domain.event.notice.IDomainEventRepository;
+import cn.tongdun.kunpeng.api.acl.api.event.notice.IDomainEventRepository;
 import cn.tongdun.kunpeng.api.common.data.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;

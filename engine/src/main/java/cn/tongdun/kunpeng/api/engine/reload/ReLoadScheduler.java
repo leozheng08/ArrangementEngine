@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.kunpeng.api.acl.api.event.notice.IDomainEventRepository;
 import cn.tongdun.kunpeng.api.engine.load.step.EventTypeLoadManager;
 import cn.tongdun.kunpeng.api.engine.load.step.FieldDefinitionLoadManager;
 import cn.tongdun.kunpeng.api.engine.load.ILoad;

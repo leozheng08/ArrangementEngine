@@ -5,7 +5,7 @@ import cn.tongdun.kunpeng.share.dataobject.PolicyChallengerDO;
 import java.util.List;
 import java.util.Set;
 
-public interface PolicyChallengerDOMapper {
+public interface PolicyChallengerDAO {
 
     PolicyChallengerDO selectByPolicyDefinitionUuid(String policyDefinitionUuid);
 

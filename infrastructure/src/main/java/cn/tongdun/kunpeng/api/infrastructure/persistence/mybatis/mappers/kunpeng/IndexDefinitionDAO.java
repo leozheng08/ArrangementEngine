@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
 
 import java.util.List;
 
-public interface IndexDefinitionDOMapper {
+public interface IndexDefinitionDAO {
 
     List<IndexDefinitionDO> selectEnabledIndexesByPolicyUuid(String policyUuid);
 

@@ -11,5 +11,11 @@
 
     <artifactId>metrics-ignore</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>cn.tongdun</groupId>
+            <artifactId>tdframework-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

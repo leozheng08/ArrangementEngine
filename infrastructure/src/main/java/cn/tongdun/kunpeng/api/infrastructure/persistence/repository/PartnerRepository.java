@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminPartnerDO;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminPartnerDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminPartnerDAO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 public class PartnerRepository implements IPartnerRepository{
 
     @Autowired
-    private AdminPartnerDOMapper adminPartnerDOMapper;
+    private AdminPartnerDAO adminPartnerDAO;
 
     //取得所有策略定义清单
     @Override
     public List<Partner> queryEnabledByPartners(Set<String> partners){
-        List<AdminPartnerDO> list = adminPartnerDOMapper.selectEnabledByPartners(partners);
+        List<AdminPartnerDO> list = adminPartnerDAO.selectEnabledByPartners(partners);
 
         List<Partner> result = list.stream().map(adminPartnerDO->{
                 Partner partner = new Partner();
@@ -34,7 +34,7 @@ public class PartnerRepository implements IPartnerRepository{
 
     @Override
     public Partner queryByPartnerCode(String partnerCode){
-        AdminPartnerDO adminPartnerDO = adminPartnerDOMapper.selectByPartnerCode(partnerCode);
+        AdminPartnerDO adminPartnerDO = adminPartnerDAO.selectByPartnerCode(partnerCode);
         if(adminPartnerDO == null){
             return null;
         }

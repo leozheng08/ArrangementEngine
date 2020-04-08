@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.PolicyFieldItemDO;
 
 import java.util.List;
 
-public interface PolicyFieldItemDOMapper {
+public interface PolicyFieldItemDAO {
 
     List<PolicyFieldItemDO> selectByPolicyUuid(String policyUuid);
 }

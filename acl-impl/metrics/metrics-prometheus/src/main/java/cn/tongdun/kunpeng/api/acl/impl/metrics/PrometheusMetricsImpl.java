@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @Date: 2020/3/27 下午5:24
  */
 @Component
-public class MetricsImpl implements IMetrics{
+public class PrometheusMetricsImpl implements IMetrics{
 
-    private static final Logger logger                   = LoggerFactory.getLogger(MetricsImpl.class);
+    private static final Logger logger                   = LoggerFactory.getLogger(PrometheusMetricsImpl.class);
 
 
     @Autowired

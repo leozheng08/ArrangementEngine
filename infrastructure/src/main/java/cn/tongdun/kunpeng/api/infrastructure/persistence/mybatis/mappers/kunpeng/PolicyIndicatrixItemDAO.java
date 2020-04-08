@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.PolicyIndicatrixItemDO;
 
 import java.util.List;
 
-public interface PolicyIndicatrixItemDOMapper {
+public interface PolicyIndicatrixItemDAO {
 
     /**
      * @mbggenerated

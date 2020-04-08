@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.kunpeng.api.acl.api.event.notice.IDomainEventRepository;
+import cn.tongdun.kunpeng.api.acl.api.event.notice.IRawDomainEventHandle;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueKVRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
@@ -25,7 +27,7 @@ import java.util.Map;
  * @Date: 2020/3/12 下午1:39
  */
 @Component
-public class RawDomainEventHandle {
+public class RawDomainEventHandle implements IRawDomainEventHandle{
     private Logger logger = LoggerFactory.getLogger(RawDomainEventHandle.class);
 
 

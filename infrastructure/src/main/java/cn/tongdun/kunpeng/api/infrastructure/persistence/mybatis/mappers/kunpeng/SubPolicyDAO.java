@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 
 import java.util.List;
 
-public interface SubPolicyDOMapper {
+public interface SubPolicyDAO {
 
     SubPolicyDO selectByUuid(String uuid);
 

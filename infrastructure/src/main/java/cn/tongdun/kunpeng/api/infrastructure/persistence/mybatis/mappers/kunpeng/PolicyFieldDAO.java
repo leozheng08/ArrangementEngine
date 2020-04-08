@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.PolicyFieldDO;
 
 import java.util.List;
 
-public interface PolicyFieldDOMapper {
+public interface PolicyFieldDAO {
 
     /**
      *

@@ -6,7 +6,7 @@ import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
 import java.util.List;
 import java.util.Set;
 
-public interface PolicyDOMapper {
+public interface PolicyDAO {
 
 
     PolicyDO selectByUuid(String uuid);

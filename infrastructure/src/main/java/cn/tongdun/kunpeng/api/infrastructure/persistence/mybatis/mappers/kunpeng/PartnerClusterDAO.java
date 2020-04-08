@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface PartnerClusterDOMapper {
+public interface PartnerClusterDAO {
 
     /**
      * 根据集群名查询合作方列表

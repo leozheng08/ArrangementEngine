@@ -5,7 +5,7 @@ import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import java.util.List;
 import java.util.Set;
 
-public interface GroovyDynamicScriptDOMapper {
+public interface GroovyDynamicScriptDAO {
 
 
 

@@ -4,7 +4,7 @@ import cn.tongdun.kunpeng.share.dataobject.CustomListDO;
 
 import java.util.List;
 
-public interface CustomListDOMapper {
+public interface CustomListDAO {
 
 
     /**

@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.acl.api.domain.event.notice;
+package cn.tongdun.kunpeng.api.acl.api.event.notice;
 
 import java.util.List;
 

@@ -14,7 +14,7 @@
     <modules>
         <module>kv-cache</module>
         <module>metrics</module>
-        <module>domain-event-notice</module>
+        <module>event-notice</module>
     </modules>
 
 

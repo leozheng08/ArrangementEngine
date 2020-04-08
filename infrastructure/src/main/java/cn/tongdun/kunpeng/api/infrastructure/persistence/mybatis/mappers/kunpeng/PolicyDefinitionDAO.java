@@ -9,7 +9,7 @@ import java.util.Set;
  * @author zhengwei
  * @date 2019-12-27 18:38
  **/
-public interface PolicyDefinitionDOMapper {
+public interface PolicyDefinitionDAO {
 
     PolicyDefinitionDO selectByUuid(String uuid);
 

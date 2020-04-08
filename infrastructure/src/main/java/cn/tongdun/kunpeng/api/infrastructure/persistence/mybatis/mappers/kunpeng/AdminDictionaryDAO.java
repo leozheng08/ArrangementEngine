@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface AdminDictionaryDOMapper  {
+public interface AdminDictionaryDAO {
 
     String queryByKey(@Param("key") String key);
 

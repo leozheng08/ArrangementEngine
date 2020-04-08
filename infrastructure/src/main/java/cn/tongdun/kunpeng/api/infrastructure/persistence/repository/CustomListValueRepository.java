@@ -2,8 +2,8 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListValueDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListDAO;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListValueDAO;
 import cn.tongdun.kunpeng.share.dataobject.CustomListDO;
 import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
 import org.apache.commons.lang3.StringUtils;
@@ -21,15 +21,15 @@ import java.util.List;
 public class CustomListValueRepository implements ICustomListValueRepository {
 
     @Autowired
-    private CustomListDOMapper customListDOMapper;
+    private CustomListDAO customListDAO;
 
     @Autowired
-    private CustomListValueDOMapper customListValueDOMapper;
+    private CustomListValueDAO customListValueDAO;
 
 
     @Override
     public List<String> selectAllAvailable() {
-        List<CustomListDO> customListDOS= customListDOMapper.selectAllAvailable();
+        List<CustomListDO> customListDOS= customListDAO.selectAllAvailable();
 
         if (null != customListDOS) {
             List<String> uuidList = new ArrayList<String>();
@@ -43,12 +43,12 @@ public class CustomListValueRepository implements ICustomListValueRepository {
 
     @Override
     public int selectCountByListUuid(String customListUuid) {
-        return customListValueDOMapper.selectCountByListUuid(customListUuid);
+        return customListValueDAO.selectCountByListUuid(customListUuid);
     }
 
     @Override
     public List<CustomListValue> selectByListUuid(String customListUuid, Integer offset, Integer size) {
-        List<CustomListValueDO> valueDOList = customListValueDOMapper.selectByListUuid(customListUuid, offset, size);
+        List<CustomListValueDO> valueDOList = customListValueDAO.selectByListUuid(customListUuid, offset, size);
 
         if (null != valueDOList) {
             List<CustomListValue> result = new ArrayList<>();
@@ -71,7 +71,7 @@ public class CustomListValueRepository implements ICustomListValueRepository {
      */
     @Override
     public CustomListValue selectByUuid(String customListValueUuid){
-        CustomListValueDO customListValueDO = customListValueDOMapper.selectByUuid(customListValueUuid);
+        CustomListValueDO customListValueDO = customListValueDAO.selectByUuid(customListValueUuid);
         if(customListValueDO == null) {
             return null;
         }
@@ -85,7 +85,7 @@ public class CustomListValueRepository implements ICustomListValueRepository {
      */
     @Override
     public List<CustomListValue> selectByUuids(List<String> uuids){
-        List<CustomListValueDO> valueDOList = customListValueDOMapper.selectByUuids(uuids);
+        List<CustomListValueDO> valueDOList = customListValueDAO.selectByUuids(uuids);
 
         if (null != valueDOList) {
             List<CustomListValue> result = new ArrayList<>();
