@@ -22,7 +22,7 @@
         <module>interface-adapter</module>
         <module>starters</module>
         <module>acl-impl</module>
-        <module>apl-api</module>
+        <module>acl-api</module>
 
     </modules>
 
