@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.infrastructure.redis.impl;
+package cn.tongdun.kunpeng.api.acl.impl.kvcache.redis;
 
 import cn.tongdun.kunpeng.share.kv.IValue;
 
