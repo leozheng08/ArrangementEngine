@@ -25,7 +25,7 @@ public class BaseConfig implements IBaseConfig{
 
     // 配置内容为json,例：
     // {"credit":["PreFilter","PreCredit","Loan","LoaningQuery"],"anti_fraud":[]}
-    @Value("${business.event.type}")
+    @Value("${business.event.type:}")
     private String businessEventTypeJson;
     //eventType->businussType
     private Map<String,String> eventType2BusinussMap = new HashMap<>();
@@ -36,7 +36,7 @@ public class BaseConfig implements IBaseConfig{
     //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
     @Override
     public String getBusinessByEventType(String eventType){
-        return getBusinessByEventType(eventType, Constant.BUSINESS_ANTI_FRAUD);
+        return getBusinessByEventType(eventType, Constant.BUSINESS_DEFAULT);
     }
 
     public String getBusinessByEventType(String eventType,String defaultValue){

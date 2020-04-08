@@ -18,7 +18,7 @@ import org.springframework.core.type.AnnotationMetadata;
  * @date 2020/3/13 2:37 下午
  * @see RegistryConfig
  **/
-@Configuration
+@Configuration("ReferenceConfigConfiguration4Api")
 @ConditionalOnMissingBean(name = "referenceConfig")
 @Slf4j
 public class ReferenceConfigConfiguration implements ImportBeanDefinitionRegistrar {

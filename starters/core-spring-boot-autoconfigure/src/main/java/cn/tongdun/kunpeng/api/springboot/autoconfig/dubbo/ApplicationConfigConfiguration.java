@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * ApplicationConfig
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2020/3/13 2:35 下午
  * @see ApplicationConfig
  **/
-@Configuration
+@Configuration("ApplicationConfigConfiguration4Api")
 @ConditionalOnMissingBean(ApplicationConfig.class)
 @ConditionalOnClass(ApplicationConfig.class)
 @Slf4j

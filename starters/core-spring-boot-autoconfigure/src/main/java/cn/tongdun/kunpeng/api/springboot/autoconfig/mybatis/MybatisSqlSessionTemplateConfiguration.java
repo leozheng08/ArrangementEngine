@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * @see SqlSessionTemplate
  **/
 @Slf4j
-@Configuration
+@Configuration("MybatisSqlSessionTemplateConfiguration4Api")
 @ConditionalOnMissingBean(name = "kunpengApiSqlSessionTemplate")
 public class MybatisSqlSessionTemplateConfiguration implements ImportBeanDefinitionRegistrar {
 

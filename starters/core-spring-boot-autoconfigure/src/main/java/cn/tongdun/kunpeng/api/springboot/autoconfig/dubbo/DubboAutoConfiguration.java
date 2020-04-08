@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
  * @author zhengwei
  * @date 2020/3/13 2:21 下午
  **/
-@Configuration
+@Configuration("DubboAutoConfiguration4Api")
 @Import({ApplicationConfigConfiguration.class, RegistryConfigConfiguration.class,ReferenceConfigConfiguration.class})
 public class DubboAutoConfiguration {
 

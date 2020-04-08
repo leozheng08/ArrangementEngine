@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
  * @date 2020/3/13 1:44 下午
  **/
 @Import({MybatisSqlSessionFactoryConfiguration.class, MybatisSqlSessionTemplateConfiguration.class, MapperScannerConfigurerConfiguration.class})
-@Configuration
+@Configuration("MybatisAutoConfiguration4Api")
 public class MybatisAutoConfiguration {
 
 }

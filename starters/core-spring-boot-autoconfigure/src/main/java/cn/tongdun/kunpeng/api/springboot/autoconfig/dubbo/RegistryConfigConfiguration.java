@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2020/3/13 2:37 下午
  * @see RegistryConfig
  **/
-@Configuration
+@Configuration("RegistryConfigConfiguration4Api")
 @ConditionalOnMissingBean(RegistryConfig.class)
 @ConditionalOnClass(RegistryConfig.class)
 @Slf4j

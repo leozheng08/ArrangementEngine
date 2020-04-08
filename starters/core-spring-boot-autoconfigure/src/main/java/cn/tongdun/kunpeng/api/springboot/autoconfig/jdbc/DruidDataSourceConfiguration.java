@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @see DruidDataSource
  **/
-@Configuration
+@Configuration("DruidDataSourceConfiguration4Api")
 @ConditionalOnMissingBean(name = "kunpengApiDataSource")
 @Slf4j
 public class DruidDataSourceConfiguration implements ImportBeanDefinitionRegistrar {

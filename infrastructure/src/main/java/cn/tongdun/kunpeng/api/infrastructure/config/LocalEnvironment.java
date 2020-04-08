@@ -13,19 +13,19 @@ public class LocalEnvironment implements ILocalEnvironment{
 
     private static final Logger logger = LoggerFactory.getLogger(LocalEnvironment.class);
 
-    @Value("${CLUSTER}")
+    @Value("${CLUSTER:${app.name}}")
     private String cluster;
 
-    @Value("${ENV}")
+    @Value("${ENV:}")
     private String env;
 
-    @Value("${APPNAME}")
+    @Value("${APPNAME:${app.name}}")
     private String appName;
 
-    @Value("${APP_PORT}")
+    @Value("${APP_PORT:8088}")
     private int appPort;
 
-    @Value("${DC}")
+    @Value("${DC:}")
     private String dc;
 
     //当前租户名称

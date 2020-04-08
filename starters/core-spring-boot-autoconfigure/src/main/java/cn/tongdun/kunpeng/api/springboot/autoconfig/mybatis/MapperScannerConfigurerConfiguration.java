@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @see MapperScannerConfigurer
  **/
 @Slf4j
-@Configuration
+@Configuration("MapperScannerConfigurerConfiguration4Api")
 @ConditionalOnMissingBean(name = "kunpengApiMapperScannerConfigurer")
 public class MapperScannerConfigurerConfiguration implements ImportBeanDefinitionRegistrar {
 
