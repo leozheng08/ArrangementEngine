@@ -73,6 +73,8 @@ public class GroovyCompileManager {
         groovyField.setPartnerCode(script.getPartnerCode());
         groovyField.setEventType(script.getEventType());
         groovyField.setAssignField(script.getAssignField());
+        groovyField.setFieldMethodName(methodName);
+
         groovyFieldCache.put(script.getUuid(), groovyField);
     }
 

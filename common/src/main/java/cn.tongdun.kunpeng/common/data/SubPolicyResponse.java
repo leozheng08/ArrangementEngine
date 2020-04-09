@@ -22,9 +22,22 @@ public class SubPolicyResponse extends Response{
 
     private boolean hit;
 
-    private List<RuleResponse> ruleResponses = new ArrayList<>();
-    private List<RuleResponse> hitRules = new ArrayList<>();
+    private List<RuleResponse> ruleResponses;
+    private List<RuleResponse> hitRules;
 
+    public SubPolicyResponse(){
+        ruleResponses = new ArrayList<>();
+        hitRules = new ArrayList<>();
+    }
+    public SubPolicyResponse(int ruleCount) {
+        ruleResponses = new ArrayList<>(ruleCount);
+        //假设有20%的规则命中
+        int hitCount = ruleCount / 5;
+        if (hitCount < 3) {
+            hitCount = 3;
+        }
+        hitRules = new ArrayList<>(hitCount);
+    }
 //    private List<HitRule> hitRules = new ArrayList<>();
 
     public void addRuleResponse(RuleResponse ruleResponse){

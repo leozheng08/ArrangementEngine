@@ -126,7 +126,7 @@ public class DynamicScriptManager {
 
     private boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject) {
         String fieldName = wrappedGroovyObject.getAssignField();
-        String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(fieldName);
+        String methodName = wrappedGroovyObject.getFieldMethodName();
         Object value;
         try {
             long t1 = System.currentTimeMillis();

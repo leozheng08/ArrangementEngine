@@ -158,7 +158,9 @@ public class ParallelEngine extends DecisionTool {
             if (future.isDone() && !future.isCancelled()) {
                 try {
                     SubPolicyResponse subPolicyResponse = future.get();
-                    logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSON.toJSONString(subPolicyResponse));
+                    if (logger.isDebugEnabled()){
+                        logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSON.toJSONString(subPolicyResponse));
+                    }
                     subPolicyResponseList.add(subPolicyResponse);
                 } catch (InterruptedException e) {
                     logger.error("获取规则引擎执行结果被中断", e);
