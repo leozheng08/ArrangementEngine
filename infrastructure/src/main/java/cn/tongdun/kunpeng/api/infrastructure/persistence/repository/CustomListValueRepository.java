@@ -103,6 +103,9 @@ public class CustomListValueRepository implements ICustomListValueRepository {
 
 
     private CustomListValue convert(CustomListValueDO listValueDO){
+        if(null==listValueDO){
+            return null;
+        }
         //列表类型，0为普通，1为复合
         int type = listValueDO.getColumnType();
         String value = null;
@@ -111,7 +114,12 @@ public class CustomListValueRepository implements ICustomListValueRepository {
         } else if (type ==1) {
             value = listValueDO.getColumnValues();
         }
-        long expireTime = listValueDO.getGmtExpire().getTime();
+        long expireTime=0;
+        if (listValueDO.getGmtExpire()==null){
+            expireTime=Long.MAX_VALUE;
+        }else {
+            expireTime = listValueDO.getGmtExpire().getTime();
+        }
         if (StringUtils.isBlank(value)) {
             return null;
         }

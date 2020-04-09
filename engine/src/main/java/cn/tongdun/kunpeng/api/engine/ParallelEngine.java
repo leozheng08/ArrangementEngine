@@ -68,6 +68,9 @@ public class ParallelEngine extends DecisionTool {
     @Autowired
     private IConfigRepository configRepository;
 
+    private long configCreditTimeout = 0;
+    private long configExecuteTimeout = 0;
+
 
     @PostConstruct
     public void init() {
@@ -78,6 +81,8 @@ public class ParallelEngine extends DecisionTool {
                 TimeUnit.MINUTES,
                 20,
                 "ruleExecute");
+        configExecuteTimeout=configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT);
+        configCreditTimeout=configRepository.getLongProperty("rule.engine.execute.credit.timeout",configExecuteTimeout);
     }
 
 
@@ -95,9 +100,7 @@ public class ParallelEngine extends DecisionTool {
      * @return 规则引擎执行超时时间
      */
     private long resolveExecuteTimeout(AbstractFraudContext context) {
-        String eventType = context.getEventType();
-        long timeout = configRepository.getLongProperty("rule.engine.execute.credit.timeout",
-                configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT));
+        long timeout = configCreditTimeout;
         if (timeout < DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT) {
             timeout = DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT;
         }

@@ -13,23 +13,13 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.common.data.IFieldDefinition;
-import cn.tongdun.kunpeng.common.util.DateUtil;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
-import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
-import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.google.common.base.CaseFormat;
-import com.google.common.collect.Sets;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 设置上下文中的字段值
