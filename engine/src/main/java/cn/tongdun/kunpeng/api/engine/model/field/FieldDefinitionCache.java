@@ -131,7 +131,7 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,FieldDefinit
         Collection<EventType> eventTypeList= eventTypeCache.getEventTypes();
 
         // 如果为null，是通用字段，放到所有事件类型列表中
-        if (eventType == null || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
+        if (StringUtils.isBlank(eventType) || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
             for (EventType et : eventTypeList) {
                 String key = getSystemFieldKey(et.getEventCode());
                 Map<String,FieldDefinition> map = getFieldMap(systemFieldMap,key);
