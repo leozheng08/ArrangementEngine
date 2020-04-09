@@ -113,6 +113,11 @@ public class AssignFieldValueStep implements IRiskStep {
         //调用async,如果async=true，则没有800ms规则引擎超时
         context.setAsync(request.isAsync());
 
+        //如果客户有传事件发生时间，为客户传的为准
+        Object eventOccurTime = context.getFieldValues().get("eventOccurTime");
+        if(eventOccurTime != null && eventOccurTime instanceof Date){
+            context.setEventOccurTime((Date)eventOccurTime);
+        }
         return true;
     }
 
