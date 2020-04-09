@@ -3,9 +3,9 @@ package cn.tongdun.kunpeng.api.application.check.step;
 import cn.tongdun.kunpeng.api.application.check.step.assign.*;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
@@ -19,7 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.util.*;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * 设置上下文中的字段值
@@ -72,14 +76,7 @@ public class AssignFieldValueStep implements IRiskStep {
         Partner partner = partnerCache.get(context.getPartnerCode());
 
         /*************根据字段的定义，将请求参数设置到上下文中 start**********************/
-//        //系统字段
-//        Collection<FieldDefinition> systemFields = fieldDefinitionCache.getSystemField(context);
-//        //扩展字段
-//        Collection<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context);
-//
-//        setFraudContext(context, request, systemFields);
-//        setFraudContext(context, request, extendFields);
-        setFraudContext2(context,request,context.getFieldDefinitionMap());
+        setFraudContext2(context,request);
         /*************根据字段的定义，将请求参数设置到上下文中 end**********************/
 
 
@@ -112,32 +109,22 @@ public class AssignFieldValueStep implements IRiskStep {
     }
 
 
-    public void setFraudContext2(AbstractFraudContext ctx, RiskRequest request, Map<String, IFieldDefinition> fieldDefinitionMap) {
-        if (null == ctx || null == request || request.getFieldValues().isEmpty() || null == fieldDefinitionMap) {
+    public void setFraudContext2(AbstractFraudContext ctx, RiskRequest request) {
+        if (null == ctx || null == request || request.getFieldValues().isEmpty()) {
             return;
         }
-//        ctx.setPartnerCode(request.getPartnerCode());
-//        ctx.setSecretKey(request.getSecretKey());
-//        ctx.setEventId(request.getEventId());
-//        ctx.setPolicyVersion(request.getPolicyVersion());
-//        ctx.setServiceType(request.getServiceType());
-//        ctx.setSeqId(request.getSeqId());
-//        ctx.setRequestId(request.getRequestId());
-//        ctx.setEventOccurTime(request.getEventOccurTime());
-//        ctx.setTestFlag(request.isTestFlag());
-//        ctx.setAsync(request.isAsync());
 
         for (Map.Entry<String, Object> entry : request.getFieldValues().entrySet()) {
             if (null == entry.getValue()) {
                 continue;
             }
-            IFieldDefinition fieldDefinition = fieldDefinitionMap.get(entry.getKey());
+            IFieldDefinition fieldDefinition = ctx.getFieldDefinition(entry.getKey());
             if (null == fieldDefinition) {
                 String stardandCode = CamelAndUnderlineConvertUtil.underline2camel(entry.getKey());
                 if (null == stardandCode) {
                     continue;
                 }
-                fieldDefinition = fieldDefinitionMap.get(stardandCode);
+                fieldDefinition = ctx.getFieldDefinition(stardandCode);
             }
             if (null == fieldDefinition) {
                 continue;

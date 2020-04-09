@@ -174,9 +174,10 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 本次请求适用的字段列表，每次初始化的时候再设置进来
+     * key:fieldCode
      */
-    //private List<IFieldDefinition> fieldDefinitions;
-    private Map<String,IFieldDefinition> fieldDefinitionMap;
+    private Map<String,IFieldDefinition> systemFieldMap;
+    private Map<String,IFieldDefinition> extendFieldMap;
 
     /**
      * 字段值
@@ -519,6 +520,26 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         if (interfaceOutputFields != null) {
             this.interfaceOutputFields.add(interfaceOutputFields);
         }
+    }
+
+    public IFieldDefinition getFieldDefinition(String fieldCode) {
+        if (StringUtils.isBlank(fieldCode)) {
+            return null;
+        }
+        IFieldDefinition ret;
+        if (null != systemFieldMap && !systemFieldMap.isEmpty()) {
+            ret = systemFieldMap.get(fieldCode);
+            if (null != ret) {
+                return ret;
+            }
+        }
+        if (null != extendFieldMap && !extendFieldMap.isEmpty()) {
+            ret = extendFieldMap.get(fieldCode);
+            if (null != ret) {
+                return ret;
+            }
+        }
+        return null;
     }
 
 }

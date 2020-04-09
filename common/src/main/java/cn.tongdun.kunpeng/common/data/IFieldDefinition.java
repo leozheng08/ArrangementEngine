@@ -15,6 +15,10 @@ public interface IFieldDefinition {
 
     Integer getMaxLength();
 
+    String getEventType();
+
+    String getPartnerCode();
+
     boolean isExtField();
 
 }
