@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
 import cn.tongdun.kunpeng.api.common.data.DomainEventTypeEnum;
-import cn.tongdun.kunpeng.api.engine.reload.dataobject.DomainEventDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventDO;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
 import org.apache.commons.lang3.StringUtils;
@@ -183,8 +183,8 @@ public class DomainEventHandle {
             if(obj instanceof Map){
                 uuid = JsonUtil.getString((Map)obj,"uuid");
                 gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
-            } else if(obj instanceof DomainEventDO) {
-                DomainEventDO domainEventDO = (DomainEventDO) obj;
+            } else if(obj instanceof EventDO) {
+                EventDO domainEventDO = (EventDO) obj;
                 uuid = domainEventDO.getUuid();
                 if(domainEventDO.getGmtModify() != null) {
                     gmtModifyTmp = domainEventDO.getGmtModify().getTime();
@@ -231,8 +231,8 @@ public class DomainEventHandle {
             if(obj instanceof Map){
                 uuid = JsonUtil.getString((Map)obj,"uuid");
                 gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
-            } else if(obj instanceof DomainEventDO) {
-                DomainEventDO domainEventDO = (DomainEventDO) obj;
+            } else if(obj instanceof EventDO) {
+                EventDO domainEventDO = (EventDO) obj;
                 uuid = domainEventDO.getUuid();
                 if(domainEventDO.getGmtModify() != null) {
                     gmtModifyTmp = domainEventDO.getGmtModify().getTime();

@@ -34,7 +34,7 @@ public class MybatisSqlSessionFactoryConfiguration implements ImportBeanDefiniti
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         RootBeanDefinition beanDefinition = new RootBeanDefinition(SqlSessionFactoryBean.class);
         beanDefinition.getPropertyValues().add("configLocation", "${kunpeng.api.mybatis.configLocation:classpath:mybatis/mysql-sqlmap-config.xml}");
-        beanDefinition.getPropertyValues().add("mapperLocations", "${kunpeng.api.mybatis.mapperLocations:classpath:mybatis/mappers/kunpeng/*.xml}");
+        beanDefinition.getPropertyValues().add("mapperLocations", "${kunpeng.api.mybatis.mapperLocations:classpath*:mybatis/mappers/kunpeng/*.xml}");
         beanDefinition.getPropertyValues().add("typeAliasesPackage", "${kunpeng.api.mybatis.typeAliasesPackage:cn.tongdun.kunpeng.share.dataobject}");
         beanDefinition.getPropertyValues().add("dataSource", new RuntimeBeanReference("kunpengApiDataSource"));
 

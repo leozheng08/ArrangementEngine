@@ -255,14 +255,20 @@ public class DateUtil {
 		};
 	};
 
-	public static String getLastMinute() {
-		return getLastMinute(-1);
+	public static String getLastMinuteStr() {
+		return getLastMinuteStr(-1);
 	}
 
-	public static String getLastMinute(int minutes) {
+	public static String getLastMinuteStr(int minutes) {
 		Calendar cal = getSysCalendar();
 		cal.set(Calendar.MINUTE,cal.get(Calendar.MINUTE)-minutes);
 		return getCalStr(cal);
+	}
+
+	public static Date getLastMinute(int minutes) {
+		Calendar cal = getSysCalendar();
+		cal.set(Calendar.MINUTE,cal.get(Calendar.MINUTE)-minutes);
+		return cal.getTime();
 	}
 
 	public static final String getYYYYMMDDHHMMStr() {

@@ -57,7 +57,7 @@ public class RedisDomainEventRepository implements IDomainEventRepository {
         Set<IScoreValue> scoreValueSet = new LinkedHashSet<>();
         try {
             for(int i=LAST_MINUTES-1;i>=0;i--){
-                String lastKey = DateUtil.getLastMinute(i);
+                String lastKey = DateUtil.getLastMinuteStr(i);
                 Set<IScoreValue> scoreValueSetTmp = scoreKVRepository.zrangeByScoreWithScores(lastKey,0,Long.MAX_VALUE);
                 if(scoreValueSetTmp.isEmpty()){
                     continue;

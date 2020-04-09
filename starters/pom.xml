@@ -16,6 +16,7 @@
         <module>core-spring-boot-autoconfigure</module>
         <module>starter-paas</module>
         <module>starter-saas</module>
+        <module>starter-mini</module>
     </modules>
 
 

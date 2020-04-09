@@ -13,8 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>event-notice-redis</module>
-        <module>event-notice-zk</module>
         <module>event-notice-kafka-rawevent</module>
+        <module>event-notice-db</module>
     </modules>
 
 

@@ -3,14 +3,9 @@ package cn.tongdun.kunpeng.api.acl.impl.kvcache.ignore;
 import cn.tongdun.kunpeng.share.kv.Cursor;
 import cn.tongdun.kunpeng.share.kv.IScoreKVRepository;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
-import redis.clients.jedis.Tuple;
 
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
