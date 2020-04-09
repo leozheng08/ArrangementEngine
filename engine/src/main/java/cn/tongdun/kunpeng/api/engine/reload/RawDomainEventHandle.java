@@ -47,6 +47,7 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
     /**
      * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
      */
+    @Override
     public void handleRawMessage(Map rawEventMsg){
         try {
             if (rawEventMsg == null) {

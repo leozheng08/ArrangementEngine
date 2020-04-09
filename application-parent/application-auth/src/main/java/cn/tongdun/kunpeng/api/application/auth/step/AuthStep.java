@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.application.check.step;
+package cn.tongdun.kunpeng.api.application.auth.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;

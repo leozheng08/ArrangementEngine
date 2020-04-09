@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>kv-cache-redis</module>
+        <module>kv-cache-ignore</module>
     </modules>
 
 

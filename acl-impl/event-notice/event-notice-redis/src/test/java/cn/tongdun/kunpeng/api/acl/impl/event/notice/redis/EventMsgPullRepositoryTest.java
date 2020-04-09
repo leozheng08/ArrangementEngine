@@ -17,7 +17,7 @@ import java.util.Set;
 public class EventMsgPullRepositoryTest {
 
     @InjectMocks
-    private EventMsgPullRepository ruleApplicationService;
+    private RedisDomainEventRepository ruleApplicationService;
 
     @Test
     public void deduplicationdTest(){

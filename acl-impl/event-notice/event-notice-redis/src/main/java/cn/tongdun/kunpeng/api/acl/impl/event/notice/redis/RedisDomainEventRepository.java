@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
  * @Date: 2020/3/11 下午6:42
  */
 @Repository
-public class EventMsgPullRepository implements IDomainEventRepository {
+public class RedisDomainEventRepository implements IDomainEventRepository {
 
-    private static Logger logger = LoggerFactory.getLogger(EventMsgPullRepository.class);
+    private static Logger logger = LoggerFactory.getLogger(RedisDomainEventRepository.class);
 
     private static final String SPLIT_CHAR = "^^";
 
