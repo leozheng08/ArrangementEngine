@@ -39,31 +39,10 @@ public class BaseCheckParamsStep implements IRiskStep {
         StringBuilder sbType = new StringBuilder();
         StringBuilder sbFormat = new StringBuilder();
         StringBuilder sbOvermax = new StringBuilder();
-        Collection<FieldDefinition> sysFields = fieldDefinitionCache.getSystemField(context.getEventType());
-        Collection<FieldDefinition> extFields = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType());
+        context.setSystemFieldMap(fieldDefinitionCache.getSystemField(context.getEventType()));
+        context.setExtendFieldMap(fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType()));
 
-        Map<String, IFieldDefinition> fieldDefinitionMap = new HashMap<>(sysFields.size() + extFields.size());
-        for (FieldDefinition fieldDefinition : sysFields) {
-            fieldDefinitionMap.put(fieldDefinition.getFieldCode(), fieldDefinition);
-        }
-        for (FieldDefinition fieldDefinition : extFields) {
-            fieldDefinitionMap.put(fieldDefinition.getFieldCode(), fieldDefinition);
-        }
-        context.setFieldDefinitionMap(fieldDefinitionMap);
-        checkParamFromRequest(request,fieldDefinitionMap,sbType,sbFormat,sbOvermax);
-//        if(sysFields != null) {
-//            context.getFieldDefinitions().addAll(sysFields);
-//        }
-//        if(extFields != null) {
-//            context.getFieldDefinitions().addAll(extFields);
-//        }
-
-//        if (sysFields != null) {
-//            checkParams(request,sysFields,sbType,sbFormat,sbOvermax);
-//        }
-//        if (extFields != null) {
-//            checkParams(request,extFields,sbType,sbFormat,sbOvermax);
-//        }
+        checkParamFromRequest(request,context,sbType,sbFormat,sbOvermax);
 
 
         StringBuilder sb = new StringBuilder();
@@ -88,7 +67,7 @@ public class BaseCheckParamsStep implements IRiskStep {
         return false;
     }
 
-    private void checkParamFromRequest(RiskRequest request, Map<String, IFieldDefinition> fieldDefinitionMap,
+    private void checkParamFromRequest(RiskRequest request, AbstractFraudContext context,
                                        StringBuilder sbType, StringBuilder sbFormat, StringBuilder sbOvermax) {
         if (request.getFieldValues() == null || request.getFieldValues().isEmpty()) {
             return;
@@ -103,13 +82,13 @@ public class BaseCheckParamsStep implements IRiskStep {
                 continue;
             }
 
-            IFieldDefinition fieldDefinition=fieldDefinitionMap.get(entry.getKey());
+            IFieldDefinition fieldDefinition=context.getFieldDefinition(entry.getKey());
             if (null==fieldDefinition){
                 String stardandCode=CamelAndUnderlineConvertUtil.underline2camel(entry.getKey());
                 if (null==stardandCode){
                     continue;
                 }
-                fieldDefinition=fieldDefinitionMap.get(stardandCode);
+                fieldDefinition=context.getFieldDefinition(stardandCode);
             }
 
             if (null==fieldDefinition){

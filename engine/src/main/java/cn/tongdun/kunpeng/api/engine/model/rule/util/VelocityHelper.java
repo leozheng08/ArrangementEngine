@@ -73,12 +73,7 @@ public class VelocityHelper {
         if (StringUtils.isBlank(fieldCode)) {
             return fieldCode;
         }
-
-        Map<String,IFieldDefinition> fieldDefinitionMap=context.getFieldDefinitionMap();
-        if (null == fieldDefinitionMap || fieldDefinitionMap.isEmpty()) {
-            return fieldCode;
-        }
-        IFieldDefinition fieldDefinition=fieldDefinitionMap.get(fieldCode);
+        IFieldDefinition fieldDefinition=context.getFieldDefinition(fieldCode);
         if (null!=fieldDefinition){
             return fieldDefinition.getDisplayName();
         }

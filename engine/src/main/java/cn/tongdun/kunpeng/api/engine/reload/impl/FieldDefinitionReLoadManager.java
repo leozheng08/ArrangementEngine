@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.FieldDefinitionEventDO;
+import cn.tongdun.kunpeng.common.data.IFieldDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionEven
         logger.debug("FieldDefinition reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventDO.getModifiedVersion();
-            FieldDefinition oldFieldDefinition = fieldDefinitionCache.get(uuid);
+            FieldDefinition oldFieldDefinition = (FieldDefinition) fieldDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldFieldDefinition != null && oldFieldDefinition.getModifiedVersion() >= timestamp) {
                 logger.debug("FieldDefinition reload localCache is newest, ignore uuid:{}",uuid);
