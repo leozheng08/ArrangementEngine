@@ -21,6 +21,6 @@
 		<include refid="queryColumns" />
 		from domain_event
 		where gmt_modify >= #{gmtModify,jdbcType=DATE}
-		order by gmt_modify desc
+		order by gmt_modify
 	</select>
 </mapper>

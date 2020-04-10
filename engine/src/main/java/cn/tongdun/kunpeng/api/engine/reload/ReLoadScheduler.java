@@ -79,7 +79,7 @@ public class ReLoadScheduler implements ILoad {
     //定时刷新取得最新的domain事件，并更新本地缓存
     public void reLoad(){
         //拉取得最新两分钟的domain事件
-        List<String> eventMsgs = domainEventRepository.pullLastEventMsgsFromRemoteCache();
+        List<String> eventMsgs = domainEventRepository.pullLastEventMsgs();
         if(eventMsgs == null || eventMsgs.isEmpty()){
             return;
         }

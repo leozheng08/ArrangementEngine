@@ -11,7 +11,7 @@ import java.util.List;
 public interface IDomainEventRepository {
 
     //从缓存中拉取得最新两分钟的变更消息
-    List<String> pullLastEventMsgsFromRemoteCache();
+    List<String> pullLastEventMsgs();
 
     //将领域事件设置到缓存中
     void putEventMsgToRemoteCache(String eventMsg,Long occurredTime);
