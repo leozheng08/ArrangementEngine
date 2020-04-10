@@ -16,6 +16,8 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.collections.CollectionUtils;
@@ -142,12 +144,12 @@ public class PlatformIndexStep implements IRiskStep {
     public Map<String, Object> getGaeaFields(AbstractFraudContext context) {
         Map<String, Object> gaeaContext = new HashMap<>();
         //系统字段
-        Collection<FieldDefinition> systemFields = fieldDefinitionCache.getSystemField(context);
+        Map<String,IFieldDefinition> systemFieldMap=context.getSystemFieldMap();
         //扩展字段
-        Collection<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context);
+        Map<String,IFieldDefinition> extendFieldMap=context.getExtendFieldMap();
 
-        build(context, systemFields, gaeaContext);
-        build(context, extendFields, gaeaContext);
+        build(context, systemFieldMap, gaeaContext);
+        build(context, extendFieldMap, gaeaContext);
         return gaeaContext;
     }
 
@@ -181,13 +183,12 @@ public class PlatformIndexStep implements IRiskStep {
     }
 
 
-    private void build(AbstractFraudContext context, Collection<FieldDefinition> fields, Map<String, Object> gaeaContext) {
-        if (CollectionUtils.isNotEmpty(fields)) {
-            fields.forEach(fieldDefinition -> {
-                String fieldCode = fieldDefinition.getFieldCode();
-                Object v = context.get(fieldCode);
-                if (null != v) {
-                    gaeaContext.put(fieldCode, v);
+    private void build(AbstractFraudContext context, Map<String,IFieldDefinition> systemFieldMap, Map<String, Object> gaeaContext) {
+        if (null!=systemFieldMap&&!systemFieldMap.isEmpty()) {
+            systemFieldMap.forEach((k,v)-> {
+                Object fieldValue = context.get(k);
+                if (null != fieldValue) {
+                    gaeaContext.put(k, fieldValue);
                 }
             });
         }

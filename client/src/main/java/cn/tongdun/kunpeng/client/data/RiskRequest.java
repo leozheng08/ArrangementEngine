@@ -327,6 +327,11 @@ public class RiskRequest implements Serializable {
             return "null";
         }
 
+        Object fieldValue = fieldValues.get(key);
+        if (fieldValue != null) {
+            return fieldValue;
+        }
+
         Method getMethod = fieldGetMethodMap.get(key);
         if (getMethod != null) {
             try {
@@ -337,11 +342,6 @@ public class RiskRequest implements Serializable {
             } catch (Exception e) {
                 // ignore
             }
-        }
-
-        Object fieldValue = fieldValues.get(key);
-        if (fieldValue != null) {
-            return fieldValue;
         }
 
         Object extAttr = extAttrs.get(key);

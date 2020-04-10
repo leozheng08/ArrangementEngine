@@ -85,7 +85,6 @@ public class GpsDistanceFunction extends AbstractFunction {
         return new FunctionResult(result, detailCallable);
     }
 
-
     private GpsEntity getGpsEntity(Object obj) {
         GpsEntity gps = null;
         try {
@@ -93,20 +92,42 @@ public class GpsDistanceFunction extends AbstractFunction {
             if (StringUtils.isBlank(gpsAddress)) {
                 return null;
             }
-
-            String[] latitudeNLongitude = gpsAddress.split("/");
-            gps = getGpsEntity(latitudeNLongitude);
-
-            if (null != gps) {
-                return gps;
+            int index = gpsAddress.indexOf('/');
+            if (index != -1) {
+                gps = getGpsEntity(gpsAddress.substring(0, index), gpsAddress.substring(index + 1));
+                if (null != gps) {
+                    return gps;
+                }
             }
 
-            latitudeNLongitude = gpsAddress.split(",");
-            return getGpsEntity(latitudeNLongitude);
+            index = gpsAddress.indexOf(',');
+            if (index != -1) {
+                gps = getGpsEntity(gpsAddress.substring(0, index), gpsAddress.substring(index + 1));
+                if (null != gps) {
+                    return gps;
+                }
+            }
+            return null;
         } catch (ClassCastException e) {
             logger.error("getGpsEntity class cast error {}", obj, e);
             return null;
         }
+    }
+
+    private GpsEntity getGpsEntity(String latitudeStr,String longitudeStr){
+        if (null == latitudeStr || longitudeStr==null) {
+            return null;
+        }
+
+        GpsEntity gps = null;
+        try {
+            double latitude = Double.parseDouble(latitudeStr.trim());
+            double longitude = Double.parseDouble(longitudeStr.trim());
+            gps = new GpsEntity(longitude, latitude);
+        } catch (Exception e) {
+            logger.error("经纬度格式转换错误, lat-lon {}",latitudeStr+","+longitudeStr, e);
+        }
+        return gps;
     }
 
     private GpsEntity getGpsEntity(String[] latitudeNLongitude) {

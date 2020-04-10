@@ -59,7 +59,7 @@ public class FourCalculation extends AbstractCalculateFunction {
         Double rightVariable = (Double) rightVariableVar.eval(context);
 
         if (null == leftVariable || null == rightVariable) {
-            logger.warn("fourCalculation get null leftVariable or rightVariable");
+            logger.warn("left or right is null!");
             return null;
         }
 
@@ -78,7 +78,7 @@ public class FourCalculation extends AbstractCalculateFunction {
                 if (0 != rightVariable) {
                     result = leftVariable / rightVariable;
                 } else {
-                    logger.warn("calculate fourCalculation occur exception : divisor can not be zero");
+                    logger.warn("divisor can not be zero");
                 }
                 break;
             default:

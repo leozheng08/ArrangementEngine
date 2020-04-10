@@ -48,18 +48,19 @@ public class CustomListValueCache {
     private Set<IScoreValue<String>> loadDataByRedis(String listUuid) {
         Cursor cursor = Cursor.first();
         int count = 10_000;
-        Set<IScoreValue<String>> results = new HashSet<>(1024);
+        Set<IScoreValue<String>> results = new HashSet<>(1);
         boolean first = true;
         Date now = new Date();
         while (first || cursor.getCursor() != 0) {
             first = false;
             Set<IScoreValue<String>> tmp = redisScoreKVRepository.zscan(listUuid, cursor, count);
+            results = new HashSet<>(tmp.size());
             if (CollectionUtils.isNotEmpty(tmp)) {
-                tmp.forEach(scoreValue -> {
+                for (IScoreValue<String> scoreValue:tmp){
                     if (scoreValue != null && scoreValue.getScore() != null && isEffectiveValue(scoreValue.getScore(), now)) {
                         results.add(scoreValue);
                     }
-                });
+                }
             }
         }
         return results;

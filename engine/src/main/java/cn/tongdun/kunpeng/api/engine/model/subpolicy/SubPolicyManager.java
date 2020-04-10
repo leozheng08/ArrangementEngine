@@ -44,13 +44,15 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
     @Override
     public SubPolicyResponse execute(String uuid, AbstractFraudContext context) {
-        SubPolicyResponse subPolicyResponse = new SubPolicyResponse();
 
         SubPolicy subPolicy = subPolicyCache.get(uuid);
         if (subPolicy == null) {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
-            return subPolicyResponse;
+            return new SubPolicyResponse();
         }
+
+        SubPolicyResponse subPolicyResponse = generateResponse(subPolicy);
+
         long start = System.currentTimeMillis();
         try {
             if (subPolicy.getPolicyMode() != null) {
@@ -86,6 +88,14 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
         }
         subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
         return subPolicyResponse;
+    }
+
+    private SubPolicyResponse generateResponse(SubPolicy subPolicy) {
+        int ruleCount = 1;
+        if (null != subPolicy.getRuleUuidList()) {
+            ruleCount = subPolicy.getRuleUuidList().size();
+        }
+        return new SubPolicyResponse(ruleCount);
     }
 
     /**

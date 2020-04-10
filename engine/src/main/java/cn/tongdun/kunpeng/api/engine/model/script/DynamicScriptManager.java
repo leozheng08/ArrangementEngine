@@ -57,10 +57,8 @@ public class DynamicScriptManager {
 
 
     private void handleField(AbstractFraudContext context) {
-        List<Map<String,WrappedGroovyObject>> groovyObjectMaps = new ArrayList<Map<String,WrappedGroovyObject>>(4);
         List<WrappedGroovyObject> groovyObjectList = new ArrayList<>(50);
         String classKey = null;
-        Map<String,WrappedGroovyObject> map = null;
         // 合作方指定事件类型
         classKey = context.getPartnerCode() + context.getEventType();
         List<WrappedGroovyObject> tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
@@ -70,33 +68,33 @@ public class DynamicScriptManager {
         // 合作方全部事件类型
         classKey = context.getPartnerCode() + "All";
         tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != map) {
+        if (null != tmpGroovyObjects) {
             groovyObjectList.addAll(tmpGroovyObjects);
         }
         // 全局指定事件类型
         classKey =  "All" + context.getEventType();
         tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != map) {
+        if (null != tmpGroovyObjects) {
             groovyObjectList.addAll(tmpGroovyObjects);
         }
         // 全局全部事件类型
         classKey = "All" + "All" ;
         tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != map) {
+        if (null != tmpGroovyObjects) {
             groovyObjectList.addAll(tmpGroovyObjects);
         }
-        if (0 == groovyObjectList.size()) {
+        if (groovyObjectList.isEmpty()) {
             return;
         }
 
-        List<Callable<Boolean>> tasks = new ArrayList(groovyObjectList.size());
+        List<Callable<Boolean>> tasks =new ArrayList<>(groovyObjectList.size());
         for (WrappedGroovyObject wrappedGroovyObject : groovyObjectList) {
             tasks.add(MDCUtil.wrap(new GroovyRunTask(context, wrappedGroovyObject)));
         }
         List<Future<Boolean>> futures = null;
         long t1 = System.currentTimeMillis();
         try {
-            futures = executeThreadPool.invokeAll(tasks);
+            futures = executeThreadPool.invokeAll(tasks,500,TimeUnit.MILLISECONDS);
         } catch (InterruptedException | NullPointerException e) {
             logger.warn("动态脚本执行出错", e);
         } catch (RejectedExecutionException e) {
@@ -108,7 +106,7 @@ public class DynamicScriptManager {
             logger.warn("动态脚本执行时间太长, groovy_execute_too_long costTime : {}", t2-t1);
         }
 
-        List<Boolean> results = new ArrayList(groovyObjectMaps.size());
+        List<Boolean> results = new ArrayList(futures.size());
         if (null != futures && !futures.isEmpty()) {
             for (Future<Boolean> future : futures) {
                 if (future.isDone() && !future.isCancelled()) {
@@ -127,7 +125,7 @@ public class DynamicScriptManager {
 
     private boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject) {
         String fieldName = wrappedGroovyObject.getAssignField();
-        String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(fieldName);
+        String methodName = wrappedGroovyObject.getFieldMethodName();
         Object value;
         try {
             long t1 = System.currentTimeMillis();

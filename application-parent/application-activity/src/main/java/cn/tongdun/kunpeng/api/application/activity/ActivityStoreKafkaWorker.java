@@ -19,7 +19,10 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     private ExtensionExecutor extensionExecutor;
 
     @Autowired
-    private IActivityMsgRepository activityMsgRepository;
+    private IMsgProducer msgProducer;
+
+    private static final String KUNPENG_API_RAW_ACTIVITY = "kunpeng_api_raw_activity";
+
 
     @Override
     public String getName(){
@@ -62,6 +65,6 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
     private void sendToKafka(IActitivyMsg actitivyMsg){
-        activityMsgRepository.sendRawActivity(actitivyMsg.getMessageKey(),actitivyMsg.toJsonString());
+        msgProducer.produce(KUNPENG_API_RAW_ACTIVITY,actitivyMsg.toJsonString());
     }
 }
