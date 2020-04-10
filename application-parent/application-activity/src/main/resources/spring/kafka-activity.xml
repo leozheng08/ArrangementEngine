@@ -16,7 +16,8 @@
 
     <!-- 注意必须保证每个producer实例中配置的topic列表属于同一个kafka集群,否则初始化检查将失败-->
     <!-- 若当前应用需要发送多个集群的topic请建立多个实例 -->
-    <bean id="activityKafkaProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close">
+    <bean id="activityKafkaProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close"
+          >
         <property name="topics">
             <list>
                 <value>kunpeng_api_raw_activity</value>

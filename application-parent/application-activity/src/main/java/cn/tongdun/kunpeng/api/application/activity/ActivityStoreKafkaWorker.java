@@ -65,6 +65,6 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
     private void sendToKafka(IActitivyMsg actitivyMsg){
-        msgProducer.produce(KUNPENG_API_RAW_ACTIVITY,actitivyMsg.toJsonString());
+        msgProducer.produce(KUNPENG_API_RAW_ACTIVITY,actitivyMsg.getMessageKey(),actitivyMsg.toJsonString());
     }
 }
