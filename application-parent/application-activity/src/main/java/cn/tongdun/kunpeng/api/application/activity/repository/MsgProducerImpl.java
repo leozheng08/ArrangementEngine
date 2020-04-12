@@ -8,8 +8,6 @@ import cn.tongdun.kunpeng.api.application.util.CountUtil;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 import org.apache.commons.collections4.CollectionUtils;
@@ -22,12 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: liang.chen
