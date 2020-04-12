@@ -1,10 +1,7 @@
 package cn.tongdun.kunpeng.api.application.context;
 
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Author: liang.chen

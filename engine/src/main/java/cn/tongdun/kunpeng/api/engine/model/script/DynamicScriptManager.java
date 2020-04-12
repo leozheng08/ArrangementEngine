@@ -1,12 +1,11 @@
 package cn.tongdun.kunpeng.api.engine.model.script;
 
-import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.common.data.*;
-import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import groovy.lang.GroovyObject;

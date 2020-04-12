@@ -22,13 +22,13 @@ public class PolicyChallengerRepository implements IPolicyChallengerRepository {
 
 
     @Autowired
-    private PolicyChallengerDOMapper policyChallengerDOMapper;
+    private PolicyChallengerDAO policyChallengerDAO;
 
 
     //根据PolicyDefinitionUuid查询挑战者
     @Override
     public PolicyChallengerDTO queryByPolicyDefinitionUuid(String policyDefinitionUuid){
-        PolicyChallengerDO policyChallengerDO = policyChallengerDOMapper.selectByPolicyDefinitionUuid(policyDefinitionUuid);
+        PolicyChallengerDO policyChallengerDO = policyChallengerDAO.selectByPolicyDefinitionUuid(policyDefinitionUuid);
         if(policyChallengerDO == null) {
             return null;
         }
@@ -43,7 +43,7 @@ public class PolicyChallengerRepository implements IPolicyChallengerRepository {
     //根据uuid查询挑战者
     @Override
     public PolicyChallengerDTO queryByUuid(String uuid){
-        PolicyChallengerDO policyChallengerDO = policyChallengerDOMapper.selectByUuid(uuid);
+        PolicyChallengerDO policyChallengerDO = policyChallengerDAO.selectByUuid(uuid);
         if(policyChallengerDO == null) {
             return null;
         }

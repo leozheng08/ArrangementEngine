@@ -8,7 +8,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCach
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

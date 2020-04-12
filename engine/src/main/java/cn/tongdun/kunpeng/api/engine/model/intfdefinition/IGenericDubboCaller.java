@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 
 public interface IGenericDubboCaller {
 

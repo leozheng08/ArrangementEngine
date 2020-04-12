@@ -2,15 +2,9 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 
 import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
-import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.IPolicyIndexRepository;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.IndexDefinitionDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyChallengerDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyIndicatrixItemDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.SubPolicyDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.IndexDefinitionDAO;
 import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
-import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +25,7 @@ public class PolicyIndexRepository implements IPolicyIndexRepository{
 
 
     @Autowired
-    private IndexDefinitionDOMapper indexDefinitionDOMapper;
+    private IndexDefinitionDAO indexDefinitionDAO;
 
 
     /**
@@ -39,7 +33,7 @@ public class PolicyIndexRepository implements IPolicyIndexRepository{
      */
     @Override
     public List<IndexDefinitionDTO> queryByPolicyUuid(String policyUuid){
-        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDOMapper.selectEnabledIndexesByPolicyUuid(policyUuid);
+        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDAO.selectEnabledIndexesByPolicyUuid(policyUuid);
         if(indexDefinitionDOList == null) {
             return null;
         }
@@ -59,7 +53,7 @@ public class PolicyIndexRepository implements IPolicyIndexRepository{
      */
     @Override
     public List<IndexDefinitionDTO> queryBySubPolicyUuid(String subPolicyUuid){
-        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDOMapper.selectEnabledIndexesBySubPolicyUuid(subPolicyUuid);
+        List<IndexDefinitionDO> indexDefinitionDOList = indexDefinitionDAO.selectEnabledIndexesBySubPolicyUuid(subPolicyUuid);
         if(indexDefinitionDOList == null) {
             return null;
         }
@@ -79,7 +73,7 @@ public class PolicyIndexRepository implements IPolicyIndexRepository{
      */
     @Override
     public IndexDefinitionDTO queryByUuid(String uuid){
-        IndexDefinitionDO indexDefinitionDO = indexDefinitionDOMapper.selectByUuid(uuid);
+        IndexDefinitionDO indexDefinitionDO = indexDefinitionDAO.selectByUuid(uuid);
         if(indexDefinitionDO == null){
             return null;
         }

@@ -7,14 +7,7 @@
 						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
        default-autowire="byName">
 
-
-    <dubbo:application name="kunpeng-api" />
-
-    <!-- 使用zookeeper注册中心暴露服务地址 -->
-    <dubbo:registry group="${dubbo.zookeeper.root}" protocol="zookeeper" address="${dubbo.zookeeper.host}" port="${dubbo.port}" />
-
-
-    <dubbo:consumer check="${dubbo.check}" timeout="${dubbo.consumer.default.timeout}" retries="0"
+    <dubbo:consumer check="${dubbo.check:false}" timeout="${dubbo.consumer.default.timeout:1000}" retries="0"
                     filter="seqid" loadbalance="smart">
         <dubbo:parameter key="threadname" value="Dubbo-share-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
@@ -22,25 +15,9 @@
         <dubbo:parameter key="threads" value="20" />
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:consumer>
-    <!--用于dubbo泛化调用-->
-    <bean id="referenceConfig" class="com.alibaba.dubbo.config.ReferenceConfig" autowire="byType">
-        <property name="application">
-            <bean class="com.alibaba.dubbo.config.ApplicationConfig" autowire="byType">
-                <property name="name" value="forseti-api-generic"/>
-                <property name="registry">
-                    <bean class="com.alibaba.dubbo.config.RegistryConfig" autowire="byType">
-                        <property name="address" value="${dubbo.zookeeper.generic}"/>
-                        <property name="protocol" value="zookeeper"/>
-                        <property name="group" value="${dubbo.zookeeper.root}"/>
-                    </bean>
-                </property>
-            </bean>
-        </property>
-        <property name="generic" value="true"/>
-    </bean>
 
     <dubbo:reference id="holmesService" interface="cn.fraudmetrix.holmes.service.intf.ICalculateService"
-                     version="${holmes.dubbo.version}" retries="0" timeout="${holmes.dubbo.timeout}" connections="2" >
+                     version="${holmes.dubbo.version:1.0.0}" retries="0" timeout="${holmes.dubbo.timeout:1000}" connections="2" >
         <dubbo:parameter key="threadname" value="Dubbo-holmes-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
         <dubbo:parameter key="corethreads" value="2" />

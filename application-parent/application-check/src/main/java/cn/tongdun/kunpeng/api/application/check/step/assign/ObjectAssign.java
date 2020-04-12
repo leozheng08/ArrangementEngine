@@ -2,8 +2,8 @@ package cn.tongdun.kunpeng.api.application.check.step.assign;
 
 import cn.tongdun.kunpeng.api.application.check.step.AssignFieldValueStep;
 import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUtil;
-import cn.tongdun.kunpeng.common.data.IFieldDefinition;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Sets;

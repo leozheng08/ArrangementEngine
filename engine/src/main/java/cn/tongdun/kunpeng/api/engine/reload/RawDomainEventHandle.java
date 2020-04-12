@@ -1,12 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
-import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.api.acl.api.event.notice.IDomainEventRepository;
+import cn.tongdun.kunpeng.api.acl.api.event.notice.IRawDomainEventHandle;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueKVRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.CustomListValueEventDO;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
-import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @Date: 2020/3/12 下午1:39
  */
 @Component
-public class RawDomainEventHandle {
+public class RawDomainEventHandle implements IRawDomainEventHandle{
     private Logger logger = LoggerFactory.getLogger(RawDomainEventHandle.class);
 
 
@@ -47,6 +47,7 @@ public class RawDomainEventHandle {
     /**
      * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
      */
+    @Override
     public void handleRawMessage(Map rawEventMsg){
         try {
             if (rawEventMsg == null) {

@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.common.data.SubReasonCode;
+import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.share.json.JSON;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

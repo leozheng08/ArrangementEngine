@@ -1,10 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.field;
 
 import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
-import cn.tongdun.kunpeng.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  *

@@ -3,6 +3,8 @@ package cn.tongdun.kunpeng.api;
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.tdframework.core.pipeline.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +17,16 @@ import org.springframework.stereotype.Component;
 @Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.OK)
 public class OkStep implements ILoad {
 
+
+    private final static Logger log = LoggerFactory.getLogger(OkStep.class);
+
     @Autowired
     private AppMain aAppMain;
 
     @Override
     public boolean load(){
         aAppMain.setOk();
+        log.info("kunpeng api load success!");
         return true;
     }
 }

@@ -12,7 +12,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.rule.RuleBuilder;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
-import cn.tongdun.kunpeng.common.Constant;
+import cn.tongdun.kunpeng.api.common.Constant;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;

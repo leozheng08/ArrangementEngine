@@ -7,7 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.FieldDefinitionEventDO;
-import cn.tongdun.kunpeng.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

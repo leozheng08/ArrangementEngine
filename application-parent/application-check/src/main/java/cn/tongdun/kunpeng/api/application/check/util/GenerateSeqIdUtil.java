@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.check.util;
 
-import cn.tongdun.kunpeng.common.util.NetWorkUtil;
+import cn.tongdun.kunpeng.api.common.util.NetWorkUtil;
 
 import java.lang.management.ManagementFactory;
 

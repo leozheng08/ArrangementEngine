@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.check.step.assign;
 
-import cn.tongdun.kunpeng.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 
 import java.util.Map;
 

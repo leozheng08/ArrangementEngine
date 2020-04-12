@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.IInterfaceDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinition;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.InterfaceDefinitionDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.InterfaceDefinitionDAO;
 import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 public class InterfaceDefinitionRepository implements IInterfaceDefinitionRepository{
 
     @Autowired
-    private InterfaceDefinitionDOMapper interfaceDefinitionDOMapper;
+    private InterfaceDefinitionDAO interfaceDefinitionDAO;
 
     @Override
     public List<InterfaceDefinition> queryAllAvailable(){
-        List<InterfaceDefinitionDO> interfaceDefinitionDOList = interfaceDefinitionDOMapper.selectAllAvailable();
+        List<InterfaceDefinitionDO> interfaceDefinitionDOList = interfaceDefinitionDAO.selectAllAvailable();
 
         if(interfaceDefinitionDOList == null) {
             return null;
@@ -41,7 +41,7 @@ public class InterfaceDefinitionRepository implements IInterfaceDefinitionReposi
 
     @Override
     public InterfaceDefinition queryByUuid(String uuid){
-        InterfaceDefinitionDO interfaceDefinitionDO = interfaceDefinitionDOMapper.selectByUuid(uuid);
+        InterfaceDefinitionDO interfaceDefinitionDO = interfaceDefinitionDAO.selectByUuid(uuid);
         if(interfaceDefinitionDO == null){
             return null;
         }

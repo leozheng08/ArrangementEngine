@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
-import cn.tongdun.kunpeng.common.data.QueueItem;
+import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.BlockingQueue;

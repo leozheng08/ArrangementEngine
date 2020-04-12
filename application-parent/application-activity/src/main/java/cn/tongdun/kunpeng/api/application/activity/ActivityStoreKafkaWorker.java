@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
-import cn.tongdun.kunpeng.common.data.QueueItem;
+import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,6 +65,6 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
     private void sendToKafka(IActitivyMsg actitivyMsg){
-        msgProducer.produce(KUNPENG_API_RAW_ACTIVITY,actitivyMsg.toJsonString());
+        msgProducer.produce(KUNPENG_API_RAW_ACTIVITY,actitivyMsg.getMessageKey(),actitivyMsg.toJsonString());
     }
 }

@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminDictionaryDO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.SelectDO;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminDictionaryDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminDictionaryDAO;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +23,12 @@ public class AdminDictionaryRepository  {
     private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
 
     @Autowired
-    private AdminDictionaryDOMapper adminDictionaryDOMapper;
+    private AdminDictionaryDAO adminDictionaryDAO;
 
 
 
     public List<AdminDictionaryDO> queryByParams(Map<String, Object> map) {
-        return adminDictionaryDOMapper.queryByParams(map);
+        return adminDictionaryDAO.queryByParams(map);
     }
 
     public List<SelectDO> getSelectList(String key) {

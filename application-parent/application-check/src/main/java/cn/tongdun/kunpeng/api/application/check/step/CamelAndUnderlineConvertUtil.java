@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.check.step;
 
-import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

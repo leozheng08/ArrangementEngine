@@ -1,8 +1,6 @@
 package cn.tongdun.kunpeng.api.application.activity;
 
-import cn.tongdun.kunpeng.common.data.BizScenario;
-import cn.tongdun.kunpeng.common.data.QueueItem;
-import cn.tongdun.tdframework.core.extension.Extension;
+import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 
 /**

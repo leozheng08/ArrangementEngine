@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine;
 
+import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
@@ -10,9 +11,6 @@ import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
-import cn.tongdun.kunpeng.common.data.PolicyResponse;
-import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
-import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
 

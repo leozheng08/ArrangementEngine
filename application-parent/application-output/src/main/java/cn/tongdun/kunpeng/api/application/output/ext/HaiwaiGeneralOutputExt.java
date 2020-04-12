@@ -1,13 +1,13 @@
 package cn.tongdun.kunpeng.api.application.output.ext;
 
 import cn.tongdun.kunpeng.api.application.step.ext.response.haiwai.RiskResponse;
+import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.client.data.IHitRule;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
-import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.tdframework.core.extension.Extension;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
     private DecisionResultTypeCache decisionResultTypeCache;
 
     @Override
-    public boolean generalOutput(AbstractFraudContext context,IRiskResponse response){
+    public boolean generalOutput(AbstractFraudContext context, IRiskResponse response){
 
         PolicyResponse policyResponse = context.getPolicyResponse();
         if(policyResponse == null){

@@ -27,9 +27,9 @@ public class SubPolicyRepository implements ISubPolicyRepository{
 
 
     @Autowired
-    private PolicyChallengerDOMapper policyChallengerDOMapper;
+    private PolicyChallengerDAO policyChallengerDAO;
     @Autowired
-    private SubPolicyDOMapper subPolicyDOMapper;
+    private SubPolicyDAO subPolicyDAO;
     @Autowired
     private PolicyIndexRepository policyIndexRepository;
     @Autowired
@@ -43,7 +43,7 @@ public class SubPolicyRepository implements ISubPolicyRepository{
      */
     @Override
     public List<SubPolicyDTO> queryFullByPolicyUuid(String policyUuid){
-        List<SubPolicyDO> subPolicyDOList = subPolicyDOMapper.selectListByPolicyUuid(policyUuid);
+        List<SubPolicyDO> subPolicyDOList = subPolicyDAO.selectListByPolicyUuid(policyUuid);
 
         if(subPolicyDOList == null) {
             return null;
@@ -74,7 +74,7 @@ public class SubPolicyRepository implements ISubPolicyRepository{
      */
     @Override
     public SubPolicyDTO queryFullByUuid(String uuid){
-        SubPolicyDO subPolicyDO = subPolicyDOMapper.selectByUuid(uuid);
+        SubPolicyDO subPolicyDO = subPolicyDAO.selectByUuid(uuid);
 
         if(subPolicyDO == null) {
             return null;
@@ -97,7 +97,7 @@ public class SubPolicyRepository implements ISubPolicyRepository{
      */
     @Override
     public SubPolicyDTO queryByUuid(String uuid){
-        SubPolicyDO subPolicyDO = subPolicyDOMapper.selectByUuid(uuid);
+        SubPolicyDO subPolicyDO = subPolicyDAO.selectByUuid(uuid);
 
         if(subPolicyDO == null) {
             return null;

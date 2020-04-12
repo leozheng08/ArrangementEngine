@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.cluster.IPartnerClusterRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminPartnerDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PartnerClusterDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminPartnerDAO;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PartnerClusterDAO;
 import cn.tongdun.kunpeng.share.dataobject.PartnerClusterDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,10 +20,10 @@ public class PartnerClusterRepository implements IPartnerClusterRepository {
 
 
     @Autowired
-    private PartnerClusterDOMapper partnerClusterDOMapper;
+    private PartnerClusterDAO partnerClusterDAO;
 
     @Autowired
-    private AdminPartnerDOMapper adminPartnerDOMapper;
+    private AdminPartnerDAO adminPartnerDAO;
 
     /**
      * 根据集群名取得集群下的合作方列表
@@ -32,7 +32,7 @@ public class PartnerClusterRepository implements IPartnerClusterRepository {
      */
     @Override
     public Set<String> queryPartnerByCluster(String cluster){
-        List<PartnerClusterDO> list = partnerClusterDOMapper.selectAvailableByCluster(cluster);
+        List<PartnerClusterDO> list = partnerClusterDAO.selectAvailableByCluster(cluster);
         Set partners = new HashSet();
         for(PartnerClusterDO partnerClusterDO:list){
             partners.add(partnerClusterDO.getPartnerCode());
@@ -46,7 +46,7 @@ public class PartnerClusterRepository implements IPartnerClusterRepository {
      */
     @Override
     public Set<String> queryAllPartner(){
-        List<String> partnerCodes = adminPartnerDOMapper.selectAllEnabledPartnerCodes();
+        List<String> partnerCodes = adminPartnerDAO.selectAllEnabledPartnerCodes();
         Set partners = new HashSet(partnerCodes);
         return partners;
 

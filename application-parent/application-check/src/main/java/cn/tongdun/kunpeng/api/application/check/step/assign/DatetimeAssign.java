@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.check.step.assign;
 
-import cn.tongdun.kunpeng.common.util.DateUtil;
+import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;

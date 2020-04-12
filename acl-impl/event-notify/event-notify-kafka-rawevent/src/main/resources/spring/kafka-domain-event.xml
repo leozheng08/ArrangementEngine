@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+       default-autowire="byName">
+
+
+    <!-- 引用公共zk配置中心,对应shutter文件为zookeeper.properties -->
+    <!-- business.unit 为管理员分配值，请将这个配置放在应用自己的shutter配置文件中 -->
+    <bean id="zkConfigCenter-domainEvent" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">
+        <property name="zkserver" value="${configcenter.endpoint}"/>
+        <property name="businessUnit" value="${business.unit}"/>
+    </bean>
+
+
+
+    <!-- domainEvent消费者-->
+    <bean id="domainEventPoller" class="cn.fraudmetrix.module.kafka.consumer.ConcurrentPoller" init-method="init" destroy-method="close">
+        <property name="configCenter" ref="zkConfigCenter-domainEvent"/>
+        <property name="consumerName" value="kunpeng_api_domain_event_consumer" />
+        <property name="mode" value="standard" />
+        <property name="bizConsumers">
+            <map>
+                <entry key="kunpeng_admin_event">
+                    <ref bean="domainEventConsumer" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="domainEventConsumer" class="cn.tongdun.kunpeng.api.acl.impl.event.notify.kafka.DomainEventConsumer" />
+
+
+
+    <!-- 注意必须保证每个producer实例中配置的topic列表属于同一个kafka集群,否则初始化检查将失败-->
+    <!-- 若当前应用需要发送多个集群的topic请建立多个实例 -->
+    <bean id="domainEventProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close">
+        <property name="topics">
+            <list>
+                <value>kunpeng_admin_event</value>
+            </list>
+        </property>
+        <property name="configCenter" ref="zkConfigCenter-domainEvent"/>
+    </bean>
+</beans>

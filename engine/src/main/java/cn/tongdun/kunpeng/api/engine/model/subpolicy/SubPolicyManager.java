@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.subpolicy;
 
+import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.IExecutor;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultThreshold;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
@@ -7,8 +8,6 @@ import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCach
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
-import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
-import cn.tongdun.kunpeng.common.data.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
