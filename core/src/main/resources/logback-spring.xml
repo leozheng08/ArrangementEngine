@@ -69,7 +69,7 @@
     <appender name="ACTIVITY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 日志格式 -->
         <encoder>
-            <pattern>-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %m%n</pattern>
+            <pattern>%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %m%n</pattern>
         </encoder>
         <!--日志文件输出的文件名 -->
         <file>${LOG_PATH}/activity.log</file>
