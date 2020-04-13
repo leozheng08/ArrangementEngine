@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.acl.impl.event.notify.kafka;
 
-import cn.tongdun.kunpeng.api.acl.api.event.notice.IRawDomainEventHandle;
+import cn.tongdun.kunpeng.api.acl.event.notice.IRawDomainEventHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

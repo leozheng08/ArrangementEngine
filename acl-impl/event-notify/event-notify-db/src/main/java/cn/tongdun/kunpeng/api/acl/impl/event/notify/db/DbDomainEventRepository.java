@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.acl.impl.event.notify.db;
 
-import cn.tongdun.kunpeng.api.acl.api.event.notice.AbstractDomainEventRepository;
+import cn.tongdun.kunpeng.api.acl.event.notice.AbstractDomainEventRepository;
 import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DomainEventDAO;
 import cn.tongdun.kunpeng.share.dataobject.DomainEventDO;

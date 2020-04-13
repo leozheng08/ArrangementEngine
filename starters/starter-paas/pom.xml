@@ -20,17 +20,25 @@
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>event-notice-kafka-rawevent</artifactId>
+            <artifactId>event-notify-kafka-rawevent</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>event-notice-redis</artifactId>
+            <artifactId>event-notify-redis</artifactId>
         </dependency>
-
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>kv-cache-redis</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>admin-partner-db</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+
+
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>

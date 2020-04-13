@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
-import cn.tongdun.kunpeng.api.engine.model.partner.IPartnerRepository;
+import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
+import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PartnerEventDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,7 +67,13 @@ public class PartnerReLoadManager implements IReload<PartnerEventDO> {
                 return true;
             }
 
-            Partner newPartner = partnerRepository.queryByPartnerCode(partnerCode);
+            PartnerDTO partnerDTO = partnerRepository.queryByPartnerCode(partnerCode);
+            Partner newPartner = null;
+            if(partnerDTO != null) {
+                newPartner = new Partner();
+                BeanUtils.copyProperties(partnerDTO,newPartner);
+            }
+
             //如果失效则删除缓存
             if(newPartner == null || !newPartner.isValid()){
                 return remove(partnerDO);

@@ -23,7 +23,7 @@
         <dependency>
             <!-- 没有kafka,redis基件，消息通知采用db事件表 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>event-notice-db</artifactId>
+            <artifactId>event-notify-db</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -60,6 +60,18 @@
             <!-- 无redis等缓存基件 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>kv-cache-ignore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 集成中博信合作方 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>admin-partner-zbx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 集成中博信合作方 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>admin-application-zbx</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
