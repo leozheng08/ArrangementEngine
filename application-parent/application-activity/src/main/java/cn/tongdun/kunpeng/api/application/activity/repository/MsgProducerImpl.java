@@ -10,6 +10,7 @@ import cn.tongdun.tdframework.core.metrics.IMetrics;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.errors.RecordTooLargeException;
@@ -32,6 +33,7 @@ public class MsgProducerImpl implements IMsgProducer {
 
 
     private Logger logger = LoggerFactory.getLogger(MsgProducerImpl.class);
+    private Logger activityLogger = LoggerFactory.getLogger("activity");
 
     @Autowired
     private IProducer activityKafkaProducerService;
@@ -95,6 +97,7 @@ public class MsgProducerImpl implements IMsgProducer {
             failedMessageCounter.remove(topic + seqId);
             logger.error("kafka produce message try 3 times also failed, topic:{}, seq_id:{}", topic, seqId, exception);
             metrics.counter("kafka.sent.error");
+            activityLogger.info("{} {}",seqId,StringUtils.removePattern(message,"\n|\r"));
             return;
         }
         CountUtil.increase(failedMessageCounter, topic + seqId);
