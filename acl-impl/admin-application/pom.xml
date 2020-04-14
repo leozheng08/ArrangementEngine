@@ -14,6 +14,7 @@
     <modules>
         <module>admin-application-zbx</module>
         <module>admin-application-ignore</module>
+        <module>admin-application-db</module>
     </modules>
 
 

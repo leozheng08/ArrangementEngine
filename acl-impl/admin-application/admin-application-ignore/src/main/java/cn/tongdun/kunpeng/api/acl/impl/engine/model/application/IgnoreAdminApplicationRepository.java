@@ -19,26 +19,25 @@ import java.util.Set;
 @Repository
 public class IgnoreAdminApplicationRepository implements IAdminApplicationRepository{
 
-    private static final AdminApplicationDTO DEFAULT_APPLICATION = createDefaultAppliction();
+    private static final AdminApplicationDTO DEFAULT_APPLICATION = createDefaultApplication();
 
     //查询合作信息列表
     @Override
-    public List<AdminApplicationDTO> queryEnabledByPartners(Set<String> partners){
+    public List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners){
         return new ArrayList<AdminApplicationDTO>(){{add(DEFAULT_APPLICATION);}};
     }
 
-    //查询单个合作方信息
-    @Override
-    public AdminApplicationDTO queryByAppName(String partnerCode,String appName){
-        return DEFAULT_APPLICATION;
-    }
-
-
-    private static AdminApplicationDTO createDefaultAppliction(){
+    private static AdminApplicationDTO createDefaultApplication(){
         AdminApplicationDTO applicationDTO = new AdminApplicationDTO();
-        applicationDTO.setUuid(Constant.DEFAULT_APPLICATION);
-        applicationDTO.setName(Constant.DEFAULT_APPLICATION);
+        applicationDTO.setName(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setSecretKey(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setUuid(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setDisplayName(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setAppType(Constant.DEFAULT_APP_TYPE);
+        applicationDTO.setAppTypeName(Constant.DEFAULT_APP_TYPE);
+        applicationDTO.setPartnerCode(Constant.DEFAULT_PARTNER);
         applicationDTO.setStatus(1);
         return applicationDTO;
     }
+
 }

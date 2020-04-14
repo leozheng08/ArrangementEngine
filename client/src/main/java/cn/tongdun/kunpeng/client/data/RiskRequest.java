@@ -120,7 +120,10 @@ public class RiskRequest implements Serializable {
      */
     private String simulationPartner;
 
-
+    /**
+     * 仿真的appName
+     */
+    private String simulationApp;
     /**
      * 仿真的seqId
      */
@@ -132,12 +135,6 @@ public class RiskRequest implements Serializable {
      * 按字段管理中定义的field_code传的字段值
      */
     private Map<String, Object> fieldValues = new HashMap<>();
-
-    /**
-     * 扩展属性
-     */
-    private Map<String, Object> extAttrs = new HashMap<>();
-
 
 
     public String getPartnerCode() {
@@ -269,6 +266,14 @@ public class RiskRequest implements Serializable {
         this.simulationPartner = simulationPartner;
     }
 
+    public String getSimulationApp() {
+        return simulationApp;
+    }
+
+    public void setSimulationApp(String simulationApp) {
+        this.simulationApp = simulationApp;
+    }
+
     public String getSimulationSeqId() {
         return simulationSeqId;
     }
@@ -297,18 +302,6 @@ public class RiskRequest implements Serializable {
         fieldValues.put(fieldCode,value);
     }
 
-
-    public Map<String, Object> getExtAttrs() {
-        return extAttrs;
-    }
-
-    public void setExtAttrs(Map<String, Object> extAttrs) {
-        this.extAttrs = extAttrs;
-    }
-
-    public void addExtAttrs(String attrName,Object value){
-        this.extAttrs.put(attrName,value);
-    }
 
     private static String upperCaseFirstChar(String x) {
         if (x == null) {return null;}
@@ -342,11 +335,6 @@ public class RiskRequest implements Serializable {
             } catch (Exception e) {
                 // ignore
             }
-        }
-
-        Object extAttr = extAttrs.get(key);
-        if (extAttr != null) {
-            return extAttr;
         }
         return null;
     }

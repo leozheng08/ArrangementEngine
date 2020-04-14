@@ -81,6 +81,7 @@ public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         riskRequest.setTestFlag(StringUtils.equalsIgnoreCase(request.get(TEST_FLAG), "true"));
         riskRequest.setAsync(StringUtils.equalsIgnoreCase(request.get(ASYNC), "true"));
         riskRequest.setSimulationPartner(request.get(SIMULATION_PARTNER));
+        riskRequest.setSimulationApp(request.get(SIMULATION_APP));
         riskRequest.setSimulationUuid(request.get(SIMULATION_UUID));
         riskRequest.setSimulationSeqId(request.get(SIMULATION_SEQ_ID));
         riskRequest.setTdSampleDataId(request.get(TD_SAMPLE_DATA_ID));

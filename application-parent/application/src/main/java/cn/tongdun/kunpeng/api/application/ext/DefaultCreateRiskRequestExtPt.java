@@ -38,7 +38,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     public static final String        X_SEQUENCE_ID          = "x-sequence-id";
     public static final String        RESP_DETAIL_TYPE       = "respDetailType";
     public static final String        RECALL                 = "recall";
-    public static final String        RECALL_SEQ_ID     = "recallSeqId";
+    public static final String        RECALL_SEQ_ID          = "recallSeqId";
     public static final String        TOKEN_ID               = "tokenId";
     public static final String        BLACK_BOX              = "blackBox";
     public static final String        REQUEST_ID             = "requestId";
@@ -77,6 +77,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         }
         riskRequest.setTestFlag(StringUtils.equalsIgnoreCase(request.get(TEST_FLAG), "true"));
         riskRequest.setAsync(StringUtils.equalsIgnoreCase(request.get(ASYNC), "true"));
+        riskRequest.setSimulationApp(request.get(SIMULATION_APP));
         riskRequest.setSimulationPartner(request.get(SIMULATION_PARTNER));
         riskRequest.setSimulationUuid(request.get(SIMULATION_UUID));
         riskRequest.setSimulationSeqId(request.get(SIMULATION_SEQ_ID));

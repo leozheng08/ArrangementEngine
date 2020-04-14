@@ -123,6 +123,10 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private String simulationPartner;
     /**
+     * 仿真的appName
+     */
+    private String simulationApp;
+    /**
      * 仿真的seqId
      */
     private String simulationSeqId;
@@ -131,6 +135,14 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /*************系统级入参 end******************/
 
+    /**
+     * 根据合作方传的secretKey，从缓存中取得app_name
+     */
+    private String appName;
+    /**
+     * 根据app_name，从缓存取得appType
+     */
+    private String appType;
 
     private String policyVersion;
 

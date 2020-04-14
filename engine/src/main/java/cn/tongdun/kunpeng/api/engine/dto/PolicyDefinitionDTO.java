@@ -25,6 +25,16 @@ public class PolicyDefinitionDTO extends CommonDTO {
     private String eventId;
 
     /**
+     * 应用
+     */
+    private String appName;
+
+    /**
+     * 应用类型
+     */
+    private String appType;
+
+    /**
      * 描述
      */
     private String description;

@@ -41,7 +41,7 @@ public class AdminApplicationLoadManager implements ILoad {
     public boolean load(){
         logger.info("AdminApplicationLoadManager start");
 
-        List<AdminApplicationDTO> adminApplicationDTOList = adminApplicationRepository.queryEnabledByPartners(partnerClusterCache.getPartners());
+        List<AdminApplicationDTO> adminApplicationDTOList = adminApplicationRepository.queryApplicationsByPartners(partnerClusterCache.getPartners());
 
         if(adminApplicationDTOList == null || adminApplicationDTOList.isEmpty()){
             return true;
@@ -54,7 +54,7 @@ public class AdminApplicationLoadManager implements ILoad {
         }).collect(Collectors.toList());
 
         for(AdminApplication adminApplication:adminApplicationList){
-            adminApplicationCache.put(adminApplication.getName(),adminApplication);
+            adminApplicationCache.addAdminApplication(adminApplication);
         }
 
         logger.info("AdminApplicationLoadManager success, size:"+adminApplicationList.size());

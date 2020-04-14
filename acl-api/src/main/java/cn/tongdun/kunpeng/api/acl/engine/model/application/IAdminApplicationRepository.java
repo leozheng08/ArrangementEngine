@@ -10,8 +10,5 @@ import java.util.Set;
 public interface IAdminApplicationRepository {
 
     //查询应用信息列表
-    List<AdminApplicationDTO> queryEnabledByPartners(Set<String> partners);
-
-    //查询单个应用信息
-    AdminApplicationDTO queryByAppName(String partnerCode,String appName);
+    List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners);
 }

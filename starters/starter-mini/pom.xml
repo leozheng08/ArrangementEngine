@@ -33,6 +33,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- 决策接口需要secretKey校验 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-auth</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <!-- 决策接口入参校验 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-check</artifactId>

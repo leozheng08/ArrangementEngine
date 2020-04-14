@@ -14,8 +14,8 @@ public class Constant {
 
     //合作方没填时，给的默认值
     public static final String DEFAULT_PARTNER = "default";
-    public static final String DEFAULT_APPLICATION = "default";
-    public static final String DEFAULT_APPLICATION_TYPE = "default";
+    public static final String DEFAULT_APP_NAME = "default";
+    public static final String DEFAULT_APP_TYPE = "default";
 
     public class DictKey {
         public static final String DICT_EVENT_TYPE = "EventType";

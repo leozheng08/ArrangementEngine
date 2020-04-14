@@ -21,7 +21,7 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
     //policyUuid -> Policy
     private Map<String,Policy> policyMap = new ConcurrentHashMap<>(5000);
 
-    //partnerCode^^eventId^^version -> policyUuid
+    //partnerCode^^appName^^eventId^^version -> policyUuid
     private Map<String,String> policyUuidMap = new ConcurrentHashMap<>(5000);
 
 
@@ -61,20 +61,20 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
      * @param eventId
      * @return
      */
-    public String getPolicyUuid(String partner, String eventId,String version){
-        String key = buildKey(partner,eventId,version);
+    public String getPolicyUuid(String partner, String appname, String eventId,String version){
+        String key = buildKey(partner,appname,eventId,version);
         return policyUuidMap.get(key);
     }
 
 
     private static String buildKey(Policy policy){
-        return buildKey(policy.getPartnerCode(),policy.getEventId(),policy.getVersion());
+        return buildKey(policy.getPartnerCode(),policy.getAppName(),policy.getEventId(),policy.getVersion());
     }
 
     /**
-     * Build key:partnerCode^^eventId^^version
+     * Build key:partnerCode^^appName^^eventId^^version
      */
-    private static String buildKey(String partner, String eventId,String version) {
-        return StringUtils.join(StringUtils.trim(partner), SPLIT_CHAR, StringUtils.trim(eventId), SPLIT_CHAR, StringUtils.trim(version));
+    private static String buildKey(String partner,String appName, String eventId,String version) {
+        return StringUtils.join(StringUtils.trim(partner), SPLIT_CHAR, StringUtils.trim(appName),SPLIT_CHAR, StringUtils.trim(eventId), SPLIT_CHAR, StringUtils.trim(version));
     }
 }

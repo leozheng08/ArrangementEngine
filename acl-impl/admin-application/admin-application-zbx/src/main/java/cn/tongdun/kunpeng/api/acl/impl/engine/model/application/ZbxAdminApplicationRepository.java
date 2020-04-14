@@ -28,7 +28,7 @@ public class ZbxAdminApplicationRepository implements IAdminApplicationRepositor
 
     //查询合作信息列表
     @Override
-    public List<AdminApplicationDTO> queryEnabledByPartners(Set<String> partnerCodes){
+    public List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partnerCodes){
         if(partnerCodes == null || partnerCodes.isEmpty()) {
             return null;
         }
@@ -45,16 +45,6 @@ public class ZbxAdminApplicationRepository implements IAdminApplicationRepositor
         }
 
         return result;
-    }
-
-    //查询单个合作方信息
-    @Override
-    public AdminApplicationDTO queryByAppName(String partnerCode,String appName){
-        KirinApplication kirinApplication = kirinUserService.getApplication(partnerCode,appName);
-        if(kirinApplication == null){
-            return null;
-        }
-        return convert(kirinApplication);
     }
 
     private AdminApplicationDTO convert(KirinApplication kirinApplication){
