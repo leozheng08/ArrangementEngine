@@ -30,7 +30,7 @@
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>starter-mini</artifactId>
+            <artifactId>starter-paas</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
