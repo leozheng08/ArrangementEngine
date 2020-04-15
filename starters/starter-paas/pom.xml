@@ -40,6 +40,12 @@
         </dependency>
 
         <dependency>
+            <!-- 按多集群部署，不同集群分别加载不同的合作列表 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>partner-cluster-multi</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <!-- 多合作方信息从数据库加载 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>admin-partner-db</artifactId>

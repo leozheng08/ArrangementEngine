@@ -28,6 +28,21 @@ public class ZbxPartnerRepository implements IPartnerRepository{
     @Resource(name = "kirinUserServiceForPartner")
     private KirinUserService kirinUserService;
 
+    //查询所有合作方编码
+    @Override
+    public Set<String> queryAllPartnerCode(){
+        List<KirinPartner> kirinPartnerList = kirinUserService.getPartnerAppList(null);
+        if(kirinPartnerList == null || kirinPartnerList.isEmpty()){
+            return null;
+        }
+
+        Set<String> result = new HashSet<>();
+        result = kirinPartnerList.stream().map(kirinPartner->{
+            return kirinPartner.getPartnerCode();
+        }).collect(Collectors.toSet());
+        return result;
+    }
+
     //查询合作信息列表
     @Override
     public List<PartnerDTO> queryEnabledByPartners(Set<String> partnerCodes){

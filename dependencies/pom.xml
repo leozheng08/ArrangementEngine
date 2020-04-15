@@ -177,6 +177,16 @@
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>partner-cluster-single</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>partner-cluster-multi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>admin-partner-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -185,6 +195,18 @@
                 <artifactId>admin-partner-ignore</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>admin-application-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>admin-application-ignore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
 
             <dependency>
                 <groupId>cn.tongdun</groupId>

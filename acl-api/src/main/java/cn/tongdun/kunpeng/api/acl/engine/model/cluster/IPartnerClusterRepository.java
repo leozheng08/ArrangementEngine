@@ -9,6 +9,4 @@ import java.util.Set;
 public interface IPartnerClusterRepository {
 
     Set<String> queryPartnerByCluster(String cluster);
-
-    Set<String> queryAllPartner();
 }

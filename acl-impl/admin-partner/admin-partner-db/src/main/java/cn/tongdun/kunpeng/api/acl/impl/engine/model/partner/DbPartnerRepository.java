@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +19,17 @@ public class DbPartnerRepository implements IPartnerRepository{
 
     @Autowired
     private AdminPartnerDAO adminPartnerDAO;
+
+    /**
+     * 查询所有合作方编码
+     * @return
+     */
+    @Override
+    public Set<String> queryAllPartnerCode(){
+        List<String> partnerCodes = adminPartnerDAO.selectAllEnabledPartnerCodes();
+        Set partners = new HashSet(partnerCodes);
+        return partners;
+    }
 
     //取得所有策略定义清单
     @Override

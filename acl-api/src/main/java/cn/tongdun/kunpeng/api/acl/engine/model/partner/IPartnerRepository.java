@@ -9,6 +9,9 @@ import java.util.Set;
  */
 public interface IPartnerRepository {
 
+    //查询所有合作方编码
+    Set<String> queryAllPartnerCode();
+
     //查询合作信息列表
     List<PartnerDTO> queryEnabledByPartners(Set<String> partners);
 

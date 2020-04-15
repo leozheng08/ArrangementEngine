@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,11 @@ public class IgnorePartnerRepository implements IPartnerRepository{
 
     private static final PartnerDTO DEFAULT_PARTNER = createDefaultPartner();
 
+    //查询所有合作方编码
+    @Override
+    public Set<String> queryAllPartnerCode(){
+        return new HashSet<String>(){{add(Constant.DEFAULT_PARTNER);}};
+    }
     //查询合作信息列表
     @Override
     public List<PartnerDTO> queryEnabledByPartners(Set<String> partners){

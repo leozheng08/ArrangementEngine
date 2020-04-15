@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- 极简版，不依赖任何外部其他应用，基件只依赖db，没有配置中心与监控-->
-    <artifactId>starter-mini</artifactId>
+    <!-- 中博信使用，不依赖任何外部其他应用，基件只依赖db，没有配置中心与监控-->
+    <artifactId>starter-zbx</artifactId>
 
 
     <dependencies>
@@ -30,6 +30,12 @@
             <!-- 没有监控统计 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>metrics-ignore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口需要secretKey校验 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-auth</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -63,21 +69,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <!-- 单一集群 -->
+            <!-- 集成中博信合作方 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>partner-cluster-single</artifactId>
+            <artifactId>admin-partner-zbx</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <!-- 只有一个default默认合作方 -->
+            <!-- 集成中博信合作方 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>admin-partner-ignore</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <!-- 只有一个default默认应用 -->
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>admin-application-ignore</artifactId>
+            <artifactId>admin-application-zbx</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
