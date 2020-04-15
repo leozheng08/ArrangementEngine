@@ -1,7 +1,6 @@
-package cn.tongdun.kunpeng.api.application.step.ext.response.haiwai;
+package cn.tongdun.kunpeng.client.data.impl.camel;
 
 import cn.tongdun.kunpeng.client.data.IOutputField;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -10,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class OutputField implements IOutputField{
 
     private static final long    serialVersionUID = -3320502789769293390L;
-
-    @JsonProperty("field_name")
     private String fieldName;
     private Object value;
     private String type;

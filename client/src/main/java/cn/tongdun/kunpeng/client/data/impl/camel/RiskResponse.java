@@ -1,13 +1,14 @@
-package cn.tongdun.kunpeng.api.application.step.ext.response;
+package cn.tongdun.kunpeng.client.data.impl.camel;
 
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
-import cn.tongdun.kunpeng.client.data.*;
+import cn.tongdun.kunpeng.client.data.IOutputField;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
+import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.share.json.JSON;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 风险扫描返回结果

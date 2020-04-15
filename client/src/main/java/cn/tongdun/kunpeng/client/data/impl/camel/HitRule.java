@@ -1,8 +1,6 @@
-package cn.tongdun.kunpeng.api.application.step.ext.response;
+package cn.tongdun.kunpeng.client.data.impl.camel;
 
 import cn.tongdun.kunpeng.client.data.IHitRule;
-
-import java.io.Serializable;
 
 /**
  * @Author: liang.chen

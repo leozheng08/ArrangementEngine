@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.application.step.ext.response.haiwai;
+package cn.tongdun.kunpeng.client.data.impl.underline;
 
 import cn.tongdun.kunpeng.client.data.IHitRule;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;

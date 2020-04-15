@@ -1,6 +1,10 @@
-package cn.tongdun.kunpeng.api.application.step.ext.response.haiwai;
+package cn.tongdun.kunpeng.api.application.step.ext.response;
 
 import cn.tongdun.kunpeng.client.data.*;
+import cn.tongdun.kunpeng.client.data.impl.camel.HitRule;
+import cn.tongdun.kunpeng.client.data.impl.camel.OutputField;
+import cn.tongdun.kunpeng.client.data.impl.camel.RiskResponse;
+import cn.tongdun.kunpeng.client.data.impl.camel.SubPolicyResult;
 import org.springframework.stereotype.Component;
 
 /**
@@ -8,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2020/3/2 上午10:11
  */
 @Component
-public class HaiwaiRiskResponseFactory implements IRiskResponseFactory {
+public class CamelRiskResponseFactory implements IRiskResponseFactory {
 
     @Override
     public IRiskResponse newRiskResponse(){

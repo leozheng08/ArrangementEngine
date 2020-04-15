@@ -1,11 +1,10 @@
-package cn.tongdun.kunpeng.api.application.step.ext.response;
+package cn.tongdun.kunpeng.client.data.impl.camel;
 
 import cn.tongdun.kunpeng.client.data.IHitRule;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Data
