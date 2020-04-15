@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.model.subpolicy.mode;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PolicyModeExecuterFactory extends AbstractLocalCache<PolicyMode,AbstractPolicyModeExecuter> {
     //policyMode -> AbstractSubPolicyMode
     private Map<PolicyMode,AbstractPolicyModeExecuter> policyModeMap = new ConcurrentHashMap<>(3);
+
+    @Autowired
+    private WeightedPolicyModeExecuter weightedPolicyModeExecuter;
 
     @PostConstruct
     public void init(){
@@ -35,5 +39,10 @@ public class PolicyModeExecuterFactory extends AbstractLocalCache<PolicyMode,Abs
     @Override
     public AbstractPolicyModeExecuter remove(PolicyMode policyMode){
         return policyModeMap.remove(policyMode);
+    }
+
+
+    public AbstractPolicyModeExecuter getDefaultExecuter(){
+        return weightedPolicyModeExecuter;
     }
 }

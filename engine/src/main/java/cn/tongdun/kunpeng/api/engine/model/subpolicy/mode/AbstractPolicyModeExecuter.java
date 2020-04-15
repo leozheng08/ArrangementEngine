@@ -59,7 +59,7 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
 
         long start = System.currentTimeMillis();
         try {
-            //首次匹配, 首次命中即中断规则运行
+            //执行匹配，包含有首次匹配、最坏匹配、权重匹配
             executeMatch(subPolicy,context,subPolicyResponse);
 
             subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());

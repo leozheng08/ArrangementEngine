@@ -35,6 +35,7 @@ public class FirstMatchPolicyModeExecuter extends AbstractPolicyModeExecuter {
     @Override
     public void executeMatch(SubPolicy subPolicy, AbstractFraudContext context, SubPolicyResponse subPolicyResponse) {
         executePorcess(subPolicy, context, subPolicyResponse, ruleResponse -> {
+            //命中规则后的中断
             subPolicyResponse.setScore(ruleResponse.getScore());
             subPolicyResponse.setDecision(ruleResponse.getDecision());
             //return true表示中断规则运行。

@@ -27,8 +27,9 @@ public class WorstMatchModeExecuter extends AbstractPolicyModeExecuter {
     public void init(){
         policyModeCache.put(PolicyMode.WorstMatch,this);
     }
+
     /**
-     * 权重匹配
+     * 最坏匹配
      *
      * @param subPolicy
      * @param context
@@ -38,43 +39,24 @@ public class WorstMatchModeExecuter extends AbstractPolicyModeExecuter {
     @Override
     public void executeMatch(SubPolicy subPolicy, AbstractFraudContext context, SubPolicyResponse subPolicyResponse) {
         executePorcess(subPolicy, context, subPolicyResponse, ruleResponse -> {
+            //命中规则后的处理逻辑,false表示不中断继续执行后继规则
             return false;
         });
 
-        //取得权重分数之和
+        //取得最坏决策结果
         List<RuleResponse> hitRuleList = subPolicyResponse.getHitRules();
-        int score = 0;
+        DecisionResultType decisionResult = decisionResultTypeCache.getDefaultType();
         for (RuleResponse hitRule : hitRuleList) {
-            score += hitRule.getScore();
-        }
-
-        List<DecisionResultThreshold>  decisionResultTypeList = subPolicy.getRiskThresholds();
-        DecisionResultType decisionResult = null;
-        if(decisionResultTypeList != null && !decisionResultTypeList.isEmpty()) {
-            int count = 0;
-            int size = decisionResultTypeList.size();
-            for (DecisionResultThreshold threshold : decisionResultTypeList) {
-                if(count == 0 && score < threshold.getEndThreshold()){
-                    decisionResult = threshold.getDecisionResultType();
-                    break;
+            //根据DecisionResultType的order顺序，Pass、Review、Reject顺序为1、2、3, 序号越大，为最坏结果
+            DecisionResultType newdecisionResult = decisionResultTypeCache.get(hitRule.getDecision());
+            if (newdecisionResult != null) {
+                if (newdecisionResult.compareTo(decisionResult) > 0) {
+                    decisionResult = newdecisionResult;
                 }
-                if(count == size-1 && score > threshold.getStartThreshold()){
-                    decisionResult = threshold.getDecisionResultType();
-                    break;
-                }
-                if (score >= threshold.getStartThreshold() && score < threshold.getEndThreshold()) {
-                    decisionResult = threshold.getDecisionResultType();
-                    break;
-                }
-                count++;
             }
-        }
-        if(decisionResult == null){
-            decisionResult = decisionResultTypeCache.getDefaultType();
         }
 
         subPolicyResponse.setDecision(decisionResult.getCode());
-        subPolicyResponse.setScore(score);
     }
 
 }
