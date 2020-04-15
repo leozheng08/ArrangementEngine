@@ -69,6 +69,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- 单一集群部署 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>partner-cluster-single</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <!-- 集成中博信合作方 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>admin-partner-zbx</artifactId>
