@@ -4,10 +4,10 @@ import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.IExecutor;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultThreshold;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
-import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
-import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
-import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.mode.AbstractPolicyModeExecuter;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.mode.PolicyModeExecuterFactory;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.mode.WeightedPolicyModeExecuter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,16 +31,13 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
     private static Logger logger = LoggerFactory.getLogger(SubPolicyManager.class);
 
     @Autowired
-    SubPolicyCache subPolicyCache;
+    private SubPolicyCache subPolicyCache;
 
     @Autowired
-    DecisionResultTypeCache decisionResultTypeCache;
+    private PolicyModeExecuterFactory policyModeExecuterFactory;
 
     @Autowired
-    RuleCache ruleCache;
-
-    @Autowired
-    RuleManager ruleManager;
+    private WeightedPolicyModeExecuter weightedPolicyModeExecuter;
 
     @Override
     public SubPolicyResponse execute(String uuid, AbstractFraudContext context) {
@@ -55,32 +52,16 @@ public class SubPolicyManager implements IExecutor<String, SubPolicyResponse> {
 
         long start = System.currentTimeMillis();
         try {
-            if (subPolicy.getPolicyMode() != null) {
-                switch (subPolicy.getPolicyMode()) {
-                    case FirstMatch: //首次匹配
-                        firstMatch(subPolicy, context, subPolicyResponse);
-                        break;
-                    case WorstMatch:  //最坏匹配
-                        worstMatch(subPolicy, context, subPolicyResponse);
-                        break;
-                    case Weighted: //权重模式
-                        weighted(subPolicy, context, subPolicyResponse);
-                        break;
-                    default:
-                        weighted(subPolicy, context, subPolicyResponse);
-                        break;
-                }
-            } else {
-                weighted(subPolicy, context, subPolicyResponse);
+
+            AbstractPolicyModeExecuter policyModeExecuter = null;
+            if(subPolicy.getPolicyMode() != null){
+                policyModeExecuter = policyModeExecuterFactory.get(subPolicy.getPolicyMode());
+            }
+            if(policyModeExecuter == null){
+                policyModeExecuter = weightedPolicyModeExecuter;
             }
 
-
-            subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());
-            subPolicyResponse.setSubPolicyUuid(subPolicy.getUuid());
-            subPolicyResponse.setSubPolicyName(subPolicy.getName());
-            subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
-            subPolicyResponse.setRiskType(subPolicy.getRiskType());
-            subPolicyResponse.setSuccess(true);
+            return policyModeExecuter.execute(uuid,context);
         } catch (Exception e){
             subPolicyResponse.setSuccess(false);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));

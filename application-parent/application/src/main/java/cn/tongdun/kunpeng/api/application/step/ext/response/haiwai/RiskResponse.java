@@ -51,7 +51,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
 
     @JsonIgnore
-    private IRiskResponseFactory      factory;
+    private transient IRiskResponseFactory      factory;
 
 
     @Override
