@@ -32,6 +32,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     public static final String        TEST_FLAG              = "testFlag";
     public static final String        PARTNER_CODE           = "partnerCode";
     public static final String        SECRET_KEY             = "secretKey";
+    public static final String        APP_NAME               = "appName";
     public static final String        EVENT_ID               = "eventId";
     public static final String        POLICY_VERSION         = "policyVersion";
     public static final String        SEQ_ID                 = "seqId";
@@ -59,6 +60,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         RiskRequest riskRequest = new RiskRequest();
         riskRequest.setPartnerCode(request.get(PARTNER_CODE));
         riskRequest.setSecretKey(request.get(SECRET_KEY));
+        riskRequest.setAppName(request.get(APP_NAME));
         riskRequest.setBlackBox(request.get(BLACK_BOX));
         riskRequest.setEventId(request.get(EVENT_ID));
         riskRequest.setPolicyVersion(request.get(POLICY_VERSION));

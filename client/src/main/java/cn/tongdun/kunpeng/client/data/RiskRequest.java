@@ -51,6 +51,12 @@ public class RiskRequest implements Serializable {
      */
     private String eventId;
 
+
+    /**
+     * 应用名
+     */
+    private String appName;
+
     /**
      * 策略版本号，非必填，如果不传则根据合作方、应用、eventId取得默认的决策版本号来运行。
      */
@@ -153,6 +159,13 @@ public class RiskRequest implements Serializable {
         this.secretKey = secretKey;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public String getEventId() {
         return eventId;

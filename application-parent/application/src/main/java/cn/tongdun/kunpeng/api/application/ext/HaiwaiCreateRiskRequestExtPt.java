@@ -36,6 +36,7 @@ public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     public static final String        TEST_FLAG              = "test_flag";
     public static final String        PARTNER_CODE           = "partner_code";
     public static final String        SECRET_KEY             = "secret_key";
+    public static final String        APP_NAME               = "app_name";
     public static final String        EVENT_ID               = "event_id";
     public static final String        POLICY_VERSION         = "policy_version";
     public static final String        SEQ_ID                 = "seq_id";
@@ -62,6 +63,7 @@ public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         RiskRequest riskRequest = new RiskRequest();
         riskRequest.setPartnerCode(request.get(PARTNER_CODE));
         riskRequest.setSecretKey(request.get(SECRET_KEY));
+        riskRequest.setAppName(request.get(APP_NAME));
         riskRequest.setBlackBox(request.get(BLACK_BOX));
         riskRequest.setEventId(request.get(EVENT_ID));
         riskRequest.setPolicyVersion(request.get(POLICY_VERSION));
