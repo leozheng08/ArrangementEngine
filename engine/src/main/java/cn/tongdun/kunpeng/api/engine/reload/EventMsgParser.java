@@ -37,14 +37,11 @@ public class EventMsgParser {
         put("policy_challenger",PolicyChallengerEventDO.class);
         put("event_type",EventTypeEventDO.class);
         put("partner",PartnerEventDO.class);
-
         put("custom_list_value",CustomListValueEventDO.class);
     }};
 
 
     public DomainEvent parse(String event){
-        event = event.replaceAll("DISABLED","0");
-        event = event.replaceAll("ENABLED","1");
         Map map = JSON.parseObject(event,HashMap.class);
         return parse(map);
     }
@@ -61,7 +58,6 @@ public class EventMsgParser {
         if(entity == null){
             domainEvent.setData(jsonArray);
             domainEvent.setEntityClass(Map.class);
-//            logger.debug("event entity is empty! event:{}",jsonObject.toString());
             return domainEvent;
         }
 
@@ -69,7 +65,6 @@ public class EventMsgParser {
         if(entityClass == null){
             domainEvent.setData(jsonArray);
             domainEvent.setEntityClass(Map.class);
-//            logger.debug("event entityClass not find! event:{}",jsonObject.toString());
             return domainEvent;
         }
         domainEvent.setEntityClass(entityClass);
