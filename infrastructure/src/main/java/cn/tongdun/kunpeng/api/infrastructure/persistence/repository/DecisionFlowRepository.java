@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DecisionFlowDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DecisionFlowDAO;
 import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class DecisionFlowRepository implements IDecisionFlowRepository{
     private Logger logger = LoggerFactory.getLogger(DecisionFlowRepository.class);
 
     @Autowired
-    private  DecisionFlowDOMapper decisionFlowDOMapper;
+    private DecisionFlowDAO decisionFlowDAO;
 
 
     /**
@@ -29,7 +29,7 @@ public class DecisionFlowRepository implements IDecisionFlowRepository{
      */
     @Override
     public DecisionFlowDTO queryByUuid(String policyUuid){
-        DecisionFlowDO decisionFlowDO = decisionFlowDOMapper.selectByUuid(policyUuid);
+        DecisionFlowDO decisionFlowDO = decisionFlowDAO.selectByUuid(policyUuid);
         if(decisionFlowDO == null) {
             return null;
         }

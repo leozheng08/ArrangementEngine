@@ -19,6 +19,9 @@ public interface IRuleRepository {
     RuleDTO queryFullByUuid(String ruleUuid);
 
 
+    List<RuleDTO> queryByUuids(List<String> ruleUuids);
+
+
     /**
      * 根据子策略uuid 查询查询Rule完整信息，包含下级的ruleConditionElements,ruleActionElements
      * @param subPolicyUuid

@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.GroovyDynamicScriptDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.GroovyDynamicScriptDAO;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 public class GroovyDynamicScriptRepository implements IDynamicScriptRepository {
 
     @Autowired
-    GroovyDynamicScriptDOMapper dynamicScriptDOMapper;
+    GroovyDynamicScriptDAO groovyDynamicScriptDAO;
 
 
     @Override
     public List<DynamicScript> queryGroovyByPartners(Set<String> partners){
-        List<DynamicScriptDO> list = dynamicScriptDOMapper.selectGroovyByPartners(partners);
+        List<DynamicScriptDO> list = groovyDynamicScriptDAO.selectGroovyByPartners(partners);
 
         List<DynamicScript> result = list.stream().map(dynamicScriptDO->{
             DynamicScript dynamicScript = new DynamicScript();
@@ -39,7 +39,7 @@ public class GroovyDynamicScriptRepository implements IDynamicScriptRepository {
 
     @Override
     public DynamicScript queryByUuid(String uuid){
-        DynamicScriptDO dynamicScriptDO = dynamicScriptDOMapper.selectByUuid(uuid);
+        DynamicScriptDO dynamicScriptDO = groovyDynamicScriptDAO.selectByUuid(uuid);
         if(dynamicScriptDO == null){
             return null;
         }

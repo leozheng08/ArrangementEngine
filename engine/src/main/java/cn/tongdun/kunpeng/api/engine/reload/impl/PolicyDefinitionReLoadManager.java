@@ -15,20 +15,21 @@ import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.PolicyDefinitionDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.function.Consumer;
 
 /**
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO> {
+public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEventDO> {
 
 
     private Logger logger = LoggerFactory.getLogger(PolicyDefinitionReLoadManager.class);
@@ -66,20 +67,60 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(PolicyDefinitionDO.class,this);
+        reloadFactory.register(PolicyDefinitionEventDO.class,this);
+    }
+
+    @Override
+    public boolean create(PolicyDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean update(PolicyDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean activate(PolicyDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+
+    /**
+     * 删除事件类型,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
+     * @param eventDO
+     * @return
+     */
+    @Override
+    public boolean remove(PolicyDefinitionEventDO eventDO){
+        return remove(eventDO, policyDefinition -> {
+                    //标记删除状态
+                    policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
+                }
+        );
+    }
+
+    /**
+     * 关闭状态,子对象都删除，但缓存中仍保留PolicyDefinition对象，用于404子码的区分
+     * @param eventDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyDefinitionEventDO eventDO){
+        return remove(eventDO, policyDefinition -> {
+                    //标记不在用状态
+                    policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
+                }
+        );
     }
 
     /**
      * 更新事件类型
      * @return
      */
-    @Override
-    public boolean addOrUpdate(PolicyDefinitionDO policyDefinitionDO){
-        String uuid = policyDefinitionDO.getUuid();
+    public boolean addOrUpdate(PolicyDefinitionEventDO eventDO){
+        String uuid = eventDO.getUuid();
         logger.debug("PolicyDefinition reload start, uuid:{}",uuid);
         boolean result = false;
         try {
-            Long timestamp = policyDefinitionDO.getGmtModify().getTime();
+            Long timestamp = eventDO.getGmtModify().getTime();
             PolicyDefinition oldPolicyDefinition = policyDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPolicyDefinition != null && oldPolicyDefinition.getModifiedVersion() >= timestamp) {
@@ -89,15 +130,16 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
 
             PolicyDefinition policyDefinition = policyDefinitionRepository.queryByUuid(uuid);
             //如果失效则删除缓存
-            if(policyDefinition == null || CommonStatusEnum.CLOSE.getCode() == policyDefinition.getStatus()){
-                remove(policyDefinitionDO);
-                return policyReLoadManager.removePolicy(policyDefinition != null?policyDefinition.getCurrVersionUuid():policyDefinitionDO.getCurrVersionUuid());
+            if(policyDefinition == null || !policyDefinition.isValid()){
+                remove(eventDO);
+                return policyReLoadManager.removePolicy(policyDefinition != null?policyDefinition.getCurrVersionUuid():eventDO.getCurrVersionUuid());
             }
 
             //当前调用版本
             String newPolicyUuid = policyDefinition.getCurrVersionUuid();
             Policy oldPolicy = policyCache.get(newPolicyUuid);
-            if(oldPolicy != null){ //如果已存在，说明没有更新当前调用版本，只更新策略名称即可
+            if(oldPolicyDefinition != null && newPolicyUuid.equals(oldPolicyDefinition.getCurrVersionUuid())
+                    && oldPolicy!= null){
                 oldPolicy.setName(policyDefinition.getName());
                 result = true;
             } else {
@@ -105,6 +147,7 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
                 PolicyLoadTask task = new PolicyLoadTask(newPolicyUuid,policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
                 result = task.call();
             }
+
             if(result){
                 policyDefinitionCache.put(uuid,policyDefinition);
             }
@@ -118,20 +161,15 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
     }
 
 
-    /**
-     * 删除事件类型
-     * @param policyDefinitionDO
-     * @return
-     */
-    @Override
-    public boolean remove(PolicyDefinitionDO policyDefinitionDO){
+    public boolean remove(PolicyDefinitionEventDO eventDO, Consumer<PolicyDefinition> consumer){
         try {
-            PolicyDefinition policyDefinition = policyDefinitionCache.get(policyDefinitionDO.getUuid());
+            PolicyDefinition policyDefinition = policyDefinitionCache.get(eventDO.getUuid());
             if(policyDefinition == null){
-                return policyReLoadManager.removePolicy(policyDefinitionDO.getCurrVersionUuid());
+                return policyReLoadManager.removePolicy(eventDO.getCurrVersionUuid());
             }
-            //标记不删除状态
-            policyDefinition.setDeleted(DeleteStatusEnum.INVALID.getCode());
+
+            //对policyDefinition修改相关状态
+            consumer.accept(policyDefinition);
 
             String policyUuid = policyDefinition.getCurrVersionUuid();
             boolean result = policyReLoadManager.removePolicy(policyUuid);
@@ -139,35 +177,11 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionDO
             logger.debug("PolicyDefinition remove success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
             return result;
         } catch (Exception e){
-            logger.error("PolicyDefinition remove failed, uuid:{}",policyDefinitionDO.getUuid(),e);
+            logger.error("PolicyDefinition remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
     }
 
 
-    /**
-     * 关闭状态
-     * @param policyDefinitionDO
-     * @return
-     */
-    @Override
-    public boolean deactivate(PolicyDefinitionDO policyDefinitionDO){
-        try {
-            PolicyDefinition policyDefinition = policyDefinitionCache.get(policyDefinitionDO.getUuid());
-            if(policyDefinition == null){
-                return policyReLoadManager.removePolicy(policyDefinitionDO.getCurrVersionUuid());
-            }
-            //标记不在用状态
-            policyDefinition.setStatus(CommonStatusEnum.CLOSE.getCode());
 
-            String policyUuid = policyDefinition.getCurrVersionUuid();
-            boolean result = policyReLoadManager.removePolicy(policyUuid);
-
-            logger.debug("PolicyDefinition deactivate success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
-            return result;
-        } catch (Exception e){
-            logger.error("FieldDefinition deactivate failed, uuid:{}",policyDefinitionDO.getUuid(),e);
-            return false;
-        }
-    }
 }

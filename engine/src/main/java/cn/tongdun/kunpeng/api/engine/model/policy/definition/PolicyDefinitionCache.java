@@ -22,7 +22,7 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
     //policyDefinitionUuid -> PolicyDefinition 有包含status=0 isDeleted=1的数据
     private Map<String,PolicyDefinition> policyDefinitionMap = new ConcurrentHashMap<>(3000);
 
-    //partnerCode^^eventId -> policyDefinitionUuid
+    //partnerCode^^appName^^eventId -> policyDefinitionUuid
     private Map<String,String> policyDefinitionUuidMap = new ConcurrentHashMap<>(3000);
 
     @PostConstruct
@@ -53,13 +53,13 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
 
 
     /**
-     * 根据partner,eventId 三要素取得策略的运行版本policyUuid
+     * 根据partner,appname,eventId 三要素取得策略的运行版本policyUuid
      * @param partner
      * @param eventId
      * @return
      */
-    public String getPolicyUuid(String partner, String eventId){
-        String key = buildKey(partner,eventId);
+    public String getPolicyUuid(String partner, String appname, String eventId){
+        String key = buildKey(partner,appname,eventId);
         String policyDefinitionUuid = policyDefinitionUuidMap.get(key);
 
         if(StringUtils.isBlank(policyDefinitionUuid)){
@@ -74,8 +74,8 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
         return policyDefinition.getCurrVersionUuid();
     }
 
-    public PolicyDefinition getPolicyDefinition(String partner, String eventId){
-        String key = buildKey(partner,eventId);
+    public PolicyDefinition getPolicyDefinition(String partner, String appname, String eventId){
+        String key = buildKey(partner,appname,eventId);
         String policyDefinitionUuid = policyDefinitionUuidMap.get(key);
 
         if(StringUtils.isBlank(policyDefinitionUuid)){
@@ -92,13 +92,13 @@ public class PolicyDefinitionCache extends AbstractLocalCache<String,PolicyDefin
 
 
     private static String buildKey(PolicyDefinition policyDefinition){
-        return buildKey(policyDefinition.getPartnerCode(),policyDefinition.getEventId());
+        return buildKey(policyDefinition.getPartnerCode(),policyDefinition.getAppName(),policyDefinition.getEventId());
     }
 
     /**
-     * Build key:partnerCode^^eventId
+     * Build key:partnerCode^^appname^^eventId
      */
-    private static String buildKey(String partner, String eventId) {
-        return StringUtils.join(StringUtils.trim(partner), SPLIT_CHAR, StringUtils.trim(eventId));
+    private static String buildKey(String partner, String appname, String eventId) {
+        return StringUtils.join(StringUtils.trim(partner), SPLIT_CHAR, StringUtils.trim(appname), SPLIT_CHAR, StringUtils.trim(eventId));
     }
 }

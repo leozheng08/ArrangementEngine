@@ -4,6 +4,8 @@ BASE_DIR=`dirname $0`
 
 echo 'calling preboot script'
 
+export APP_OUTPUT=${app.output}
+
 # erase old env variables
 unset APP_EXT_PARAM
 unset JVM_EXT_PARAM
@@ -17,9 +19,24 @@ if [ "$ENV" = "smoke" ] || [ "$ENV" = "dev" ]; then
   JVM_EXT_PARAM=" -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8095,suspend=n $JVM_EXT_PARAM "
 fi
 
-#JVM_EXT_PARAM="-Xmx2688M -Xms2688M -Xmn960M -Xss256K -XX:MaxMetaspaceSize=256M -XX:MetaspaceSize=256M -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+CMSClassUnloadingEnabled -XX:+ParallelRefProcEnabled -XX:+CMSScavengeBeforeRemark -XX:+HeapDumpOnOutOfMemoryError $JVM_EXT_PARAM "
+let memTotal=`cat /proc/meminfo |grep MemTotal|awk '{printf "%d", $2/1024/1024 }'`
+if [ $memTotal -ge 14 ]; then
+    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx11g -Xms11g -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
+elif [ $memTotal -ge 8 ]; then
+    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx6g -Xms6g -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
+elif [ $memTotal -ge 4 ]; then
+    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx2560M -Xms2560M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
+else
+    JVM_EXT_PARAM="$JVM_EXT_PARAM -Xmx512M -Xms512M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=128M"
+fi
 
-JVM_EXT_PARAM="-XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps $JVM_EXT_PARAM"
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses -Dfile.encoding=UTF-8 -DdisableIntlRMIStatTask=true"
+
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -server -Xss256k -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=25 -XX:InitiatingHeapOccupancyPercent=30 -XX:ConcGCThreads=2 -XX:+ParallelRefProcEnabled"
+
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDateStamps "
+
+JVM_EXT_PARAM=" $JVM_EXT_PARAM -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$APP_OUTPUT/logs/"
 
 echo "JVM_EXT_PARAM=$JVM_EXT_PARAM"
 

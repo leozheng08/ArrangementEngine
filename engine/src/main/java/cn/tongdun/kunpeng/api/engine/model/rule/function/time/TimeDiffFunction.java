@@ -9,8 +9,8 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
 import cn.tongdun.kunpeng.api.ruledetail.TimeDiffDetail;
-import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 

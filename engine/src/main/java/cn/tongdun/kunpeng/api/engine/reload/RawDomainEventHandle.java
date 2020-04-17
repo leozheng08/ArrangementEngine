@@ -1,11 +1,13 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
-import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.api.acl.event.notice.IDomainEventRepository;
+import cn.tongdun.kunpeng.api.acl.event.notice.IRawDomainEventHandle;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueKVRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
-import cn.tongdun.kunpeng.share.dataobject.CustomListValueDO;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.CustomListValueEventDO;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 对接收kunpeng-admin的领域事件做处理
@@ -24,7 +27,7 @@ import java.util.List;
  * @Date: 2020/3/12 下午1:39
  */
 @Component
-public class RawDomainEventHandle {
+public class RawDomainEventHandle implements IRawDomainEventHandle{
     private Logger logger = LoggerFactory.getLogger(RawDomainEventHandle.class);
 
 
@@ -44,13 +47,14 @@ public class RawDomainEventHandle {
     /**
      * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
      */
-    public void handleRawMessage(JSONObject rawEventMsg){
+    @Override
+    public void handleRawMessage(Map rawEventMsg){
         try {
             if (rawEventMsg == null) {
                 return;
             }
 
-            String entityName = rawEventMsg.getString("entity");
+            String entityName = JsonUtil.getString(rawEventMsg,"entity");
             if (StringUtils.isBlank(entityName)) {
                 return;
             }
@@ -69,47 +73,38 @@ public class RawDomainEventHandle {
     }
 
 
-    private void putCustomListValueToRemoteCache(JSONObject rawEventMsg){
+    private void putCustomListValueToRemoteCache(Map rawEventMsg){
         try {
-            DomainEvent<CustomListValueDO> domainEvent = eventMsgParser.parse(rawEventMsg);
-            List<CustomListValueDO> listValueDOList = domainEvent.getData();
+            DomainEvent<CustomListValueEventDO> domainEvent = eventMsgParser.parse(rawEventMsg);
+            List<CustomListValueEventDO> listValueDOList = domainEvent.getData();
 
             if (listValueDOList == null || listValueDOList.isEmpty()) {
                 logger.debug("CustomListValue put remote cache error,list is empty:{}", rawEventMsg);
                 return;
             }
 
-            if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {//删除操作
-                for (CustomListValueDO customListValueDO : listValueDOList) {
-                    customListValueKVRepository.removeCustomListValueData(new CustomListValue(customListValueDO.getCustomListUuid(), customListValueDO.getDataValue()));
-                    logger.debug("CustomListValue remove remote cache success,list uuid:{} data:{}",customListValueDO.getCustomListUuid(), customListValueDO.getDataValue());
-                }
-            } else {//新增或修改操作
-
-                List<String> uuids = new ArrayList<>();
-                listValueDOList.forEach(value -> {
-                    uuids.add(value.getUuid());
-                });
-
-                List<CustomListValue> listValueList = customListValueRepository.selectByUuids(uuids);
-                for (CustomListValue customListValue : listValueList) {
+            List<String> uuids = new ArrayList<>();
+            listValueDOList.forEach(value -> {
+                uuids.add(value.getUuid());
+            });
+            List<CustomListValue> listValueList = customListValueRepository.selectByUuids(uuids);
+            for (CustomListValue customListValue : listValueList) {
+                if (customListValue.isValid()) {
                     customListValueKVRepository.putCustomListValueData(customListValue);
                     logger.debug("CustomListValue put remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
+                } else {
+                    customListValueKVRepository.removeCustomListValueData(customListValue);
+                    logger.debug("CustomListValue remove remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
                 }
             }
-
         } catch (Exception e){
             logger.error("CustomListValue put remote cache error,event:{}",rawEventMsg,e);
             throw e;
         }
     }
 
-
-
     //将领域事件保存到redis，供kunpeng-api每个主机从redis中拉取事件列表
-    private void putEventMsgToRemoteCache(JSONObject rawEventMsg){
-        domainEventRepository.putEventMsgToRemoteCache(rawEventMsg.toJSONString(),rawEventMsg.getLong("occurredTime"));
+    private void putEventMsgToRemoteCache(Map rawEventMsg){
+        domainEventRepository.putEventMsgToRemoteCache(JSON.toJSONString(rawEventMsg),JsonUtil.getLong(rawEventMsg,"occurredTime"));
     }
-
-
 }

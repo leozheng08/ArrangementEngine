@@ -1,14 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.util.JsonUtil;
-import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
-import cn.tongdun.kunpeng.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.service.GenericService;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -88,7 +86,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
             } else {
                 result = APIResult.DUBBO_API_RESULT_INTERNAL_ERROR;                         //哎呦，我TMD也不知道发生什么错误了!
             }
-            logger.warn("generic dubbo call " + interfaceDefinition.getName() + " catch exception result:" + JSONObject.toJSONString(result), e);
+            logger.warn("generic dubbo call " + interfaceDefinition.getName() + " catch exception result:" + JSON.toJSONString(result), e);
         } finally {
             try {
                 //如果dubbo返回的类是QuickJSONResult,有可能是信贷云那边卡住了
@@ -187,6 +185,8 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                     String[] temp = paramInfo.getInterfaceField().split("\\.");
                     if (temp[temp.length - 1].equals("seqId")) {
                         value = fraudContext.getSeqId();
+                    } else if (temp[temp.length - 1].equals("appName")) {
+                        value = fraudContext.getAppName();
                     }
                 }
                 boolean isNecessary = paramInfo.isNecessary();
@@ -321,14 +321,14 @@ public class GenericDubboCaller implements IGenericDubboCaller {
         InterfaceParams interfaceParams = new InterfaceParams();
 
         //输入参数
-        JSONObject jsonObject = new JSONObject(inputParamsMap.size());
+        Map jsonObject = new HashMap(inputParamsMap.size());
         for (Map.Entry<String, Object> entry : inputParamsMap.entrySet()) {
             jsonObject.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entry.getKey()), entry.getValue());
         }
         interfaceParams.setInputParams(jsonObject);
 
         //输出参数
-        interfaceParams.setOutputParams(new JSONObject(resultMap));
+        interfaceParams.setOutputParams(resultMap);
         interfaceResult.addInterfaceParams(interfaceDefinition.getMethodName(), interfaceParams);
 
 
@@ -370,37 +370,37 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                         continue;
                     }
                     try {
-                        interfaceResult = JSON.parseObject(JSON.toJSONString(interfaceResult));
+                        interfaceResult = JSON.parseObject(JSON.toJSONString(interfaceResult),HashMap.class);
                     } catch (Exception e) {
                         logger.error("dubbo泛化调用异常 序列化结果异常", e);
                     }
 
-                    JSONObject resultObjectOutput = resultMapOutput.get(interfaceParams[0]) == null ? new JSONObject((JSONObject) interfaceResult) : (JSONObject) resultMapOutput.get(interfaceParams[0]);
+                    Map resultObjectOutput = resultMapOutput.get(interfaceParams[0]) == null ? (Map)interfaceResult : (Map) resultMapOutput.get(interfaceParams[0]);
                     if (paramInfo.isArray()) {
                         logger.info("三方调用有数组返回 " + paramInfo.getInterfaceField() + " partnerCode:" + fraudContext.getPartnerCode());
                         boolean firstSet = true;
                         int i = 1;
                         for (; i < interfaceParams.length - 1; i++) {
-                            if (interfaceResult instanceof JSONObject) {
+                            if (interfaceResult instanceof Map) {
                                 if (firstSet) {
                                     interfaceResult = resultObjectOutput.get(interfaceParams[i]);
                                     firstSet = false;
                                 } else {
-                                    interfaceResult = ((JSONObject) interfaceResult).get(interfaceParams[i]);
+                                    interfaceResult = ((Map) interfaceResult).get(interfaceParams[i]);
                                 }
 
                             }
                         }
                         Object[] resultArray = null;
-                        if (interfaceResult instanceof JSONArray) {
-                            JSONArray array = (JSONArray) interfaceResult;
+                        if (interfaceResult instanceof List) {
+                            List array = (List) interfaceResult;
                             resultArray = new Object[array.size()];
                             for (int j = 0; j < array.size(); j++) {
-                                String value = ((JSONObject) array.get(j)).getString(interfaceParams[i]);
+                                String value = JsonUtil.getString((Map) array.get(j),interfaceParams[i]);
                                 resultArray[j] = value;
                                 if (!KunpengStringUtils.camel2underline(ruleParam).equals(interfaceParams[i])) {
-                                    ((JSONObject) array.get(j)).put(KunpengStringUtils.camel2underline(ruleParam), value);
-                                    ((JSONObject) array.get(j)).remove(interfaceParams[i]);
+                                    ((Map) array.get(j)).put(KunpengStringUtils.camel2underline(ruleParam), value);
+                                    ((Map) array.get(j)).remove(interfaceParams[i]);
                                 }
 
                             }
@@ -410,13 +410,13 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                             outputMap.put(ruleParam, resultArray);
                         }
                     } else {
-                        JSONObject resultObject = (JSONObject) interfaceResult;
+                        Map resultObject = (Map) interfaceResult;
                         int i = 1;
                         for (; i < interfaceParams.length - 1; i++) {
                             if (i == 1) {
-                                resultObject = resultObjectOutput.getJSONObject(interfaceParams[i]);
+                                resultObject = (Map)resultObjectOutput.get(interfaceParams[i]);
                             } else {
-                                resultObject = resultObject.getJSONObject(interfaceParams[i]);
+                                resultObject = (Map)resultObject.get(interfaceParams[i]);
                             }
 
                         }
@@ -462,7 +462,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
 
             // for logging purpose only
             if (logger.isDebugEnabled()) {
-                JSONObject resultObject = new JSONObject();
+                Map resultObject = new HashMap();
                 for (Map.Entry<String, Object> entry : fraudContext.getFieldValues().entrySet()) {
                     resultObject.put(entry.getKey(), entry.getValue());
                 }
@@ -597,7 +597,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
     }
 
     private void writeBusinessLog(String seqId, String service, String method, String params, long beginTime) {
-        JSONObject jsonObject = new JSONObject(4);
+        Map jsonObject = new HashMap(4);
         jsonObject.put("service_name", service);
         jsonObject.put("method_name", method);
         jsonObject.put("params", params);

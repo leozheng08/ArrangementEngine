@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.basedata.step.device.ext;
 
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 
 /**

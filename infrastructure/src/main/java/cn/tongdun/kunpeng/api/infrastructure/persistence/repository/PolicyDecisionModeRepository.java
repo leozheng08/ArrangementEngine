@@ -21,14 +21,14 @@ public class PolicyDecisionModeRepository implements IPolicyDecisionModeReposito
     private Logger logger = LoggerFactory.getLogger(PolicyDecisionModeRepository.class);
 
     @Autowired
-    private PolicyDecisionModeDOMapper policyDecisionModeDOMapper;
+    private PolicyDecisionModeDAO policyDecisionModeDAO;
 
     /**
      * 查询策略当前在用的运行模式
      */
     @Override
     public PolicyDecisionModeDTO queryByPolicyUuid(String policyUuid){
-        PolicyDecisionModeDO policyDecisionModeDO = policyDecisionModeDOMapper.selectByPolicyUuid(policyUuid);
+        PolicyDecisionModeDO policyDecisionModeDO = policyDecisionModeDAO.selectByPolicyUuid(policyUuid);
         if(policyDecisionModeDO == null) {
             return null;
         }
@@ -47,7 +47,7 @@ public class PolicyDecisionModeRepository implements IPolicyDecisionModeReposito
      */
     @Override
     public PolicyDecisionModeDTO queryByUuid(String uuid){
-        PolicyDecisionModeDO policyDecisionModeDO = policyDecisionModeDOMapper.selectByUuid(uuid);
+        PolicyDecisionModeDO policyDecisionModeDO = policyDecisionModeDAO.selectByUuid(uuid);
         if(policyDecisionModeDO == null) {
             return null;
         }

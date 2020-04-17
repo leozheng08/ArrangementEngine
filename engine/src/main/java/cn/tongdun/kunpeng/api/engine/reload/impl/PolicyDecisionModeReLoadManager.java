@@ -1,13 +1,13 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.impl.DecisionFlowConvertor;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDecisionModeEventDO;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.PolicyDecisionModeDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionModeDO> {
+public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionModeEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(PolicyDecisionModeReLoadManager.class);
 
@@ -41,24 +41,49 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(PolicyDecisionModeDO.class,this);
+        reloadFactory.register(PolicyDecisionModeEventDO.class,this);
+    }
+
+    @Override
+    public boolean create(PolicyDecisionModeEventDO policyDecisionModeDO){
+        return addOrUpdate(policyDecisionModeDO);
+    }
+    @Override
+    public boolean update(PolicyDecisionModeEventDO policyDecisionModeDO){
+        return addOrUpdate(policyDecisionModeDO);
+    }
+    @Override
+    public boolean activate(PolicyDecisionModeEventDO policyDecisionModeDO){
+        return addOrUpdate(policyDecisionModeDO);
     }
 
     /**
      * 更新事件类型
      * @return
      */
-    @Override
-    public boolean addOrUpdate(PolicyDecisionModeDO policyDecisionModeDO){
+    public boolean addOrUpdate(PolicyDecisionModeEventDO policyDecisionModeDO){
         String policyUuid = policyDecisionModeDO.getPolicyUuid();
         logger.debug("PolicyDecisionMode reload start, policyUuid:{}",policyUuid);
         try {
-            Long timestamp = policyDecisionModeDO.getGmtModify().getTime();
+            Long timestamp = policyDecisionModeDO.getModifiedVersion();
+            switchDecisionMode(policyUuid,timestamp);
+        } catch (Exception e){
+            logger.error("PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
+            return false;
+        }
+        logger.debug("PolicyDecisionMode reload success, policyUuid:{}",policyUuid);
+        return true;
+    }
+
+
+    public boolean switchDecisionMode(String policyUuid,Long timestamp){
+        try {
             AbstractDecisionMode decisionMode = decisionModeCache.get(policyUuid);
 
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDecisionModeRepository.queryByPolicyUuid(policyUuid);
-            if(policyDecisionModeDTO == null){
-                return remove(policyDecisionModeDO);
+            if(policyDecisionModeDTO == null || !policyDecisionModeDTO.isValid()){
+                decisionModeCache.remove(policyUuid);
+                return true;
             }
             //当前策略是否按决策流执行
             if(DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())){
@@ -88,13 +113,13 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 //并行子策略
                 ParallelSubPolicy parallelSubPolicy = new ParallelSubPolicy();
                 parallelSubPolicy.setPolicyUuid(policyUuid);
+                parallelSubPolicy.setGmtModify(policyDecisionModeDTO.getGmtModify());
                 decisionModeCache.put(policyUuid,parallelSubPolicy);
             }
         } catch (Exception e){
             logger.error("PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PolicyDecisionMode reload success, policyUuid:{}",policyUuid);
         return true;
     }
 
@@ -105,7 +130,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
      * @return
      */
     @Override
-    public boolean remove(PolicyDecisionModeDO policyDecisionModeDO){
+    public boolean remove(PolicyDecisionModeEventDO policyDecisionModeDO){
         try {
             decisionModeCache.remove(policyDecisionModeDO.getPolicyUuid());
         } catch (Exception e){
@@ -122,7 +147,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
      * @return
      */
     @Override
-    public boolean deactivate(PolicyDecisionModeDO policyDecisionModeDO){
+    public boolean deactivate(PolicyDecisionModeEventDO policyDecisionModeDO){
         return remove(policyDecisionModeDO);
     }
 

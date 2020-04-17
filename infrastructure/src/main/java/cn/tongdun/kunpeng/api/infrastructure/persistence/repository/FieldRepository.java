@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.FieldDefinitionDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.FieldDefinitionDAO;
 import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +20,13 @@ public class FieldRepository implements IFieldDefinitionRepository {
 
 
     @Autowired
-    private FieldDefinitionDOMapper fieldDefinitionDOMapper;
+    private FieldDefinitionDAO fieldDefinitionDAO;
 
 
     @Override
     public List<FieldDefinition> queryAllSystemField(){
 
-        List<FieldDefinitionDO> list = fieldDefinitionDOMapper.selectByFieldType("sys");
+        List<FieldDefinitionDO> list = fieldDefinitionDAO.selectByFieldType("sys");
 
         List<FieldDefinition> result = null;
         if(list != null){
@@ -44,7 +44,7 @@ public class FieldRepository implements IFieldDefinitionRepository {
     @Override
     public List<FieldDefinition> queryAllExtendField(){
 
-        List<FieldDefinitionDO> list = fieldDefinitionDOMapper.selectByFieldType("ext");
+        List<FieldDefinitionDO> list = fieldDefinitionDAO.selectByFieldType("ext");
 
         List<FieldDefinition> result = null;
         if(list != null){
@@ -60,7 +60,7 @@ public class FieldRepository implements IFieldDefinitionRepository {
 
     @Override
     public FieldDefinition queryByUuid(String uuid){
-        FieldDefinitionDO fieldDefinitionDO = fieldDefinitionDOMapper.selectByUuid(uuid);
+        FieldDefinitionDO fieldDefinitionDO = fieldDefinitionDAO.selectByUuid(uuid);
         if(fieldDefinitionDO == null){
             return null;
         }

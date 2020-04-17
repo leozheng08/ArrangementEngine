@@ -19,4 +19,7 @@ public class DomainEvent<T> implements IDomainEvent<List<T>>{
 
     private List<T> data;
 
+
+    private Class<T> entityClass;
+
 }

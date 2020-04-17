@@ -12,12 +12,14 @@ import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.data.PlatformIndexData;
-import cn.tongdun.kunpeng.common.data.ReasonCode;
-import cn.tongdun.kunpeng.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,7 @@ public class PlatformIndexStep implements IRiskStep {
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
         if(indicatrixs == null || indicatrixs.isEmpty()){
+            logger.info("策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return true;
         }
 
@@ -65,6 +68,7 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         if(indicatrixsParam.isEmpty()){
+            logger.info("策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
             return true;
         }
 
@@ -77,15 +81,19 @@ public class PlatformIndexStep implements IRiskStep {
             indicatrixValQuery.setAppName(APP_NAME);
             indicatrixValQuery.setActivity(activityParam);
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
+            indicatrixValQuery.setNeedDetail(true);
 
             PaasResult<List<GaeaIndicatrixVal>> indicatrixResult = null;
             try {
                 // 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
+                logger.info("平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {
                 // 临时通过LocalcachePeriod配置项做下开关
                 if (ReasonCodeUtil.isTimeout(e)) {
                     ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_TIMEOUT, "gaea");
+                } else {
+                    ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
                 }
                 logger.error("Error occurred when {} indicatrix result for {}.", context.getSeqId(), JSON.toJSONString(indicatrixsParam), e);
             }
@@ -136,12 +144,12 @@ public class PlatformIndexStep implements IRiskStep {
     public Map<String, Object> getGaeaFields(AbstractFraudContext context) {
         Map<String, Object> gaeaContext = new HashMap<>();
         //系统字段
-        Collection<FieldDefinition> systemFields = fieldDefinitionCache.getSystemField(context);
+        Map<String,IFieldDefinition> systemFieldMap=context.getSystemFieldMap();
         //扩展字段
-        Collection<FieldDefinition> extendFields = fieldDefinitionCache.getExtendField(context);
+        Map<String,IFieldDefinition> extendFieldMap=context.getExtendFieldMap();
 
-        build(context, systemFields, gaeaContext);
-        build(context, extendFields, gaeaContext);
+        build(context, systemFieldMap, gaeaContext);
+        build(context, extendFieldMap, gaeaContext);
         return gaeaContext;
     }
 
@@ -175,13 +183,12 @@ public class PlatformIndexStep implements IRiskStep {
     }
 
 
-    private void build(AbstractFraudContext context, Collection<FieldDefinition> fields, Map<String, Object> gaeaContext) {
-        if (CollectionUtils.isNotEmpty(fields)) {
-            fields.forEach(fieldDefinition -> {
-                String fieldCode = fieldDefinition.getFieldCode();
-                Object v = context.get(fieldCode);
-                if (null != v) {
-                    gaeaContext.put(fieldCode, v);
+    private void build(AbstractFraudContext context, Map<String,IFieldDefinition> systemFieldMap, Map<String, Object> gaeaContext) {
+        if (null!=systemFieldMap&&!systemFieldMap.isEmpty()) {
+            systemFieldMap.forEach((k,v)-> {
+                Object fieldValue = context.get(k);
+                if (null != fieldValue) {
+                    gaeaContext.put(k, fieldValue);
                 }
             });
         }

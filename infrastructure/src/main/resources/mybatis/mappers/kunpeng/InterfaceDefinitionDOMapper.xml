@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.InterfaceDefinitionDOMapper" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.InterfaceDefinitionDAO" >
   <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="uuid" property="uuid" jdbcType="CHAR" />
@@ -46,6 +46,6 @@
     select
     <include refid="Base_Column_List" />
     from interface_definition
-    where uuid = #{uuid,jdbcType=CHAR} and is_deleted = 0
+    where uuid = #{uuid,jdbcType=CHAR}
   </select>
 </mapper>

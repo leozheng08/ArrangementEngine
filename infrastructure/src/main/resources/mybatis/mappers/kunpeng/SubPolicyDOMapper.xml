@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.SubPolicyDOMapper" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.SubPolicyDAO" >
   <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.SubPolicyDO" >
 
     <id column="id" property="id" jdbcType="BIGINT" />
@@ -35,7 +35,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from sub_policy t where t.uuid = #{uuid} and is_deleted = 0
+    from sub_policy t where t.uuid = #{uuid}
   </select>
 
   <select id="selectListByPolicyUuid" resultMap="BaseResultMap" >

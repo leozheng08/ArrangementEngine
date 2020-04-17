@@ -5,13 +5,14 @@ import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDOMapper;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDOMapper;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDAO;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDAO;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDAO;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,11 +32,33 @@ public class RuleRepository implements IRuleRepository {
     private Logger logger = LoggerFactory.getLogger(RuleRepository.class);
 
     @Autowired
-    private RuleDOMapper ruleDOMapper;
+    private RuleDAO ruleruleDAO;
     @Autowired
-    private RuleConditionElementDOMapper ruleConditionElementDOMapper;
+    private RuleConditionElementDAO ruleConditionElementDAO;
     @Autowired
-    private RuleActionElementDOMapper ruleActionElementDOMapper;
+    private RuleActionElementDAO ruleActionElementDAO;
+
+    @Override
+    public List<RuleDTO> queryByUuids(List<String> ruleUuids) {
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByUuids(ruleUuids);
+        if(ruleDOList == null) {
+            return null;
+        }
+
+        List<RuleDTO> result = null;
+        result = ruleDOList.stream().map(ruleDO->{
+            RuleDTO ruleDTO = new RuleDTO();
+            BeanUtils.copyProperties(ruleDO,ruleDTO);
+            parseRiskConfig(ruleDTO,ruleDO.getRiskConfig());
+            //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
+            setRuleModifiedVersion(ruleDTO);
+            return ruleDTO;
+        }).collect(Collectors.toList());
+
+        //按下下级关系创建树
+        result = buildRuleTree(result);
+        return result;
+    }
 
 
     /**
@@ -47,7 +68,7 @@ public class RuleRepository implements IRuleRepository {
      */
     @Override
     public List<RuleDTO> queryFullBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
 
         if(ruleDOList == null) {
             return null;
@@ -96,7 +117,7 @@ public class RuleRepository implements IRuleRepository {
 
     @Override
     public List<RuleDTO> queryBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleDOMapper.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
 
         if(ruleDOList == null) {
             return null;
@@ -144,7 +165,7 @@ public class RuleRepository implements IRuleRepository {
     @Override
     public RuleDTO queryFullByUuid(String ruleUuid) {
 
-        RuleDO ruleDO = ruleDOMapper.selectByUuid(ruleUuid);
+        RuleDO ruleDO = ruleruleDAO.selectEnabledByUuid(ruleUuid);
         if(ruleDO == null){
             return null;
         }
@@ -183,7 +204,7 @@ public class RuleRepository implements IRuleRepository {
 
     //查询规则条件
     public List<RuleConditionElementDTO> queryRuleConditionElementDTOByRuleUuid(String ruleUuid) {
-        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDOMapper.selectByBizUuidBizType(ruleUuid, "rule");
+        List<RuleConditionElementDO> ruleConditionElementDOList = ruleConditionElementDAO.selectByBizUuidBizType(ruleUuid, "rule");
         if (ruleConditionElementDOList == null) {
             return null;
         }
@@ -202,7 +223,7 @@ public class RuleRepository implements IRuleRepository {
 
     //查询规则动作
     public List<RuleActionElementDTO> queryRuleActionElementDTOByRuleUuid(String ruleUuid) {
-        List<RuleActionElementDO> ruleActionElementDOList = ruleActionElementDOMapper.selectByRuleUuid(ruleUuid);
+        List<RuleActionElementDO> ruleActionElementDOList = ruleActionElementDAO.selectByRuleUuid(ruleUuid);
         if (ruleActionElementDOList == null) {
             return null;
         }
@@ -287,8 +308,8 @@ public class RuleRepository implements IRuleRepository {
             return;
         }
         try {
-            JSONObject jsonObject = JSONObject.parseObject(riskConfig);
-            String mode = jsonObject.getString("mode");
+            Map jsonObject = JSON.parseObject(riskConfig, HashMap.class);
+            String mode = JsonUtil.getString(jsonObject,"mode");
             if(StringUtils.isBlank(mode)) {
                 return;
             }
@@ -296,16 +317,16 @@ public class RuleRepository implements IRuleRepository {
             switch (mode){
                 case "FirstMatch":
                 case "WorstMatch":
-                    ruleDTO.setRiskDecision(jsonObject.getString("riskDecision"));
+                    ruleDTO.setRiskDecision(JsonUtil.getString(jsonObject,"riskDecision"));
                     break;
                 case "Weighted":
                     WeightedRiskConfigDTO weighted = new WeightedRiskConfigDTO();
-                    weighted.setBaseWeight(jsonObject.getDouble("baseWeight"));
-                    weighted.setWeightRatio(jsonObject.getDouble("weightRatio"));
-                    weighted.setWeightProperty(jsonObject.getString("weightProperty"));
-                    weighted.setWeightPropertyValue(jsonObject.getString("weightPropertyValue"));
-                    weighted.setLowerLimitScore(jsonObject.getInteger("lowerLimitScore"));
-                    weighted.setUpperLimitScore(jsonObject.getInteger("upperLimitScore"));
+                    weighted.setBaseWeight(JsonUtil.getDouble(jsonObject,"baseWeight"));
+                    weighted.setWeightRatio(JsonUtil.getDouble(jsonObject,"weightRatio"));
+                    weighted.setWeightProperty(JsonUtil.getString(jsonObject,"weightProperty"));
+                    weighted.setWeightPropertyValue(JsonUtil.getString(jsonObject,"weightPropertyValue"));
+                    weighted.setLowerLimitScore(JsonUtil.getInteger(jsonObject,"lowerLimitScore"));
+                    weighted.setUpperLimitScore(JsonUtil.getInteger(jsonObject,"upperLimitScore"));
                     ruleDTO.setWeightedRiskConfigDTO(weighted);
                     break;
                 default:

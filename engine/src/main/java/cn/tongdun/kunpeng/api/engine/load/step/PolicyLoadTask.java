@@ -119,6 +119,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
                 //策略运行模式
                 ParallelSubPolicy parallelSubPolicy = new ParallelSubPolicy();
                 parallelSubPolicy.setPolicyUuid(policy.getUuid());
+                parallelSubPolicy.setGmtModify(policyDecisionModeDTO!= null?policyDecisionModeDTO.getGmtModify():policy.getGmtModify());
                 policy.setDecisionMode(parallelSubPolicy);
 
             }

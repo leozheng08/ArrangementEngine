@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.util.List;

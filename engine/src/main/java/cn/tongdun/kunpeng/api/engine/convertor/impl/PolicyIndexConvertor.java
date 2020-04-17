@@ -10,7 +10,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
-import com.alibaba.fastjson.JSONArray;
+import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class PolicyIndexConvertor implements IConvertor<List<IndexDefinitionDTO>
         Map<String, FunctionDesc> functionDescMap = Maps.newHashMap();
         int num = 0;
         for (IndexDefinitionDTO definitionDTO : indexDefinitionDTOS) {
-            List<FunctionParam> paramList = JSONArray.parseArray(definitionDTO.getParams(), FunctionParam.class);
+            List<FunctionParam> paramList = JSON.parseArray(definitionDTO.getParams(), FunctionParam.class);
             FunctionDesc functionDesc = new FunctionDesc();
             functionDesc.setId(num++);
             functionDesc.setType(definitionDTO.getTemplate());

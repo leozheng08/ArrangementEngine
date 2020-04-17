@@ -1,10 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import groovy.lang.GroovyObject;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @Author: liang.chen
@@ -73,6 +70,8 @@ public class GroovyCompileManager {
         groovyField.setPartnerCode(script.getPartnerCode());
         groovyField.setEventType(script.getEventType());
         groovyField.setAssignField(script.getAssignField());
+        groovyField.setFieldMethodName(methodName);
+
         groovyFieldCache.put(script.getUuid(), groovyField);
     }
 

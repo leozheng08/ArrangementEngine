@@ -1,7 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
-import cn.tongdun.ddd.common.domain.CommonEntity;
-import cn.tongdun.kunpeng.api.engine.model.constant.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.api.common.data.DomainEventTypeEnum;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventDO;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -64,19 +66,19 @@ public class DomainEventHandle {
                 @Override
                 public Boolean call(){
                     try {
-                        SingleDomainEvent singleDomainEvent = eventMsgParser.parseSingleDomainEvent(eventMsg);
-                        if(singleDomainEvent == null){
+                        DomainEvent domainEvent = eventMsgParser.parse(eventMsg);
+                        if(domainEvent == null){
                             return true;
                         }
                         //如果此消息已处理成功，则不需要再处理
-                        if(isFinish(singleDomainEvent)){
+                        if(isFinish(domainEvent)){
                             return true;
                         }
 
-                        boolean result = handleMessage(singleDomainEvent);
+                        boolean result = handleMessage(domainEvent);
                         if (result) {
                             //如果处理成功，则标记到本地缓存中
-                            setFinish(singleDomainEvent);
+                            setFinish(domainEvent);
                         }
                     } catch (Exception e){
                         logger.error("handleMessage error,event:{}", eventMsg,e);
@@ -94,24 +96,64 @@ public class DomainEventHandle {
      * @param domainEvent
      * @return
      */
-    private boolean handleMessage(SingleDomainEvent domainEvent){
+    private boolean handleMessage(DomainEvent domainEvent){
         try {
                 Object entryData = domainEvent.getData();
-                IReload reLoadManager = reloadFactory.getReload(entryData.getClass());
+                IReload reLoadManager = reloadFactory.getReload(domainEvent.getEntityClass());
                 if (reLoadManager == null) {
                     logger.warn("reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
                     return true;
                 }
-                if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {
-                    if(!reLoadManager.remove(domainEvent.getData())){
+                if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.CREATE.name())) {
+                    if(!reLoadManager.create(domainEvent.getData())){
                         return false;
                     }
                 } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.DEACTIVATE.name())) {
                     if(!reLoadManager.deactivate(domainEvent.getData())){
                         return false;
                     }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.ACTIVATE.name())) {
+                    if(!reLoadManager.activate(domainEvent.getData())){
+                        return false;
+                    }
+                }  else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.UPDATE.name())) {
+                    if(!reLoadManager.update(domainEvent.getData())){
+                        return false;
+                    }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())) {
+                    if(!reLoadManager.remove(domainEvent.getData())){
+                        return false;
+                    }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.SORT.name())) {
+                    if(!reLoadManager.sort(domainEvent.getData())){
+                        return false;
+                    }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.SUSPEND.name())) {
+                    List list = domainEvent.getData();
+                    if(list == null || list.isEmpty()){
+                        return true;
+                    }
+                    if(!reLoadManager.suspend(list.get(0))){
+                        return false;
+                    }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.TERMINATE.name())) {
+                    List list = domainEvent.getData();
+                    if(list == null || list.isEmpty()){
+                        return true;
+                    }
+                    if(!reLoadManager.terminate(list.get(0))){
+                        return false;
+                    }
+                } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.SWITCH_DECISION_MODE.name())) {
+                    List list = domainEvent.getData();
+                    if(list == null || list.isEmpty()){
+                        return true;
+                    }
+                    if(!reLoadManager.switchDecisionMode(list.get(0))){
+                        return false;
+                    }
                 } else {
-                    if(!reLoadManager.addOrUpdate(domainEvent.getData())){
+                    if(!reLoadManager.update(domainEvent.getData())){
                         return false;
                     }
                 }
@@ -128,33 +170,85 @@ public class DomainEventHandle {
      * @param domainEvent
      * @return
      */
-    private boolean isFinish(SingleDomainEvent domainEvent){
-        String key = buildKey(domainEvent);
-        return finishEventCache.contains(key);
-    }
+    private boolean isFinish(DomainEvent domainEvent){
 
-    private String buildKey(SingleDomainEvent domainEvent){
-        String uuid = null;
+        List list = domainEvent.getData();
+        if(list == null || list.isEmpty()) {
+            return true;
+        }
         Long gmtModify = domainEvent.getOccurredTime();
-        if(domainEvent.getData() instanceof CommonEntity) {
-            CommonEntity commonEntity = (CommonEntity) domainEvent.getData();
-            uuid = commonEntity.getUuid();
-            if(gmtModify<commonEntity.getGmtModify().getTime()) {
-                gmtModify = commonEntity.getGmtModify().getTime();
+        for(Object obj:list) {
+            String uuid = null;
+            Long gmtModifyTmp = null;
+            if(obj instanceof Map){
+                uuid = JsonUtil.getString((Map)obj,"uuid");
+                gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
+            } else if(obj instanceof EventDO) {
+                EventDO domainEventDO = (EventDO) obj;
+                uuid = domainEventDO.getUuid();
+                if(domainEventDO.getGmtModify() != null) {
+                    gmtModifyTmp = domainEventDO.getGmtModify().getTime();
+                }
+            } else {
+                logger.warn("不能识别的对象 ,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
+                continue;
+            }
+
+            if(gmtModifyTmp == null){
+                gmtModifyTmp = gmtModify;
+            }
+
+            String key = buildKey(domainEvent.getEntity(),uuid,gmtModifyTmp);
+            if(!finishEventCache.contains(key)){
+                return false;
             }
         }
 
+        return true;
+    }
 
-        return StringUtils.join(domainEvent.getEntity(),SPLIT_CHAR,uuid,SPLIT_CHAR,gmtModify);
+    /**
+     * 生成的key为：entityName+uuid+version(即时间戳)
+     * @return
+     */
+    private String buildKey(String entity, String uuid,Long gmtModify){
+        return StringUtils.join(entity,SPLIT_CHAR,uuid,SPLIT_CHAR,gmtModify);
     }
 
     /**
      * 成功处理的，标记到本地缓存
      * @param domainEvent
      */
-    private void setFinish(SingleDomainEvent domainEvent){
-        String key = buildKey(domainEvent);
-        finishEventCache.put(key,true);
+    private void setFinish(DomainEvent domainEvent){
+        List list = domainEvent.getData();
+        if(list == null || list.isEmpty()) {
+            return;
+        }
+        Long gmtModify = domainEvent.getOccurredTime();
+        for(Object obj:list) {
+            String uuid = null;
+            Long gmtModifyTmp = null;
+            if(obj instanceof Map){
+                uuid = JsonUtil.getString((Map)obj,"uuid");
+                gmtModifyTmp = JsonUtil.getLong((Map)obj,"gmtModify");
+            } else if(obj instanceof EventDO) {
+                EventDO domainEventDO = (EventDO) obj;
+                uuid = domainEventDO.getUuid();
+                if(domainEventDO.getGmtModify() != null) {
+                    gmtModifyTmp = domainEventDO.getGmtModify().getTime();
+                }
+            } else {
+                logger.warn("不能识别的对象,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
+                continue;
+            }
+
+            if(gmtModifyTmp == null){
+                gmtModifyTmp = gmtModify;
+            }
+
+            String key = buildKey(domainEvent.getEntity(),uuid,gmtModifyTmp);
+            finishEventCache.put(key,true);
+        }
     }
 
 }

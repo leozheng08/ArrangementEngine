@@ -4,20 +4,20 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.data.ReasonCode;
-import cn.tongdun.kunpeng.common.data.SubReasonCode;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,6 +28,7 @@ import java.util.Set;
 @Component
 @Step(pipeline = Risk.NAME,phase = Risk.OUTPUT,order = 1100)
 public class ReasonCodeStep implements IRiskStep {
+    Logger logger = LoggerFactory.getLogger(ReasonCodeStep.class);
 
     @Autowired
     private ExtensionExecutor extensionExecutor;
@@ -41,8 +42,8 @@ public class ReasonCodeStep implements IRiskStep {
             response.setReasonCode(ReasonCode.INTERNAL_ERROR.toString());
         }
 
-        String respStr = JSON.toJSONString(response, SerializerFeature.DisableCircularReferenceDetect);
-        logger.warn("partner:{}, RESP_F:{}", context.getPartnerCode(), respStr);
+        String respStr = JSON.toJSONString(response);
+        logger.info("partner:{}, RESP_F:{}", context.getPartnerCode(), respStr);
         return true;
     }
 

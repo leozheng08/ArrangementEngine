@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.util;
 
-import com.alibaba.fastjson.JSONObject;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4SafeDecompressor;
@@ -19,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -66,7 +66,7 @@ public class CompressUtil {
         return encoder.encode(zipbytes);
     }
 
-    public static String listGzip(ArrayList<JSONObject> items) throws IOException {
+    public static String listGzip(ArrayList<Map> items) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(out);
         gzip.write(SerializationUtils.serialize(items));
@@ -107,7 +107,7 @@ public class CompressUtil {
      * @throws IOException
      */
     @SuppressWarnings("unchecked")
-    public static ArrayList<JSONObject> ungzipList(String base64String) throws IOException {
+    public static ArrayList<Map> ungzipList(String base64String) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         BASE64Decoder decoder = new BASE64Decoder();
         byte[] decodedBytes = decoder.decodeBuffer(base64String);
@@ -119,7 +119,7 @@ public class CompressUtil {
         while ((n = gunzip.read(buffer)) >= 0) {
             out.write(buffer, 0, n);
         }
-        return (ArrayList<JSONObject>) SerializationUtils.deserialize(out.toByteArray());
+        return (ArrayList<Map>) SerializationUtils.deserialize(out.toByteArray());
     }
 
     public static String lz4(String input) {

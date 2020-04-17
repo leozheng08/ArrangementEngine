@@ -5,8 +5,7 @@ import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
-import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventTypeEventDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class EventTypeReLoadManager implements IReload<EventTypeDO> {
+public class EventTypeReLoadManager implements IReload<EventTypeEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(EventTypeReLoadManager.class);
 
@@ -34,19 +33,31 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(EventTypeDO.class,this);
+        reloadFactory.register(EventTypeEventDO.class,this);
+    }
+
+    @Override
+    public boolean create(EventTypeEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean update(EventTypeEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean activate(EventTypeEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
 
     /**
      * 更新事件类型
      * @return
      */
-    @Override
-    public boolean addOrUpdate(EventTypeDO eventTypeDO){
-        String uuid = eventTypeDO.getUuid();
+    public boolean addOrUpdate(EventTypeEventDO eventDO){
+        String uuid = eventDO.getUuid();
         logger.debug("EventType reload start, uuid:{}",uuid);
         try {
-            Long timestamp = eventTypeDO.getGmtModify().getTime();
+            Long timestamp = eventDO.getModifiedVersion();
             EventType eventType = eventTypeCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && eventType != null && eventType.getModifiedVersion() >= timestamp) {
@@ -55,8 +66,8 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
             }
 
             EventType newEventType = eventTypeRepository.queryByUuid(uuid);
-            if(newEventType == null){
-                return remove(eventTypeDO);
+            if(newEventType == null || !newEventType.isValid()){
+                return remove(eventDO);
             }
 
             eventTypeCache.put(uuid, newEventType);
@@ -71,31 +82,23 @@ public class EventTypeReLoadManager implements IReload<EventTypeDO> {
 
     /**
      * 删除事件类型
-     * @param eventTypeDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(EventTypeDO eventTypeDO){
+    public boolean remove(EventTypeEventDO eventDO){
         //事件类型删除或失效后，对应的策略仍可以正常调用，所有缓存中不需要删除
-        logger.debug("EventType remove ignore, uuid:{}",eventTypeDO.getUuid());
-
-//        try {
-//            eventTypeCache.remove(eventTypeDO.getUuid());
-//        } catch (Exception e){
-//            logger.error("EventType remove failed, uuid:{}",eventTypeDO.getUuid(),e);
-//            return false;
-//        }
-//        logger.debug("EventType remove success, uuid:{}",eventTypeDO.getUuid());
+        logger.debug("EventType remove ignore, uuid:{}",eventDO.getUuid());
         return true;
     }
 
     /**
      * 关闭状态
-     * @param eventTypeDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(EventTypeDO eventTypeDO){
-        return remove(eventTypeDO);
+    public boolean deactivate(EventTypeEventDO eventDO){
+        return remove(eventDO);
     }
 }

@@ -2,6 +2,10 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -10,16 +14,13 @@ import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.config.IBaseConfig;
-import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
-import cn.tongdun.kunpeng.common.data.*;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
+import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * 取得策略uuid
@@ -48,9 +49,12 @@ public class GetPolicyUuidStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         //如果合作方为空则设置默认合作方
-        setDefaultPartnerCode(context, request);
+        setDefaultPartnerCode(context);
+        //如果appName为空则设置默认appName
+        setDefaultAppName(context);
 
         String partnerCode = context.getPartnerCode();
+        String appName = context.getAppName();
         String eventId = request.getEventId();
         String policyVersion = request.getPolicyVersion();
 
@@ -63,9 +67,9 @@ public class GetPolicyUuidStep implements IRiskStep {
 
         String policyUuid = null;
         if(StringUtils.isNotBlank(policyVersion)) {
-            policyUuid = policyCache.getPolicyUuid(partnerCode, eventId, policyVersion);
+            policyUuid = policyCache.getPolicyUuid(partnerCode, appName, eventId, policyVersion);
         } else {
-            PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, eventId);
+            PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
             //策略定义不存在
             if(policyDefinition == null){
                 logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
@@ -128,18 +132,23 @@ public class GetPolicyUuidStep implements IRiskStep {
     }
 
 
-    private void setDefaultPartnerCode(AbstractFraudContext context,RiskRequest request){
+    private void setDefaultPartnerCode(AbstractFraudContext context){
         if(StringUtils.isNotBlank(context.getPartnerCode())){
             return;
         }
 
         //如果不传partner_code，则按默认值处理
-        if(StringUtils.isBlank(request.getPartnerCode())) {
-            context.setPartnerCode(Constant.DEFAULT_PARTNER);
-        } else {
-            context.setPartnerCode(request.getPartnerCode());
-        }
+        context.setPartnerCode(Constant.DEFAULT_PARTNER);
     }
+
+    private void setDefaultAppName(AbstractFraudContext context){
+        if(StringUtils.isNotBlank(context.getAppName())) {
+            return;
+        }
+        context.setAppName(Constant.DEFAULT_APP_NAME);
+        context.setAppType(Constant.DEFAULT_APP_TYPE);
+    }
+
 
     private BizScenario createBizScenario(AbstractFraudContext context){
         BizScenario bizScenario = new BizScenario();

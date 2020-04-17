@@ -8,8 +8,8 @@ import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCach
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -90,19 +90,22 @@ public class SubPolicyConvertor implements IConvertor<SubPolicyDTO,SubPolicy> {
             return;
         }
 
-        JSONObject json = JSONObject.parseObject(attribute);
-        JSONArray riskThresholdArray = json.getJSONArray("riskThresholds");
+        Map json = JSON.parseObject(attribute,HashMap.class);
+        String riskThresholdsStr = JsonUtil.getString(json,"riskThresholds");
+        if(StringUtils.isBlank(riskThresholdsStr)){
+            return;
+        }
+        List<HashMap> riskThresholdArray = JSON.parseArray  (riskThresholdsStr,HashMap.class);
 
         if(riskThresholdArray == null){
             return;
         }
 
         List<DecisionResultThreshold> riskThresholds = new ArrayList<>();
-        for(Object riskThresholdTmp:riskThresholdArray){
-            JSONObject riskThreshold = (JSONObject)riskThresholdTmp;
-            int start = riskThreshold.getInteger("start");
-            int end = riskThreshold.getInteger("end");
-            String riskDecision = riskThreshold.getString("riskDecision");
+        for(Map riskThreshold:riskThresholdArray){
+            int start = JsonUtil.getInteger(riskThreshold,"start");
+            int end = JsonUtil.getInteger(riskThreshold,"end");
+            String riskDecision = JsonUtil.getString(riskThreshold,"riskDecision");
 
             DecisionResultType decisionResultType = decisionResultTypeCache.get(riskDecision);
 

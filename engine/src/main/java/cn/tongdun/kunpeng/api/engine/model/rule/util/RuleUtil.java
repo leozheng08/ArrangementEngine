@@ -3,12 +3,11 @@ package cn.tongdun.kunpeng.api.engine.model.rule.util;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: liang.chen
@@ -39,25 +38,9 @@ public class RuleUtil {
             return fieldCode;
         }
 
-        //系统字段
-        Collection<FieldDefinition> systemFields = getFieldDefinitionCache().getSystemField(context);
-        //扩展字段
-        Collection<FieldDefinition> extendFields = getFieldDefinitionCache().getExtendField(context);
-
-
-        if (null != systemFields && !systemFields.isEmpty()) {
-            for (FieldDefinition field : systemFields) {
-                if (fieldCode.equals(field.getFieldCode())) {
-                    return field.getDisplayName();
-                }
-            }
-        }
-        if (null != extendFields && !extendFields.isEmpty()) {
-            for (FieldDefinition field : extendFields) {
-                if (fieldCode.equals(field.getFieldCode())) {
-                    return field.getDisplayName();
-                }
-            }
+        IFieldDefinition fieldDefinition=context.getFieldDefinition(fieldCode);
+        if (null!=fieldDefinition){
+            return fieldDefinition.getDisplayName();
         }
         return fieldCode;
     }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>starters</artifactId>
+        <groupId>cn.tongdun.kunpeng-api</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 极简版，不依赖任何外部其他应用，基件只依赖db，没有配置中心与监控-->
+    <artifactId>starter-mini</artifactId>
+
+
+    <dependencies>
+        <dependency>
+            <!-- kunpeng-api核心包，必选 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>core-spring-boot-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 没有kafka,redis基件，消息通知采用db事件表 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>event-notify-db</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 没有监控统计 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>metrics-ignore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口入参校验 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-check</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口支持groovy脚本 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-groovy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口运行规则与决策流引擎 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-runengine</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口输出 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-output</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 无redis等缓存基件 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>kv-cache-ignore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 单一集群 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>partner-cluster-single</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 只有一个default默认合作方 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>admin-partner-ignore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 只有一个default默认应用 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>admin-application-ignore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>

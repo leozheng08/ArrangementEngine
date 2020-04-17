@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.util;
 
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -73,18 +73,10 @@ public class VelocityHelper {
         if (StringUtils.isBlank(fieldCode)) {
             return fieldCode;
         }
-
-        List<IFieldDefinition> fieldDefinitions = context.getFieldDefinitions();
-        if (null == fieldDefinitions || fieldDefinitions.isEmpty()) {
-            return fieldCode;
+        IFieldDefinition fieldDefinition=context.getFieldDefinition(fieldCode);
+        if (null!=fieldDefinition){
+            return fieldDefinition.getDisplayName();
         }
-
-        for (IFieldDefinition fieldDefinition : fieldDefinitions) {
-            if (fieldCode.equals(fieldDefinition.getFieldCode())) {
-                return fieldDefinition.getDisplayName();
-            }
-        }
-
         return fieldCode;
     }
 

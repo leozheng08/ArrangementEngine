@@ -91,13 +91,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- json start -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        <!-- json end -->
-
         <!-- ddd start -->
         <dependency>
             <groupId>cn.tongdun.ddd</groupId>
@@ -105,7 +98,11 @@
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng</groupId>
-            <artifactId>kunpeng-share</artifactId>
+            <artifactId>kunpeng-share-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng</groupId>
+            <artifactId>kunpeng-share-dataobject</artifactId>
         </dependency>
         <!-- ddd end-->
         <dependency>
@@ -122,6 +119,20 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
         <!-- module end -->

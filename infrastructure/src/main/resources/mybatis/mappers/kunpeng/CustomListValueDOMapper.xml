@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListValueDOMapper" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListValueDAO" >
   <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.CustomListValueDO" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="uuid" property="uuid" jdbcType="CHAR" />
@@ -47,7 +47,7 @@
     select
     <include refid="Base_Column_List" />
     from custom_list_value
-    where uuid = #{uuid,jdbcType=CHAR}  and is_deleted=0
+    where uuid = #{uuid,jdbcType=CHAR}
   </select>
 
 
@@ -56,8 +56,7 @@
     select
     <include refid="Base_Column_List" />
     from custom_list_value
-    where is_deleted=0
-    and uuid in
+    where uuid in
     <foreach collection="list" item="uuid" index="index"  open="(" separator="," close=")">
       #{uuid}
     </foreach>

@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.engine;
 
-
-import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
+import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
@@ -12,13 +11,10 @@ import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
-import cn.tongdun.kunpeng.common.data.PolicyResponse;
-import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
-import cn.tongdun.kunpeng.common.data.*;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
-import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -70,6 +65,9 @@ public class ParallelEngine extends DecisionTool {
     @Autowired
     private IConfigRepository configRepository;
 
+    private long configCreditTimeout = 0;
+    private long configExecuteTimeout = 0;
+
 
     @PostConstruct
     public void init() {
@@ -80,6 +78,8 @@ public class ParallelEngine extends DecisionTool {
                 TimeUnit.MINUTES,
                 20,
                 "ruleExecute");
+        configExecuteTimeout=configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT);
+        configCreditTimeout=configRepository.getLongProperty("rule.engine.execute.credit.timeout",configExecuteTimeout);
     }
 
 
@@ -97,9 +97,7 @@ public class ParallelEngine extends DecisionTool {
      * @return 规则引擎执行超时时间
      */
     private long resolveExecuteTimeout(AbstractFraudContext context) {
-        String eventType = context.getEventType();
-        long timeout = configRepository.getLongProperty("rule.engine.execute.credit.timeout",
-                configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT));
+        long timeout = configCreditTimeout;
         if (timeout < DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT) {
             timeout = DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT;
         }
@@ -157,7 +155,9 @@ public class ParallelEngine extends DecisionTool {
             if (future.isDone() && !future.isCancelled()) {
                 try {
                     SubPolicyResponse subPolicyResponse = future.get();
-                    logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSONObject.toJSONString(subPolicyResponse));
+                    if (logger.isDebugEnabled()){
+                        logger.debug("seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSON.toJSONString(subPolicyResponse));
+                    }
                     subPolicyResponseList.add(subPolicyResponse);
                 } catch (InterruptedException e) {
                     logger.error("获取规则引擎执行结果被中断", e);

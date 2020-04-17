@@ -5,12 +5,10 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexManager;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * @Author: liuq

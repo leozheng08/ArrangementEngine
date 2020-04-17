@@ -1,8 +1,7 @@
 package cn.tongdun.kunpeng.client.data;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.ValueFilter;
-import org.apache.commons.lang3.StringUtils;
+import cn.tongdun.kunpeng.share.json.JSON;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -13,16 +12,25 @@ import java.util.*;
  * @Author: liang.chen
  * @Date: 2020/2/28 下午5:43
  */
+@JsonSerialize(using = CustomSerializer.class)
 public class RiskRequest implements Serializable {
 
     private static final Field[] fields = RiskRequest.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length);
+    private static final Map<String,Method> fieldGetMethodMap = new HashMap<>();
     static {
         Set<String> includeTypes =new HashSet<String>(){{add("int");add("integer");add("string");add("double");add("long");add("float");add("boolean");}};
         for (Field field : fields) {
             String simTypeName = field.getType().getSimpleName();
             if (includeTypes.contains(simTypeName.toLowerCase())) {
                 fieldNames.add(field.getName());
+                String methodName = "get" + upperCaseFirstChar(field.getName());
+                try {
+                    Method method = RiskRequest.class.getMethod(methodName);
+                    fieldGetMethodMap.put(field.getName(),method);
+                } catch (Exception e) {
+                    // ignore
+                }
             }
         }
     }
@@ -42,6 +50,12 @@ public class RiskRequest implements Serializable {
      * 事件id，必传
      */
     private String eventId;
+
+
+    /**
+     * 应用名
+     */
+    private String appName;
 
     /**
      * 策略版本号，非必填，如果不传则根据合作方、应用、eventId取得默认的决策版本号来运行。
@@ -112,7 +126,10 @@ public class RiskRequest implements Serializable {
      */
     private String simulationPartner;
 
-
+    /**
+     * 仿真的appName
+     */
+    private String simulationApp;
     /**
      * 仿真的seqId
      */
@@ -124,12 +141,6 @@ public class RiskRequest implements Serializable {
      * 按字段管理中定义的field_code传的字段值
      */
     private Map<String, Object> fieldValues = new HashMap<>();
-
-    /**
-     * 扩展属性
-     */
-    private Map<String, Object> extAttrs = new HashMap<>();
-
 
 
     public String getPartnerCode() {
@@ -148,6 +159,13 @@ public class RiskRequest implements Serializable {
         this.secretKey = secretKey;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public String getEventId() {
         return eventId;
@@ -261,6 +279,14 @@ public class RiskRequest implements Serializable {
         this.simulationPartner = simulationPartner;
     }
 
+    public String getSimulationApp() {
+        return simulationApp;
+    }
+
+    public void setSimulationApp(String simulationApp) {
+        this.simulationApp = simulationApp;
+    }
+
     public String getSimulationSeqId() {
         return simulationSeqId;
     }
@@ -290,19 +316,7 @@ public class RiskRequest implements Serializable {
     }
 
 
-    public Map<String, Object> getExtAttrs() {
-        return extAttrs;
-    }
-
-    public void setExtAttrs(Map<String, Object> extAttrs) {
-        this.extAttrs = extAttrs;
-    }
-
-    public void addExtAttrs(String attrName,Object value){
-        this.extAttrs.put(attrName,value);
-    }
-
-    private String upperCaseFirstChar(String x) {
+    private static String upperCaseFirstChar(String x) {
         if (x == null) {return null;}
         if (x.isEmpty()) {return "";}
         String firstChar = x.substring(0, 1);
@@ -319,27 +333,21 @@ public class RiskRequest implements Serializable {
             return "null";
         }
 
-        if (fieldNames.contains(key)) {
-            String methodName = "get" + upperCaseFirstChar(key);
+        Object fieldValue = fieldValues.get(key);
+        if (fieldValue != null) {
+            return fieldValue;
+        }
+
+        Method getMethod = fieldGetMethodMap.get(key);
+        if (getMethod != null) {
             try {
-                Method method = this.getClass().getMethod(methodName);
-                Object value = method.invoke(this);
+                Object value = getMethod.invoke(this);
                 if (value != null) {
                     return value;
                 }
             } catch (Exception e) {
                 // ignore
             }
-        }
-
-        Object fieldValue = fieldValues.get(key);
-        if (fieldValue != null) {
-            return fieldValue;
-        }
-
-        Object extAttr = extAttrs.get(key);
-        if (extAttr != null) {
-            return extAttr;
         }
         return null;
     }
@@ -354,24 +362,7 @@ public class RiskRequest implements Serializable {
 
     @Override
     public String toString(){
-        ValueFilter valueFilter = new ValueFilter(){
-            @Override
-            public Object process(Object object, String name, Object value){
-                if("secretKey".equals(name)){
-                    if(value == null){
-                        return null;
-                    }
-                    if (StringUtils.isBlank(value.toString()) || StringUtils.length(value.toString()) != 32) {
-                        return secretKey;
-                    }
-                    return StringUtils.left(secretKey, 6).concat(
-                            StringUtils.removeStart(StringUtils.leftPad(StringUtils.right(secretKey, 6),
-                                    StringUtils.length(secretKey), "*"), "******"));
-                }
-                return value;
-            }
-        };
-        return JSONObject.toJSONString(this, new ValueFilter[]{valueFilter});
+        return JSON.toJSONString(this);
     }
 
 }

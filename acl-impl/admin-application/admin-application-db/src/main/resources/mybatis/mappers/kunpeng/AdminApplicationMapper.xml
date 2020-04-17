@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminApplicationDAO">
+    <resultMap id="AdminApplicationMap" type="cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminApplicationDO">
+        <result property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="name" column="name" />
+        <result property="appType" column="app_type" />
+        <result property="displayName" column="display_name" />
+        <result property="partnerCode" column="partner_code" />
+        <result property="description" column="description" />
+        <result property="secretKey" column="secret_key" />
+        <result property="version" column="version" />
+        <result property="gmtModified" column="gmt_modified" />
+    </resultMap>
+
+    <sql id="queryColumns">
+        a.id,a.name,a.uuid,a.app_type,a.display_name,a.partner_code,a.version,a.secret_key,a.description,a.gmt_modified
+    </sql>
+
+
+    <select id="queryByUuid" parameterType="String" resultMap="AdminApplicationMap">
+        select
+        <include refid="queryColumns" />
+        from admin_application
+        where uuid=#{uuid}
+    </select>
+
+
+    <select id="queryApplicationsByPartners" parameterType="java.util.Set" resultMap="AdminApplicationMap">
+        select
+        <include refid="queryColumns"/>
+        from admin_application a
+        where a.partner_code in
+        <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
+            #{partner}
+        </foreach>
+    </select>
+
+
+
+</mapper>

@@ -9,10 +9,12 @@ import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCach
 import cn.tongdun.kunpeng.client.api.IRiskService;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
-import cn.tongdun.kunpeng.common.data.BizScenario;
-import cn.tongdun.kunpeng.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
+import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Response;
 import org.slf4j.Logger;
@@ -42,6 +44,9 @@ public class RiskService implements IRiskService {
     @Autowired
     private ExtensionExecutor extensionExecutor;
 
+    @Autowired
+    private IMetrics metrics;
+
 
     @Override
     public IRiskResponse riskService(Map<String, String> request) {
@@ -60,6 +65,9 @@ public class RiskService implements IRiskService {
     @Override
     public IRiskResponse riskService(RiskRequest riskRequest) {
 
+        metrics.counter("kunpeng.api.riskservice.qps");
+        ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
+
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
 
@@ -70,6 +78,7 @@ public class RiskService implements IRiskService {
         IRiskResponse riskResponse = null;
 
         try {
+
             riskResponse  = extensionExecutor.execute(ICreateRiskResponseExtPt.class,
                     bizScenario,
                     extension -> extension.createRiskResponse(context));
@@ -90,7 +99,7 @@ public class RiskService implements IRiskService {
             logger.error("决策接口内部异常",e);
             riskResponse.setReasonCode(ReasonCode.INTERNAL_ERROR.toString());
         }
-
+        timeContext.stop();
         return riskResponse;
 
     }

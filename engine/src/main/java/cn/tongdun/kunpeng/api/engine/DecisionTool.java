@@ -4,8 +4,8 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.common.data.PolicyResponse;
-import cn.tongdun.kunpeng.common.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.api.common.data.PolicyResponse;
+import cn.tongdun.kunpeng.api.common.data.SubPolicyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;

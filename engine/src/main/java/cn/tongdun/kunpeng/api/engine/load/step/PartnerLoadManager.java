@@ -1,23 +1,22 @@
 package cn.tongdun.kunpeng.api.engine.load.step;
 
+import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
-import cn.tongdun.kunpeng.api.engine.model.cluster.IPartnerClusterRepository;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
-import cn.tongdun.kunpeng.api.engine.model.partner.IPartnerRepository;
+import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
-import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.config.ILocalEnvironment;
+import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @Author: liang.chen
@@ -42,11 +41,18 @@ public class PartnerLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("PartnerLoadManager start");
-        //加载默认合作方
-        Partner defaultPartner = createDefaultPartner();
-        partnerCache.put(defaultPartner.getPartnerCode(),defaultPartner);
 
-        List<Partner> partnerList = partnerRepository.queryEnabledByPartners(partnerClusterCache.getPartners());
+        List<PartnerDTO> partnerDTOList = partnerRepository.queryEnabledByPartners(partnerClusterCache.getPartners());
+
+        if(partnerDTOList == null || partnerDTOList.isEmpty()){
+            return true;
+        }
+
+        List<Partner> partnerList = partnerDTOList.stream().map(partnerDTO->{
+            Partner partner = new Partner();
+            BeanUtils.copyProperties(partnerDTO,partner);
+            return partner;
+        }).collect(Collectors.toList());
 
         for(Partner partner:partnerList){
             partnerCache.put(partner.getPartnerCode(),partner);
@@ -56,12 +62,4 @@ public class PartnerLoadManager implements ILoad {
         return true;
     }
 
-    private Partner createDefaultPartner(){
-        Partner partner = new Partner();
-        partner.setPartnerCode(Constant.DEFAULT_PARTNER);
-        partner.setUuid(Constant.DEFAULT_PARTNER);
-        partner.setDisplayName(Constant.DEFAULT_PARTNER);
-        partner.setStatus(1);
-        return partner;
-    }
 }

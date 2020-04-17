@@ -4,10 +4,9 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.*;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -30,19 +27,19 @@ public class PolicyRepository implements IPolicyRepository{
     private Logger logger = LoggerFactory.getLogger(PolicyRepository.class);
 
     @Autowired
-    private PolicyDefinitionDOMapper policyDefinitionDOMapper;
+    private PolicyDefinitionDAO policyDefinitionDAO;
     @Autowired
-    private PolicyDOMapper policyDOMapper;
+    private PolicyDAO policyDAO;
     @Autowired
-    private PolicyChallengerDOMapper policyChallengerDOMapper;
+    private PolicyChallengerDAO policyChallengerDAO;
     @Autowired
     private SubPolicyRepository subPolicyRepository;
     @Autowired
     private PolicyDecisionModeRepository policyDecisionModeRepository;
     @Autowired
-    private PolicyIndicatrixItemDOMapper policyIndicatrixItemDOMapper;
+    private PolicyIndicatrixItemDAO policyIndicatrixItemDAO;
     @Autowired
-    private PolicyFieldDOMapper policyFieldDOMapper;
+    private PolicyFieldDAO policyFieldDAO;
     @Autowired
     private  DecisionFlowRepository decisionFlowRepository;
 
@@ -50,7 +47,7 @@ public class PolicyRepository implements IPolicyRepository{
     //根据合作列表，取得运行版本的策略清单
     @Override
     public List<PolicyModifiedDTO> queryDefaultPolicyByPartners(Set<String> partners){
-        return policyDOMapper.selectDefaultPolicyByPartners(partners);
+        return policyDAO.selectDefaultPolicyByPartners(partners);
     }
 
 
@@ -59,7 +56,7 @@ public class PolicyRepository implements IPolicyRepository{
     public List<PolicyModifiedDTO> queryChallengerPolicyByPartners(Set<String> partners){
         List<PolicyModifiedDTO> result = new ArrayList<>();
         List<String> policyUuidList = new ArrayList<>();
-        List<PolicyChallengerDO> policyChallengerDOList = policyChallengerDOMapper.selectAvailableByPartners(partners);
+        List<PolicyChallengerDO> policyChallengerDOList = policyChallengerDAO.selectAvailableByPartners(partners);
         for(PolicyChallengerDO policyChallengerDO:policyChallengerDOList){
             String config = policyChallengerDO.getConfig();
             if(StringUtils.isBlank(config)){
@@ -67,10 +64,9 @@ public class PolicyRepository implements IPolicyRepository{
             }
             try{
                 //[{"ratio":40.0,"versionUuid":"b225f25f34044a9a9a6929ce12703068"},{"ratio":60.0,"versionUuid":"efa8c9ea504f413caf0634dbab760583"}]
-                JSONArray jsonarray = JSONArray.parseArray(config);
-                for(Object obj:jsonarray){
-                    JSONObject jsonObject = (JSONObject)obj;
-                    String versionUuid = jsonObject.getString("versionUuid");
+                List<HashMap> jsonarray = JSON.parseArray(config, HashMap.class);
+                for(Map jsonObject:jsonarray){
+                    String versionUuid = JsonUtil.getString(jsonObject,"versionUuid");
                     if(StringUtils.isNotBlank(versionUuid)){
                         policyUuidList.add(versionUuid);
                     }
@@ -84,13 +80,13 @@ public class PolicyRepository implements IPolicyRepository{
             return result;
         }
 
-        return policyDOMapper.selectPolicyByUuids(policyUuidList);
+        return policyDAO.selectPolicyByUuids(policyUuidList);
     }
 
     //查询单个策略的信息，不包含各个子对象
     @Override
     public PolicyDTO queryByUuid(String uuid){
-        PolicyDO policyDO = policyDOMapper.selectByUuid(uuid);
+        PolicyDO policyDO = policyDAO.selectByUuid(uuid);
 
         if(policyDO == null){
             return null;
@@ -100,7 +96,7 @@ public class PolicyRepository implements IPolicyRepository{
         BeanUtils.copyProperties(policyDO,policyDTO);
 
         //取得策略定义表中的策略名称、eventId
-        PolicyDefinitionDO policyDefinitionDO = policyDefinitionDOMapper.selectByUuid(policyDO.getPolicyDefinitionUuid());
+        PolicyDefinitionDO policyDefinitionDO = policyDefinitionDAO.selectByUuid(policyDO.getPolicyDefinitionUuid());
         policyDTO.setName(policyDefinitionDO.getName());
         policyDTO.setEventId(policyDefinitionDO.getEventId());
         policyDTO.setEventType(policyDefinitionDO.getEventType());
@@ -119,7 +115,7 @@ public class PolicyRepository implements IPolicyRepository{
     //查询单个策略的完整信息，包含各个子对象
     @Override
     public PolicyDTO queryFullByUuid(String uuid){
-        PolicyDO policyDO = policyDOMapper.selectByUuid(uuid);
+        PolicyDO policyDO = policyDAO.selectByUuid(uuid);
 
         if(policyDO == null){
             return null;
@@ -129,8 +125,10 @@ public class PolicyRepository implements IPolicyRepository{
         BeanUtils.copyProperties(policyDO,policyDTO);
 
         //取得策略定义表中的策略名称、eventId
-        PolicyDefinitionDO policyDefinitionDO = policyDefinitionDOMapper.selectByUuid(policyDO.getPolicyDefinitionUuid());
+        PolicyDefinitionDO policyDefinitionDO = policyDefinitionDAO.selectByUuid(policyDO.getPolicyDefinitionUuid());
         policyDTO.setName(policyDefinitionDO.getName());
+        policyDTO.setAppName(policyDefinitionDO.getAppName());
+        policyDTO.setAppType(policyDefinitionDO.getAppType());
         policyDTO.setEventId(policyDefinitionDO.getEventId());
         policyDTO.setEventType(policyDefinitionDO.getEventType());
         policyDTO.setPartnerCode(policyDefinitionDO.getPartnerCode());
@@ -155,7 +153,7 @@ public class PolicyRepository implements IPolicyRepository{
 
     //查询平台指标
     private List<PolicyIndicatrixItemDTO> queryPolicyIndicatrixItemDTOByPolicyUuid(String policyUuid){
-        List<PolicyIndicatrixItemDO>  policyIndicatrixItemDOList = policyIndicatrixItemDOMapper.selectEnabledByPolicyUuid(policyUuid);
+        List<PolicyIndicatrixItemDO>  policyIndicatrixItemDOList = policyIndicatrixItemDAO.selectEnabledByPolicyUuid(policyUuid);
         if(policyIndicatrixItemDOList == null) {
             return null;
         }
@@ -173,7 +171,7 @@ public class PolicyRepository implements IPolicyRepository{
 
     //查询策略使用到的字段
     private List<PolicyFieldDTO> queryPolicyFieldDTOByPolicyUuid(String policyUuid){
-        List<PolicyFieldDO>  policyFieldDOList = policyFieldDOMapper.selectByPolicyUuid(policyUuid);
+        List<PolicyFieldDO>  policyFieldDOList = policyFieldDAO.selectByPolicyUuid(policyUuid);
         if(policyFieldDOList == null) {
             return null;
         }

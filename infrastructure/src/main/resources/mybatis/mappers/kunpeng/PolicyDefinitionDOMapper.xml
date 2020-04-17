@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDefinitionDOMapper" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDefinitionDAO" >
   <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.PolicyDefinitionDO" >
 
     <id column="id" property="id" jdbcType="BIGINT" />
@@ -10,6 +10,8 @@
     <result column="operator" property="operator" jdbcType="VARCHAR" />
     <result column="uuid" property="uuid" jdbcType="CHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+    <result column="app_type" property="appType" jdbcType="VARCHAR" />
     <result column="event_type" property="eventType" jdbcType="VARCHAR" />
     <result column="event_id" property="eventId" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
@@ -31,7 +33,7 @@
 
 
   <sql id="Base_Column_List" >
-    t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.name, t.event_type,
+    t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.name, t.app_name,t.app_type,t.event_type,
     t.event_id, t.description, t.partner_code, t.service_type, t.status, t.is_deleted,
     t.is_template, t.industry_type, t.product_tag, t.curr_version, t.curr_version_uuid,
     t.attribute, t.is_common, t.concurrency_version, t.gmt_delete
@@ -40,7 +42,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
     select
     <include refid="Base_Column_List" />
-    from policy_definition t where t. uuid = #{uuid}  and is_deleted = 0 limit 1
+    from policy_definition t where t. uuid = #{uuid}
   </select>
 
   <select id="selectByPolicyUuid" resultMap="BaseResultMap">

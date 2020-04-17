@@ -6,11 +6,11 @@ import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
-import cn.tongdun.kunpeng.share.dataobject.PolicyIndicatrixItemDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyIndicatrixItemEventDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -19,9 +19,10 @@ import java.util.List;
  * @Author: liang.chen
  * @Date: 2020/3/11 下午3:56
  */
-public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatrixItemDO> {
+@Component
+public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatrixItemEventDO> {
 
-    private Logger logger = LoggerFactory.getLogger(PolicyIndexReLoadManager.class);
+    private Logger logger = LoggerFactory.getLogger(PolicyIndicatrixItemReloadManager.class);
 
     @Autowired
     private IPlatformIndexRepository policyIndicatrixItemRepository;
@@ -30,28 +31,35 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     private PlatformIndexCache policyIndicatrixItemCache;
 
     @Autowired
-    private PolicyIndexCache policyIndexCache;
-
-    @Autowired
-    private PolicyIndexConvertor policyIndexConvertor;
-    @Autowired
     private ReloadFactory reloadFactory;
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(PolicyIndicatrixItemDO.class,this);
+        reloadFactory.register(PolicyIndicatrixItemEventDO.class,this);
+    }
+
+    @Override
+    public boolean create(PolicyIndicatrixItemEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean update(PolicyIndicatrixItemEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean activate(PolicyIndicatrixItemEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
 
     /**
      * 更新事件类型
      * @return
      */
-    @Override
-    public boolean addOrUpdate(PolicyIndicatrixItemDO policyIndicatrixItemDO){
-        return reload(policyIndicatrixItemDO.getPolicyUuid());
+    public boolean addOrUpdate(PolicyIndicatrixItemEventDO eventDO){
+        return reload(eventDO.getPolicyUuid());
     }
 
-    private boolean reload(String policyUuid){
+    public boolean reload(String policyUuid){
         logger.debug("PlatformIndex reload start, policyUuid:{}",policyUuid);
         try {
             List<String> policyIndicatrixItemDTOList = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
@@ -68,22 +76,22 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
 
     /**
      * 删除事件类型
-     * @param policyIndicatrixItemDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(PolicyIndicatrixItemDO policyIndicatrixItemDO){
-        return reload(policyIndicatrixItemDO.getPolicyUuid());
+    public boolean remove(PolicyIndicatrixItemEventDO eventDO){
+        return reload(eventDO.getPolicyUuid());
     }
 
     /**
      * 关闭状态
-     * @param policyIndicatrixItemDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(PolicyIndicatrixItemDO policyIndicatrixItemDO){
-        return remove(policyIndicatrixItemDO);
+    public boolean deactivate(PolicyIndicatrixItemEventDO eventDO){
+        return remove(eventDO);
     }
 
 }

@@ -69,7 +69,7 @@ public class GroovyObjectCache {
         if(dynamicScriptUuidSet == null){
             return null;
         }
-        List<WrappedGroovyObject> wrappedGroovyObjectList = new ArrayList<>();
+        List<WrappedGroovyObject> wrappedGroovyObjectList = new ArrayList<>(dynamicScriptUuidSet.size());
         for(String dynamicScriptUuid:dynamicScriptUuidSet){
             WrappedGroovyObject wrappedGroovyObject = groovyMap.get(dynamicScriptUuid);
             if(wrappedGroovyObject != null){

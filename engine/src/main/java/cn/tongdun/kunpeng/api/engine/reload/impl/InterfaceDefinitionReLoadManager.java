@@ -6,8 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinition;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
-import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.InterfaceDefinitionEventDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import javax.annotation.PostConstruct;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefinitionDO> {
+public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefinitionEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(InterfaceDefinitionReLoadManager.class);
 
@@ -35,19 +34,31 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(InterfaceDefinitionDO.class,this);
+        reloadFactory.register(InterfaceDefinitionEventDO.class,this);
+    }
+
+    @Override
+    public boolean create(InterfaceDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean update(InterfaceDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean activate(InterfaceDefinitionEventDO eventDO){
+        return addOrUpdate(eventDO);
     }
 
     /**
      * 更新事件类型
      * @return
      */
-    @Override
-    public boolean addOrUpdate(InterfaceDefinitionDO interfaceDefinitionDO){
-        String uuid = interfaceDefinitionDO.getUuid();
+    public boolean addOrUpdate(InterfaceDefinitionEventDO eventDO){
+        String uuid = eventDO.getUuid();
         logger.debug("InterfaceDefinition reload start, uuid:{}",uuid);
         try {
-            Long timestamp = interfaceDefinitionDO.getGmtModify().getTime();
+            Long timestamp = eventDO.getGmtModify().getTime();
             InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && interfaceDefinition != null && interfaceDefinition.getModifiedVersion() >= timestamp) {
@@ -57,8 +68,8 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
 
             InterfaceDefinition newInterfaceDefinition = interfaceDefinitionRepository.queryByUuid(uuid);
             //如果失效则删除缓存
-            if(newInterfaceDefinition == null || CommonStatusEnum.CLOSE.getCode() == newInterfaceDefinition.getStatus()){
-                return remove(interfaceDefinitionDO);
+            if(newInterfaceDefinition == null || !newInterfaceDefinition.isValid()){
+                return remove(eventDO);
             }
 
             interfaceDefinitionCache.put(uuid, newInterfaceDefinition);
@@ -73,18 +84,18 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
 
     /**
      * 删除事件类型
-     * @param interfaceDefinitionDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(InterfaceDefinitionDO interfaceDefinitionDO){
+    public boolean remove(InterfaceDefinitionEventDO eventDO){
         try {
-            interfaceDefinitionCache.remove(interfaceDefinitionDO.getUuid());
+            interfaceDefinitionCache.remove(eventDO.getUuid());
         } catch (Exception e){
-            logger.error("InterfaceDefinition remove failed, uuid:{}",interfaceDefinitionDO.getUuid(),e);
+            logger.error("InterfaceDefinition remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("InterfaceDefinition remove success, uuid:{}",interfaceDefinitionDO.getUuid());
+        logger.debug("InterfaceDefinition remove success, uuid:{}",eventDO.getUuid());
         return true;
     }
 
@@ -92,12 +103,12 @@ public class InterfaceDefinitionReLoadManager implements IReload<InterfaceDefini
 
     /**
      * 关闭状态
-     * @param interfaceDefinitionDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(InterfaceDefinitionDO interfaceDefinitionDO){
-        return remove(interfaceDefinitionDO);
+    public boolean deactivate(InterfaceDefinitionEventDO eventDO){
+        return remove(eventDO);
     }
 
 

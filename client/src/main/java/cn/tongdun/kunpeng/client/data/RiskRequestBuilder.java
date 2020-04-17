@@ -100,6 +100,11 @@ public class RiskRequestBuilder {
         return this;
     }
 
+    public RiskRequestBuilder setSimulationApp(String simulationApp) {
+        riskRequest.setSimulationApp(simulationApp);
+        return this;
+    }
+
 
     public RiskRequestBuilder setSimulationSeqId(String simulationSeqId) {
         riskRequest.setSimulationSeqId(simulationSeqId);

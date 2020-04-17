@@ -38,7 +38,6 @@ import java.util.List;
 @EnableScheduling
 @EnableAutoConfiguration
 @ImportResource(locations = {"classpath*:app.xml","classpath*:spring/*"})
-//SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class AppMain implements ApplicationContextAware {
 
     private final static Logger log = LoggerFactory.getLogger(AppMain.class);
@@ -54,7 +53,7 @@ public class AppMain implements ApplicationContextAware {
     }
 
     //默认为halt=true,当启动加载成功后，才设置为false
-    private static boolean halt = true;
+    private boolean halt = true;
 
     @Autowired
     Environment environment;

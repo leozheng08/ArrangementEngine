@@ -5,8 +5,8 @@ import cn.fraudmetrix.holmes.bean.PredictionOutputDTO;
 import cn.fraudmetrix.holmes.service.intf.ICalculateService;
 import cn.fraudmetrix.holmes.service.object.ModelCalResponse;
 import cn.fraudmetrix.holmes.service.object.ModelResponse;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -73,6 +73,7 @@ public class Holmes implements IHolmes{
 
     private boolean runModelV2(AbstractFraudContext fraudContext, DecisionFlowModel decisionFlowModel) {
         PredictionInputDTO predictionInputDTO = generateV2InputParam(fraudContext, decisionFlowModel);
+        predictionInputDTO.setAppCode(fraudContext.getAppName());
         String modelUuid = predictionInputDTO.getModelUuid();
         ModelResponse<PredictionOutputDTO> modelResponse;
         try {
@@ -107,6 +108,7 @@ public class Holmes implements IHolmes{
         reqParams.put("model_uuid", modelUuid);
         reqParams.put("seq_id", seqId);
         reqParams.put("partner_code", fraudContext.getPartnerCode());
+        reqParams.put("app_code",fraudContext.getAppName());
         Map<String, String> inputsMap = mapInputs(fraudContext, decisionFlowModel.getInputList());
         reqParams.putAll(inputsMap);
 

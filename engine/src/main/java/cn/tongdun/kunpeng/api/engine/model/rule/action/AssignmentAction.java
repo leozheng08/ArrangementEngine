@@ -5,8 +5,12 @@ import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.*;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: liuq
@@ -20,11 +24,11 @@ public class AssignmentAction implements Action {
     @Override
     public void parse(ActionDesc actionDesc) {
         //[{"leftProperty":"reject3","rightValueType":"input","rightValue":"3","leftPropertyType":"","op":"="}]
-        JSONObject json = JSONObject.parseObject(actionDesc.getParams());
-        left= json.getString("leftProperty");
+        Map json = JSON.parseObject(actionDesc.getParams(), HashMap.class);
+        left= JsonUtil.getString(json,("leftProperty"));
 
-        String rightValueType = json.getString("rightValueType");
-        String rightValue=json.getString("rightValue");
+        String rightValueType = JsonUtil.getString(json,"rightValueType");
+        String rightValue=JsonUtil.getString(json,"rightValue");
 
         if(StringUtils.isBlank(rightValueType)){
             return;

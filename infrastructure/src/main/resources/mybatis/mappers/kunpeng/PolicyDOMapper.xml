@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDOMapper" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDAO" >
   <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.PolicyDO" >
 
     <id column="id" property="id" />
@@ -37,7 +37,7 @@
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
     select
     <include refid="Base_Column_List" />
-    from policy t where t. uuid = #{uuid} and is_deleted = 0
+    from policy t where t. uuid = #{uuid}
   </select>
 
   <select id="selectByPolicyDefinitionUuid" resultMap="BaseResultMap">
@@ -51,6 +51,8 @@
 
     <result column="uuid" property="uuid" />
     <result column="partner_code" property="partnerCode" />
+    <result column="app_name" property="appName" />
+    <result column="app_type" property="appType" />
     <result column="event_id" property="eventId" />
     <result column="event_type" property="eventType" />
     <result column="version" property="version" />
@@ -61,7 +63,7 @@
   </resultMap>
 
   <sql id="Modified_Column_List" >
-    a.uuid,b.partner_code,b.event_id,b.event_type,a.version,a.is_default_version,a.gmt_modify,
+    a.uuid,b.partner_code,b.app_name,b.app_type,b.event_id,b.event_type,a.version,a.is_default_version,a.gmt_modify,
      (a.status =1 and b.status=1) status,
      (a.is_deleted =1 or b.is_deleted=1) is_deleted
   </sql>

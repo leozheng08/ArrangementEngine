@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

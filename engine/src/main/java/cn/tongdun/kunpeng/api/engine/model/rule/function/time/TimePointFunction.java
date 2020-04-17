@@ -10,8 +10,8 @@ import cn.tongdun.kunpeng.api.engine.constant.RuleConstant;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.TimeSlice;
 import cn.tongdun.kunpeng.api.ruledetail.TimePointComparisonDetail;
-import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -63,7 +63,11 @@ public class TimePointFunction extends AbstractFunction {
 
         Date date = DateUtil.getDateValue(context.get(calcField));
         if (null == date) {
-            return new FunctionResult(Double.NaN);
+            if (needJudge) {
+                return new FunctionResult(false);
+            } else{
+                return new FunctionResult(Double.NaN);
+            }
         }
 
         int dateValue = 0;

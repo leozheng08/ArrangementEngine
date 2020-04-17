@@ -3,8 +3,8 @@ package cn.tongdun.kunpeng.api.engine;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
-import cn.tongdun.kunpeng.common.data.PolicyResponse;
-import cn.tongdun.kunpeng.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.PolicyResponse;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

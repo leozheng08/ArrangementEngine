@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDOMapper" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDAO" >
   <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.RuleDO" >
 
     <id column="id" property="id" jdbcType="BIGINT" />
@@ -34,10 +34,16 @@
     operator, attribute, policy_uuid, concurrency_version, is_deleted, risk_config, policy_definition_uuid, biz_uuid, biz_type
   </sql>
 
+  <select id="selectEnabledByUuid" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from rule where uuid = #{uuid} and is_deleted = 0 and status=1
+  </select>
+
   <select id="selectByUuid" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from rule where uuid = #{uuid}  and is_deleted = 0 limit 1
+    from rule where uuid = #{uuid}
   </select>
 
   <select id="selectByBizUuidBizType" resultMap="BaseResultMap">
@@ -45,6 +51,16 @@
     <include refid="Base_Column_List" />
      from rule where biz_uuid = #{bizUuid} and biz_type = #{bizType} and is_deleted = 0  and status=1
      order by priority, gmt_create
+  </select>
+
+  <select id="selectByUuids" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select
+      <include refid="Base_Column_List" />
+    from rule where is_deleted = 0  and status=1
+      and uuid in
+      <foreach collection="list" item="uuid" index="index"  open="(" separator="," close=")">
+        #{uuid}
+      </foreach>
   </select>
 
 </mapper>

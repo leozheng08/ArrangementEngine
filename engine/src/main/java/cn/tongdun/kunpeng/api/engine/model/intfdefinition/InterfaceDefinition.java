@@ -1,12 +1,11 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
-import cn.tongdun.ddd.common.domain.UUIDEntity;
-import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import lombok.Data;
 
 
 @Data
-public class InterfaceDefinition extends VersionedEntity {
+public class InterfaceDefinition extends StatusEntity {
 
     /**
      * 所属应用，非合作方应用 application
@@ -58,10 +57,6 @@ public class InterfaceDefinition extends VersionedEntity {
      */
     private String description;
 
-    /**
-     * 是否删除 is_deleted
-     */
-    private boolean deleted;
 
     /**
      * 接口唯一标识 interface_id
@@ -83,9 +78,5 @@ public class InterfaceDefinition extends VersionedEntity {
      */
     private String template;
 
-    /**
-     * 状态 0:关闭 1:开启 status
-     */
-    private Integer status;
 
 }

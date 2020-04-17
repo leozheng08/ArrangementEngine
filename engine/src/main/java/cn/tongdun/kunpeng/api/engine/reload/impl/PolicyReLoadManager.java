@@ -8,15 +8,12 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
-import cn.tongdun.kunpeng.share.dataobject.PolicyDefinitionDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyEventDO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +28,7 @@ import java.util.List;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class PolicyReLoadManager implements IReload<PolicyDO> {
+public class PolicyReLoadManager implements IReload<PolicyEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(PolicyReLoadManager.class);
 
@@ -55,29 +52,42 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
     private SubPolicyCache subPolicyCache;
 
     @Autowired
-    private RuleCache ruleCache;
-
-    @Autowired
     private PolicyIndexCache policyIndexCache;
 
     @Autowired
     private SubPolicyReLoadManager subPolicyReLoadManager;
 
+    @Autowired
+    private PolicyDecisionModeReLoadManager policyDecisionModeReLoadManager;
+
     @PostConstruct
     public void init(){
-        reloadFactory.register(PolicyDO.class,this);
+        reloadFactory.register(PolicyEventDO.class,this);
     }
+
+    @Override
+    public boolean create(PolicyEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean update(PolicyEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+    @Override
+    public boolean activate(PolicyEventDO eventDO){
+        return addOrUpdate(eventDO);
+    }
+
 
     /**
      * 更新事件类型
      * @return
      */
-    @Override
-    public boolean addOrUpdate(PolicyDO policyDO){
-        String uuid = policyDO.getUuid();
+    public boolean addOrUpdate(PolicyEventDO eventDO){
+        String uuid = eventDO.getUuid();
         logger.debug("Policy reload start, uuid:{}",uuid);
         try {
-            Long timestamp = policyDO.getGmtModify().getTime();
+            Long timestamp = eventDO.getModifiedVersion();
             Policy oldPolicy = policyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPolicy != null && oldPolicy.getModifiedVersion() >= timestamp) {
@@ -87,8 +97,8 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
 
             PolicyDTO policyDTO = policyRepository.queryByUuid(uuid);
             //如果失效则删除缓存
-            if(policyDTO == null || CommonStatusEnum.CLOSE.getCode() == policyDTO.getStatus()){
-                return remove(policyDO);
+            if(policyDTO == null || !policyDTO.isValid()){
+                return remove(eventDO);
             }
 
             Policy policy = policyConvertor.convert(policyDTO);
@@ -104,21 +114,49 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
 
     /**
      * 删除事件类型
-     * @param policyDO
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(PolicyDO policyDO){
+    public boolean remove(PolicyEventDO eventDO){
         try {
-            String policyUuid = policyDO.getUuid();
+            String policyUuid = eventDO.getUuid();
             removePolicy(policyUuid);
         } catch (Exception e){
-            logger.error("Policy remove failed, uuid:{}",policyDO.getUuid(),e);
+            logger.error("Policy remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("Policy remove success, uuid:{}",policyDO.getUuid());
+        logger.debug("Policy remove success, uuid:{}",eventDO.getUuid());
         return true;
     }
+
+    /**
+     * 关闭状态
+     * @param eventDO
+     * @return
+     */
+    @Override
+    public boolean deactivate(PolicyEventDO eventDO){
+        try {
+            String policyUuid = eventDO.getUuid();
+            Policy policy = policyCache.get(policyUuid);
+            if(policy == null){
+                return true;
+            }
+
+            //标记不在用状态
+            policy.setStatus(CommonStatusEnum.CLOSE.getCode());
+
+            //级联删除各个子对象
+            cascadeRemove(policyUuid);
+        } catch (Exception e){
+            logger.error("Policy deactivate failed, uuid:{}",eventDO.getUuid(),e);
+            return false;
+        }
+        logger.debug("Policy deactivate success, uuid:{}",eventDO.getUuid());
+        return true;
+    }
+
 
 
     /**
@@ -127,6 +165,9 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
      * @return
      */
     public boolean removePolicy(String policyUuid){
+        if(policyUuid == null){
+            return true;
+        }
         Policy policy = policyCache.remove(policyUuid);
         if(policy == null){
             return true;
@@ -161,34 +202,21 @@ public class PolicyReLoadManager implements IReload<PolicyDO> {
         return true;
     }
 
+
     /**
-     * 关闭状态
-     * @param policyDO
+     * 更改策略执行模式
+     * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(PolicyDO policyDO){
+    public boolean switchDecisionMode(PolicyEventDO eventDO){
         try {
-            String policyUuid = policyDO.getUuid();
-            Policy policy = policyCache.get(policyUuid);
-            if(policy == null){
-                return true;
-            }
-
-            //标记不在用状态
-            policy.setStatus(CommonStatusEnum.CLOSE.getCode());
-
-            //级联删除各个子对象
-            cascadeRemove(policyUuid);
+            policyDecisionModeReLoadManager.switchDecisionMode(eventDO.getUuid(),eventDO.getGmtModify().getTime());
         } catch (Exception e){
-            logger.error("Policy deactivate failed, uuid:{}",policyDO.getUuid(),e);
+            logger.error("Policy switchDecisionMode failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("Policy deactivate success, uuid:{}",policyDO.getUuid());
+        logger.debug("Policy switchDecisionMode success, uuid:{}",eventDO.getUuid());
         return true;
     }
-
-
-
-
 }

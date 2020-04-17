@@ -1,10 +1,9 @@
 package cn.tongdun.kunpeng.api.infrastructure.config;
 
-import cn.tongdun.kunpeng.common.Constant;
-import cn.tongdun.kunpeng.common.config.IBaseConfig;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +25,7 @@ public class BaseConfig implements IBaseConfig{
 
     // 配置内容为json,例：
     // {"credit":["PreFilter","PreCredit","Loan","LoaningQuery"],"anti_fraud":[]}
-    @Value("${business.event.type}")
+    @Value("${business.event.type:}")
     private String businessEventTypeJson;
     //eventType->businussType
     private Map<String,String> eventType2BusinussMap = new HashMap<>();
@@ -36,7 +36,7 @@ public class BaseConfig implements IBaseConfig{
     //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
     @Override
     public String getBusinessByEventType(String eventType){
-        return getBusinessByEventType(eventType, Constant.BUSINESS_ANTI_FRAUD);
+        return getBusinessByEventType(eventType, Constant.BUSINESS_DEFAULT);
     }
 
     public String getBusinessByEventType(String eventType,String defaultValue){
@@ -46,9 +46,9 @@ public class BaseConfig implements IBaseConfig{
             }
 
             try{
-                JSONObject json = JSONObject.parseObject(businessEventTypeJson);
+                Map<String,Object> json = JSON.parseObject(businessEventTypeJson,HashMap.class);
                 for(Map.Entry<String, Object> entry:json.entrySet()){
-                    JSONArray array = (JSONArray)entry.getValue();
+                    List array = (List)entry.getValue();
                     if(array == null){
                         continue;
                     }

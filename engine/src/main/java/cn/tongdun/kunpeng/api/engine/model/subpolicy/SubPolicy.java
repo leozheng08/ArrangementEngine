@@ -1,9 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.subpolicy;
 
-import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultThreshold;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
-import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import lombok.Data;
 
 import java.util.*;
@@ -13,7 +12,7 @@ import java.util.*;
  * @Date: 2019/12/16 下午3:21
  */
 @Data
-public class SubPolicy extends VersionedEntity {
+public class SubPolicy extends StatusEntity {
     private String name;
     private String policyUuid;
     private PolicyMode policyMode;

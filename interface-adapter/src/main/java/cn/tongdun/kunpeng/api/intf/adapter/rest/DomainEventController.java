@@ -2,12 +2,14 @@ package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
 import cn.tongdun.kunpeng.api.engine.reload.DomainEventHandle;
 import cn.tongdun.kunpeng.api.engine.reload.RawDomainEventHandle;
-import com.alibaba.fastjson.JSONObject;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 /**
  * @Author: liang.chen
@@ -29,7 +31,7 @@ public class DomainEventController {
     @ResponseBody
     public String addDomainEvent(@RequestBody String domainEvent) {
 
-        rawDomainEventHandle.handleRawMessage( JSONObject.parseObject(domainEvent));
+        rawDomainEventHandle.handleRawMessage( JSON.parseObject(domainEvent, HashMap.class));
         return "success";
     }
 }

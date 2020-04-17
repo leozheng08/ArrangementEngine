@@ -64,23 +64,81 @@
         </triggeringPolicy>
     </appender>
 
-    <logger name="cn.tongdun.tdframework" level="DEBUG"/>
-    <logger name="cn.tongdun.kunpeng.api.engine.reload" level="DEBUG"/>
+
+    <!-- 生成日志文件 -->
+    <appender name="ACTIVITY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志格式 -->
+        <encoder>
+            <pattern>%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %m%n</pattern>
+        </encoder>
+        <!--日志文件输出的文件名 -->
+        <file>${LOG_PATH}/activity.log</file>
+
+        <!-- 固定数量的日志文件，防止将磁盘占满 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/activity.log.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+
+        <!--日志文件最大的大小 -->
+        <triggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>500MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+
+    <!-- 异步输出 -->
+    <appender name ="ASYNC_APP" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>20</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="FILE"/>
+    </appender>
+    <appender name ="ASYNC_ERROR" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>20</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="ERROR_FILE"/>
+    </appender>
+    <appender name ="ASYNC_ACTIVITY" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>20</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="ACTIVITY_FILE"/>
+    </appender>
+
+    <logger name="cn.tongdun.tdframework" level="INFO"/>
+    <!--<logger name="cn.tongdun.kunpeng.api.engine.reload" level="DEBUG"/>-->
+    <logger name="cn.tongdun" level="INFO"/>
+    <logger name="org.apache.kafka" level="INFO"/>
+
+    <logger name="activity" additivity="false" level="INFO">
+        <appender-ref ref="ASYNC_ACTIVITY"/>
+    </logger>
 
     <if condition='p("CONSOLE_LEVEL").equals("OFF")'>
         <then>
             <root level="INFO">
-                <appender-ref ref="FILE"/>
-                <appender-ref ref="ERROR_FILE"/>
+                <appender-ref ref="ASYNC_APP"/>
+                <appender-ref ref="ASYNC_ERROR"/>
             </root>
         </then>
         <else>
             <root level="${CONSOLE_LEVEL:-INFO}">
-                <appender-ref ref="FILE"/>
-                <appender-ref ref="ERROR_FILE"/>
+                <appender-ref ref="ASYNC_APP"/>
+                <appender-ref ref="ASYNC_ERROR"/>
                 <appender-ref ref="CONSOLE"/>
             </root>
         </else>
     </if>
+
 
 </configuration>

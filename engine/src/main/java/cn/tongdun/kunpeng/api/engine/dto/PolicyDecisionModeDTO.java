@@ -24,17 +24,9 @@ public class PolicyDecisionModeDTO extends CommonDTO {
     private boolean currDecisionMode;
 
     /**
-     * 是否启用 1:已启用 0:未启用
-     * 表示对应的决策方式是否被开启或者关闭
-     */
-    private Integer status;
-
-    /**
      * 策略uuid policy_uuid
      */
     private String policyUuid;
-
-    private boolean deleted;
 
 
 }
