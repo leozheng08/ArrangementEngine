@@ -205,6 +205,15 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             left.setFieldType(fieldTypeEnum);
             left.setDataType(elementDTO.getLeftPropertyDataType());
             left.setName(elementDTO.getLeftProperty());
+
+            if(StringUtils.isNotBlank(elementDTO.getParams())) {
+                List<FunctionParam> paramList = JSON.parseArray(elementDTO.getParams(), FunctionParam.class);
+                if(paramList != null && !paramList.isEmpty()){
+                    paramList.forEach(param -> {
+                        left.putExtProperty(param.getName(),param.getValue());
+                    });
+                }
+            }
         }
         left.setConditionId(elementDTO.getId().intValue());
 
