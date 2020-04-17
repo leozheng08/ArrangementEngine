@@ -127,6 +127,8 @@ public class PolicyRepository implements IPolicyRepository{
         //取得策略定义表中的策略名称、eventId
         PolicyDefinitionDO policyDefinitionDO = policyDefinitionDAO.selectByUuid(policyDO.getPolicyDefinitionUuid());
         policyDTO.setName(policyDefinitionDO.getName());
+        policyDTO.setAppName(policyDefinitionDO.getAppName());
+        policyDTO.setAppType(policyDefinitionDO.getAppType());
         policyDTO.setEventId(policyDefinitionDO.getEventId());
         policyDTO.setEventType(policyDefinitionDO.getEventType());
         policyDTO.setPartnerCode(policyDefinitionDO.getPartnerCode());

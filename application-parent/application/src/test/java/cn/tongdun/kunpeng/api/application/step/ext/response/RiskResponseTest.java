@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application.step.ext.response;
 
+import cn.tongdun.kunpeng.client.data.impl.camel.RiskResponse;
 import cn.tongdun.kunpeng.share.json.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

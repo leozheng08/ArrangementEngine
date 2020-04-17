@@ -55,15 +55,11 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
 
     @Override
     public void put(String uuid, IFieldDefinition fieldDefinition){
-        IFieldDefinition oldfieldDefinition = fieldDefinitionMap.put(uuid,fieldDefinition);
+        fieldDefinitionMap.put(uuid,fieldDefinition);
         if("sys".equalsIgnoreCase(fieldDefinition.getFieldType())){
             addSystemField(fieldDefinition);
         } else {
             addExtendField(fieldDefinition);
-        }
-
-        if(oldfieldDefinition != null){
-
         }
     }
 
@@ -75,9 +71,9 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
         }
 
         if("sys".equalsIgnoreCase(fieldDefinition.getFieldType())){
-            removeField(fieldDefinition.getFieldCode(),systemFieldMap);
+            removeSystemField(fieldDefinition.getEventType(),fieldDefinition.getFieldCode(),systemFieldMap);
         } else {
-            removeField(fieldDefinition.getFieldCode(),extendFieldMap);
+            removeExtendField(fieldDefinition.getPartnerCode(),fieldDefinition.getEventType(),fieldDefinition.getFieldCode(),extendFieldMap);
         }
 
         return fieldDefinition;
@@ -134,9 +130,6 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
             }
         } else {
             String key = getSystemFieldKey(eventType);
-            if (StringUtils.isBlank(key)) {
-                return;
-            }
             Map<String,IFieldDefinition> map = getFieldMap(systemFieldMap,key);
             map.put(field.getFieldCode(),field);
 
@@ -156,22 +149,19 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
         if (field == null) {
             return;
         }
+        if (StringUtils.isBlank(field.getPartnerCode())) {
+            return;
+        }
         Collection<EventType> eventTypeList= eventTypeCache.getEventTypes();
         // 字段类型为All，为同一个partnerCode共用
-        if (IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(field.getEventType())) {
+        if (StringUtils.isBlank(field.getEventType()) || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(field.getEventType())) {
             for (EventType et : eventTypeList) {
                 String key = getExtendFieldKey(field.getPartnerCode(), et.getEventCode());
-                if (StringUtils.isBlank(key)) {
-                    return;
-                }
                 Map<String,IFieldDefinition> map = getFieldMap(extendFieldMap,key);
                 map.put(field.getFieldCode(),field);
             }
         } else {
             String key = getExtendFieldKey(field.getPartnerCode(), field.getEventType());
-            if (StringUtils.isBlank(key)) {
-                return;
-            }
             Map<String,IFieldDefinition> map = getFieldMap(extendFieldMap,key);
             map.put(field.getFieldCode(),field);
 
@@ -181,8 +171,8 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
                 if(key.equals(extKey)){
                     continue;
                 }
-                Map<String,IFieldDefinition> sysMap = getFieldMap(extendFieldMap,extKey);
-                sysMap.remove(field.getFieldCode());
+                Map<String,IFieldDefinition> extendMap = getFieldMap(extendFieldMap,extKey);
+                extendMap.remove(field.getFieldCode());
             }
         }
     }
@@ -191,23 +181,60 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
      * 删除systemFieldMap或extendFieldMap中的字段定义
      * @param fieldCode
      */
-    public void removeField(String fieldCode, Map<String, Map<String,IFieldDefinition>> fieldMap){
+    public void removeSystemField(String eventType,String fieldCode, Map<String, Map<String,IFieldDefinition>> fieldMap){
 
-        fieldMap.values().forEach(new Consumer<Map<String,IFieldDefinition>>() {
-            @Override
-            public void accept(Map<String,IFieldDefinition> map) {
+        // 如果为null，是通用字段，放到所有事件类型列表中
+        if (StringUtils.isBlank(eventType) || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
+            fieldMap.values().forEach(new Consumer<Map<String,IFieldDefinition>>() {
+                @Override
+                public void accept(Map<String,IFieldDefinition> map) {
+                    map.remove(fieldCode);
+                }
+            });
+        } else {
+            Map<String, IFieldDefinition> map = fieldMap.get(eventType);
+            if(map != null) {
                 map.remove(fieldCode);
             }
-        });
+        }
+    }
 
+    /**
+     * 删除extendFieldMap中的字段定义
+     * @param partnerCode
+     * @param eventType
+     * @param fieldCode
+     * @param fieldMap
+     */
+    public void removeExtendField(String partnerCode,String eventType, String fieldCode,
+                                  Map<String, Map<String,IFieldDefinition>> fieldMap){
+
+        if (StringUtils.isBlank(partnerCode)) {
+            return;
+        }
+
+        // 字段类型为All，为同一个partnerCode共用
+        if (StringUtils.isBlank(eventType) || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
+            for (EventType et : eventTypeCache.getEventTypes()) {
+                String key = getExtendFieldKey(partnerCode, et.getEventCode());
+                Map<String,IFieldDefinition> map = fieldMap.get(key);
+                if(map == null){
+                    continue;
+                }
+                map.remove(fieldCode);
+            }
+        } else {
+            String extKey = getExtendFieldKey(partnerCode, eventType);
+            Map<String,IFieldDefinition> map = fieldMap.get(extKey);
+            if(map != null) {
+                map.remove(fieldCode);
+            }
+        }
     }
 
 
     private String getExtendFieldKey(String partnerCode, String eventType) {
-        if (StringUtils.isNotBlank(partnerCode) && StringUtils.isNotBlank(eventType)) {
-            return StringUtils.join(partnerCode , "." , eventType);
-        }
-        return null;
+        return StringUtils.join(partnerCode , "." , eventType);
     }
 
     private String getSystemFieldKey(String eventType) {

@@ -114,7 +114,21 @@
                 <artifactId>application-policyindex</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-activity-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-activity-direct-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-activity-memoryq-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
@@ -123,22 +137,22 @@
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>event-notice-kafka-rawevent</artifactId>
+                <artifactId>event-notify-kafka-rawevent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>event-notice-redis</artifactId>
+                <artifactId>event-notify-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>event-notice-db</artifactId>
+                <artifactId>event-notify-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>event-notice-zk</artifactId>
+                <artifactId>event-notify-zk</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -158,9 +172,45 @@
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>kv-cache-ignore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>core-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>partner-cluster-single</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>partner-cluster-multi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>admin-partner-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>admin-partner-ignore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>admin-application-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>admin-application-ignore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
 
 
             <dependency>
@@ -273,7 +323,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.6</version>
+                <version>3.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

@@ -32,13 +32,14 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     public static final String        TEST_FLAG              = "testFlag";
     public static final String        PARTNER_CODE           = "partnerCode";
     public static final String        SECRET_KEY             = "secretKey";
+    public static final String        APP_NAME               = "appName";
     public static final String        EVENT_ID               = "eventId";
     public static final String        POLICY_VERSION         = "policyVersion";
     public static final String        SEQ_ID                 = "seqId";
     public static final String        X_SEQUENCE_ID          = "x-sequence-id";
     public static final String        RESP_DETAIL_TYPE       = "respDetailType";
     public static final String        RECALL                 = "recall";
-    public static final String        RECALL_SEQ_ID     = "recallSeqId";
+    public static final String        RECALL_SEQ_ID          = "recallSeqId";
     public static final String        TOKEN_ID               = "tokenId";
     public static final String        BLACK_BOX              = "blackBox";
     public static final String        REQUEST_ID             = "requestId";
@@ -59,6 +60,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         RiskRequest riskRequest = new RiskRequest();
         riskRequest.setPartnerCode(request.get(PARTNER_CODE));
         riskRequest.setSecretKey(request.get(SECRET_KEY));
+        riskRequest.setAppName(request.get(APP_NAME));
         riskRequest.setBlackBox(request.get(BLACK_BOX));
         riskRequest.setEventId(request.get(EVENT_ID));
         riskRequest.setPolicyVersion(request.get(POLICY_VERSION));
@@ -77,6 +79,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
         }
         riskRequest.setTestFlag(StringUtils.equalsIgnoreCase(request.get(TEST_FLAG), "true"));
         riskRequest.setAsync(StringUtils.equalsIgnoreCase(request.get(ASYNC), "true"));
+        riskRequest.setSimulationApp(request.get(SIMULATION_APP));
         riskRequest.setSimulationPartner(request.get(SIMULATION_PARTNER));
         riskRequest.setSimulationUuid(request.get(SIMULATION_UUID));
         riskRequest.setSimulationSeqId(request.get(SIMULATION_SEQ_ID));

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+       default-autowire="byName">
+
+
+    <dubbo:reference id="kirinUserServiceForApplication"
+                     interface="cn.tongdun.kirin.web.client.intf.KirinUserService"
+                     version="${dubbo.kirin.userService.version}"
+                     timeout="${dubbo.kirin.userService.timeout:5000}"
+                     retries="${dubbo.kirin.userService.retries:2}" check="${dubbo.kirin.userService.check:false}">
+    </dubbo:reference>
+
+
+
+
+</beans>

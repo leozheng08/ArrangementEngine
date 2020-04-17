@@ -10,11 +10,11 @@
 
     <dubbo:service interface="cn.tongdun.kunpeng.client.api.IRiskService" ref="riskService" group="${CLUSTER:${app.name}}"
                    version="${kunpeng.api.dubbo.version}"
-                   timeout="${kunpeng.api.dubbo.timeout:5000}"/>
+                   timeout="${kunpeng.api.dubbo.timeout:5000}" />
 
 
     <dubbo:service interface="cn.tongdun.kunpeng.client.api.IPolicyParseCheck" ref="policyParseCheckImpl"
                    version="${kunpeng.api.dubbo.version}"
-                   timeout="${kunpeng.api.dubbo.timeout:5000}"/>
+                   timeout="${kunpeng.api.dubbo.timeout:5000}" />
 
 </beans>

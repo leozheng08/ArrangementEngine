@@ -21,6 +21,15 @@ public class FieldDefinition extends StatusEntity implements IFieldDefinition {
      */
     private String partnerCode;
 
+    /**
+     * 应用名 app_name
+     */
+    private String appName;
+
+    /**
+     * 应用类型 app_type
+     */
+    private String appType;
 
     /**
      * 字段code field_code

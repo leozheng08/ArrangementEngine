@@ -17,6 +17,7 @@
         <module>event-notify</module>
         <module>admin-partner</module>
         <module>admin-application</module>
+        <module>partner-cluster</module>
     </modules>
 
 

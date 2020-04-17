@@ -4,7 +4,6 @@ import cn.tongdun.kunpeng.api.application.check.step.assign.*;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
@@ -41,6 +40,8 @@ public class AssignFieldValueStep implements IRiskStep {
         {
             add("seq_id");
             add("sequenceId");
+            add("appName");
+            add("appType");
             add("eventType");
             add("firstIndustryType");
             add("secondIndustryType");
@@ -74,7 +75,7 @@ public class AssignFieldValueStep implements IRiskStep {
         Partner partner = partnerCache.get(context.getPartnerCode());
 
         /*************根据字段的定义，将请求参数设置到上下文中 start**********************/
-        setFraudContext2(context,request);
+        setFraudContext(context,request);
         /*************根据字段的定义，将请求参数设置到上下文中 end**********************/
 
 
@@ -107,7 +108,7 @@ public class AssignFieldValueStep implements IRiskStep {
     }
 
 
-    public void setFraudContext2(AbstractFraudContext ctx, RiskRequest request) {
+    public void setFraudContext(AbstractFraudContext ctx, RiskRequest request) {
         if (null == ctx || null == request || request.getFieldValues().isEmpty()) {
             return;
         }
@@ -132,33 +133,6 @@ public class AssignFieldValueStep implements IRiskStep {
         }
     }
 
-    /**
-     * 使用反射获取bean对象里的所有属性字段
-     *
-     * @param ctx
-     * @param request
-     * @param fields
-     */
-    public void setFraudContext(AbstractFraudContext ctx, RiskRequest request, Collection<FieldDefinition> fields) {
-        if (ctx != null && request != null && fields != null) {
-            for (FieldDefinition fieldDefinition : fields) {
-                String fieldCode = fieldDefinition.getFieldCode();
-                if (excludeFieldName.contains(fieldCode)) {
-                    continue;
-                }
-
-                Object requestValue = request.get(fieldCode);
-                if(requestValue == null) {
-                    String underlineStr = CamelAndUnderlineConvertUtil.camel2underline(fieldCode);
-                    requestValue = request.get(underlineStr);
-                }
-                if (requestValue == null) {
-                    continue;
-                }
-                putValueByFieldDefinition(ctx.getFieldValues(),fieldDefinition,requestValue);
-            }
-        }
-    }
 
 
     /**

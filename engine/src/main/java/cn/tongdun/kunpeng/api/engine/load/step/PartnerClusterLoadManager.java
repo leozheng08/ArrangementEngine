@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.engine.load.step;
 
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
-import cn.tongdun.kunpeng.api.engine.model.cluster.IPartnerClusterRepository;
+import cn.tongdun.kunpeng.api.acl.engine.model.cluster.IPartnerClusterRepository;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
@@ -42,9 +42,7 @@ public class PartnerClusterLoadManager implements ILoad {
         Set<String> partners = null;
 
         //则取所有合作方，暂不按集群加载
-        partners = partnerClusterRepository.queryAllPartner();
-
-        partners.add(Constant.DEFAULT_PARTNER);
+        partners = partnerClusterRepository.queryPartnerByCluster(localEnvironment.getCluster());
 
         partnerClusterCache.setPartners(partners);
 

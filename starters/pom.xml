@@ -17,6 +17,7 @@
         <module>starter-paas</module>
         <module>starter-saas</module>
         <module>starter-mini</module>
+        <module>starter-zbx</module>
     </modules>
 
 

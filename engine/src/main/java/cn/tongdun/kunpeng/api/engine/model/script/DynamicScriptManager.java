@@ -106,7 +106,7 @@ public class DynamicScriptManager {
             logger.warn("动态脚本执行时间太长, groovy_execute_too_long costTime : {}", t2-t1);
         }
 
-        List<Boolean> results = new ArrayList(futures.size());
+        List<Boolean> results = new ArrayList(futures!= null?futures.size():0);
         if (null != futures && !futures.isEmpty()) {
             for (Future<Boolean> future : futures) {
                 if (future.isDone() && !future.isCancelled()) {

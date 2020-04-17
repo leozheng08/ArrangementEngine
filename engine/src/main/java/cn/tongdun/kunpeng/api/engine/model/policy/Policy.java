@@ -36,6 +36,17 @@ public class Policy extends VersionedEntity {
     private String            eventType;
 
     /**
+     * appName
+     */
+    private String            appName;
+
+    /**
+     * appType
+     */
+    private String            appType;
+
+
+    /**
      * 版本
      */
     private String version;

@@ -26,6 +26,16 @@ public class PolicyDefinition extends StatusEntity {
     private String eventId;
 
     /**
+     * appName
+     */
+    private String appName;
+
+    /**
+     * appType
+     */
+    private String appType;
+
+    /**
      * 合作方
      */
     private String partnerCode;

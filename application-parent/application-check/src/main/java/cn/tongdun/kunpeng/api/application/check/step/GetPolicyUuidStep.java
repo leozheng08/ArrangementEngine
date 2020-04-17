@@ -49,9 +49,12 @@ public class GetPolicyUuidStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         //如果合作方为空则设置默认合作方
-        setDefaultPartnerCode(context, request);
+        setDefaultPartnerCode(context);
+        //如果appName为空则设置默认appName
+        setDefaultAppName(context);
 
         String partnerCode = context.getPartnerCode();
+        String appName = context.getAppName();
         String eventId = request.getEventId();
         String policyVersion = request.getPolicyVersion();
 
@@ -64,9 +67,9 @@ public class GetPolicyUuidStep implements IRiskStep {
 
         String policyUuid = null;
         if(StringUtils.isNotBlank(policyVersion)) {
-            policyUuid = policyCache.getPolicyUuid(partnerCode, eventId, policyVersion);
+            policyUuid = policyCache.getPolicyUuid(partnerCode, appName, eventId, policyVersion);
         } else {
-            PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, eventId);
+            PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
             //策略定义不存在
             if(policyDefinition == null){
                 logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
@@ -129,18 +132,23 @@ public class GetPolicyUuidStep implements IRiskStep {
     }
 
 
-    private void setDefaultPartnerCode(AbstractFraudContext context,RiskRequest request){
+    private void setDefaultPartnerCode(AbstractFraudContext context){
         if(StringUtils.isNotBlank(context.getPartnerCode())){
             return;
         }
 
         //如果不传partner_code，则按默认值处理
-        if(StringUtils.isBlank(request.getPartnerCode())) {
-            context.setPartnerCode(Constant.DEFAULT_PARTNER);
-        } else {
-            context.setPartnerCode(request.getPartnerCode());
-        }
+        context.setPartnerCode(Constant.DEFAULT_PARTNER);
     }
+
+    private void setDefaultAppName(AbstractFraudContext context){
+        if(StringUtils.isNotBlank(context.getAppName())) {
+            return;
+        }
+        context.setAppName(Constant.DEFAULT_APP_NAME);
+        context.setAppType(Constant.DEFAULT_APP_TYPE);
+    }
+
 
     private BizScenario createBizScenario(AbstractFraudContext context){
         BizScenario bizScenario = new BizScenario();

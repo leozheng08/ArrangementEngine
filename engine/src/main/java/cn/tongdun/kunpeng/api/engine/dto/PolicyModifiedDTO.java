@@ -28,6 +28,16 @@ public class PolicyModifiedDTO {
     private String            eventType;
 
     /**
+     * 应用
+     */
+    private String appName;
+
+    /**
+     * 应用类型
+     */
+    private String appType;
+
+    /**
      * 版本
      */
     private String version;

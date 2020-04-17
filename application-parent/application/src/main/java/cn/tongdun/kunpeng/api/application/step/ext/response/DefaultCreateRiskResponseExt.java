@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DefaultCreateRiskResponseExt implements ICreateRiskResponseExtPt{
 
     @Autowired
-    private DefaultRiskResponseFactory riskResponseFactory;
+    private CamelRiskResponseFactory riskResponseFactory;
 
     @Override
     public IRiskResponse createRiskResponse(FraudContext context ){

@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class HaiwaiCreateRiskResponseExt implements ICreateRiskResponseExtPt{
 
     @Autowired
-    private HaiwaiRiskResponseFactory riskResponseFactory;
+    private UnderlineRiskResponseFactory riskResponseFactory;
 
     @Override
     public IRiskResponse createRiskResponse(FraudContext context ){

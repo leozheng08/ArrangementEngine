@@ -57,8 +57,6 @@ public class CustomSerializer extends StdSerializer<RiskRequest> {
         jgen.writeStringField("tdSampleDataId", riskRequest.getTdSampleDataId());
         jgen.writeObjectField("fieldValues", riskRequest.getFieldValues());
 
-        jgen.writeObjectField("extAttrs", riskRequest.getExtAttrs());
-
         jgen.writeEndObject();
     }
 

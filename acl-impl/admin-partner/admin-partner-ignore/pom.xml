@@ -18,10 +18,6 @@
             <artifactId>acl-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>engine</artifactId>
-        </dependency>
-        <dependency>
             <groupId>cn.tongdun.kunpeng</groupId>
             <artifactId>kunpeng-share-dataobject</artifactId>
         </dependency>
