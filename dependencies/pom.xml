@@ -7,7 +7,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>dependencies</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1</version>
 
     <name>dependencies</name>
 
@@ -27,11 +27,11 @@
 
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.6-SNAPSHOT</tdframework.version>
-        <ddd.version>1.0-SNAPSHOT</ddd.version>
-        <tdrule.version>0.0.2-SNAPSHOT</tdrule.version>
-        <tdflow.version>0.0.1-SNAPSHOT</tdflow.version>
-        <kunpeng-share.version>1.0-SNAPSHOT</kunpeng-share.version>
+        <tdframework.version>1.0.6</tdframework.version>
+        <ddd.version>1.0.5</ddd.version>
+        <tdrule.version>1.0.0</tdrule.version>
+        <tdflow.version>1.0.0</tdflow.version>
+        <kunpeng-share.version>1.0.0</kunpeng-share.version>
         <common.arch.version>2.0.2</common.arch.version>
         <module.kafka.version>3.1.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
