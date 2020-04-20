@@ -11,6 +11,8 @@ import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.Condition;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.fraudmetrix.module.tdrule.util.RuleCreateFactory;
+import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.engine.constant.IterateType;
 import cn.tongdun.kunpeng.api.engine.constant.RuleConstant;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
@@ -256,6 +258,35 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         String op = TdRuleOperatorMapUtils.getEngineTypeFromDisplay(elementDTO.getOp());
         if (StringUtils.isBlank(op)) {
             throw new ParseException("AbstractRuleBuilder processOneElement error,can't map operator:" + elementDTO.getOp());
+        }
+
+        //equals与notEquals支持数组迭代方式
+        if(!"equals".equals(op) && !"notEquals".equals(op)){
+            return op;
+        }
+
+        if(StringUtils.isBlank(elementDTO.getParams())) {
+            return op;
+        }
+
+        List<FunctionParam> paramList = JSON.parseArray(elementDTO.getParams(), FunctionParam.class);
+        if(paramList == null || paramList.isEmpty()) {
+            return op;
+        }
+        //当iterateType=any ，op=equals 操作符转为 arrayAnyEquals
+        //当iterateType=any ，op=notEquals 操作符转为 arrayAnyNotEquals
+        //当iterateType=all ，op=equals 操作符转为 arrayAllEquals
+        //当iterateType=all ，op=notEquals 操作符转为 arrayAllNotEquals
+        for(FunctionParam param : paramList) {
+            if(!"iterateType".equalsIgnoreCase(param.getName())){
+                continue;
+            }
+            if(IterateType.ALL.name().equalsIgnoreCase(param.getValue())){
+                op = "arrayAll" + KunpengStringUtils.upperCaseFirstChar(op);
+            } else if(IterateType.ANY.name().equalsIgnoreCase(param.getValue())){
+                op = "arrayAny" + KunpengStringUtils.upperCaseFirstChar(op);
+            }
+            break;
         }
         return op;
     }
