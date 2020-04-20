@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
+import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -84,6 +85,22 @@ public class GroovyClassGenerator {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 编译方法
+     * 编译检查用，异常抛给外部处理，用于确认排查问题
+     */
+    public static void compileMethod(Long id, String methodBody) throws Exception {
+        String className = "compile_test_groovy_"+ id;
+        GroovyClassGenerator generator = new GroovyClassGenerator(className);
+        generator.init();
+        generator.appendMethod("func_" + id, methodBody);
+        try {
+            generator.compileGroovySource();
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     /**
