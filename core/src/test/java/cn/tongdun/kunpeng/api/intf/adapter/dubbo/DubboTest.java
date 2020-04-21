@@ -19,17 +19,17 @@ import javax.annotation.Resource;
 @SpringBootTest(classes = AppMain.class)
 public class DubboTest {
 
-    @Resource(name = "riskServiceClient")
-    private IRiskService riskServiceClient;
+//    @Resource(name = "riskServiceClient")
+//    private IRiskService riskServiceClient;
 
     @Test
     public void test(){
-        RiskRequest riskRequest = new RiskRequest();
-        riskRequest.setPartnerCode("demo");
-        riskRequest.setEventId("cltest0327_3");
-        riskRequest.setFieldValue("registerIp","123");
-        IRiskResponse riskResponse = riskServiceClient.riskService(riskRequest);
-        System.out.println(riskResponse);
+//        RiskRequest riskRequest = new RiskRequest();
+//        riskRequest.setPartnerCode("demo");
+//        riskRequest.setEventId("cltest0327_3");
+//        riskRequest.setFieldValue("registerIp","123");
+//        IRiskResponse riskResponse = riskServiceClient.riskService(riskRequest);
+//        System.out.println(riskResponse);
     }
 
 }

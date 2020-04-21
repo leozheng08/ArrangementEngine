@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractDomainEventRepository implements IDomainEventRepository{
 
     //不做拆分的批量动作
-    protected static ArrayListMultimap<String,String> batchMap = ArrayListMultimap.create();
+    protected static final ArrayListMultimap<String,String> batchMap = ArrayListMultimap.create();
 
     //取最近几分钟数据
     protected static final int LAST_MINUTES = 3;
