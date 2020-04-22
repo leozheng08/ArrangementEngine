@@ -14,18 +14,10 @@
         <module>dependencies</module>
         <module>client</module>
         <module>core</module>
-        <module>common</module>
-        <module>rule-detail</module>
-        <module>engine</module>
-        <module>infrastructure</module>
         <module>application-parent</module>
-        <module>interface-adapter</module>
         <module>starters</module>
-        <module>acl-impl</module>
-        <module>acl-api</module>
         <module>consumer</module>
         <module>risk-core</module>
-
     </modules>
 
 
