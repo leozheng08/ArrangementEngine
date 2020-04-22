@@ -245,7 +245,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>consumer-common</artifactId>
+                <artifactId>consumer-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

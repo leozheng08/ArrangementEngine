@@ -7,7 +7,7 @@ import cn.fraudmetrix.module.elasticsearch.vo.FetchAction;
 import cn.fraudmetrix.module.elasticsearch.vo.FetchResult;
 import cn.fraudmetrix.module.elasticsearch.vo.InsertAction;
 import cn.fraudmetrix.module.kafka.object.RetryLaterException;
-import cn.tongdun.kunpeng.api.consumer.common.AbstractConsumer;
+import cn.tongdun.kunpeng.api.consumer.base.AbstractConsumer;
 import cn.tongdun.kunpeng.api.consumer.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.elasticsearch.action.bulk.BulkItemResponse;

@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.consumer.mongo;
 
-import cn.tongdun.kunpeng.api.consumer.common.AbstractConsumer;
+import cn.tongdun.kunpeng.api.consumer.base.AbstractConsumer;
 import cn.tongdun.kunpeng.api.consumer.util.ConsumerUtils;
 import cn.tongdun.kunpeng.api.consumer.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;

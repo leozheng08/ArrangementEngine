@@ -12,9 +12,9 @@
     <artifactId>consumer</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>consumer-base</module>
         <module>consumer-es</module>
         <module>consumer-hbase</module>
-        <module>consumer-common</module>
         <module>consumer-mongo</module>
         <module>consumer-custom-list</module>
     </modules>

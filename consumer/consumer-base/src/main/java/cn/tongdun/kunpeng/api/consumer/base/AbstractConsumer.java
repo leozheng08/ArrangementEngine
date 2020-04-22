@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.consumer.common;
+package cn.tongdun.kunpeng.api.consumer.base;
 
 import cn.fraudmetrix.module.kafka.consumer.IConsumer;
 import cn.fraudmetrix.module.kafka.object.RetryLaterException;

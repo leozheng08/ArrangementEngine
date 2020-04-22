@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>consumer-common</artifactId>
+            <artifactId>consumer-base</artifactId>
         </dependency>
 
         <dependency>
@@ -54,7 +54,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
         </dependency>
 
         <dependency>

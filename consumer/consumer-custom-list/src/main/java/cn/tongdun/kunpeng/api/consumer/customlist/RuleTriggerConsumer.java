@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.consumer.customlist;
 
 import cn.fraudmetrix.module.kafka.object.RetryLaterException;
-import cn.tongdun.kunpeng.api.consumer.common.AbstractConsumer;
+import cn.tongdun.kunpeng.api.consumer.base.AbstractConsumer;
 import cn.tongdun.kunpeng.api.consumer.customlist.completion.RuleConditionCache;
 import cn.tongdun.kunpeng.api.consumer.infrastructure.persistence.repository.intf.CustomListDataService;
 import cn.tongdun.kunpeng.api.consumer.util.JsonUtil;
