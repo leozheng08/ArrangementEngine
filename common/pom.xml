@@ -53,6 +53,11 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>com.github.wnameless</groupId>

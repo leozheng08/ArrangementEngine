@@ -4,10 +4,7 @@ import cn.tongdun.kirin.web.client.intf.KirinUserService;
 import cn.tongdun.kirin.web.client.object.KirinPartner;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
-import cn.tongdun.kunpeng.api.common.Constant;
-import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;

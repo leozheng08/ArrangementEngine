@@ -1,1 +1,1 @@
-provides: core-spring-boot-autoconfigure
+provides: core-spring-boot-autoconfigure,mybatis-spring-boot-autoconfigure

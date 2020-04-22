@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.tongdun.kunpeng.api.springboot.autoconfig.jdbc.DruidDataSourceAutoConfiguration,\
+  cn.tongdun.kunpeng.api.springboot.autoconfig.mybatis.MybatisAutoConfiguration

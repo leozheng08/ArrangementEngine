@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.tongdun.kunpeng.api.springboot.autoconfig.kafka.KafkaAutoConfiguration

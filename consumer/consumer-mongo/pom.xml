@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>consumer</artifactId>
+        <groupId>cn.tongdun.kunpeng-api</groupId>
+        <version>1.0.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>consumer-mongo</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>consumer-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng</groupId>
+            <artifactId>kunpeng-share-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng</groupId>
+            <artifactId>kunpeng-share-dataobject</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module-elasticsearch</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>20.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        </dependencies>
+</project>

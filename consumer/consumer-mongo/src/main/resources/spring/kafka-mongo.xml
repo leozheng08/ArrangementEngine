@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName">
+
+
+
+    <!-- 实现了IConsumer接口的业务消息处理类 -->
+    <bean id="mongoDBConsumer" class="cn.tongdun.kunpeng.api.consumer.mongo.MongoDBConsumer" />
+
+
+    <!-- mongoDB消费者 -->
+    <bean id="mongoDBPoller" class="cn.fraudmetrix.module.kafka.consumer.ConcurrentPoller" init-method="init" destroy-method="close">
+        <property name="configCenter" ref="zkConfigCenter"/>
+        <property name="consumerName" value="mongdb_activity_consumer" />
+        <property name="mode" value="standard" />
+        <property name="bizConsumers">
+            <map>
+                <entry key="kunpeng_api_raw_activity">
+                    <ref bean="mongoDBConsumer" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

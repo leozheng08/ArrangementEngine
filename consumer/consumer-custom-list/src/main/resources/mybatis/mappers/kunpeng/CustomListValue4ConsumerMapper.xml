@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CustomListValue4ConsumerDAO" >
+  <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.CustomListValueDO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="uuid" property="uuid" jdbcType="CHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="data_value" property="dataValue" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
+    <result column="custom_list_uuid" property="customListUuid" jdbcType="CHAR" />
+    <result column="desensitized_value" property="desensitizedValue" jdbcType="VARCHAR" />
+    <result column="is_desensitized" property="desensitized" jdbcType="BIT" />
+    <result column="gmt_effect" property="gmtEffect" jdbcType="TIMESTAMP" />
+    <result column="gmt_expire" property="gmtExpire" jdbcType="TIMESTAMP" />
+    <result column="column_type" property="columnType" jdbcType="TINYINT" />
+    <result column="column_values" property="columnValues" jdbcType="VARCHAR" />
+    <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER" />
+    <result column="is_deleted" property="deleted" jdbcType="BIT" />
+    <result column="gmt_delete" property="gmtDelete" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <insert id="insert" parameterType="cn.tongdun.kunpeng.share.dataobject.CustomListValueDO" >
+    insert into custom_list_value (uuid, gmt_create,
+      gmt_modify, creator, operator, 
+      data_value, description, partner_code, 
+      custom_list_uuid, desensitized_value, is_desensitized, 
+      gmt_effect, gmt_expire, column_type, 
+      column_values, concurrency_version, is_deleted, 
+      gmt_delete)
+    values (#{uuid,jdbcType=CHAR}, #{gmtCreate,jdbcType=TIMESTAMP},
+      #{gmtModify,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, 
+      #{dataValue,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{partnerCode,jdbcType=VARCHAR}, 
+      #{customListUuid,jdbcType=CHAR}, #{desensitizedValue,jdbcType=VARCHAR}, #{desensitized,jdbcType=BIT},
+      #{gmtEffect,jdbcType=TIMESTAMP}, #{gmtExpire,jdbcType=TIMESTAMP}, #{columnType,jdbcType=TINYINT}, 
+      #{columnValues,jdbcType=VARCHAR}, #{concurrencyVersion,jdbcType=INTEGER}, #{deleted,jdbcType=BIT},
+      #{gmtDelete,jdbcType=TIMESTAMP})
+  </insert>
+
+  <select id="queryByParams" parameterType="Map" resultMap="BaseResultMap">
+    select * from custom_list_value
+    <where>
+      <if test="uuid !=null">and uuid=#{uuid}</if>
+      <if test="customListUuid !=null">and custom_list_uuid=#{customListUuid}</if>
+      <if test="dataValue !=null">and data_value=#{dataValue}</if>
+      <if test="columnValues !=null">and column_values=#{columnValues}</if>
+      <if test="partnerCode !=null">and partner_code=#{partnerCode}</if>
+    </where>
+    order by id DESC
+  </select>
+
+  <insert id="update" parameterType="cn.tongdun.kunpeng.share.dataobject.CustomListValueDO" useGeneratedKeys="true" keyProperty="id">
+        update custom_list_value set
+          gmt_modify=#{gmtModify},
+	      operator=#{operator},
+		  gmt_expire=#{gmtExpire}
+		where uuid = #{uuid}
+  </insert>
+
+</mapper>
