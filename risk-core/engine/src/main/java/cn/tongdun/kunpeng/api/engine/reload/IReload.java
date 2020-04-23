@@ -84,19 +84,19 @@ public interface IReload<T> {
 
     //挑战者任务暂停
     default boolean suspend(T t){
-        throw new RuntimeException("not support");
+        throw new UnsupportedOperationException();
     };
     //挑战者任务终止
     default boolean terminate(T t){
-        throw new RuntimeException("not support");
+        throw new UnsupportedOperationException();
     };
     //排序
     default boolean sort(List<T> list){
-        throw new RuntimeException("not support");
+        throw new UnsupportedOperationException();
     };
     //切换决策模式
     default boolean switchDecisionMode(T t){
-        throw new RuntimeException("not support");
+        throw new UnsupportedOperationException();
     };
 
 
