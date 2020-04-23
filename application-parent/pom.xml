@@ -22,9 +22,7 @@
         <module>application-runengine</module>
         <module>application-basedata</module>
         <module>application-auth</module>
-        <module>application-activity-common</module>
-        <module>application-activity-direct-kafka</module>
-        <module>application-activity-memoryq-kafka</module>
+        <module>application-activity</module>
     </modules>
 
 

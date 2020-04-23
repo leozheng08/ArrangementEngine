@@ -3,13 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>application-parent</artifactId>
+        <artifactId>application-activity</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>application-activity-memoryq-kafka</artifactId>
+    <artifactId>application-activity-common</artifactId>
+
 
     <dependencies>
 
@@ -22,11 +23,6 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-activity-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -54,5 +50,4 @@
             <artifactId>kafka-clients</artifactId>
         </dependency>
     </dependencies>
-
 </project>
