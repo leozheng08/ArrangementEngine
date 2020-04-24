@@ -1,6 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.policy.challenger;
 
-import cn.tongdun.kunpeng.api.engine.dto.PolicyChallengerDTO;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @Author: liang.chen
@@ -8,9 +10,12 @@ import cn.tongdun.kunpeng.api.engine.dto.PolicyChallengerDTO;
  */
 public interface IPolicyChallengerRepository {
 
+    //根据合作方取得所有有效的挑战者任务
+    List<PolicyChallenger> queryAvailableByPartners(Set<String> partners);
+
     //根据PolicyDefinitionUuid查询挑战者
-    PolicyChallengerDTO queryByPolicyDefinitionUuid(String policyDefinitionUuid);
+    PolicyChallenger queryByPolicyDefinitionUuid(String policyDefinitionUuid);
 
     //根据uuid查询挑战者
-    PolicyChallengerDTO queryByUuid(String uuid);
+    PolicyChallenger queryByUuid(String uuid);
 }

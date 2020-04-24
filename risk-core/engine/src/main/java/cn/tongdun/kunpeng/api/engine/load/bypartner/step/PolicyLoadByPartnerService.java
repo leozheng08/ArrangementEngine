@@ -76,11 +76,17 @@ public class PolicyLoadByPartnerService {
     }
 
     public boolean loadByPartner(Set<String> partners){
-        //取得策略列表
-        List<PolicyModifiedDTO> policyModifiedDOList = policyRepository.queryDefaultPolicyByPartners(partners);
+        //取得默认策略列表
+        List<PolicyModifiedDTO> policyList = policyRepository.queryDefaultPolicyByPartners(partners);
+
+        //取得挑战者策略列表
+        List<PolicyModifiedDTO> challengerPolicyList = policyRepository.queryChallengerPolicyByPartners(partners);
+        if(challengerPolicyList != null && !challengerPolicyList.isEmpty()) {
+            policyList.addAll(challengerPolicyList);
+        }
 
         List<PolicyLoadTask> tasks = new ArrayList<>();
-        for(PolicyModifiedDTO policyModifiedDO:policyModifiedDOList){
+        for(PolicyModifiedDTO policyModifiedDO : policyList){
             if(CommonStatusEnum.CLOSE.getCode() == policyModifiedDO.getStatus()||
                     DeleteStatusEnum.INVALID.getCode() == policyModifiedDO.isDeleted() ){
                 //缓存不在用状态，便于返回404子码

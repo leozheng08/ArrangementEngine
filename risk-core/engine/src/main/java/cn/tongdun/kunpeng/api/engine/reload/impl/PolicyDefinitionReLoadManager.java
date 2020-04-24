@@ -40,19 +40,6 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
     @Autowired
     private PolicyDefinitionCache policyDefinitionCache;
 
-
-    @Autowired
-    private IPolicyRepository policyRepository;
-
-    @Autowired
-    private PolicyCache policyCache;
-
-    @Autowired
-    private DefaultConvertorFactory defaultConvertorFactory;
-
-    @Autowired
-    private LocalCacheService localCacheService;
-
     @Autowired
     private ReloadFactory reloadFactory;
 
@@ -60,10 +47,21 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
     private PolicyReLoadManager policyReLoadManager;
 
     @Autowired
-    private IPlatformIndexRepository policyIndicatrixItemRepository;
+    private PolicyCache policyCache;
 
     @Autowired
+    private IPolicyRepository policyRepository;
+    @Autowired
+    private DefaultConvertorFactory defaultConvertorFactory;
+    @Autowired
+    private LocalCacheService localCacheService;
+    @Autowired
+    private IPlatformIndexRepository policyIndicatrixItemRepository;
+    @Autowired
     private PlatformIndexCache policyIndicatrixItemCache;
+
+
+
 
     @PostConstruct
     public void init(){

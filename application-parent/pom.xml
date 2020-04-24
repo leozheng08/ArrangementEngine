@@ -23,6 +23,7 @@
         <module>application-basedata</module>
         <module>application-auth</module>
         <module>application-activity</module>
+        <module>application-challenger</module>
     </modules>
 
 
