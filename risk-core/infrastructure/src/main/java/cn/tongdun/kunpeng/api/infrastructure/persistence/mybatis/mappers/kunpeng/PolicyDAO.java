@@ -20,4 +20,6 @@ public interface PolicyDAO {
     //根据策略uuid列表，取得策略清单
     List<PolicyModifiedDTO> selectPolicyByUuids(List<String> uuids);
 
+    //根据策略uuid列表，取得策略清单
+    List<PolicyModifiedDTO> selectNotDefaultPolicyByUuids(List<String> uuids);
 }

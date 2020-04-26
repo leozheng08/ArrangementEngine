@@ -46,7 +46,7 @@ public class PolicyChallengerLoadManager implements ILoad {
         List<PolicyChallenger> policyChallengerList = policyChallengerRepository.queryAvailableByPartners(partners);
 
         for(PolicyChallenger policyChallenger:policyChallengerList) {
-            policyChallengerCache.put(policyChallenger.getUuid(),policyChallenger);
+            policyChallengerCache.put(policyChallenger.getPolicyDefinitionUuid(),policyChallenger);
         }
 
         logger.info("PolicyChallengerLoadManager success, size:"+policyChallengerList.size());

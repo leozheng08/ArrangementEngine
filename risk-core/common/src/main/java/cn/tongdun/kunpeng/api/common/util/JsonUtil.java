@@ -21,7 +21,7 @@ public class JsonUtil {
         if(value == null){
             return null;
         }
-        return Long.parseLong(value.toString());
+        return Double.valueOf(value.toString()).longValue();
     }
 
     public static Integer getInteger(Map map,String key){
@@ -29,7 +29,7 @@ public class JsonUtil {
         if(value == null){
             return null;
         }
-        return Integer.parseInt(value.toString());
+        return Double.valueOf(value.toString()).intValue();
     }
 
     public static Double getDouble(Map map,String key){

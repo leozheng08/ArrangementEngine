@@ -75,7 +75,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
 
     @PostConstruct
     public void init(){
-        reloadFactory.register(PolicyDefinitionEventDO.class,this);
+        reloadFactory.register(PolicyChallengerEventDO.class,this);
     }
 
     @Override
@@ -130,10 +130,11 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
                 return remove(eventDO);
             }
 
-            policyChallengerCache.put(uuid,policyChallenger);
+            policyChallengerCache.put(policyChallenger.getPolicyDefinitionUuid(),policyChallenger);
 
             //加载挑战者策略信息
             loadPolicy(policyChallenger);
+            result = true;
         } catch (Exception e){
             logger.error("PolicyChallenger reload failed, uuid:{}",uuid,e);
             return false;
@@ -171,7 +172,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
                 }
 
                 //加载策略各个子对象信息
-                PolicyLoadTask task = new PolicyLoadTask(policy.getUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
+                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
                 task.call();
             }
         }

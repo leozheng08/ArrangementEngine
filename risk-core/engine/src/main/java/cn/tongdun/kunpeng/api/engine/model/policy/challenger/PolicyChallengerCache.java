@@ -70,7 +70,12 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
         return policyChallenger.getChallengerConfig();
     }
 
-    public String getPolicyUuid(String policyDefinitionUuid) {
+    /**
+     * 根据冠军与挑战者的比率取得要运行的策略uuid
+     * @param policyDefinitionUuid
+     * @return
+     */
+    public String getNextPolicyUuid(String policyDefinitionUuid) {
         PolicyChallenger policyChallenger = policyChallengerMap.get(policyDefinitionUuid);
         if(policyChallenger == null){
             return null;

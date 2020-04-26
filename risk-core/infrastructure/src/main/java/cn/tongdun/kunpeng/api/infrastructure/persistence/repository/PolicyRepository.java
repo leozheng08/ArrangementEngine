@@ -80,7 +80,7 @@ public class PolicyRepository implements IPolicyRepository{
             return result;
         }
 
-        return policyDAO.selectPolicyByUuids(policyUuidList);
+        return policyDAO.selectNotDefaultPolicyByUuids(policyUuidList);
     }
 
     //查询单个策略的信息，不包含各个子对象

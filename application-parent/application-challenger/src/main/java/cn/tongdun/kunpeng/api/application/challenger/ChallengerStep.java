@@ -56,7 +56,7 @@ public class ChallengerStep implements IRiskStep {
             return false;
         }
 
-        String policyUuid = policyChallengerCache.getPolicyUuid(policyDefinition.getUuid());
+        String policyUuid = policyChallengerCache.getNextPolicyUuid(policyDefinition.getUuid());
         //没有挑战者任务时，返回的policyUuid为空
         if(StringUtils.isBlank(policyUuid)){
             return true;

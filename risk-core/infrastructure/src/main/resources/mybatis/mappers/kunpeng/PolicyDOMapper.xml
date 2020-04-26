@@ -81,13 +81,23 @@
   <select id="selectPolicyByUuids" resultMap="PolicyModifiedResultMap" parameterType="java.util.List" >
     select <include refid="Modified_Column_List"/>
     from policy a,policy_definition b
-    where a.policy_definition_uuid=b.uuid and a.is_default_version=1
+    where a.policy_definition_uuid=b.uuid
     and a.uuid in
     <foreach collection="list" item="uuid" index="index"  open="(" separator="," close=")">
       #{uuid}
     </foreach>
   </select>
 
+  <!--非默认版本的策略，用于查询挑战者的策略 -->
+  <select id="selectNotDefaultPolicyByUuids" resultMap="PolicyModifiedResultMap" parameterType="java.util.List" >
+    select <include refid="Modified_Column_List"/>
+    from policy a,policy_definition b
+    where a.policy_definition_uuid=b.uuid and a.is_default_version!=1
+    and a.uuid in
+    <foreach collection="list" item="uuid" index="index"  open="(" separator="," close=")">
+      #{uuid}
+    </foreach>
+  </select>
 
 
 
