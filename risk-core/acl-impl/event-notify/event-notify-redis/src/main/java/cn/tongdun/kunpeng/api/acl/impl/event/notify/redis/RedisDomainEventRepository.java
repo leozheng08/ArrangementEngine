@@ -2,8 +2,11 @@ package cn.tongdun.kunpeng.api.acl.impl.event.notify.redis;
 
 import cn.tongdun.kunpeng.api.acl.event.notice.AbstractDomainEventRepository;
 import cn.tongdun.kunpeng.api.common.util.DateUtil;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.kv.IScoreKVRepository;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +71,23 @@ public class RedisDomainEventRepository extends AbstractDomainEventRepository {
         String currentKey = DateUtil.getYYYYMMDDHHMMStr();
         scoreKVRepository.zadd(currentKey,occurredTime,eventMsg);
         scoreKVRepository.setTtl(currentKey,EXPIRE_TIME);
+    }
+
+
+    private void putCache(String eventMsg,Long occurredTime){
+        Map map = JSON.parseObject(eventMsg,HashMap.class);
+        List<HashMap> list = (List)map.get("data");
+        if(list == null || map.isEmpty()){
+            return;
+        }
+
+        for(HashMap data:list) {
+            String uuid = (String)data.get("uuid");
+            if(StringUtils.isBlank(uuid)){
+                continue;
+            }
+
+
+        }
     }
 }

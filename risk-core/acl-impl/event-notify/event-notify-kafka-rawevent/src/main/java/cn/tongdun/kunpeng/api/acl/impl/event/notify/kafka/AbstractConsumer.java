@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.kafka.consumer.IConsumer;
 import cn.fraudmetrix.module.kafka.object.RetryLaterException;
 import cn.tongdun.kunpeng.share.config.DynamicConfigRepository;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -54,6 +55,8 @@ public abstract class AbstractConsumer implements IConsumer {
                 }
             } catch (Exception e) {
                 logger.warn("{} Receive a not json message for {}, data:{}", clsName, record.topic(), message,e);
+            } finally {
+                ThreadContext.clear();
             }
         }
         if (!batchConsume() || bulkMessages.isEmpty() || StringUtils.isBlank(topic)) {
@@ -70,6 +73,8 @@ public abstract class AbstractConsumer implements IConsumer {
                 logger.error("doConsume error:", e);
             }
             throw new RetryLaterException();
+        } finally {
+            ThreadContext.clear();
         }
     }
 

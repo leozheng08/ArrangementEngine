@@ -25,6 +25,12 @@
     concurrency_version, gmt_create, gmt_modify, origin_uuid, is_deleted, gmt_delete, process_content, diagram_content
   </sql>
 
+  <select id="selectAll" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from decision_flow
+  </select>
+
   <select id="selectByUuid" resultMap="BaseResultMap"  >
     select
     <include refid="Base_Column_List" />

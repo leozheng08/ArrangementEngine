@@ -63,7 +63,7 @@ public class RedisKVRepository implements IKVRepository {
     }
 
     @Override
-    public List<IValue<String>> scan(String prefix, Cursor cursor, int count) {
+    public List<IValue<String,String>> scan(String prefix, Cursor cursor, int count) {
         return null;
     }
 

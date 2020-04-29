@@ -79,7 +79,7 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowEventDO> {
             AbstractDecisionMode decisionMode = decisionModeCache.get(uuid);
             if(decisionMode instanceof DecisionFlow){
                 //缓存中的数据是相同版本或更新的，则不刷新
-                if(decisionMode.getModifiedVersion()  >= timestamp){
+                if(timestampCompare(decisionMode.getModifiedVersion() ,timestamp) >= 0){
                     logger.debug("DecisionFlow reload localCache is newest, ignore uuid:{}",uuid);
                     return true;
                 }

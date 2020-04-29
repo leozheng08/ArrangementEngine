@@ -39,6 +39,12 @@
     t.attribute, t.is_common, t.concurrency_version, t.gmt_delete
   </sql>
 
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_definition t
+  </select>
+
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
     select
     <include refid="Base_Column_List" />

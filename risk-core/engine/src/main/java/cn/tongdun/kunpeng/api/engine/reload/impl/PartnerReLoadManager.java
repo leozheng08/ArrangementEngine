@@ -2,11 +2,13 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
+import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PartnerEventDO;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -62,11 +64,13 @@ public class PartnerReLoadManager implements IReload<PartnerEventDO> {
             Long timestamp = partnerDO.getModifiedVersion();
             Partner oldPartner = partnerCache.get(partnerCode);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(timestamp != null && oldPartner != null && oldPartner.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldPartner != null && timestampCompare(oldPartner.getModifiedVersion(), timestamp) >= 0) {
                 logger.debug("PartnerEventDO reload localCache is newest, ignore partnerCode:{}",partnerCode);
                 return true;
             }
 
+            //设置要查询的时间戳，如果redis缓存的时间戳比这新，则直接按redis缓存的数据返回
+            ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_MODIFIED_VERSION,timestamp);
             PartnerDTO partnerDTO = partnerRepository.queryByPartnerCode(partnerCode);
             Partner newPartner = null;
             if(partnerDTO != null) {

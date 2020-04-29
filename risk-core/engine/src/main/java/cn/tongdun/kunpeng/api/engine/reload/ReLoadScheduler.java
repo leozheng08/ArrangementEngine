@@ -42,7 +42,7 @@ public class ReLoadScheduler implements ILoad {
 //    List<ILoad> reLoadTasks = new ArrayList<>();
 
     /**
-     * 启动加载成功后，增加定时刷新任务
+     * 应用启动成功后，增加定时刷新任务
      */
     @Override
     public boolean load(){

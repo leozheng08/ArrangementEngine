@@ -14,6 +14,13 @@
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
   </resultMap>
+
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_indicatrix_item
+  </select>
+
   <sql id="Base_Column_List" >
     id, partner_code, indicatrix_id, master_field, policy_uuid, biz_uuid, biz_type, status, 
     gmt_create, gmt_modify

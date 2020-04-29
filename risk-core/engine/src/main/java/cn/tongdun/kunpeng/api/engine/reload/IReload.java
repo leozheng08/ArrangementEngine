@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.kunpeng.api.common.util.TimestampUtil;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import cn.tongdun.tdframework.core.pipeline.IStep;
 import org.slf4j.Logger;
@@ -100,4 +101,7 @@ public interface IReload<T> {
     };
 
 
+    default int timestampCompare(long x, long y) {
+        return TimestampUtil.compare(x,y);
+    }
 }

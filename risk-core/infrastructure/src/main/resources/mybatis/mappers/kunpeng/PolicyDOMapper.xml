@@ -34,6 +34,12 @@
     t.curr_decision_mode_uuid, t.concurrency_version, t.is_deleted, t.gmt_delete, t.policy_definition_uuid, t.origin_template_uuid, t.origin_policy_uuid
   </sql>
 
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from policy t
+  </select>
+
   <select id="selectByUuid" resultMap="BaseResultMap" parameterType="string" >
     select
     <include refid="Base_Column_List" />

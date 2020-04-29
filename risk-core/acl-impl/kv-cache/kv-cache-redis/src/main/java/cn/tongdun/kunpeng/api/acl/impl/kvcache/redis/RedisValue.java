@@ -5,7 +5,7 @@ import cn.tongdun.kunpeng.share.kv.IValue;
 /**
  * Created by lvyadong on 2020/02/20.
  */
-public class RedisValue<T> implements IValue<T> {
+public class RedisValue<T> implements IValue<String,T> {
 
     private String key;
     private T value;

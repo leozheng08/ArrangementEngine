@@ -68,7 +68,7 @@ public class RuleRepository implements IRuleRepository {
      */
     @Override
     public List<RuleDTO> queryFullBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizTypeBizUuid("sub_policy",subPolicyUuid);
 
         if(ruleDOList == null) {
             return null;
@@ -117,7 +117,7 @@ public class RuleRepository implements IRuleRepository {
 
     @Override
     public List<RuleDTO> queryBySubPolicyUuid(String subPolicyUuid){
-        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizUuidBizType(subPolicyUuid,"sub_policy");
+        List<RuleDO>  ruleDOList = ruleruleDAO.selectByBizTypeBizUuid("sub_policy",subPolicyUuid);
 
         if(ruleDOList == null) {
             return null;

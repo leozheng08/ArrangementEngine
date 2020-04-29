@@ -53,14 +53,14 @@ public class RedisHashKVRepository extends RedisKVRepository implements IHashKVR
     }
 
     @Override
-    public List<IValue<String>> hscan(String key, Cursor cursor, int count) {
+    public List<IValue<String,String>> hscan(final String key, final Cursor cursor, final int count) {
         ScanParams params = new ScanParams().count(count);
         ScanResult<Map.Entry<String, String>> scanResult = kunPengRedisClient.hscan(key, cursor.getStringCursor(), params);
         if (scanResult != null) {
             cursor.setStringCursor(scanResult.getStringCursor());
             List<Map.Entry<String, String>> results = scanResult.getResult();
             if (CollectionUtils.isNotEmpty(results)) {
-                List<IValue<String>> res = new ArrayList<>();
+                List<IValue<String,String>> res = new ArrayList<>();
                 for (Map.Entry<String, String> entry : results) {
                     String resKey = entry.getKey();
                     String resValue = entry.getValue();

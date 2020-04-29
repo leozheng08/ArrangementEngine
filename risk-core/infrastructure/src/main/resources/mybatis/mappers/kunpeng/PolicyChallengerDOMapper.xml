@@ -19,6 +19,14 @@
     a.id, a.policy_definition_uuid, a.gmt_create, a.gmt_modify, a.creator, a.operator, a.start_time, a.end_time,
     a.is_deleted, a.status, a.config, a.concurrency_version
   </sql>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_challenger a
+  </select>
+
+
   <select id="selectByPolicyDefinitionUuid" resultMap="BaseResultMap" parameterType="string" >
     select 
     <include refid="Base_Column_List" />

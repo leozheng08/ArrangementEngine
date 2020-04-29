@@ -27,11 +27,11 @@
         <janino-version>3.0.6</janino-version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.6</tdframework.version>
+        <tdframework.version>1.0.7-SNAPSHOT</tdframework.version>
         <ddd.version>1.0.5</ddd.version>
         <tdrule.version>1.0.0</tdrule.version>
         <tdflow.version>1.0.0</tdflow.version>
-        <kunpeng-share.version>1.0.0</kunpeng-share.version>
+        <kunpeng-share.version>1.0.1-SNAPSHOT</kunpeng-share.version>
         <common.arch.version>2.0.2</common.arch.version>
         <module.kafka.version>3.1.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
@@ -47,6 +47,7 @@
         <httpclient-version>4.5.5</httpclient-version>
         <curator.version>2.9.0</curator.version>
         <zookeeper.version>3.4.8</zookeeper.version>
+        <protostuff.version>1.0.7</protostuff.version>
 
         <spring-test.version>5.2.2.RELEASE</spring-test.version>
         <junit.version>4.12</junit.version>
@@ -657,6 +658,23 @@
                         <artifactId>slf4j-log4j12</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.dyuproject.protostuff</groupId>
+                <artifactId>protostuff-api</artifactId>
+                <version>${protostuff.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dyuproject.protostuff</groupId>
+                <artifactId>protostuff-runtime</artifactId>
+                <version>${protostuff.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dyuproject.protostuff</groupId>
+                <artifactId>protostuff-core</artifactId>
+                <version>${protostuff.version}</version>
             </dependency>
 
 

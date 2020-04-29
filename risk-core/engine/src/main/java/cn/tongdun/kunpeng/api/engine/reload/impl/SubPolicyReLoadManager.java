@@ -76,7 +76,7 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
             Long timestamp = eventDO.getGmtModify().getTime();
             SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(timestamp != null && oldSubPolicy != null && oldSubPolicy.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldSubPolicy != null && timestampCompare(oldSubPolicy.getModifiedVersion(), timestamp) >= 0) {
                 logger.debug("SubPolicy reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }

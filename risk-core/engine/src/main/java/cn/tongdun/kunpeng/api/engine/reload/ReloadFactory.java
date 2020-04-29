@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class ReloadFactory {
 
-    private Map<Class, IReload> reloadMap = new HashMap<>(10);
+    private Map<Class, IReload> reloadMap = new HashMap<>(16);
 
     public IReload getReload(Class clazz) {
         return reloadMap.get(clazz);

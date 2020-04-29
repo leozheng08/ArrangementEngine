@@ -2,11 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:cache="http://www.springframework.org/schema/cache"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+
+">
 
 
     <context:component-scan base-package="cn.tongdun.kunpeng.api"/>
@@ -23,5 +26,15 @@
             </list>
         </property>
     </bean>
+
+
+    <!-- ================================== AOP ====================================== -->
+    <bean id="cacheableAspect" class="cn.tongdun.kunpeng.api.engine.reload.docache.CacheableAspect"/>
+    <aop:config>
+        <aop:aspect  id="cacheableAspect" ref="cacheableAspect" >
+            <aop:around method="around"
+                        pointcut="@annotation(cn.tongdun.kunpeng.api.engine.reload.docache.Cacheable)"/>
+        </aop:aspect>
+    </aop:config>
 
 </beans>

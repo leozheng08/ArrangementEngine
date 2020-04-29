@@ -33,6 +33,11 @@
     gmt_modify, creator, operator
   </sql>
 
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from field_definition
+  </select>
 
   <select id="selectByFieldType" resultMap="BaseResultMap" parameterType="java.lang.String">
     select

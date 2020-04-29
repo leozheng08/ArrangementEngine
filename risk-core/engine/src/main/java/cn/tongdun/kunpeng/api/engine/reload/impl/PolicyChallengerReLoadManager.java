@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
+import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyChallengerDTO;
@@ -24,6 +25,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyChallengerEventDO;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,11 +1,13 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventTypeEventDO;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +62,13 @@ public class EventTypeReLoadManager implements IReload<EventTypeEventDO> {
             Long timestamp = eventDO.getModifiedVersion();
             EventType eventType = eventTypeCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(timestamp != null && eventType != null && eventType.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && eventType != null && timestampCompare(eventType.getModifiedVersion() ,timestamp) >= 0) {
                 logger.debug("EventType reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
+            //设置要查询的时间戳，如果redis缓存的时间戳比这新，则直接按redis缓存的数据返回
+            ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_MODIFIED_VERSION,timestamp);
             EventType newEventType = eventTypeRepository.queryByUuid(uuid);
             if(newEventType == null || !newEventType.isValid()){
                 return remove(eventDO);

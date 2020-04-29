@@ -22,9 +22,9 @@ public class RedisBatchKVRepository implements IBatchKVRepository {
     private RedisClient kunPengRedisClient;
 
     @Override
-    public List<IValue<String>> batchGet(String... keys) {
+    public List<IValue<String,String>> batchGet(String... keys) {
         List<String> results = kunPengRedisClient.mget(keys);
-        List<IValue<String>> res = new ArrayList<>();
+        List<IValue<String,String>> res = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(results)) {
             int size = keys.length;
             for (int i = 0; i < size; i++) {
@@ -37,8 +37,8 @@ public class RedisBatchKVRepository implements IBatchKVRepository {
     }
 
     @Override
-    public List<IValue<String>> batchGet(List<String> keys) {
-        List<IValue<String>> res = new ArrayList<>();
+    public List<IValue<String,String>> batchGet(List<String> keys) {
+        List<IValue<String,String>> res = new ArrayList<>();
         String[] array = new String[keys.size()];
         List<String> results = kunPengRedisClient.mget(keys.toArray(array));
         if (CollectionUtils.isNotEmpty(results)) {
@@ -53,7 +53,7 @@ public class RedisBatchKVRepository implements IBatchKVRepository {
     }
 
     @Override
-    public List<IKVResponse> set(List<IValue<String>> list) {
+    public List<IKVResponse> set(List<IValue<String,String>> list) {
         if (CollectionUtils.isNotEmpty(list)) {
             List<IKVResponse> responses = new ArrayList<>();
             list.forEach(redisValue -> {

@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
+import cn.tongdun.kunpeng.api.engine.reload.docache.Cacheable;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,6 +19,7 @@ public interface EventTypeDAO {
 
     List<EventTypeDO> selectAllAvailable();
 
+    @Cacheable(idxName = "all")
     List<EventTypeDO> selectAll();
 
     /**
@@ -25,6 +27,7 @@ public interface EventTypeDAO {
      * @param uuid
      * @return
      */
+    @Cacheable
     EventTypeDO selectByUuid(@Param("uuid") String uuid);
 
 }

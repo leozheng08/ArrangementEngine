@@ -1,13 +1,19 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.ddd.common.domain.CommonEntity;
 import cn.tongdun.kunpeng.api.acl.event.notice.IDomainEventRepository;
 import cn.tongdun.kunpeng.api.acl.event.notice.IRawDomainEventHandle;
+import cn.tongdun.kunpeng.api.common.util.TimestampUtil;
+import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueKVRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ICustomListValueRepository;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.CustomListValueEventDO;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.api.engine.reload.docache.DataObjectCacheFactory;
+import cn.tongdun.kunpeng.api.engine.reload.docache.IDataObjectCache;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +49,8 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
     @Autowired
     private EventMsgParser eventMsgParser;
 
+    @Autowired
+    private DataObjectCacheFactory dataObjectCacheFactory;
 
     /**
      * 接收到kunpeng-admin的原始消息。将这些消息写到redis或aerospike远程缓存中
@@ -105,6 +113,39 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
 
     //将领域事件保存到redis，供kunpeng-api每个主机从redis中拉取事件列表
     private void putEventMsgToRemoteCache(Map rawEventMsg){
+        cacheDataObject(rawEventMsg);
         domainEventRepository.putEventMsgToRemoteCache(JSON.toJSONString(rawEventMsg),JsonUtil.getLong(rawEventMsg,"occurredTime"));
+    }
+
+
+    //缓存数据对象
+    private void cacheDataObject(Map rawEventMsg){
+        String entryName = JsonUtil.getString(rawEventMsg,"entity");
+        Long occurredTime = JsonUtil.getLong(rawEventMsg,"occurredTime");
+        if(StringUtils.isBlank(entryName) || occurredTime == null){
+            return;
+        }
+        IDataObjectCache dataObjectCache = dataObjectCacheFactory.getDOCacheByName(entryName);
+        if(dataObjectCache == null){
+            return;
+        }
+
+        List<Map> list = (List)rawEventMsg.get("data");
+        if(list == null || list.isEmpty()){
+            return;
+        }
+        //强制从数据库中查询
+        ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_FORCE_FROM_DB,true);
+
+        for(Map map:list){
+            String uuid = (String)map.get("uuid");
+            CommonEntity cachedEntity = dataObjectCache.get(uuid);
+            if(cachedEntity != null && TimestampUtil.compare(cachedEntity.getGmtModify().getTime(), occurredTime)==1){
+                //缓存中的数据为最新的，则不需要刷新缓存
+                continue;
+            }
+            //刷新数据
+            dataObjectCache.refresh(uuid);
+        }
     }
 }

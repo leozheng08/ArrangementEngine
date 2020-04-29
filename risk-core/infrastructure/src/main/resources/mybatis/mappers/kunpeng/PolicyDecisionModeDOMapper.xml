@@ -16,6 +16,13 @@
     id, gmt_create, gmt_modify, creator, operator, decision_mode_type, decision_mode_uuid, 
     status, policy_uuid
   </sql>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from policy_decision_mode
+    where is_deleted=0 and status =1 and is_curr_decision_mode=1
+  </select>
+
   <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="string" >
     select 
     <include refid="Base_Column_List" />

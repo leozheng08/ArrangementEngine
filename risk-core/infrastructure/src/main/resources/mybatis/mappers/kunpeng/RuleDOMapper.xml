@@ -34,6 +34,12 @@
     operator, attribute, policy_uuid, concurrency_version, is_deleted, risk_config, policy_definition_uuid, biz_uuid, biz_type
   </sql>
 
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from rule
+  </select>
+
   <select id="selectEnabledByUuid" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
@@ -46,7 +52,7 @@
     from rule where uuid = #{uuid}
   </select>
 
-  <select id="selectByBizUuidBizType" resultMap="BaseResultMap">
+  <select id="selectByBizTypeBizUuid" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
      from rule where biz_uuid = #{bizUuid} and biz_type = #{bizType} and is_deleted = 0  and status=1

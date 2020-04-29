@@ -19,19 +19,19 @@
             <artifactId>core-spring-boot-starter</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--&lt;!&ndash; 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 &ndash;&gt;-->
-            <!--<groupId>cn.tongdun.kunpeng-api</groupId>-->
-            <!--<artifactId>event-notify-kafka-rawevent</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>cn.tongdun.kunpeng-api</groupId>-->
-            <!--<artifactId>event-notify-redis</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>event-notify-kafka-rawevent</artifactId>
+        </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>event-notify-db</artifactId>
+            <artifactId>event-notify-redis</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>cn.tongdun.kunpeng-api</groupId>-->
+            <!--<artifactId>event-notify-db</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <!-- redis基件，以支持自定义列表 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>

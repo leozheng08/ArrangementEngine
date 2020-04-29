@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.RuleEventDO;
@@ -12,6 +13,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,7 +183,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             Long timestamp = eventDO.getGmtModify().getTime();
             Rule oldRule = ruleCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(timestamp != null && oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldRule != null && timestampCompare(oldRule.getModifiedVersion(), timestamp) >= 0) {
                 logger.debug("Rule reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
@@ -224,7 +226,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 Long timestamp = eventDO.getGmtModify().getTime();
                 Rule oldRule = ruleCache.get(uuid);
                 //缓存中的数据是相同版本或更新的，则不刷新
-                if(timestamp != null && oldRule != null && oldRule.getModifiedVersion() >= timestamp) {
+                if(timestamp != null && oldRule != null && timestampCompare(oldRule.getModifiedVersion(), timestamp) >= 0) {
                     logger.debug("Rule reload localCache is newest, ignore uuid:{}",uuid);
                     return true;
                 }

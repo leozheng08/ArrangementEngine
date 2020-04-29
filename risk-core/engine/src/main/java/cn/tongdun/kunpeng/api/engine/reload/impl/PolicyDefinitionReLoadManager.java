@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
+import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
@@ -16,6 +17,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCac
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,11 +123,13 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
             Long timestamp = eventDO.getGmtModify().getTime();
             PolicyDefinition oldPolicyDefinition = policyDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(timestamp != null && oldPolicyDefinition != null && oldPolicyDefinition.getModifiedVersion() >= timestamp) {
+            if(timestamp != null && oldPolicyDefinition != null && timestampCompare(oldPolicyDefinition.getModifiedVersion(), timestamp) >= 0) {
                 logger.debug("PolicyDefinition reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
+            //设置要查询的时间戳，如果redis缓存的时间戳比这新，则直接按redis缓存的数据返回
+            ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_MODIFIED_VERSION,timestamp);
             PolicyDefinition policyDefinition = policyDefinitionRepository.queryByUuid(uuid);
             //如果失效则删除缓存
             if(policyDefinition == null || !policyDefinition.isValid()){

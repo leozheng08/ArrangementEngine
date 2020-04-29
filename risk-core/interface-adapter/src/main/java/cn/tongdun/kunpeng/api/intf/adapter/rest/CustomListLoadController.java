@@ -24,7 +24,7 @@ public class CustomListLoadController {
     CustomListValueManager customListValueManager;
 
 
-    @RequestMapping(value = "loadDataToRedis", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "loadCustomListToRedis", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public String loadDataToRedis(@RequestHeader Map<String,String> header, @RequestParam Map<String,String> request,
                                     HttpServletResponse response) {

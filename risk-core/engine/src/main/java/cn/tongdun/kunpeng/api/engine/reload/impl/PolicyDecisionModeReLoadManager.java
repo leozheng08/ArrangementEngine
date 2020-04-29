@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.DecisionFlowConvertor;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDecisionModeEventDO;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
@@ -8,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +82,11 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
         try {
             AbstractDecisionMode decisionMode = decisionModeCache.get(policyUuid);
 
+            //设置要查询的时间戳，如果redis缓存的时间戳比这新，则直接按redis缓存的数据返回
+            ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_MODIFIED_VERSION,timestamp);
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDecisionModeRepository.queryByPolicyUuid(policyUuid);
+            ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_MODIFIED_VERSION,null);
+
             if(policyDecisionModeDTO == null || !policyDecisionModeDTO.isValid()){
                 decisionModeCache.remove(policyUuid);
                 return true;
@@ -89,7 +95,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
             if(DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())){
                 if(decisionMode instanceof DecisionFlow){
                     //缓存中的数据是相同版本或更新的，则不刷新
-                    if(decisionMode.getModifiedVersion()  >= timestamp){
+                    if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) >= 0){
                         logger.debug("PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }
@@ -97,7 +103,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
             } else {
                 if(decisionMode instanceof ParallelSubPolicy){
                     //缓存中的数据是相同版本或更新的，则不刷新
-                    if(decisionMode.getModifiedVersion()  >= timestamp){
+                    if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) >= 0){
                         logger.debug("PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }

@@ -25,6 +25,12 @@
     status, concurrency_version, is_deleted, gmt_delete
   </sql>
 
+  <select id="selectAll" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from index_definition
+    where is_deleted = 0 and status = 1
+  </select>
+
   <select id="selectEnabledIndexesBySubPolicyUuid" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/>
     from index_definition

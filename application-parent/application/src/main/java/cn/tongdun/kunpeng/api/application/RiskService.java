@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
@@ -98,6 +99,8 @@ public class RiskService implements IRiskService {
         }catch (Exception e){
             logger.error("决策接口内部异常",e);
             riskResponse.setReasonCode(ReasonCode.INTERNAL_ERROR.toString());
+        } finally {
+            ThreadContext.clear();
         }
         timeContext.stop();
         return riskResponse;
