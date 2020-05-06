@@ -5,10 +5,6 @@ import cn.tongdun.kunpeng.api.common.util.TimestampUtil;
 import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
-import javassist.*;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.LocalVariableAttribute;
-import javassist.bytecode.MethodInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -18,12 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class CacheableAspect {
@@ -150,7 +143,7 @@ public class CacheableAspect {
             Object[] args = point.getArgs();
             //按索引查询
             if(StringUtils.isNotBlank(cacheable.idxName())) {
-                return dataObjectCache.getByIdx(cacheable.idxName(), args);
+                return dataObjectCache.getByIdx(cacheable.idxName(), args,cacheable.onlyAvailable());
             } else {
                 //按uuid查询
                 if(args== null || args.length<1 || args[0] == null) {
@@ -207,62 +200,4 @@ public class CacheableAspect {
             logger.error("CacheableAspect cacheDataObject error",e);
         }
     }
-
-
-
-//    public Map<String, Object> getFieldsName(ProceedingJoinPoint point) throws Throwable {
-//        Class<?> clazz = point.getTarget().getClass().getInterfaces()[0];
-//
-//        MethodSignature signature = (MethodSignature) point.getSignature();
-//        Method realMethod = clazz.getDeclaredMethod(signature.getName(),
-//                signature.getParameterTypes());
-//
-//        String[] parameterNames = ParameterNameUtils.getMethodParameterNamesByAsm4(clazz, realMethod);
-//
-//        return null;
-//    }
-//
-//
-//    public Map<String, Object> getFieldsName2(ProceedingJoinPoint joinPoint) throws Throwable {
-//
-//
-//        Class<?> clazz = joinPoint.getTarget().getClass().getInterfaces()[0];
-//        String clazzName = clazz.getName();
-//        String methodName = joinPoint.getSignature().getName(); //获取方法名称
-//        Object[] args = joinPoint.getArgs();//参数
-//        //获取参数名称和值
-//        Map<String, Object> nameAndArgs = getFieldsName(this.getClass(), clazzName, methodName, args);
-//        return nameAndArgs;
-//    }
-//
-//
-//
-//    private Map<String,Object> getFieldsName(Class cls, String clazzName, String methodName, Object[] args) throws NotFoundException {
-//        Map<String,Object > map=new HashMap<String,Object>();
-//
-//        ClassPool pool = ClassPool.getDefault();
-//        //ClassClassPath classPath = new ClassClassPath(this.getClass());
-//        ClassClassPath classPath = new ClassClassPath(cls);
-//        pool.insertClassPath(classPath);
-//
-//        CtClass cc = pool.get(clazzName);
-//        CtMethod cm = cc.getDeclaredMethod(methodName);
-//        MethodInfo methodInfo = cm.getMethodInfo();
-//        CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
-//        LocalVariableAttribute attr = (LocalVariableAttribute) codeAttribute.getAttribute(LocalVariableAttribute.tag);
-//        if (attr == null) {
-//            // exception
-//        }
-//        // String[] paramNames = new String[cm.getParameterTypes().length];
-//        int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
-//        for (int i = 0; i < cm.getParameterTypes().length; i++){
-//            map.put( attr.variableName(i + pos),args[i]);//paramNames即参数名
-//        }
-//
-//        //Map<>
-//        return map;
-//    }
-
-
-
 }

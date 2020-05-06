@@ -38,6 +38,7 @@ public class PolicyChallengerLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("PolicyChallengerLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         //取得合作方范围
         Set<String> partners = partnerClusterCache.getPartners();
@@ -49,7 +50,8 @@ public class PolicyChallengerLoadManager implements ILoad {
             policyChallengerCache.put(policyChallenger.getPolicyDefinitionUuid(),policyChallenger);
         }
 
-        logger.info("PolicyChallengerLoadManager success, size:"+policyChallengerList.size());
+        logger.info("PolicyChallengerLoadManager success, cost:{}, size:{}",
+                System.currentTimeMillis() - beginTime, policyChallengerList.size());
         return true;
     }
 }

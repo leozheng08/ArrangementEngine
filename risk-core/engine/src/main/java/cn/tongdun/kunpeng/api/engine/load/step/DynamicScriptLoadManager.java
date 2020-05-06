@@ -39,13 +39,12 @@ public class DynamicScriptLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("DynamicScriptLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         Set allPartners = new HashSet(partnerClusterCache.getPartners());
         allPartners.add("All");
-
         List<DynamicScript> scripts = groovyRepository.queryGroovyByPartners(allPartners);
 
-        long beginTime = System.currentTimeMillis();
         int failedCount = 0;
         for (DynamicScript script : scripts) {
             try {
@@ -61,7 +60,7 @@ public class DynamicScriptLoadManager implements ILoad {
         if(scripts != null){
             scriptsCount = scripts.size();
         }
-        logger.info("DynamicScriptLoadManager success,cost:{},failedCount:,scriptsCount:{}", System.currentTimeMillis() - beginTime,failedCount, scriptsCount);
+        logger.info("DynamicScriptLoadManager success,cost:{},failedCount:{},scriptsCount:{}", System.currentTimeMillis() - beginTime,failedCount, scriptsCount);
         return true;
     }
 }

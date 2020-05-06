@@ -41,6 +41,7 @@ public class PartnerLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("PartnerLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         List<PartnerDTO> partnerDTOList = partnerRepository.queryEnabledByPartners(partnerClusterCache.getPartners());
 
@@ -58,7 +59,8 @@ public class PartnerLoadManager implements ILoad {
             partnerCache.put(partner.getPartnerCode(),partner);
         }
 
-        logger.info("PartnerLoadManager success, size:"+partnerList.size());
+        logger.info("PartnerLoadManager success, cost:{}, size:{}",
+                System.currentTimeMillis() - beginTime, partnerList.size());
         return true;
     }
 

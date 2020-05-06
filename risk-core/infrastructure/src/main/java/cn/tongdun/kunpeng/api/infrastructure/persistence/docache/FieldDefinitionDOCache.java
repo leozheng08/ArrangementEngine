@@ -1,7 +1,9 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.docache;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.reload.docache.AbstractDataObjectCache;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.FieldDefinitionDAO;
+import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +56,18 @@ public class FieldDefinitionDOCache extends AbstractDataObjectCache<FieldDefinit
     @Override
     public void removeIdx(FieldDefinitionDO dataObject){
         scoreKVRepository.zrem(cacheKey+"_fieldType",dataObject.getFieldType()+":"+dataObject.getUuid());
+    }
+
+
+    @Override
+    public boolean isValid(FieldDefinitionDO dataObject){
+        if(dataObject.getStatus() != null && dataObject.getStatus().equals(CommonStatusEnum.CLOSE.getCode())) {
+            return false;
+        }
+        if(dataObject.isDeleted()) {
+            return false;
+        }
+
+        return true;
     }
 }

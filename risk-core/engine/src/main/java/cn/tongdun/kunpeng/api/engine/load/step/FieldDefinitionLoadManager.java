@@ -40,7 +40,8 @@ public class FieldDefinitionLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("FieldLoadManager start");
+        logger.info("FieldDefinitionLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         List<FieldDefinition> list = ruleFieldRepository.queryAllSystemField();
         for(FieldDefinition ruleField:list){
@@ -52,7 +53,8 @@ public class FieldDefinitionLoadManager implements ILoad {
             ruleFieldCacheRepository.put(ruleField.getUuid(),ruleField);
         }
 
-        logger.info("FieldLoadManager success,systemFieldMap size:"+ruleFieldCacheRepository.getSystemFieldMap().size()+" extendFieldMap size:"+ruleFieldCacheRepository.getExtendFieldMap().size());
+        logger.info("FieldDefinitionLoadManager success, cost:{}, systemFieldMap size:{}, extendFieldMap size:{}",
+                System.currentTimeMillis() - beginTime, ruleFieldCacheRepository.getSystemFieldMap().size(),ruleFieldCacheRepository.getExtendFieldMap().size());
         return true;
     }
 }

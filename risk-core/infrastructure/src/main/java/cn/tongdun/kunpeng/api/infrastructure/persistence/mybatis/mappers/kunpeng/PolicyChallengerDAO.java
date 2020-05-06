@@ -14,6 +14,7 @@ public interface PolicyChallengerDAO {
     @Cacheable
     PolicyChallengerDO selectByUuid(String uuid);
 
+    @Cacheable(idxName = "partnerAvailable")
     List<PolicyChallengerDO> selectAvailableByPartners(Set<String> partners);
 
     //todo 后期优化，按分页查询所有

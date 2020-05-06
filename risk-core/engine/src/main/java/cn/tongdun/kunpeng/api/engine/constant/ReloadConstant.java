@@ -13,5 +13,7 @@ public class ReloadConstant {
 
 
     public static final String IDX_NAME_ALL = "all";
+    public static final String IDX_NAME_ALL_AVAILABLE = "allAvailable";
+    public static final String SUFFIX_AVAILABLE = "Available";
     public static final String IDX_NAME_UUID = "uuid";
 }

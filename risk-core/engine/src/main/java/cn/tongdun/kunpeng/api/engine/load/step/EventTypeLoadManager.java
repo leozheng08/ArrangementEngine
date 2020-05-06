@@ -34,13 +34,15 @@ public class EventTypeLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("EventTypeLoadManager start");
+        long beginTime = System.currentTimeMillis();
         List<EventType> list = eventTypeRepository.queryAll();
         if(list != null) {
             for(EventType eventType :list) {
                 eventTypeLocalCache.put(eventType.getUuid(),eventType);
             }
         }
-        logger.info("EventTypeLoadManager success, size:"+eventTypeLocalCache.getEventTypes().size());
+        logger.info("EventTypeLoadManager success, cost:{}, size:{}",
+                System.currentTimeMillis() - beginTime, eventTypeLocalCache.getEventTypes().size());
         return true;
     }
 }

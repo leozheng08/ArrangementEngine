@@ -46,7 +46,7 @@ public interface IDataObjectCache<T extends CommonEntity>{
      * @param args
      * @return
      */
-    default List<T> getByIdx(String idxName, Object[] args){
+    default List<T> getByIdx(String idxName, Object[] args,boolean onlyAvailable){
         throw new UnsupportedOperationException();
     }
 }

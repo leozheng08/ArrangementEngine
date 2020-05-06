@@ -35,13 +35,15 @@ public class PolicyLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("PolicyLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         //取得合作方范围
         Set<String> partners = partnerClusterCache.getPartners();
 
         boolean success = loadPolicyByPartnerService.loadByPartner(partners);
 
-        logger.info("PolicyLoadManager success:"+success);
+        logger.info("PolicyLoadManager isSuccess:{}, cost:{}",success,
+                System.currentTimeMillis() - beginTime);
         return success;
     }
 }

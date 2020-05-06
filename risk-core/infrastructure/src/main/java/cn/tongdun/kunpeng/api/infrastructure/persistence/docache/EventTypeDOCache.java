@@ -1,8 +1,10 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.docache;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.reload.docache.AbstractDataObjectCache;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.EventTypeDAO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDAO;
+import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import cn.tongdun.kunpeng.share.dataobject.EventTypeDO;
 import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
@@ -56,5 +58,18 @@ public class EventTypeDOCache extends AbstractDataObjectCache<EventTypeDO> {
     @Override
     public void removeIdx(EventTypeDO dataObject){
         //scoreKVRepository.zrem(cacheKey+"_partner",dataObject.getPartnerCode()+":"+dataObject.getUuid());
+    }
+
+
+    @Override
+    public boolean isValid(EventTypeDO dataObject){
+        if(dataObject.getStatus() != null && dataObject.getStatus().equals(CommonStatusEnum.CLOSE.getCode())) {
+            return false;
+        }
+        if(dataObject.isDeleted()) {
+            return false;
+        }
+
+        return true;
     }
 }

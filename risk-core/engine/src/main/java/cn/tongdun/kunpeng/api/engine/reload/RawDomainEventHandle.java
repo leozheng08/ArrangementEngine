@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.reload;
 import cn.tongdun.ddd.common.domain.CommonEntity;
 import cn.tongdun.kunpeng.api.acl.event.notice.IDomainEventRepository;
 import cn.tongdun.kunpeng.api.acl.event.notice.IRawDomainEventHandle;
+import cn.tongdun.kunpeng.api.common.data.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.common.util.TimestampUtil;
 import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValue;
@@ -120,9 +121,10 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
 
     //缓存数据对象
     private void cacheDataObject(Map rawEventMsg){
+        String eventType = JsonUtil.getString(rawEventMsg,"eventType");
         String entryName = JsonUtil.getString(rawEventMsg,"entity");
         Long occurredTime = JsonUtil.getLong(rawEventMsg,"occurredTime");
-        if(StringUtils.isBlank(entryName) || occurredTime == null){
+        if(StringUtils.isBlank(eventType) || StringUtils.isBlank(entryName) || occurredTime == null){
             return;
         }
         IDataObjectCache dataObjectCache = dataObjectCacheFactory.getDOCacheByName(entryName);
@@ -137,15 +139,22 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
         //强制从数据库中查询
         ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_FORCE_FROM_DB,true);
 
+
         for(Map map:list){
             String uuid = (String)map.get("uuid");
             CommonEntity cachedEntity = dataObjectCache.get(uuid);
-            if(cachedEntity != null && TimestampUtil.compare(cachedEntity.getGmtModify().getTime(), occurredTime)==1){
-                //缓存中的数据为最新的，则不需要刷新缓存
-                continue;
+            if (eventType.toUpperCase().endsWith(DomainEventTypeEnum.DEACTIVATE.name())
+                    || eventType.toUpperCase().endsWith(DomainEventTypeEnum.REMOVE.name())){
+                //删除缓存数据
+                dataObjectCache.remove(uuid);
+            } else {
+                if(cachedEntity != null && TimestampUtil.compare(cachedEntity.getGmtModify().getTime(), occurredTime)==1){
+                    //缓存中的数据为最新的，则不需要刷新缓存
+                    continue;
+                }
+                //刷新数据
+                dataObjectCache.refresh(uuid);
             }
-            //刷新数据
-            dataObjectCache.refresh(uuid);
         }
     }
 }

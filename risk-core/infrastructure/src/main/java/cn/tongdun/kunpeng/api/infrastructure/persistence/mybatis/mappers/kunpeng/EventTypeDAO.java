@@ -17,6 +17,7 @@ public interface EventTypeDAO {
      */
     List<EventTypeDO> selectAvailableByCodes(@Param("list") Set<String> codeList);
 
+    @Cacheable(idxName = "allAvailable")
     List<EventTypeDO> selectAllAvailable();
 
     @Cacheable(idxName = "all")

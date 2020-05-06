@@ -37,6 +37,7 @@ public class InterfaceDefinitionLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("InterfaceDefinitionLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         List<InterfaceDefinition> list = interfaceDefinitionRepository.queryAllAvailable();
         if(list == null || list.isEmpty()) {
@@ -47,7 +48,8 @@ public class InterfaceDefinitionLoadManager implements ILoad {
         for(InterfaceDefinition interfaceDefinition:list) {
             interfaceDefinitionCache.put(interfaceDefinition.getUuid(),interfaceDefinition);
         }
-        logger.info("InterfaceDefinitionLoadManager success, size:"+list.size());
+        logger.info("InterfaceDefinitionLoadManager success, cost:{}, size:{}",
+                System.currentTimeMillis() - beginTime, list.size());
         return true;
     }
 }

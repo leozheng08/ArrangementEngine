@@ -38,6 +38,7 @@ public class PartnerClusterLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("PartnerClusterLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         Set<String> partners = null;
 
@@ -46,7 +47,8 @@ public class PartnerClusterLoadManager implements ILoad {
 
         partnerClusterCache.setPartners(partners);
 
-        logger.info("PartnerClusterLoadManager success, size:"+partners.size());
+        logger.info("PartnerClusterLoadManager success, cost:{}, size:{}",
+                System.currentTimeMillis() - beginTime, partners.size());
         return true;
     }
 }

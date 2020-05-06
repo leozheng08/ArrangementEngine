@@ -41,6 +41,7 @@ public class PolicyDefinitionLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("PolicyDefinitionLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         //取得合作方范围
         Set<String> partners = partnerClusterCache.getPartners();
@@ -52,7 +53,8 @@ public class PolicyDefinitionLoadManager implements ILoad {
             policyDefinitionCache.put(policyDefinition.getUuid(),policyDefinition);
         }
 
-        logger.info("PolicyDefinitionLoadManager success, size:"+PolicyModifiedDOList.size());
+        logger.info("PolicyDefinitionLoadManager success, cost:{}, size:{}",
+                System.currentTimeMillis() - beginTime, PolicyModifiedDOList.size());
         return true;
     }
 }

@@ -1,7 +1,9 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.docache;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.reload.docache.AbstractDataObjectCache;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.IndexDefinitionDAO;
+import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 import cn.tongdun.kunpeng.share.dataobject.IndexDefinitionDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,5 +58,18 @@ public class IndexDefinitionDOCache extends AbstractDataObjectCache<IndexDefinit
     public void removeIdx(IndexDefinitionDO dataObject){
         scoreKVRepository.zrem(cacheKey+"_subPolicyUuid",dataObject.getSubPolicyUuid()+":"+dataObject.getUuid());
         scoreKVRepository.zrem(cacheKey+"_policyUuid",dataObject.getPolicyUuid()+":"+dataObject.getUuid());
+    }
+
+
+    @Override
+    public boolean isValid(IndexDefinitionDO dataObject){
+        if(dataObject.getStatus() != null && dataObject.getStatus().equals(CommonStatusEnum.CLOSE.getCode())) {
+            return false;
+        }
+        if(dataObject.isDeleted()) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author: liang.chen
@@ -104,14 +105,19 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
      * @return
      */
     @Override
-    public List<T> getByIdx(String idxName, Object[] args){
+    public List<T> getByIdx(String idxName, Object[] args,boolean onlyAvailable){
         if(StringUtils.isBlank(idxName)){
             return null;
         }
 
         //如果查询所有，通过hsan遍历所有元素
         if(ReloadConstant.IDX_NAME_ALL.equals(idxName)){
-            return getAll();
+            List<T> result = getAll();
+            if(onlyAvailable) {
+                return getAvailable(result);
+            } else {
+                return result;
+            }
         }
 
         if(args == null || args.length==0){
@@ -128,7 +134,7 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
                         results.add(tmp);
                     }
                 } else {
-                    List<T> tmp = getByIdx(idxName, element.toString());
+                    List<T> tmp = getByIdx(idxName, element.toString(),onlyAvailable);
                     if (tmp != null) {
                         results.addAll(tmp);
                     }
@@ -140,15 +146,14 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
             return results;
         } else {
             String idxValue = buildQueryValue(args);
-            List<T> results = getByIdx(idxName,idxValue);
+            List<T> results = getByIdx(idxName,idxValue,onlyAvailable);
             return results;
         }
     }
 
 
     //todo 为了性能zrangeByLex改成按分页查询
-    private List<T> getByIdx(String idxName,String idxValue){
-
+    private List<T> getByIdx(String idxName,String idxValue,boolean onlyAvailable){
         //通过zrangebylex来按索引查询,
         Set<String> set = scoreKVRepository.zrangeByLex(cacheKey+"_"+idxName,"["+idxValue+":","["+idxValue+":");
         if(set == null || set.isEmpty()){
@@ -173,7 +178,11 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
         if(results.isEmpty()){
             return null;
         }
-        return results;
+        if(onlyAvailable){
+            return getAvailable(results);
+        } else {
+            return results;
+        }
     }
 
     /**
@@ -208,6 +217,17 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
 
         return results;
     }
+
+    protected List<T> getAvailable(List<T> list) {
+        if(list == null || list.isEmpty()){
+            return list;
+        }
+        return list.stream().filter(dataObj -> {
+            return isValid(dataObj);
+        }).collect(Collectors.toList());
+    }
+
+    public abstract boolean isValid(T dataObj);
 
     private String buildQueryValue(Object[] args){
         if(args == null || args.length==0){

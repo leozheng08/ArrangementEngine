@@ -40,6 +40,7 @@ public class AdminApplicationLoadManager implements ILoad {
     @Override
     public boolean load(){
         logger.info("AdminApplicationLoadManager start");
+        long beginTime = System.currentTimeMillis();
 
         List<AdminApplicationDTO> adminApplicationDTOList = adminApplicationRepository.queryApplicationsByPartners(partnerClusterCache.getPartners());
 
@@ -57,7 +58,8 @@ public class AdminApplicationLoadManager implements ILoad {
             adminApplicationCache.addAdminApplication(adminApplication);
         }
 
-        logger.info("AdminApplicationLoadManager success, size:"+adminApplicationList.size());
+        logger.info("AdminApplicationLoadManager success, cost:{}, size:",
+                System.currentTimeMillis() - beginTime, adminApplicationList.size());
         return true;
     }
 

@@ -1,8 +1,10 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.docache;
 
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.reload.docache.AbstractDataObjectCache;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyChallengerDAO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDAO;
+import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
 import cn.tongdun.kunpeng.share.dataobject.InterfaceDefinitionDO;
 import cn.tongdun.kunpeng.share.dataobject.PolicyChallengerDO;
 import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
@@ -56,5 +58,18 @@ public class PolicyChallengerDOCache extends AbstractDataObjectCache<PolicyChall
     @Override
     public void removeIdx(PolicyChallengerDO dataObject){
         scoreKVRepository.zrem(cacheKey+"_policyDefinitionUuid",dataObject.getPolicyDefinitionUuid()+":"+dataObject.getUuid());
+    }
+
+
+    @Override
+    public boolean isValid(PolicyChallengerDO dataObject){
+        if(dataObject.getStatus() != null && dataObject.getStatus().equals(CommonStatusEnum.CLOSE.getCode())) {
+            return false;
+        }
+        if(dataObject.isDeleted()) {
+            return false;
+        }
+
+        return true;
     }
 }
