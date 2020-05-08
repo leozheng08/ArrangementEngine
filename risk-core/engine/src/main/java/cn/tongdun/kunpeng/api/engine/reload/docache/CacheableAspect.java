@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 
 
 public class CacheableAspect {
@@ -50,6 +51,10 @@ public class CacheableAspect {
         //如果有缓存对象则直接返回
         Object cacheObj = getCacheDataObject(point,dataObjectCache,cacheable);
         if(cacheObj != null){
+            logger.debug("dataobject cache, class:{} method:{}, size:{}, uuid:{}",
+                    realMethod.getDeclaringClass().getSimpleName(),realMethod.getName(),
+                    cacheObj instanceof List ? ((List)cacheObj).size(): null,
+                    cacheObj instanceof CommonEntity ? ((CommonEntity)cacheObj).getUuid(): null);
             return cacheObj;
         }
 
@@ -84,8 +89,8 @@ public class CacheableAspect {
      */
     private boolean forceFromDb(){
         try {
-            //全局要求强制从数据库查询，则直接返回
-            if (configRepository.getBooleanProperty("force.from.db")) {
+            //dataobject cache 全局开关
+            if (!configRepository.getBooleanProperty("dataobject.cache.enable")) {
                 return true;
             }
 
@@ -180,6 +185,10 @@ public class CacheableAspect {
      * @param dataObjectCache
      */
     private void cacheDataObject(Object result, IDataObjectCache dataObjectCache){
+        //dataobject cache 全局开关
+        if (!configRepository.getBooleanProperty("dataobject.cache.enable")) {
+            return;
+        }
         if( dataObjectCache == null){
             return;
         }

@@ -63,6 +63,18 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
         return deserializerObj(bytes);
     }
 
+    public List<T> batchGet(List<String> uuids){
+        List<byte[]> list = hashBinaryKVRepository.hmget(getBytes(cacheKey),getBytes(uuids));
+        if(list == null || list.size()==0){
+            return null;
+        }
+        List<T> result = new ArrayList<>(list.size());
+        list.forEach(bytes -> {
+            result.add(deserializerObj(bytes));
+        });
+        return result;
+    }
+
     /**
      * 将DO对象放到集中缓存中
      * @param dataObject
@@ -155,11 +167,17 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
     //todo 为了性能zrangeByLex改成按分页查询
     private List<T> getByIdx(String idxName,String idxValue,boolean onlyAvailable){
         //通过zrangebylex来按索引查询,
-        Set<String> set = scoreKVRepository.zrangeByLex(cacheKey+"_"+idxName,"["+idxValue+":","["+idxValue+":");
+        Long l = scoreKVRepository.zcard(cacheKey+"_"+idxName);
+        Cursor cursor = Cursor.first();
+        int count = 2445;
+
+        Set<IScoreValue<String>>  test = scoreKVRepository.zscan(cacheKey+"_"+idxName,cursor,count);
+        Set<String> set = scoreKVRepository.zrangeByLex(cacheKey+"_"+idxName,"["+idxValue+":","["+idxValue+":}");
         if(set == null || set.isEmpty()){
             return null;
         }
-        List<T> results = new ArrayList(set.size());
+
+        List<String> uuids = new ArrayList(set.size());
         set.forEach(value ->{
             if(StringUtils.isBlank(value)){
                 return;
@@ -169,12 +187,10 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
                 return;
             }
             String uuid = value.substring(index+1);
-            T dataObj = get(uuid);
-            if(dataObj != null){
-                results.add(dataObj);
-            }
+            uuids.add(uuid);
         });
 
+        List<T> results = batchGet(uuids);
         if(results.isEmpty()){
             return null;
         }
@@ -256,6 +272,18 @@ public abstract class AbstractDataObjectCache<T extends CommonEntity> implements
         } catch (UnsupportedEncodingException e){
             throw new RuntimeException("UnsupportedEncodingException UTF-8");
         }
+    }
+
+    protected byte[][] getBytes(List<String> keys) {
+        byte[][] result = new byte[keys.size()][];
+        try {
+            for(int i=0;i<keys.size();i++){
+                result[i] = keys.get(i).getBytes("UTF-8");
+            }
+        } catch (UnsupportedEncodingException e){
+            throw new RuntimeException("UnsupportedEncodingException UTF-8");
+        }
+        return result;
     }
 
 

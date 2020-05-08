@@ -49,6 +49,11 @@ public class RedisHashBinaryKVRepository extends RedisBinaryKVRepository impleme
     }
 
     @Override
+    public List<byte[]> hmget(final byte[] key, final byte[]... fields){
+        return kunPengRedisClient.hmget(key,fields);
+    }
+
+    @Override
     public List<IValue<byte[],byte[]>> hscan(final byte[] prefix, final Cursor cursor, final int count) {
         ScanParams params = new ScanParams().count(count);
         ScanResult<Map.Entry<byte[], byte[]>> scanResult = kunPengRedisClient.hscan(prefix,

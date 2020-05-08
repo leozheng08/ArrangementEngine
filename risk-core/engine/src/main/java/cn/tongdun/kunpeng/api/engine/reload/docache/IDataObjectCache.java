@@ -25,6 +25,13 @@ public interface IDataObjectCache<T extends CommonEntity>{
     T get(String uuid);
 
     /**
+     * 批量获取
+     * @param uuids
+     * @return
+     */
+    List<T> batchGet(List<String> uuids);
+
+    /**
      * 从缓存中删除
      */
     void remove(String uuid);

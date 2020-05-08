@@ -54,7 +54,7 @@ public class IgnoreKVRepository implements IKVRepository {
     }
 
     @Override
-    public List<IValue<String>> scan(String prefix, Cursor cursor, int count) {
+    public List<IValue<String,String>> scan(final String prefix, final Cursor cursor, final int count) {
         return EMPTY_LIST;
     }
 

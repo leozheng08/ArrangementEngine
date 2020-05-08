@@ -53,6 +53,10 @@ public class RedisHashKVRepository extends RedisKVRepository implements IHashKVR
     }
 
     @Override
+    public List<String> hmget(final String key, final String... fields){
+        return kunPengRedisClient.hmget(key, fields);
+    }
+    @Override
     public List<IValue<String,String>> hscan(final String key, final Cursor cursor, final int count) {
         ScanParams params = new ScanParams().count(count);
         ScanResult<Map.Entry<String, String>> scanResult = kunPengRedisClient.hscan(key, cursor.getStringCursor(), params);
