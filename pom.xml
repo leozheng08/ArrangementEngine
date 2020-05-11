@@ -16,7 +16,6 @@
         <module>core</module>
         <module>application-parent</module>
         <module>starters</module>
-        <module>consumer</module>
         <module>risk-core</module>
     </modules>
 

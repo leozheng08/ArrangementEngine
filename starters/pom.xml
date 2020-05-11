@@ -17,7 +17,6 @@
         <module>starter-saas</module>
         <module>starter-mini</module>
         <module>starter-zbx</module>
-        <module>consumer-spring-boot-starter</module>
         <module>mybatis-spring-boot-autoconfigure</module>
         <module>kafka-spring-boot-autoconfigure</module>
         <module>dubbo-spring-boot-autoconfigure</module>

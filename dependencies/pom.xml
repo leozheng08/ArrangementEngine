@@ -211,11 +211,6 @@
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>consumer-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>partner-cluster-single</artifactId>
                 <version>${project.version}</version>
             </dependency>
