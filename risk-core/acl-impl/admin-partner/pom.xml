@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>admin-partner-db</module>
-        <module>admin-partner-zbx</module>
         <module>admin-partner-ignore</module>
     </modules>
 
