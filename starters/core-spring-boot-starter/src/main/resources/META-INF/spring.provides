@@ -1,1 +1,1 @@
-provides: core-spring-boot-autoconfigure,mybatis-spring-boot-autoconfigure
+provides: mybatis-spring-boot-autoconfigure,dubbo-spring-boot-autoconfigure,kafka-spring-boot-autoconfigure

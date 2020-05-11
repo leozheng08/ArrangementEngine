@@ -28,6 +28,10 @@
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>dubbo-spring-boot-autoconfigure</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>kafka-spring-boot-autoconfigure</artifactId>
+        </dependency>
 
 
         <dependency>
