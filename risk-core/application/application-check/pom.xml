@@ -3,52 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>risk-core</artifactId>
+        <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>interface-adapter</artifactId>
+    <artifactId>application-check</artifactId>
     <packaging>jar</packaging>
-    <name>interface-adapter</name>
+    <name>check</name>
 
-
-
-    <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-
-    </properties>
 
     <dependencies>
 
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-runengine</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-
-
-        <!--Spring Boot-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!--Spring Boot End-->
-
 
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -80,7 +80,7 @@
 
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>application</artifactId>
+                <artifactId>application-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

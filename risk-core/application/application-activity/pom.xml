@@ -3,24 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dependencies</artifactId>
+        <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>risk-core</artifactId>
     <packaging>pom</packaging>
+    <artifactId>application-activity</artifactId>
 
     <modules>
-        <module>common</module>
-        <module>rule-detail</module>
-        <module>acl-api</module>
-        <module>engine</module>
-        <module>infrastructure</module>
-        <module>interface-adapter</module>
-        <module>acl-impl</module>
-        <module>application</module>
+        <module>application-activity-common</module>
+        <module>application-activity-direct-kafka</module>
+        <module>application-activity-memoryq-kafka</module>
     </modules>
-
 </project>

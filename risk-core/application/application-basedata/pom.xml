@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>application</artifactId>
+        <groupId>cn.tongdun.kunpeng-api</groupId>
+        <version>1.0.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>application-basedata</artifactId>
+    <packaging>jar</packaging>
+    <name>application-basedata</name>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>elfin-biz-intf</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module.riskbase</artifactId>
+            <version>1.4.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.fraudmetrix</groupId>
+                    <artifactId>redis-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.fraudmetrix</groupId>
+                    <artifactId>module-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.fraudmetrix</groupId>
+                    <artifactId>module-elasticsearch</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.fraudmetrix.eunomia</groupId>
+                    <artifactId>eunomia-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis-spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>horde-client</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

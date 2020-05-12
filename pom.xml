@@ -14,7 +14,6 @@
         <module>dependencies</module>
         <module>client</module>
         <module>core</module>
-        <module>application-parent</module>
         <module>starters</module>
         <module>risk-core</module>
     </modules>
