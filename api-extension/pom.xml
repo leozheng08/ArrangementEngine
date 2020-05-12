@@ -9,18 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>risk-core</artifactId>
+    <artifactId>api-extension</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>common</module>
-        <module>rule-detail</module>
-        <module>acl-api</module>
-        <module>engine</module>
-        <module>infrastructure</module>
-        <module>interface-adapter</module>
         <module>acl-impl</module>
-        <module>application</module>
     </modules>
 
 </project>
