@@ -33,6 +33,10 @@
             <artifactId>engine</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun</groupId>
+            <artifactId>common-arch</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -5,9 +5,8 @@ import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
-import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
+import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import groovy.lang.GroovyObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -89,7 +89,7 @@ public class DynamicScriptManager {
 
         List<Callable<Boolean>> tasks =new ArrayList<>(groovyObjectList.size());
         for (WrappedGroovyObject wrappedGroovyObject : groovyObjectList) {
-            tasks.add(MDCUtil.wrap(new GroovyRunTask(context, wrappedGroovyObject)));
+            tasks.add(TaskWrapLoader.getTaskWrapper().wrap(new GroovyRunTask(context, wrappedGroovyObject)));
         }
         List<Future<Boolean>> futures = null;
         long t1 = System.currentTimeMillis();

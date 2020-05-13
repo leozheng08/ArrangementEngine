@@ -13,8 +13,8 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.kunpeng.share.json.JSON;
-import cn.tongdun.tdframework.core.concurrent.MDCUtil;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
+import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,7 +126,7 @@ public class ParallelEngine extends DecisionTool {
         List<Callable<SubPolicyResponse>> tasks = new ArrayList<>();
         for (SubPolicy subPolicy : subPolicyList) {
             SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicy.getUuid(), context);
-            tasks.add(MDCUtil.wrap(task));
+            tasks.add(TaskWrapLoader.getTaskWrapper().wrap(task));
         }
 
         //各子策略执行结果

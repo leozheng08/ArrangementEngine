@@ -12,7 +12,7 @@ import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.RegexDetail;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.tdframework.core.concurrent.MDCUtil;
+import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.collections.CollectionUtils;
@@ -102,7 +102,7 @@ public class RegexFunction extends AbstractFunction {
             if(StringUtils.isBlank(dimValue)){
                 continue;
             }
-            tasks.add(MDCUtil.wrap(new AsynRegularMatch(dimValue)));
+            tasks.add(TaskWrapLoader.getTaskWrapper().wrap(new AsynRegularMatch(dimValue)));
         }
 
         List<Future<RegularMatchData>> futures = null;
