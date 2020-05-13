@@ -15,6 +15,7 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -87,13 +88,13 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
      */
     public boolean addOrUpdate(PolicyEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("Policy reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"Policy reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventDO.getModifiedVersion();
             Policy oldPolicy = policyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPolicy != null && timestampCompare(oldPolicy.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug("Policy reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace()+"Policy reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -108,10 +109,10 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
             Policy policy = policyConvertor.convert(policyDTO);
             policyCache.put(uuid,policy);
         } catch (Exception e){
-            logger.error("Policy reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"Policy reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("Policy reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"Policy reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -127,10 +128,10 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
             String policyUuid = eventDO.getUuid();
             removePolicy(policyUuid);
         } catch (Exception e){
-            logger.error("Policy remove failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"Policy remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("Policy remove success, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"Policy remove success, uuid:{}",eventDO.getUuid());
         return true;
     }
 
@@ -154,10 +155,10 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
             //级联删除各个子对象
             cascadeRemove(policyUuid);
         } catch (Exception e){
-            logger.error("Policy deactivate failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"Policy deactivate failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("Policy deactivate success, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"Policy deactivate success, uuid:{}",eventDO.getUuid());
         return true;
     }
 
@@ -217,10 +218,10 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
         try {
             policyDecisionModeReLoadManager.switchDecisionMode(eventDO.getUuid(),eventDO.getGmtModify().getTime());
         } catch (Exception e){
-            logger.error("Policy switchDecisionMode failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"Policy switchDecisionMode failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("Policy switchDecisionMode success, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"Policy switchDecisionMode success, uuid:{}",eventDO.getUuid());
         return true;
     }
 }

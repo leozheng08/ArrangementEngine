@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.util;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4SafeDecompressor;
@@ -159,12 +160,12 @@ public class CompressUtil {
         // 解析解压之后的长度
         int markEnd = input.indexOf(':');
         if (markEnd < 0) {
-            logger.error("CompressUtil Failed to decompress lz4: not found prefix mark");
+            logger.error(TraceUtils.getFormatTrace()+"CompressUtil Failed to decompress lz4: not found prefix mark");
             return null;
         }
         int lengthEnd = input.indexOf(':', markEnd + 1);
         if (lengthEnd < 0) {
-            logger.error("CompressUtil Failed to decompress lz4: not found decompress length");
+            logger.error(TraceUtils.getFormatTrace()+"CompressUtil Failed to decompress lz4: not found decompress length");
             return null;
         }
         String lengthString = input.substring(markEnd + 1, lengthEnd);
@@ -172,7 +173,7 @@ public class CompressUtil {
 
         // 安全检查，防止内存爆掉
         if (length > MAX_DECOMPRESS_LENGTH) {
-            logger.error("CompressUtil Failed to decompress lz4: decompress length is too large: " + length);
+            logger.error(TraceUtils.getFormatTrace()+"CompressUtil Failed to decompress lz4: decompress length is too large: " + length);
             return null;
         }
 
@@ -289,7 +290,7 @@ public class CompressUtil {
         try {
             return binaryLz4(input);
         } catch (Exception ex) {
-            logger.error("CompressUtil Failed to compress lz4", ex);
+            logger.error(TraceUtils.getFormatTrace()+"CompressUtil Failed to compress lz4", ex);
             return null;
         }
     }
@@ -298,7 +299,7 @@ public class CompressUtil {
         try {
             return binaryUnlz4(input);
         } catch (Exception ex) {
-            logger.error("CompressUtil Failed to decomress lz4", ex);
+            logger.error(TraceUtils.getFormatTrace()+"CompressUtil Failed to decomress lz4", ex);
             return null;
         }
     }
@@ -319,7 +320,7 @@ public class CompressUtil {
                 return new String(Snappy.uncompress(bytes),ENCODE_UTF_8);
             }
         } catch (Exception e) {
-            logger.error("snappy uncompress to string error.", e);
+            logger.error(TraceUtils.getFormatTrace()+"snappy uncompress to string error.", e);
         }
         return null;
     }

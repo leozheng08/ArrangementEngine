@@ -7,25 +7,26 @@ import cn.tongdun.gaea.paas.dto.IndicatrixValQuery;
 import cn.tongdun.gaea.paas.dto.PaasResult;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
-import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
-import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
-import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @Step(pipeline = Risk.NAME,phase = Risk.RULE_DATA,order = 1100)
@@ -49,7 +50,7 @@ public class PlatformIndexStep implements IRiskStep {
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
         if(indicatrixs == null || indicatrixs.isEmpty()){
-            logger.info("策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
+            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return true;
         }
 
@@ -68,7 +69,7 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         if(indicatrixsParam.isEmpty()){
-            logger.info("策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
+            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
             return true;
         }
 
@@ -87,7 +88,7 @@ public class PlatformIndexStep implements IRiskStep {
             try {
                 // 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
-                logger.info("平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
+                logger.info(TraceUtils.getFormatTrace()+"平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {
                 // 临时通过LocalcachePeriod配置项做下开关
                 if (ReasonCodeUtil.isTimeout(e)) {
@@ -95,7 +96,7 @@ public class PlatformIndexStep implements IRiskStep {
                 } else {
                     ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
                 }
-                logger.error("Error occurred when {} indicatrix result for {}.", context.getSeqId(), JSON.toJSONString(indicatrixsParam), e);
+                logger.error(TraceUtils.getFormatTrace()+"Error occurred when {} indicatrix result for {}.", context.getSeqId(), JSON.toJSONString(indicatrixsParam), e);
             }
             if (null != indicatrixResult && indicatrixResult.isSuccess()) {
                 for (GaeaIndicatrixVal indicatrixVal : indicatrixResult.getData()) {
@@ -103,7 +104,7 @@ public class PlatformIndexStep implements IRiskStep {
                 }
             }
         } catch (Exception e) {
-            logger.error("Error occurred when GaeaIndexCalculateImpl fetchData.", e);
+            logger.error(TraceUtils.getFormatTrace()+"Error occurred when GaeaIndexCalculateImpl fetchData.", e);
         }
 
         return true;
@@ -116,7 +117,7 @@ public class PlatformIndexStep implements IRiskStep {
         if (indicatrixVal.getRetCode() < 500) {
             if (indicatrixVal.getIndicatrixId() == null) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.warn("指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
+                logger.warn(TraceUtils.getFormatTrace()+"指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
                 return;
             }
 
@@ -124,18 +125,18 @@ public class PlatformIndexStep implements IRiskStep {
             PlatformIndexData indexData = setPlatformIndexData(indicatrixVal, parseDouble(context, indicatrixVal.getResult()));
             context.putPlatformIndexMap(indicatrixId, indexData);
             if (retCode == IndicatrixRetCode.INDEX_ERROR.getCode()) {
-                logger.error("合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixVal.getIndicatrixId());
+                logger.error(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixVal.getIndicatrixId());
             }
         } else {
             if (retCode == 600) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_LIMITING, "gaea");
-                logger.warn("gaea指标:{}获取限流", indicatrixVal.getIndicatrixId());
+                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}获取限流", indicatrixVal.getIndicatrixId());
             } else if (retCode == 508) {
                 ReasonCodeUtil.add(context, ReasonCode.GAEA_FLOW_ERROR, "gaea");
-                logger.warn("gaea指标:{}指标流量不足", indicatrixVal.getIndicatrixId());
+                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}指标流量不足", indicatrixVal.getIndicatrixId());
             } else {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.warn("gaea指标:{}指标读取异常", indicatrixVal.getIndicatrixId());
+                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}指标读取异常", indicatrixVal.getIndicatrixId());
             }
         }
     }
@@ -163,7 +164,7 @@ public class PlatformIndexStep implements IRiskStep {
             try {
                 return Double.parseDouble(obj.toString());
             } catch (Exception e) {
-                logger.error("gata return result :" + obj + " can't parse to Double", e);
+                logger.error(TraceUtils.getFormatTrace()+"gata return result :" + obj + " can't parse to Double", e);
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
                 return null;
             }

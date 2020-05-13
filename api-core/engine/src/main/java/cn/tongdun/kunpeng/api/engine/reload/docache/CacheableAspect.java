@@ -4,6 +4,7 @@ import cn.tongdun.ddd.common.domain.CommonEntity;
 import cn.tongdun.kunpeng.api.common.util.TimestampUtil;
 import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -51,7 +52,7 @@ public class CacheableAspect {
         //如果有缓存对象则直接返回
         Object cacheObj = getCacheDataObject(point,dataObjectCache,cacheable);
         if(cacheObj != null){
-            logger.debug("dataobject cache, class:{} method:{}, size:{}, uuid:{}",
+            logger.debug(TraceUtils.getFormatTrace()+"dataobject cache, class:{} method:{}, size:{}, uuid:{}",
                     realMethod.getDeclaringClass().getSimpleName(),realMethod.getName(),
                     cacheObj instanceof List ? ((List)cacheObj).size(): null,
                     cacheObj instanceof CommonEntity ? ((CommonEntity)cacheObj).getUuid(): null);
@@ -77,7 +78,7 @@ public class CacheableAspect {
 
             return realMethod;
         } catch (Exception exc){
-            logger.error("CacheableAspect getAnnotation error",exc);
+            logger.error(TraceUtils.getFormatTrace()+"CacheableAspect getAnnotation error",exc);
         }
         return null;
     }
@@ -100,7 +101,7 @@ public class CacheableAspect {
                 return true;
             }
         }catch (Exception e){
-            logger.error("CacheableAspect forceFromDb error",e);
+            logger.error(TraceUtils.getFormatTrace()+"CacheableAspect forceFromDb error",e);
         }
         return false;
     }
@@ -129,7 +130,7 @@ public class CacheableAspect {
             }
 
         } catch (Exception e){
-            logger.error("CacheableAspect getDataObjectCache error",e);
+            logger.error(TraceUtils.getFormatTrace()+"CacheableAspect getDataObjectCache error",e);
         }
         return null;
     }
@@ -173,7 +174,7 @@ public class CacheableAspect {
                 return null;
             }
         } catch (Exception exc){
-            logger.error("CacheableAspect getCacheDataObject error",exc);
+            logger.error(TraceUtils.getFormatTrace()+"CacheableAspect getCacheDataObject error",exc);
         }
         return null;
     }
@@ -206,7 +207,7 @@ public class CacheableAspect {
                 }
             }
         } catch (Exception e){
-            logger.error("CacheableAspect cacheDataObject error",e);
+            logger.error(TraceUtils.getFormatTrace()+"CacheableAspect cacheDataObject error",e);
         }
     }
 }

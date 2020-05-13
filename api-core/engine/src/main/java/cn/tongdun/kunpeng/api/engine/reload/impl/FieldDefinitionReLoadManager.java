@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.FieldDefinitionEventDO;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +60,13 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionEven
      */
     public boolean addOrUpdate(FieldDefinitionEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("FieldDefinition reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"FieldDefinition reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventDO.getModifiedVersion();
             FieldDefinition oldFieldDefinition = (FieldDefinition) fieldDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldFieldDefinition != null && timestampCompare(oldFieldDefinition.getModifiedVersion() ,timestamp) >= 0) {
-                logger.debug("FieldDefinition reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace()+"FieldDefinition reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -79,10 +80,10 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionEven
 
             fieldDefinitionCache.put(uuid, newFieldDefinition);
         } catch (Exception e){
-            logger.error("FieldDefinition reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"FieldDefinition reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("FieldDefinition reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"FieldDefinition reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -97,10 +98,10 @@ public class FieldDefinitionReLoadManager implements IReload<FieldDefinitionEven
         try {
             fieldDefinitionCache.remove(eventDO.getUuid());
         } catch (Exception e){
-            logger.error("FieldDefinition remove failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"FieldDefinition remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("FieldDefinition remove failed, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"FieldDefinition remove failed, uuid:{}",eventDO.getUuid());
         return true;
     }
 

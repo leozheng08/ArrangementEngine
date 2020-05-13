@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,7 @@ public class PolicyRepository implements IPolicyRepository{
                     }
                 }
             }catch (Exception e){
-                logger.error("queryChallengerPolicyByPartners error",e);
+                logger.error(TraceUtils.getFormatTrace()+"queryChallengerPolicyByPartners error",e);
             }
         }
 

@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.config.ConsumerConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.rpc.service.GenericService;
@@ -107,7 +108,7 @@ public class DefaultGenericServiceManager implements GenericServiceManager {
         try {
             return getReferenceConfigFromCache(key, interfaceDefinition);
         } catch (ExecutionException e) {
-            logger.error("getReferenceConfigFromCache error, key={}, interfaceDO={}", key, interfaceDefinition, e);
+            logger.error(TraceUtils.getFormatTrace()+"getReferenceConfigFromCache error, key={}, interfaceDO={}", key, interfaceDefinition, e);
         }
 
         // 正常情况不会走到这里
@@ -124,7 +125,7 @@ public class DefaultGenericServiceManager implements GenericServiceManager {
      * @return ReferenceConfig
      */
     private ReferenceConfig<GenericService> createReferenceConfig(final String key, final InterfaceDefinition interfaceDefinition) {
-        logger.info("create ReferenceConfig, key={}, interfaceDO={}", key, interfaceDefinition);
+        logger.info(TraceUtils.getFormatTrace()+"create ReferenceConfig, key={}, interfaceDO={}", key, interfaceDefinition);
         ReferenceConfig<GenericService> newReferenceConfig = new ReferenceConfig<>();
         newReferenceConfig.setApplication(parentReferenceConfig.getApplication());
         newReferenceConfig.setConsumer(consumerConfig);

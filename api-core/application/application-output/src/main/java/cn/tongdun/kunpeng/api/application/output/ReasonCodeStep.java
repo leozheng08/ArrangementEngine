@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,7 +44,7 @@ public class ReasonCodeStep implements IRiskStep {
         }
 
         String respStr = JSON.toJSONString(response);
-        logger.info("partner:{}, RESP_F:{}", context.getPartnerCode(), respStr);
+        logger.info(TraceUtils.getFormatTrace()+"partner:{}, RESP_F:{}", context.getPartnerCode(), respStr);
         return true;
     }
 
@@ -86,7 +87,7 @@ public class ReasonCodeStep implements IRiskStep {
                 response.setSubReasonCodes(String.join(",", subReasonCodes));
             }
 
-            logger.info("partner:{}, sub_reason_code:{}", context.getPartnerCode(), JSON.toJSONString(context.getSubReasonCodes()));
+            logger.info(TraceUtils.getFormatTrace()+"partner:{}, sub_reason_code:{}", context.getPartnerCode(), JSON.toJSONString(context.getSubReasonCodes()));
         }
     }
 

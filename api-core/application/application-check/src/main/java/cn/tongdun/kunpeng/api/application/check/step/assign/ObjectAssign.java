@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUti
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +45,7 @@ public class ObjectAssign implements Assign{
             // 原始JSON也保存一份
             fields.put(fieldDefinition.getFieldCode(), camelJson(fieldValueJson));
         } catch (Exception e) {
-            logger.warn("复杂入参 Invalid JSON error:" + e.getMessage());
+            logger.warn(TraceUtils.getFormatTrace()+"复杂入参 Invalid JSON error:" + e.getMessage());
         }
     }
 

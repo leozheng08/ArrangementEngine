@@ -14,6 +14,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class ChallengerStep implements IRiskStep {
         PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
         //策略定义不存在
         if(policyDefinition == null){
-            logger.warn("{},partnerCode:{},eventId:{}", ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}", ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
             return false;
         }
@@ -65,28 +66,28 @@ public class ChallengerStep implements IRiskStep {
 
         Policy policy = policyCache.get(policyUuid);
         if(policy == null){
-            logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
             return false;
         }
 
         //策略已删除
         if(DeleteStatusEnum.INVALID.getCode() == policy.isDeleted()){
-            logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
+            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_DELETED.getCode(), ReasonCode.POLICY_DELETED.getDescription(), "决策引擎执行"));
             return false;
         }
 
         //策略已关闭
         if(CommonStatusEnum.CLOSE.getCode() == policy.getStatus()){
-            logger.warn("{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
+            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_CLOSED.getCode(), ReasonCode.POLICY_CLOSED.getDescription(), "决策引擎执行"));
             return false;
         }
 
 
         if (StringUtils.isNotBlank(policyUuid) && !StringUtils.equals(originPolicyUuid, policyUuid)) {
-            logger.info("[Challenger] policyUuid changed to challenger version! origin: {}, now: {}", originPolicyUuid, policyUuid);
+            logger.info(TraceUtils.getFormatTrace()+"[Challenger] policyUuid changed to challenger version! origin: {}, now: {}", originPolicyUuid, policyUuid);
             context.setPolicyUuid(policyUuid);
         }
         return true;

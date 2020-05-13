@@ -126,13 +126,13 @@ public class DomainEventTest {
                         if (e == null) {
                             return;
                         }
-                        logger.error("kafka produce error, can't recover, topic:{}, seqId:{}", topic, messageKey, e);
+                        logger.error(TraceUtils.getFormatTrace()+"kafka produce error, can't recover, topic:{}, seqId:{}", topic, messageKey, e);
                     }
                 });
             } catch (ProducerException e) {
-                logger.error("kafka produce throw ProducerException, topic:{}, seqId:{}", topic, messageKey, e);
+                logger.error(TraceUtils.getFormatTrace()+"kafka produce throw ProducerException, topic:{}, seqId:{}", topic, messageKey, e);
             } catch (UnsupportedEncodingException e) {
-                logger.error("kafka produce throw UnsupportedEncodingException, topic:{}, seqId:{}", topic, messageKey, e);
+                logger.error(TraceUtils.getFormatTrace()+"kafka produce throw UnsupportedEncodingException, topic:{}, seqId:{}", topic, messageKey, e);
             }
         }
     }

@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.util;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -167,7 +168,7 @@ public class DataUtil {
                 }
                 return hashtext;
             } catch (Exception e) {
-                logger.error("md5异常:{}", e.getMessage());
+                logger.error(TraceUtils.getFormatTrace()+"md5异常:{}", e.getMessage());
             }
         }
         return null;

@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.api.basedata.service.fp.Anomaly;
 import cn.tongdun.kunpeng.api.basedata.service.fp.ContainCheatingApps;
 import cn.tongdun.kunpeng.api.ruledetail.AndroidCheatAppDetail;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class CheatV2Function extends AbstractFunction {
         final Map<String, Object> deviceInfo = context.getDeviceInfo();
 
         if (StringUtils.isBlank(installedDangerAppCodes) && StringUtils.isBlank(runningDangerAppCodes)) {
-            logger.warn("the installedDangerAppCodes and runningDangerAppCodes are blank, platform=android, deviceInfo={}", deviceInfo);
+            logger.warn(TraceUtils.getFormatTrace()+"the installedDangerAppCodes and runningDangerAppCodes are blank, platform=android, deviceInfo={}", deviceInfo);
             return new FunctionResult(false);
         }
 
@@ -65,10 +66,10 @@ public class CheatV2Function extends AbstractFunction {
         ContainCheatingApps containCheatingApps = new ContainCheatingApps();
         long cost = System.currentTimeMillis() - start;
         if (cost > 150) {
-            logger.warn("AnomalyUtil.getContainCheatingApps cost too long({}ms)", cost);
+            logger.warn(TraceUtils.getFormatTrace()+"AnomalyUtil.getContainCheatingApps cost too long({}ms)", cost);
         }
         if (containCheatingApps == null) {
-            logger.warn("cannot parse containCheatingApps(AnomalyUtil), platform=android, deviceInfo={}", deviceInfo);
+            logger.warn(TraceUtils.getFormatTrace()+"cannot parse containCheatingApps(AnomalyUtil), platform=android, deviceInfo={}", deviceInfo);
             return new FunctionResult(false);
         }
 

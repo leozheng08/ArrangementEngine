@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import groovy.lang.GroovyObject;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -136,7 +137,7 @@ public class GroovyCompileManager {
                 value = executeGroovyField(field.getGroovyObject(), methodName, context);
                 long t2 = System.currentTimeMillis();
                 if(t2 - t1 > 30){
-                    logger.warn("动态脚本执行时间过长,fieldName:{},methodName:{}", fieldName, methodName);
+                    logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行时间过长,fieldName:{},methodName:{}", fieldName, methodName);
                 }
 
                 context.setField(fieldName, value);

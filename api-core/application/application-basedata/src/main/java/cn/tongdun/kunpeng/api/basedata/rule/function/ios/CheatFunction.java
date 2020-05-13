@@ -8,6 +8,7 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.ruledetail.IOSCheatAppDetail;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class CheatFunction extends AbstractFunction {
         Object containsCheatApp = fieldValues.get("containsCheatApp");
 
         if (containsCheatApp == null) {
-            logger.warn("ios cheat containsCheatApp system field not configured");
+            logger.warn(TraceUtils.getFormatTrace()+"ios cheat containsCheatApp system field not configured");
             return new FunctionResult(false);
         }
 

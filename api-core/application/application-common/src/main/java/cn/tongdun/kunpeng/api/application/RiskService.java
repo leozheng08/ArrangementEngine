@@ -98,7 +98,7 @@ public class RiskService implements IRiskService {
                     }
             );
         }catch (Exception e){
-            logger.error("决策接口内部异常",e);
+            logger.error(TraceUtils.getFormatTrace()+"决策接口内部异常",e);
             riskResponse.setReasonCode(ReasonCode.INTERNAL_ERROR.toString());
         } finally {
             ThreadContext.clear();

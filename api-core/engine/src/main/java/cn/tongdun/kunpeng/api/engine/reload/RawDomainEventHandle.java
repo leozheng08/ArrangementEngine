@@ -14,6 +14,7 @@ import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.api.engine.reload.docache.DataObjectCacheFactory;
 import cn.tongdun.kunpeng.api.engine.reload.docache.IDataObjectCache;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
                     putEventMsgToRemoteCache(rawEventMsg);
             }
         } catch (Exception e){
-            logger.error("handleRawMessage error",e);
+            logger.error(TraceUtils.getFormatTrace()+"handleRawMessage error",e);
             throw e;
         }
     }
@@ -88,7 +89,7 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
             List<CustomListValueEventDO> listValueDOList = domainEvent.getData();
 
             if (listValueDOList == null || listValueDOList.isEmpty()) {
-                logger.debug("CustomListValue put remote cache error,list is empty:{}", rawEventMsg);
+                logger.debug(TraceUtils.getFormatTrace()+"CustomListValue put remote cache error,list is empty:{}", rawEventMsg);
                 return;
             }
 
@@ -100,14 +101,14 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
             for (CustomListValue customListValue : listValueList) {
                 if (customListValue.isValid()) {
                     customListValueKVRepository.putCustomListValueData(customListValue);
-                    logger.debug("CustomListValue put remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
+                    logger.debug(TraceUtils.getFormatTrace()+"CustomListValue put remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
                 } else {
                     customListValueKVRepository.removeCustomListValueData(customListValue);
-                    logger.debug("CustomListValue remove remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
+                    logger.debug(TraceUtils.getFormatTrace()+"CustomListValue remove remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
                 }
             }
         } catch (Exception e){
-            logger.error("CustomListValue put remote cache error,event:{}",rawEventMsg,e);
+            logger.error(TraceUtils.getFormatTrace()+"CustomListValue put remote cache error,event:{}",rawEventMsg,e);
             throw e;
         }
     }

@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class StaticObjects {
 
     public static void saveFeature(AbstractFraudContext context, String feature) {
         String id = context.getSeqId();
-        emailFeatureLogger.info(id + ": " + feature);
+        emailFeatureLogger.info(TraceUtils.getFormatTrace()+id + ": " + feature);
     }
 
     private static ConcurrentHashSet<String> loadSet(String file) {
@@ -50,7 +51,7 @@ public class StaticObjects {
             }
             return result;
         } catch (IOException e) {
-            logger.error("动态脚本加载静态文件", file, e.getMessage());
+            logger.error(TraceUtils.getFormatTrace()+"动态脚本加载静态文件", file, e.getMessage());
             return new ConcurrentHashSet<>();
         }
     }

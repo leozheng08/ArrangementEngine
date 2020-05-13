@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
 import cn.tongdun.kunpeng.api.engine.util.CompressUtil;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
             try {
                 processXml = CompressUtil.ungzip(decisionFlowDTO.getProcessContent());
             } catch (Exception e) {
-                logger.error("DecisionFlowConvertor convert processContent error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
+                logger.error(TraceUtils.getFormatTrace()+"DecisionFlowConvertor convert processContent error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
                 throw new ParseException("DecisionFlowConvertor convert error!Uuid:" + decisionFlowDTO.getUuid(), e);
             }
         }
@@ -83,7 +84,7 @@ public class DecisionFlowConvertor implements IConvertor<DecisionFlowDTO, Decisi
             graph.parse(graphDesc);
 
         } catch (Exception e) {
-            logger.error("DecisionFlowConvertor createGraph error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
+            logger.error(TraceUtils.getFormatTrace()+"DecisionFlowConvertor createGraph error!decisionFlowUuid:" + decisionFlowDTO.getUuid());
             throw e;
         }
 

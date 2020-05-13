@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.reload;
 import cn.tongdun.kunpeng.api.common.data.DomainEventTypeEnum;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventDO;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.IThreadService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -81,7 +82,7 @@ public class DomainEventHandle {
                             setFinish(domainEvent);
                         }
                     } catch (Exception e){
-                        logger.error("handleMessage error,event:{}", eventMsg,e);
+                        logger.error(TraceUtils.getFormatTrace()+"handleMessage error,event:{}", eventMsg,e);
                         return false;
                     }
                     return true;
@@ -101,7 +102,7 @@ public class DomainEventHandle {
                 Object entryData = domainEvent.getData();
                 IReload reLoadManager = reloadFactory.getReload(domainEvent.getEntityClass());
                 if (reLoadManager == null) {
-                    logger.warn("reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
+                    logger.warn(TraceUtils.getFormatTrace()+"reLoadManager is null,class:{},event:{}", entryData.getClass(), domainEvent);
                     return true;
                 }
                 if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.CREATE.name())) {
@@ -158,7 +159,7 @@ public class DomainEventHandle {
                     }
                 }
         } catch (Exception e){
-            logger.error("handleMessage error,event:{}", domainEvent,e);
+            logger.error(TraceUtils.getFormatTrace()+"handleMessage error,event:{}", domainEvent,e);
             return false;
         }
 
@@ -190,7 +191,7 @@ public class DomainEventHandle {
                     gmtModifyTmp = domainEventDO.getGmtModify().getTime();
                 }
             } else {
-                logger.warn("不能识别的对象 ,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
+                logger.warn(TraceUtils.getFormatTrace()+"不能识别的对象 ,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
                 continue;
             }
 
@@ -238,7 +239,7 @@ public class DomainEventHandle {
                     gmtModifyTmp = domainEventDO.getGmtModify().getTime();
                 }
             } else {
-                logger.warn("不能识别的对象,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
+                logger.warn(TraceUtils.getFormatTrace()+"不能识别的对象,eventType:{}, obj:{}",domainEvent.getEventType(),obj);
                 continue;
             }
 

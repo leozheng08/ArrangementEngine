@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.common.data.PolicyResponse;
 import cn.tongdun.kunpeng.api.common.data.SubPolicyResponse;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class DecisionFlowEngine extends DecisionTool {
 
         GraphResult graphResult = decisionFlow.getGraph().execute(context);
         if (graphResult.getException() != null) {
-            logger.error("DecisionFlowEngine execute error!", graphResult.getException());
+            logger.error(TraceUtils.getFormatTrace()+"DecisionFlowEngine execute error!", graphResult.getException());
         }
 
         Map<String, NodeResult> nodeResultMap = graphResult.getNodeResultMap();

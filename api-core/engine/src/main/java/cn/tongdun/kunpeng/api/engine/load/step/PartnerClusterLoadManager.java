@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.acl.engine.model.cluster.IPartnerClusterRepository
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class PartnerClusterLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("PartnerClusterLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"PartnerClusterLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         Set<String> partners = null;
@@ -47,7 +48,7 @@ public class PartnerClusterLoadManager implements ILoad {
 
         partnerClusterCache.setPartners(partners);
 
-        logger.info("PartnerClusterLoadManager success, cost:{}, size:{}",
+        logger.info(TraceUtils.getFormatTrace()+"PartnerClusterLoadManager success, cost:{}, size:{}",
                 System.currentTimeMillis() - beginTime, partners.size());
         return true;
     }

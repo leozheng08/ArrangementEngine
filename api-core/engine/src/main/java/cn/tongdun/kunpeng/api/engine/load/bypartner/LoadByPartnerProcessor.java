@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.load.bypartner;
 
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Response;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class LoadByPartnerProcessor {
     private PipelineExecutor pipelineExecutor;
 
     public void loadByPartner(String partnerCode){
-        logger.info("LoadManager loadByPartner:"+partnerCode);
+        logger.info(TraceUtils.getFormatTrace()+"LoadManager loadByPartner:"+partnerCode);
 
         Response result = pipelineExecutor.execute(LoadPipeline.NAME,
                 ILoadByPartner.class, step -> step.loadByPartner("demo"),
@@ -30,10 +31,10 @@ public class LoadByPartnerProcessor {
                     return e !=null|| (isLoad!=null && !isLoad);
                 }
         );
-        logger.info("LoadManager load result:"+result);
+        logger.info(TraceUtils.getFormatTrace()+"LoadManager load result:"+result);
 
         if(!result.isSuccess()){
-            logger.error("按合作方加载失败"+partnerCode);
+            logger.error(TraceUtils.getFormatTrace()+"按合作方加载失败"+partnerCode);
         }
     }
 

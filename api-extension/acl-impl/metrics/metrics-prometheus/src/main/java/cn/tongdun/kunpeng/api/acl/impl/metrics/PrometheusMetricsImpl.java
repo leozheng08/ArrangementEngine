@@ -4,6 +4,7 @@ import cn.fraudmetrix.metrics.prometheus.PromCounter;
 import cn.fraudmetrix.metrics.prometheus.PromDistributionSummary;
 import cn.fraudmetrix.metrics.prometheus.PromTimer;
 import cn.fraudmetrix.metrics.prometheus.PrometheusTool;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import io.micrometer.core.instrument.Tags;
@@ -34,7 +35,7 @@ public class PrometheusMetricsImpl implements IMetrics{
             PromCounter promCounter =prometheusTool.promeCounter(counterName, tags);
             promCounter.mark();
         }catch (Exception e){
-            logger.error("counter error",e);
+            logger.error(TraceUtils.getFormatTrace()+"counter error",e);
         }
     }
 
@@ -45,7 +46,7 @@ public class PrometheusMetricsImpl implements IMetrics{
             PromDistributionSummary promDistributionSummary =prometheusTool.promeDistributionSummary(counterName,tags);
             promDistributionSummary.record(num);
         }catch (Exception e){
-            logger.error("summary error",e);
+            logger.error(TraceUtils.getFormatTrace()+"summary error",e);
         }
     }
 
@@ -68,7 +69,7 @@ public class PrometheusMetricsImpl implements IMetrics{
                 }
             };
         }catch (Exception e){
-            logger.error("summary error",e);
+            logger.error(TraceUtils.getFormatTrace()+"summary error",e);
         }
         return new ITimeContext() {
             @Override
@@ -96,7 +97,7 @@ public class PrometheusMetricsImpl implements IMetrics{
                 }
             };
         }catch (Exception e){
-            logger.error("summary error",e);
+            logger.error(TraceUtils.getFormatTrace()+"summary error",e);
         }
         return new ITimeContext() {
             @Override

@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class DynamicScriptLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("DynamicScriptLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"DynamicScriptLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         Set allPartners = new HashSet(partnerClusterCache.getPartners());
@@ -51,7 +52,7 @@ public class DynamicScriptLoadManager implements ILoad {
                 groovyCompileManager.addOrUpdate(script);
             } catch (Exception e) {
                 failedCount++;
-                logger.warn("Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
+                logger.warn(TraceUtils.getFormatTrace()+"Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
                         script.getPartnerCode(), script.getEventType(), script.getAssignField(),script.getScriptCode(),e.getMessage());
             }
         }
@@ -60,7 +61,7 @@ public class DynamicScriptLoadManager implements ILoad {
         if(scripts != null){
             scriptsCount = scripts.size();
         }
-        logger.info("DynamicScriptLoadManager success,cost:{},failedCount:{},scriptsCount:{}", System.currentTimeMillis() - beginTime,failedCount, scriptsCount);
+        logger.info(TraceUtils.getFormatTrace()+"DynamicScriptLoadManager success,cost:{},failedCount:{},scriptsCount:{}", System.currentTimeMillis() - beginTime,failedCount, scriptsCount);
         return true;
     }
 }

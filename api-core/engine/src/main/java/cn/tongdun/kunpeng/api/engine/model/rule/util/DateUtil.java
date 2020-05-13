@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.util;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
@@ -81,7 +82,7 @@ public class DateUtil {
 				return Long.parseLong(dateStr);
 			}
 		} catch (Exception e) {
-            logger.error("时间转时间戳异常",e);
+            logger.error(TraceUtils.getFormatTrace()+"时间转时间戳异常",e);
 			return null;
 		}
 	}

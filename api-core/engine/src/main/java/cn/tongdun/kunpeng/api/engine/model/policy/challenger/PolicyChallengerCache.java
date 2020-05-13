@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.model.policy.challenger;
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -118,7 +119,7 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
         ]
          */
         if(configs == null || configs.isEmpty()){
-            logger.error("the size of policy_challenger' config must greater than zero!");
+            logger.error(TraceUtils.getFormatTrace()+"the size of policy_challenger' config must greater than zero!");
             return false;
         }
 

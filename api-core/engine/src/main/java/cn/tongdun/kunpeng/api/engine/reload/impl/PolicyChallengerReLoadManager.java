@@ -25,6 +25,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyChallengerEventDO;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -98,7 +99,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
         try {
             return removeByPolicyChallenger(policyChallengerRepository.queryByUuid(eventDO.getUuid()));
         } catch (Exception e) {
-            logger.error("PolicyChallenger removeByPolicyChallenger failed", e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyChallenger removeByPolicyChallenger failed", e);
             return false;
         }
     }
@@ -123,7 +124,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
      */
     public boolean addOrUpdate(PolicyChallengerEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("PolicyChallenger reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyChallenger reload start, uuid:{}",uuid);
         boolean result = false;
         try {
             PolicyChallenger policyChallenger = policyChallengerRepository.queryByUuid(uuid);
@@ -138,10 +139,10 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
             loadPolicy(policyChallenger);
             result = true;
         } catch (Exception e){
-            logger.error("PolicyChallenger reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyChallenger reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("PolicyChallenger reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyChallenger reload success, uuid:{}",uuid);
         return result;
     }
 

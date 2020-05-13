@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.engine.load.step.EventTypeLoadManager;
 import cn.tongdun.kunpeng.api.engine.load.step.FieldDefinitionLoadManager;
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -57,7 +58,7 @@ public class ReLoadScheduler implements ILoad {
                 try {
                     reLoad();
                 } catch (Exception e) {
-                    logger.error("定时刷新缓存异常",e);
+                    logger.error(TraceUtils.getFormatTrace()+"定时刷新缓存异常",e);
                 }
             }
         }, 10, 5, TimeUnit.SECONDS);
@@ -70,7 +71,7 @@ public class ReLoadScheduler implements ILoad {
 //            try {
 //                task.load();
 //            } catch (Exception e){
-//                logger.error("定时刷新缓存异常",e);
+//                logger.error(TraceUtils.getFormatTrace()+"定时刷新缓存异常",e);
 //            }
 //        }
 //    }

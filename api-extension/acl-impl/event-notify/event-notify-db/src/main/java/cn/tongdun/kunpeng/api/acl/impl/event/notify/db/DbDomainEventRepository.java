@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.acl.event.notice.AbstractDomainEventRepository;
 import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DomainEventDAO;
 import cn.tongdun.kunpeng.share.dataobject.DomainEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class DbDomainEventRepository extends AbstractDomainEventRepository {
             return deduplicationd(eventList);
 
         } catch (Exception e) {
-            logger.error("update rule form redis error!",e);
+            logger.error(TraceUtils.getFormatTrace()+"update rule form redis error!",e);
         }
         return new ArrayList<>();
     }

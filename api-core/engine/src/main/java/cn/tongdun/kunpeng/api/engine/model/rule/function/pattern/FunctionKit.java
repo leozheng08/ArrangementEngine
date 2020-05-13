@@ -9,6 +9,7 @@ import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.VelocityFuncType;
 import cn.tongdun.kunpeng.api.ruledetail.FunctionKitDetail;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -81,7 +82,7 @@ public class FunctionKit extends AbstractCalculateFunction {
                 }
             }
         } catch (Exception e) {
-            logger.warn("FunctionKit eval error!", e);
+            logger.warn(TraceUtils.getFormatTrace()+"FunctionKit eval error!", e);
         }
         result = statisticCalculate(values, funcType, naturalValue);
 
@@ -156,7 +157,7 @@ public class FunctionKit extends AbstractCalculateFunction {
                     return Double.NaN;
             }
         } catch (Exception e) {
-            logger.warn("calculate error", e);
+            logger.warn(TraceUtils.getFormatTrace()+"calculate error", e);
             return Double.NaN;
         }
     }

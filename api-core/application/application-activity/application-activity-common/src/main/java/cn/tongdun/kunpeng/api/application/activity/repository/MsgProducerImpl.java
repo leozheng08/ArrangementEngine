@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.kafka.util.ErrorHelper;
 import cn.tongdun.kunpeng.api.application.activity.common.IMsgProducer;
 import cn.tongdun.kunpeng.api.application.util.CountUtil;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
@@ -64,7 +65,7 @@ public class MsgProducerImpl implements IMsgProducer {
                 public void onCompletion(RecordMetadata recordMetadata, Exception e) {
                     if (e == null) {
                         if (configRepository.getBooleanProperty("kafka.print.detail")) {
-                            logger.info("send kafka topic ok: {}, {}, data: {}", topic, messageKey, message);
+                            logger.info(TraceUtils.getFormatTrace()+"send kafka topic ok: {}, {}, data: {}", topic, messageKey, message);
                         }
                         failedMessageCounter.remove(topic + messageKey);
                         metrics.counter("kafka.sent.success");
@@ -75,21 +76,21 @@ public class MsgProducerImpl implements IMsgProducer {
                         addRedoException(topic,messageKey,message, e);
                     } else {
                         metrics.counter("kafka.sent.error");
-                        logger.error("kafka produce error, can't recover, topic:{}, seq_id:{}", topic, messageKey, e);
+                        logger.error(TraceUtils.getFormatTrace()+"kafka produce error, can't recover, topic:{}, seq_id:{}", topic, messageKey, e);
                     }
                 }
             });
         } catch (ProducerException e) {
             metrics.counter("kafka.sent.error");
-            logger.error("kafka produce throw ProducerException, topic:{}, seqId:{}", topic,messageKey,e);
+            logger.error(TraceUtils.getFormatTrace()+"kafka produce throw ProducerException, topic:{}, seqId:{}", topic,messageKey,e);
         } catch (UnsupportedEncodingException e) {
             metrics.counter("kafka.sent.error");
-            logger.error("kafka produce throw UnsupportedEncodingException, topic:{}, seqId:{}", topic,message,e);
+            logger.error(TraceUtils.getFormatTrace()+"kafka produce throw UnsupportedEncodingException, topic:{}, seqId:{}", topic,message,e);
         }
     }
     public void addRedoException(String topic, String seqId, String message, Exception exception) {
         if (exception instanceof RecordTooLargeException) {
-            logger.error("kafka produce too large message, topic:{}, seq_id:{}, size:{}",topic,seqId,message.length());
+            logger.error(TraceUtils.getFormatTrace()+"kafka produce too large message, topic:{}, seq_id:{}, size:{}",topic,seqId,message.length());
             metrics.counter("kafka.sent.error");
             return;
         }
@@ -97,9 +98,9 @@ public class MsgProducerImpl implements IMsgProducer {
         //重试三次仍失败，就不重试了
         if (CountUtil.isBeyond(failedMessageCounter, topic + seqId, 3)) {
             failedMessageCounter.remove(topic + seqId);
-            logger.error("kafka produce message try 3 times also failed, topic:{}, seq_id:{}", topic, seqId, exception);
+            logger.error(TraceUtils.getFormatTrace()+"kafka produce message try 3 times also failed, topic:{}, seq_id:{}", topic, seqId, exception);
             metrics.counter("kafka.sent.error");
-            activityLogger.info("{} {}",seqId,StringUtils.removePattern(message,"\n|\r"));
+            activityLogger.info(TraceUtils.getFormatTrace()+"{} {}",seqId,StringUtils.removePattern(message,"\n|\r"));
             return;
         }
         CountUtil.increase(failedMessageCounter, topic + seqId);
@@ -141,9 +142,9 @@ public class MsgProducerImpl implements IMsgProducer {
                 }
             }
             //处理结果
-            logger.info("kafka producer resend failed message, total:{}", total);
+            logger.info(TraceUtils.getFormatTrace()+"kafka producer resend failed message, total:{}", total);
         } catch (Exception e) {
-            logger.error( "kafka producer resend task failed", e);
+            logger.error(TraceUtils.getFormatTrace()+ "kafka producer resend task failed", e);
         }
     }
 

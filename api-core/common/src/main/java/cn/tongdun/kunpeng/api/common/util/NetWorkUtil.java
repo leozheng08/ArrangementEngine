@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.common.util;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.net.util.IPAddressUtil;
@@ -47,7 +48,7 @@ public class NetWorkUtil {
                 }
             }
         } catch (SocketException e) {
-            logger.error(e.getMessage());
+            logger.error(TraceUtils.getFormatTrace()+e.getMessage(),e);
         }
 
         return defaultIP;

@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.acl.impl.metrics;
 import cn.fraudmetrics.metrics.meta.CommonTag;
 import cn.fraudmetrics.metrics.meta.IpProvider;
 import cn.fraudmetrix.metrics.prometheus.PrometheusTool;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.CollectorRegistry;
@@ -23,7 +24,7 @@ public class MetricConfig {
         try {
             return new PrometheusTool(prometheusMeterRegistry, collectorRegistry);
         } catch (Exception e) {
-            log.error("Exception", e);
+            log.error(TraceUtils.getFormatTrace()+"Exception", e);
         }
         return null;
     }

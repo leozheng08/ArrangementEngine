@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionflow.IDecisionFlowRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.*;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,15 +66,15 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
      */
     public boolean addOrUpdate(PolicyDecisionModeEventDO policyDecisionModeDO){
         String policyUuid = policyDecisionModeDO.getPolicyUuid();
-        logger.debug("PolicyDecisionMode reload start, policyUuid:{}",policyUuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload start, policyUuid:{}",policyUuid);
         try {
             Long timestamp = policyDecisionModeDO.getModifiedVersion();
             switchDecisionMode(policyUuid,timestamp);
         } catch (Exception e){
-            logger.error("PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PolicyDecisionMode reload success, policyUuid:{}",policyUuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload success, policyUuid:{}",policyUuid);
         return true;
     }
 
@@ -96,7 +97,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 if(decisionMode instanceof DecisionFlow){
                     //缓存中的数据是相同版本或更新的，则不刷新
                     if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) >= 0){
-                        logger.debug("PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
+                        logger.debug(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }
                 }
@@ -104,7 +105,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 if(decisionMode instanceof ParallelSubPolicy){
                     //缓存中的数据是相同版本或更新的，则不刷新
                     if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) >= 0){
-                        logger.debug("PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
+                        logger.debug(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }
                 }
@@ -123,7 +124,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
                 decisionModeCache.put(policyUuid,parallelSubPolicy);
             }
         } catch (Exception e){
-            logger.error("PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
         return true;
@@ -140,10 +141,10 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
         try {
             decisionModeCache.remove(policyDecisionModeDO.getPolicyUuid());
         } catch (Exception e){
-            logger.error("PolicyDecisionMode remove failed, uuid:{}",policyDecisionModeDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyDecisionMode remove failed, uuid:{}",policyDecisionModeDO.getUuid(),e);
             return false;
         }
-        logger.debug("PolicyDecisionMode remove success, uuid:{}",policyDecisionModeDO.getPolicyUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyDecisionMode remove success, uuid:{}",policyDecisionModeDO.getPolicyUuid());
         return true;
     }
 

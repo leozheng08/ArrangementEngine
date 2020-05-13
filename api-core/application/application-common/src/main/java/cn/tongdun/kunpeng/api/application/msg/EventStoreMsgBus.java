@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.application.msg;
 
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,7 @@ public class EventStoreMsgBus {
 
                 boolean success = wrappedQueue.getQueue().add(item);
                 if (!success) {
-                    logger.error("EventStoreMsgBus Failed to store event, workerName:{}", wrappedQueue.getWorkerName());
+                    logger.error(TraceUtils.getFormatTrace()+"EventStoreMsgBus Failed to store event, workerName:{}", wrappedQueue.getWorkerName());
                 }
             } catch (Exception e){
                 logger.error("EventStoreMsgBus error, Failed to store event, workerName:{}", wrappedQueue.getWorkerName(),e);

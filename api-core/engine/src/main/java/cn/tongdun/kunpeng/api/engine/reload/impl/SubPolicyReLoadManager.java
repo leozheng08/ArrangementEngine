@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.SubPolicyEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,22 +72,22 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
      */
     public boolean addOrUpdate(SubPolicyEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("SubPolicy reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"SubPolicy reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventDO.getGmtModify().getTime();
             SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldSubPolicy != null && timestampCompare(oldSubPolicy.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug("SubPolicy reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace()+"SubPolicy reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
             reloadByUuid(uuid);
         } catch (Exception e){
-            logger.error("SubPolicy reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"SubPolicy reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("SubPolicy reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"SubPolicy reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -116,10 +117,10 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     public boolean remove(SubPolicyEventDO eventDO){
         try {
             boolean result = removeSubPolicy(eventDO.getUuid());
-            logger.debug("SubPolicy remove success, uuid:{}",eventDO.getUuid());
+            logger.debug(TraceUtils.getFormatTrace()+"SubPolicy remove success, uuid:{}",eventDO.getUuid());
             return result;
         } catch (Exception e){
-            logger.error("SubPolicy remove failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"SubPolicy remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
     }

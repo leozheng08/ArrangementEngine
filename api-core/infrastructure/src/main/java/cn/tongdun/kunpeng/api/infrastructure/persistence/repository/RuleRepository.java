@@ -13,6 +13,7 @@ import cn.tongdun.kunpeng.share.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -330,10 +331,10 @@ public class RuleRepository implements IRuleRepository {
                     ruleDTO.setWeightedRiskConfigDTO(weighted);
                     break;
                 default:
-                    logger.warn("buildRiskConfig mode error, riskConfig:{}",riskConfig);
+                    logger.warn(TraceUtils.getFormatTrace()+"buildRiskConfig mode error, riskConfig:{}",riskConfig);
             }
         } catch (Exception e){
-            logger.error("buildRiskConfig error,riskConfig:{}",riskConfig,e);
+            logger.error(TraceUtils.getFormatTrace()+"buildRiskConfig error,riskConfig:{}",riskConfig,e);
         }
     }
 

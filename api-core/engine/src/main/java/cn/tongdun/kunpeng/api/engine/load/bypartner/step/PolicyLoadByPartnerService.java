@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
@@ -102,7 +103,7 @@ public class PolicyLoadByPartnerService {
         try {
             executeThreadPool.invokeAll(tasks);
         } catch (Exception e) {
-            logger.error("加载策略异常",  e);
+            logger.error(TraceUtils.getFormatTrace()+"加载策略异常",  e);
             return false;
         }
 

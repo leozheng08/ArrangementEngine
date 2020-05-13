@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import groovy.lang.GroovyObject;
@@ -50,7 +51,7 @@ public class DynamicScriptManager {
         try {
             handleField(context);
         } catch (Exception e) {
-            logger.error("动态脚本调用异常", e);
+            logger.error(TraceUtils.getFormatTrace()+"动态脚本调用异常", e);
         }
         return true;
     }
@@ -96,14 +97,14 @@ public class DynamicScriptManager {
         try {
             futures = executeThreadPool.invokeAll(tasks,500,TimeUnit.MILLISECONDS);
         } catch (InterruptedException | NullPointerException e) {
-            logger.warn("动态脚本执行出错", e);
+            logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行出错", e);
         } catch (RejectedExecutionException e) {
-            logger.error("动态脚本丢弃执行", e);
+            logger.error(TraceUtils.getFormatTrace()+"动态脚本丢弃执行", e);
         }
         long t2 = System.currentTimeMillis();
 
         if(t2 - t1 > 30){
-            logger.warn("动态脚本执行时间太长, groovy_execute_too_long costTime : {}", t2-t1);
+            logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行时间太长, groovy_execute_too_long costTime : {}", t2-t1);
         }
 
         List<Boolean> results = new ArrayList(futures!= null?futures.size():0);
@@ -113,11 +114,11 @@ public class DynamicScriptManager {
                     try {
                         results.add(future.get());
                     } catch (InterruptedException | ExecutionException e) {
-                        logger.warn("动态脚本执行获取结果失败", e);
+                        logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行获取结果失败", e);
                     }
                 }
                 else{
-                    logger.warn("动态脚本执行任务被cancel");
+                    logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行任务被cancel");
                 }
             }
         }
@@ -133,7 +134,7 @@ public class DynamicScriptManager {
             value = executeGroovy(context, groovyObject, methodName);
             long t2 = System.currentTimeMillis();
             if(t2 - t1 > 30){
-                logger.warn("动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
+                logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
             }
             context.setField(fieldName, value);
         } catch(Throwable ex) {

@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PartnerEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +60,13 @@ public class PartnerReLoadManager implements IReload<PartnerEventDO> {
      */
     public boolean addOrUpdate(PartnerEventDO partnerDO){
         String partnerCode = partnerDO.getPartnerCode();
-        logger.debug("PartnerEventDO reload start, partnerCode:{}",partnerCode);
+        logger.debug(TraceUtils.getFormatTrace()+"PartnerEventDO reload start, partnerCode:{}",partnerCode);
         try {
             Long timestamp = partnerDO.getModifiedVersion();
             Partner oldPartner = partnerCache.get(partnerCode);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPartner != null && timestampCompare(oldPartner.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug("PartnerEventDO reload localCache is newest, ignore partnerCode:{}",partnerCode);
+                logger.debug(TraceUtils.getFormatTrace()+"PartnerEventDO reload localCache is newest, ignore partnerCode:{}",partnerCode);
                 return true;
             }
 
@@ -85,10 +86,10 @@ public class PartnerReLoadManager implements IReload<PartnerEventDO> {
 
             partnerCache.put(partnerCode, newPartner);
         } catch (Exception e){
-            logger.error("PartnerEventDO reload failed, partnerCode:{}",partnerCode,e);
+            logger.error(TraceUtils.getFormatTrace()+"PartnerEventDO reload failed, partnerCode:{}",partnerCode,e);
             return false;
         }
-        logger.debug("PartnerEventDO reload success, partnerCode:{}",partnerCode);
+        logger.debug(TraceUtils.getFormatTrace()+"PartnerEventDO reload success, partnerCode:{}",partnerCode);
         return true;
     }
 
@@ -103,10 +104,10 @@ public class PartnerReLoadManager implements IReload<PartnerEventDO> {
         try {
             partnerCache.remove(partner.getPartnerCode());
         } catch (Exception e){
-            logger.error("PartnerEventDO remove failed, uuid:{}",partner.getPartnerCode(),e);
+            logger.error(TraceUtils.getFormatTrace()+"PartnerEventDO remove failed, uuid:{}",partner.getPartnerCode(),e);
             return false;
         }
-        logger.debug("PartnerEventDO remove success, partnerCode:{}",partner.getPartnerCode());
+        logger.debug(TraceUtils.getFormatTrace()+"PartnerEventDO remove success, partnerCode:{}",partner.getPartnerCode());
         return true;
     }
 

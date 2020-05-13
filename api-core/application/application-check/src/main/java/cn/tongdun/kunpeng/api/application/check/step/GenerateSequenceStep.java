@@ -52,7 +52,7 @@ public class GenerateSequenceStep implements IRiskStep {
             context.setEventOccurTime(new Date());
         }
 
-        logger.info("REQ: seq_id: {}, request: {}", seqId, request);
+        logger.info(TraceUtils.getFormatTrace()+"REQ: seq_id: {}, request: {}", seqId, request);
         return true;
     }
 }

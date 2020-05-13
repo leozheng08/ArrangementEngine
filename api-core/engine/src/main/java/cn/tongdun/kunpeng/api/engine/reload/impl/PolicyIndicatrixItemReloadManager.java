@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyIndicatrixItemEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,16 +61,16 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     }
 
     public boolean reload(String policyUuid){
-        logger.debug("PlatformIndex reload start, policyUuid:{}",policyUuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PlatformIndex reload start, policyUuid:{}",policyUuid);
         try {
             List<String> policyIndicatrixItemDTOList = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
             policyIndicatrixItemCache.putList(policyUuid,policyIndicatrixItemDTOList);
 
         } catch (Exception e){
-            logger.error("PlatformIndex reload failed, policyUuid:{}",policyUuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"PlatformIndex reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PlatformIndex reload success, policyUuid:{}",policyUuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PlatformIndex reload success, policyUuid:{}",policyUuid);
         return true;
     }
 

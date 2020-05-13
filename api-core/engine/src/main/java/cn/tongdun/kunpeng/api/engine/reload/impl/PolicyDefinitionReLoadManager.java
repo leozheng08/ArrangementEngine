@@ -17,6 +17,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCac
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,14 +118,14 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
      */
     public boolean addOrUpdate(PolicyDefinitionEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("PolicyDefinition reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyDefinition reload start, uuid:{}",uuid);
         boolean result = false;
         try {
             Long timestamp = eventDO.getGmtModify().getTime();
             PolicyDefinition oldPolicyDefinition = policyDefinitionCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldPolicyDefinition != null && timestampCompare(oldPolicyDefinition.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug("PolicyDefinition reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace()+"PolicyDefinition reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -155,10 +156,10 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
             }
 
         } catch (Exception e){
-            logger.error("PolicyDefinition reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyDefinition reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("PolicyDefinition reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyDefinition reload success, uuid:{}",uuid);
         return result;
     }
 
@@ -176,10 +177,10 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
             String policyUuid = policyDefinition.getCurrVersionUuid();
             boolean result = policyReLoadManager.removePolicy(policyUuid);
 
-            logger.debug("PolicyDefinition remove success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
+            logger.debug(TraceUtils.getFormatTrace()+"PolicyDefinition remove success,policyDefinitionUuid:{} policyUuid:{}",policyDefinition.getUuid(),policyUuid);
             return result;
         } catch (Exception e){
-            logger.error("PolicyDefinition remove failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyDefinition remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
     }

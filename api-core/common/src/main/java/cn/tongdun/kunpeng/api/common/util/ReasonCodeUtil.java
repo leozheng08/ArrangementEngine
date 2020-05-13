@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.common.util;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class ReasonCodeUtil {
             context.addSubReasonCode(new SubReasonCode(subReasonCode.getCode(),subReasonCode.getDescription(),service));
         }
         catch (Exception e){
-            LOGGER.warn("sub_reason_code sub_reason_code_write_error");
+            LOGGER.warn(TraceUtils.getFormatTrace()+"sub_reason_code sub_reason_code_write_error");
         }
     }
 

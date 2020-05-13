@@ -8,6 +8,7 @@
 package cn.tongdun.kunpeng.api.common.util;
 
 import cn.tongdun.kunpeng.api.common.data.WeekEnum;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,7 @@ public class DateUtil {
 				return Long.parseLong(dateStr);
 			}
 		} catch (Exception e) {
-			logger.error("时间转时间戳异常:"+ e.getMessage());
+			logger.error(TraceUtils.getFormatTrace()+"时间转时间戳异常:"+ e.getMessage());
 			return null;
 		}
 	}

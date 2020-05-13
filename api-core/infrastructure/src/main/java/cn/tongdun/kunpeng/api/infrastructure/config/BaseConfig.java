@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
 import cn.tongdun.kunpeng.share.config.IConfigRepository;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class BaseConfig implements IBaseConfig{
                     }
                 }
             } catch (Exception e){
-                logger.error("getBusinessByEventType error",e);
+                logger.error(TraceUtils.getFormatTrace()+"getBusinessByEventType error",e);
             }
         }
 

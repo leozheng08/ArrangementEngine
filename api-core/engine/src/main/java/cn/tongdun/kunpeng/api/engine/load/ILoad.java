@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.load;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.IStep;
@@ -16,6 +17,6 @@ public interface ILoad extends IStep {
     @Override
     default void errorHandle(Throwable e) {
         Logger logger = LoggerFactory.getLogger(ILoad.class);
-        logger.error(this.getClass().getSimpleName()+ " load error",e);
+        logger.error(TraceUtils.getFormatTrace()+this.getClass().getSimpleName()+ " load error",e);
     };
 }

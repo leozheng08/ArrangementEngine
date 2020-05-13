@@ -2,13 +2,10 @@ package cn.tongdun.kunpeng.api.engine.load.step;
 
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.IInterfaceDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinition;
 import cn.tongdun.kunpeng.api.engine.model.intfdefinition.InterfaceDefinitionCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,19 +33,19 @@ public class InterfaceDefinitionLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("InterfaceDefinitionLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"InterfaceDefinitionLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         List<InterfaceDefinition> list = interfaceDefinitionRepository.queryAllAvailable();
         if(list == null || list.isEmpty()) {
-            logger.info("InterfaceDefinitionLoadManager warn: InterfaceDefinition is empty");
+            logger.info(TraceUtils.getFormatTrace()+"InterfaceDefinitionLoadManager warn: InterfaceDefinition is empty");
             return true;
         }
 
         for(InterfaceDefinition interfaceDefinition:list) {
             interfaceDefinitionCache.put(interfaceDefinition.getUuid(),interfaceDefinition);
         }
-        logger.info("InterfaceDefinitionLoadManager success, cost:{}, size:{}",
+        logger.info(TraceUtils.getFormatTrace()+"InterfaceDefinitionLoadManager success, cost:{}, size:{}",
                 System.currentTimeMillis() - beginTime, list.size());
         return true;
     }

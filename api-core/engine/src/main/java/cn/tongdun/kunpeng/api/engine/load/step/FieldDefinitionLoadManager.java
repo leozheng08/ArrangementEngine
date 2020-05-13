@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -40,7 +41,7 @@ public class FieldDefinitionLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("FieldDefinitionLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"FieldDefinitionLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         List<FieldDefinition> list = ruleFieldRepository.queryAllSystemField();
@@ -53,7 +54,7 @@ public class FieldDefinitionLoadManager implements ILoad {
             ruleFieldCacheRepository.put(ruleField.getUuid(),ruleField);
         }
 
-        logger.info("FieldDefinitionLoadManager success, cost:{}, systemFieldMap size:{}, extendFieldMap size:{}",
+        logger.info(TraceUtils.getFormatTrace()+"FieldDefinitionLoadManager success, cost:{}, systemFieldMap size:{}, extendFieldMap size:{}",
                 System.currentTimeMillis() - beginTime, ruleFieldCacheRepository.getSystemFieldMap().size(),ruleFieldCacheRepository.getExtendFieldMap().size());
         return true;
     }

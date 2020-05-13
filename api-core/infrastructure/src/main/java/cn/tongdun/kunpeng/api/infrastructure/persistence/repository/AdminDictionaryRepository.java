@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminDictionary
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.SelectDO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminDictionaryDAO;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -47,7 +48,7 @@ public class AdminDictionaryRepository  {
         try {
             result = JSON.parseArray(value, SelectDO.class);
         } catch (Exception e) {
-            logger.warn("字典值json解析出错,value:"+value,e);
+            logger.warn(TraceUtils.getFormatTrace()+"字典值json解析出错,value:"+value,e);
         }
         return result;
     }

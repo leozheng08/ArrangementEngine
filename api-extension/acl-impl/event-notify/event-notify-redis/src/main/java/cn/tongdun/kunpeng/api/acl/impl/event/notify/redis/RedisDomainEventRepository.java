@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.kv.IScoreKVRepository;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class RedisDomainEventRepository extends AbstractDomainEventRepository {
 
 
         } catch (Exception e) {
-            logger.error("update rule form redis error!",e);
+            logger.error(TraceUtils.getFormatTrace()+"update rule form redis error!",e);
         }
 
         List<String> eventList = scoreValueSet.stream().map(scoreValue->{

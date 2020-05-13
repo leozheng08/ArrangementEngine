@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.DynamicScriptEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,14 +68,14 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO>
      */
     public boolean addOrUpdate(DynamicScriptEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("DynamicScript reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"DynamicScript reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventDO.getModifiedVersion();
             WrappedGroovyObject oldWrappedGroovyObject = groovyObjectCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldWrappedGroovyObject != null &&
                     timestampCompare(oldWrappedGroovyObject.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug("DynamicScript reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace()+"DynamicScript reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -88,10 +89,10 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO>
 
             groovyCompileManager.addOrUpdate(dynamicScript);
         } catch (Exception e){
-            logger.error("DynamicScript reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"DynamicScript reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("DynamicScript reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"DynamicScript reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -106,10 +107,10 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO>
         try {
             groovyCompileManager.remove(eventDO.getUuid());
         } catch (Exception e){
-            logger.error("DynamicScript remove failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"DynamicScript remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("DynamicScript remove success, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"DynamicScript remove success, uuid:{}",eventDO.getUuid());
         return true;
     }
 

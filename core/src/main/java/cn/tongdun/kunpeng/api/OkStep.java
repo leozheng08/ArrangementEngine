@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api;
 
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class OkStep implements ILoad {
     @Override
     public boolean load(){
         aAppMain.setOk();
-        log.info("kunpeng api load success!");
+        log.info(TraceUtils.getFormatTrace()+"kunpeng api load success!");
         return true;
     }
 }

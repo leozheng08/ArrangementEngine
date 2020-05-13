@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -152,7 +153,7 @@ public class AssignFieldValueStep implements IRiskStep {
             }
             assign.execute(fields,fieldDefinition,requestValue);
         } catch (Exception e) {
-            logger.warn("决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
+            logger.warn(TraceUtils.getFormatTrace()+"决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
                     fieldCode, requestValue, e.getMessage());
         }
     }

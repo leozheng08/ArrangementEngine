@@ -7,6 +7,7 @@ import cn.fraudmetrix.holmes.service.object.ModelCalResponse;
 import cn.fraudmetrix.holmes.service.object.ModelResponse;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class Holmes implements IHolmes{
             }
             return result;
         } catch (Exception e) {
-            logger.error("[Holmes] calculate error {}", e.getMessage());
+            logger.error(TraceUtils.getFormatTrace()+"[Holmes] calculate error {}", e.getMessage());
             return false;
         }
     }
@@ -52,17 +53,17 @@ public class Holmes implements IHolmes{
         try {
             modelCalResponse = holmesService.calculate(reqParams);
         } catch (Exception e) {
-            logger.error("[Holmes] calculate catch error,modelUuid : {} ", modelUuid, e);
+            logger.error(TraceUtils.getFormatTrace()+"[Holmes] calculate catch error,modelUuid : {} ", modelUuid, e);
             return false;
         }
 
         if (modelCalResponse == null) {
-            logger.warn("[Holmes] modelCalResponse is null");
+            logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is null");
             return false;
         }
 
         if (!modelCalResponse.isSuccess()) {
-            logger.warn("[Holmes] modelCalResponse is failed");
+            logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
             return false;
         }
 
@@ -79,17 +80,17 @@ public class Holmes implements IHolmes{
         try {
             modelResponse = holmesService.predict(predictionInputDTO);
         } catch (Exception e) {
-            logger.error("[Holmes] predict catch error, modelUuid : {}", modelUuid, e);
+            logger.error(TraceUtils.getFormatTrace()+"[Holmes] predict catch error, modelUuid : {}", modelUuid, e);
             return false;
         }
 
         if (modelResponse == null) {
-            logger.error("[Holmes] modelResponse is null" );
+            logger.error(TraceUtils.getFormatTrace()+"[Holmes] modelResponse is null" );
             return false;
         }
 
         if (!modelResponse.isSuccess()) {
-            logger.warn("[Holmes] modelCalResponse is failed");
+            logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
             return false;
         }
 
@@ -168,7 +169,7 @@ public class Holmes implements IHolmes{
             String fieldValue = paramInfo.getField();
             String rightFieldValue = paramInfo.getRightField();
             if (result.get(fieldValue) == null) {
-                logger.error("[Holmes] calculate holmes calculate result is null");
+                logger.error(TraceUtils.getFormatTrace()+"[Holmes] calculate holmes calculate result is null");
                 continue;
             }
             fraudContext.set(rightFieldValue, result.get(fieldValue));

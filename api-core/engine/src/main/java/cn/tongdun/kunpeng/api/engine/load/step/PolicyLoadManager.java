@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.kunpeng.api.engine.load.bypartner.step.PolicyLoadByPartnerService;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.Step;
@@ -34,7 +35,7 @@ public class PolicyLoadManager implements ILoad {
      */
     @Override
     public boolean load(){
-        logger.info("PolicyLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"PolicyLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         //取得合作方范围
@@ -42,7 +43,7 @@ public class PolicyLoadManager implements ILoad {
 
         boolean success = loadPolicyByPartnerService.loadByPartner(partners);
 
-        logger.info("PolicyLoadManager isSuccess:{}, cost:{}",success,
+        logger.info(TraceUtils.getFormatTrace()+"PolicyLoadManager isSuccess:{}, cost:{}",success,
                 System.currentTimeMillis() - beginTime);
         return success;
     }

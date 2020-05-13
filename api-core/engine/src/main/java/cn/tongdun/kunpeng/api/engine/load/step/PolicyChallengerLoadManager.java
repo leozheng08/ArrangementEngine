@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.challenger.IPolicyChallengerRe
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallenger;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallengerCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class PolicyChallengerLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("PolicyChallengerLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"PolicyChallengerLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         //取得合作方范围
@@ -50,7 +51,7 @@ public class PolicyChallengerLoadManager implements ILoad {
             policyChallengerCache.put(policyChallenger.getPolicyDefinitionUuid(),policyChallenger);
         }
 
-        logger.info("PolicyChallengerLoadManager success, cost:{}, size:{}",
+        logger.info(TraceUtils.getFormatTrace()+"PolicyChallengerLoadManager success, cost:{}, size:{}",
                 System.currentTimeMillis() - beginTime, policyChallengerList.size());
         return true;
     }

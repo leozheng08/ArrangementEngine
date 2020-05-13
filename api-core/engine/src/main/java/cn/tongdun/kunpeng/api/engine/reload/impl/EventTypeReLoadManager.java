@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventTypeEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,13 +58,13 @@ public class EventTypeReLoadManager implements IReload<EventTypeEventDO> {
      */
     public boolean addOrUpdate(EventTypeEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("EventType reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"EventType reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventDO.getModifiedVersion();
             EventType eventType = eventTypeCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && eventType != null && timestampCompare(eventType.getModifiedVersion() ,timestamp) >= 0) {
-                logger.debug("EventType reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace()+"EventType reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -76,10 +77,10 @@ public class EventTypeReLoadManager implements IReload<EventTypeEventDO> {
 
             eventTypeCache.put(uuid, newEventType);
         } catch (Exception e){
-            logger.error("EventType reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"EventType reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("EventType reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"EventType reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -92,7 +93,7 @@ public class EventTypeReLoadManager implements IReload<EventTypeEventDO> {
     @Override
     public boolean remove(EventTypeEventDO eventDO){
         //事件类型删除或失效后，对应的策略仍可以正常调用，所有缓存中不需要删除
-        logger.debug("EventType remove ignore, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"EventType remove ignore, uuid:{}",eventDO.getUuid());
         return true;
     }
 

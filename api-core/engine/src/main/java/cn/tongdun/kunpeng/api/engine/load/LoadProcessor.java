@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.load;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.exception.SysException;
 import cn.tongdun.tdframework.core.pipeline.Response;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        logger.info("启动初始化 start");
+        logger.info(TraceUtils.getFormatTrace()+"启动初始化 start");
         PipelineExecutor pipelineExecutor = null;
         try {
             ApplicationContext context = event.getApplicationContext();
@@ -32,17 +33,17 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
                 pipelineExecutor = context.getBean(PipelineExecutor.class);
             }
         } catch (Exception e) {
-            logger.error("启动初始化 error", e);
+            logger.error(TraceUtils.getFormatTrace()+"启动初始化 error", e);
             throw  e;
         }
 
         if (null == pipelineExecutor) {
-            logger.error("pipelineExecutor not find!");
+            logger.error(TraceUtils.getFormatTrace()+"pipelineExecutor not find!");
             throw new SysException("pipelineExecutor not find!");
         }
 
         load(pipelineExecutor);
-        logger.info("启动初始化 finished");
+        logger.info(TraceUtils.getFormatTrace()+"启动初始化 finished");
     }
 
 
@@ -56,7 +57,7 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
         if(!result.isSuccess()){
             throw new SysException("启动加载失败");
         }
-        logger.info("LoadManager load result:"+result);
+        logger.info(TraceUtils.getFormatTrace()+"LoadManager load result:"+result);
 
         //根据单个合作方加载数据，暂放在这调用，供测试。后面去除
 //        Response result2 = pipelineExecutor.execute(LoadByPartnerPipeline.NAME, ILoadByPartner.class, step -> step.loadByPartner("demo"),(isLoad, e)->{
@@ -66,7 +67,7 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
 //        if(!result2.isSuccess()){
 //            throw new SysException("按合作方加载失败");
 //        }
-        logger.info("LoadByPartnerManager load result:"+result);
+        logger.info(TraceUtils.getFormatTrace()+"LoadByPartnerManager load result:"+result);
     }
 
 }

@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.kafka.consumer.IConsumer;
 import cn.fraudmetrix.module.kafka.object.RetryLaterException;
 import cn.tongdun.kunpeng.share.config.DynamicConfigRepository;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -44,7 +45,7 @@ public abstract class AbstractConsumer implements IConsumer {
                 topic = record.topic();
                 Map msgItem = JSON.parseObject(message, HashMap.class);
                 if (msgItem == null) {
-                    logger.warn("{} Receive a blank message for {} topic, message detail:{}", clsName, topic, message);
+                    logger.warn(TraceUtils.getFormatTrace()+"{} Receive a blank message for {} topic, message detail:{}", clsName, topic, message);
                     continue;
                 }
 
@@ -54,7 +55,7 @@ public abstract class AbstractConsumer implements IConsumer {
                     onMessage(topic, msgItem);
                 }
             } catch (Exception e) {
-                logger.warn("{} Receive a not json message for {}, data:{}", clsName, record.topic(), message,e);
+                logger.warn(TraceUtils.getFormatTrace()+"{} Receive a not json message for {}, data:{}", clsName, record.topic(), message,e);
             } finally {
                 ThreadContext.clear();
             }
@@ -68,9 +69,9 @@ public abstract class AbstractConsumer implements IConsumer {
         } catch (Exception e) {
             if (e instanceof NullPointerException) {
                 // 空指针了
-                logger.warn("消费出现空指针: \n {}", JSON.toJSONString(bulkMessages, true));
+                logger.warn(TraceUtils.getFormatTrace()+"消费出现空指针: \n {}", JSON.toJSONString(bulkMessages, true));
             } else {
-                logger.error("doConsume error:", e);
+                logger.error(TraceUtils.getFormatTrace()+"doConsume error:", e);
             }
             throw new RetryLaterException();
         } finally {
@@ -98,7 +99,7 @@ public abstract class AbstractConsumer implements IConsumer {
     protected void sleep() {
         try {
             long m = dynamicConfigRepository.getLongProperty("consumer.sleep.time",100);
-            logger.info("task deal failed, sleep {} ms", m);
+            logger.info(TraceUtils.getFormatTrace()+"task deal failed, sleep {} ms", m);
             Thread.sleep(m);
         } catch (InterruptedException e) {
             e.printStackTrace();

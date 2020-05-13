@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.kunpeng.api.engine.model.application.AdminApplication;
 import cn.tongdun.kunpeng.api.engine.model.application.AdminApplicationCache;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class AdminApplicationLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("AdminApplicationLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"AdminApplicationLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         List<AdminApplicationDTO> adminApplicationDTOList = adminApplicationRepository.queryApplicationsByPartners(partnerClusterCache.getPartners());
@@ -58,7 +59,7 @@ public class AdminApplicationLoadManager implements ILoad {
             adminApplicationCache.addAdminApplication(adminApplication);
         }
 
-        logger.info("AdminApplicationLoadManager success, cost:{}, size:",
+        logger.info(TraceUtils.getFormatTrace()+"AdminApplicationLoadManager success, cost:{}, size:",
                 System.currentTimeMillis() - beginTime, adminApplicationList.size());
         return true;
     }

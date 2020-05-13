@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.load.bypartner.step;
 
 import cn.tongdun.kunpeng.api.engine.load.bypartner.ILoadByPartner;
 import cn.tongdun.kunpeng.api.engine.load.bypartner.LoadByPartnerPipeline;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,11 @@ public class PolicyLoadByPartnerManager implements ILoadByPartner {
      */
     @Override
     public boolean loadByPartner(String partnerCode) {
-        logger.info("LoadPolicyByPartnerManager start");
+        logger.info(TraceUtils.getFormatTrace()+"LoadPolicyByPartnerManager start");
 
         boolean success = loadPolicyByPartnerService.loadByPartner(partnerCode);
 
-        logger.info("PolicyLoadManager success"+success);
+        logger.info(TraceUtils.getFormatTrace()+"PolicyLoadManager success"+success);
         return success;
     }
 }

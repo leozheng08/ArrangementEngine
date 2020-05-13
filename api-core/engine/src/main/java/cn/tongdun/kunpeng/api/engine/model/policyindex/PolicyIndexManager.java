@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.model.policyindex;
 import cn.fraudmetrix.module.tdrule.function.Function;
 import cn.tongdun.kunpeng.api.engine.IExecutor;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class PolicyIndexManager implements IExecutor<String, Void> {
         try {
             return Double.parseDouble(valueStr);
         } catch (Exception e) {
-            logger.error("PolicyIndexManager convert2Double error,valueString:" + valueStr + ",policyIndexUuid:" + policyIndex.getUuid());
+            logger.error(TraceUtils.getFormatTrace()+"PolicyIndexManager convert2Double error,valueString:" + valueStr + ",policyIndexUuid:" + policyIndex.getUuid());
             throw e;
         }
     }

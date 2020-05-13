@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class PartnerLoadByPartnerManager implements ILoadByPartner {
 
     @Override
     public boolean loadByPartner(String partnerCode){
-        logger.info("PartnerLoadByPartnerManager start");
+        logger.info(TraceUtils.getFormatTrace()+"PartnerLoadByPartnerManager start");
 
         PartnerDTO partnerDTO = partnerRepository.queryByPartnerCode(partnerCode);
         if(partnerDTO == null){
@@ -48,7 +49,7 @@ public class PartnerLoadByPartnerManager implements ILoadByPartner {
         BeanUtils.copyProperties(partnerDTO,partner);
 
         partnerCache.put(partner.getPartnerCode(),partner);
-        logger.info("PartnerLoadByPartnerManager success");
+        logger.info(TraceUtils.getFormatTrace()+"PartnerLoadByPartnerManager success");
         return true;
     }
 }

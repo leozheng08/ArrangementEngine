@@ -6,6 +6,7 @@ import cn.fraudmetrix.elfin.biz.entity.StationEntity;
 import cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService;
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -34,7 +35,7 @@ public class ElfinBaseDataService {
     public GeoipEntity getIpInfo(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info("elfinBaseDateService get geoentity from elfin with params null");
+                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get geoentity from elfin with params null");
                 return null;
             }
             GeoipEntity riskbaseGeoipEntity = geoipEntitycache.get(ip);
@@ -57,7 +58,7 @@ public class ElfinBaseDataService {
 
     public Map<String, GeoipEntity> getIpInfos(List<String> ips) {
         if (CollectionUtils.isEmpty(ips)) {
-            logger.warn("getIpInfos from elfin with params empty");
+            logger.warn(TraceUtils.getFormatTrace()+"getIpInfos from elfin with params empty");
             return Collections.emptyMap();
         }
 
@@ -112,7 +113,7 @@ public class ElfinBaseDataService {
     public StationEntity getStationInfo(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info("elfinBaseDateService get stationEngity from elfin with params null");
+                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get stationEngity from elfin with params null");
                 return null;
             }
             return baseDataQueryService.getStationInfo(ip);
@@ -126,7 +127,7 @@ public class ElfinBaseDataService {
     public boolean isStation(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info("elfinBaseDateService get isStation from elfin with params null");
+                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get isStation from elfin with params null");
                 return false;
             }
             return baseDataQueryService.isStation(ip);
@@ -140,7 +141,7 @@ public class ElfinBaseDataService {
     public IdcEntity getIdcInfo(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info("elfinBaseDateService get idcEntity from elfin with params null");
+                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get idcEntity from elfin with params null");
                 return null;
             }
             return baseDataQueryService.getIdcInfo(ip);
@@ -155,7 +156,7 @@ public class ElfinBaseDataService {
     public boolean isIdc(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info("elfinBaseDateService get idc from elfin with params null");
+                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get idc from elfin with params null");
                 return false;
             }
             return baseDataQueryService.isIdc(ip);
@@ -169,7 +170,7 @@ public class ElfinBaseDataService {
     public PhoneAttrEntity getPhoneInfo(String phone) {
         try {
             if (StringUtils.isBlank(phone)) {
-                logger.info("elfinBaseDateService get phoneInfo from elfin with params null");
+                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get phoneInfo from elfin with params null");
                 return null;
             }
 
@@ -193,7 +194,7 @@ public class ElfinBaseDataService {
 
     public MobileInfoDO getMobileInfo(String phone) {
         if (StringUtils.isBlank(phone)) {
-            logger.info("elfinBaseDateService get phoneInfo from elfin with params null");
+            logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get phoneInfo from elfin with params null");
             return null;
         }
         PhoneAttrEntity phoneAttrEntity = getPhoneInfo(phone);

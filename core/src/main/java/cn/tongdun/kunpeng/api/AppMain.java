@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -72,13 +73,13 @@ public class AppMain implements ApplicationContextAware {
             return "halting";
         }
         if (Boolean.parseBoolean(down) && !halt) {
-            log.warn("prehalt initiated and further /ok.htm request will return with status 503");
+            log.warn(TraceUtils.getFormatTrace()+"prehalt initiated and further /ok.htm request will return with status 503");
             halt = true;
             for (final Runnable r : preHaltTasks) {
                 try {
                     r.run();
                 } catch (Exception e) {
-                    log.error("prehalt task failed", e);
+                    log.error(TraceUtils.getFormatTrace()+"prehalt task failed", e);
                 }
             }
         }
@@ -103,16 +104,16 @@ public class AppMain implements ApplicationContextAware {
             if (StringUtils.isEmpty(accessLogPath)) {
                 return;
             }
-            log.warn("now cleaning access log in dir {}", accessLogPath);
+            log.warn(TraceUtils.getFormatTrace()+"now cleaning access log in dir {}", accessLogPath);
             final Collection<File> files = FileUtils.listFiles(new File(accessLogPath), new String[]{"log"}, false);
             if (CollectionUtils.isEmpty(files)) {
-                log.warn("no log found and nothing to do");
+                log.warn(TraceUtils.getFormatTrace()+"no log found and nothing to do");
                 return;
             }
             for (final File f : files) {
                 if (f.getName().startsWith("access_log") && System.currentTimeMillis() - f.lastModified() > retention) {
                     final boolean b = f.delete();
-                    log.warn("deleting old log {} ... {}", f.getName(), b);
+                    log.warn(TraceUtils.getFormatTrace()+"deleting old log {} ... {}", f.getName(), b);
                 }
             }
         }
@@ -125,12 +126,12 @@ public class AppMain implements ApplicationContextAware {
     }
 
     public static void main(String[] args) throws Exception {
-        log.warn("kunpeng-api started");
+        log.warn(TraceUtils.getFormatTrace()+"kunpeng-api started");
         try {
             SpringApplication.run(AppMain.class, args);
-            log.info("start env:"+System.getenv());
+            log.info(TraceUtils.getFormatTrace()+"start env:"+System.getenv());
         } catch (Throwable e) {
-            log.info("start failed env:"+System.getenv());
+            log.info(TraceUtils.getFormatTrace()+"start failed env:"+System.getenv());
             e.printStackTrace();
             throw e;
         }

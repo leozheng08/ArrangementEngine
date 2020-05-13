@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.ruledetail.FourCalculationDetail;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class FourCalculation extends AbstractCalculateFunction {
         Double rightVariable = (Double) rightVariableVar.eval(context);
 
         if (null == leftVariable || null == rightVariable) {
-            logger.warn("left or right is null!");
+            logger.warn(TraceUtils.getFormatTrace()+"left or right is null!");
             return null;
         }
 
@@ -78,7 +79,7 @@ public class FourCalculation extends AbstractCalculateFunction {
                 if (0 != rightVariable) {
                     result = leftVariable / rightVariable;
                 } else {
-                    logger.warn("divisor can not be zero");
+                    logger.warn(TraceUtils.getFormatTrace()+"divisor can not be zero");
                 }
                 break;
             default:

@@ -20,6 +20,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -135,7 +136,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
             //缓存策略
             localCacheService.put(Policy.class,policy.getUuid(), policy);
         } catch (Exception e){
-            logger.error("LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
+            logger.error(TraceUtils.getFormatTrace()+"LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
                     policyUuid, policyDTO!=null?policyDTO.getPartnerCode():"",policyDTO != null? policyDTO.getEventId():"",
                     e);
             return false;

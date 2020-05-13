@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.model.rule.function.namelist;
 import cn.tongdun.kunpeng.share.kv.Cursor;
 import cn.tongdun.kunpeng.share.kv.IScoreKVRepository;
 import cn.tongdun.kunpeng.share.kv.IScoreValue;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class CustomListValueCache {
                 }
             } else {
                 if (count != null && count >= MAX_LIST_SIZE) {
-                    logger.error("list data is too long! listUuid: {}", listUuid);
+                    logger.error(TraceUtils.getFormatTrace()+"list data is too long! listUuid: {}", listUuid);
                 }
             }
         }

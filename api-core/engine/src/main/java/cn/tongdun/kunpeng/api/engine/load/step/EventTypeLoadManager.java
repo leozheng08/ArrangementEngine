@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -33,7 +34,7 @@ public class EventTypeLoadManager implements ILoad {
 
     @Override
     public boolean load(){
-        logger.info("EventTypeLoadManager start");
+        logger.info(TraceUtils.getFormatTrace()+"EventTypeLoadManager start");
         long beginTime = System.currentTimeMillis();
         List<EventType> list = eventTypeRepository.queryAll();
         if(list != null) {
@@ -41,7 +42,7 @@ public class EventTypeLoadManager implements ILoad {
                 eventTypeLocalCache.put(eventType.getUuid(),eventType);
             }
         }
-        logger.info("EventTypeLoadManager success, cost:{}, size:{}",
+        logger.info(TraceUtils.getFormatTrace()+"EventTypeLoadManager success, cost:{}, size:{}",
                 System.currentTimeMillis() - beginTime, eventTypeLocalCache.getEventTypes().size());
         return true;
     }

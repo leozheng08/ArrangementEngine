@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class PolicyDefinitionLoadByPartnerManager implements ILoadByPartner {
      */
     @Override
     public boolean loadByPartner(String partnerCode){
-        logger.info("LoadPolicyDefinitionByPartnerManager start");
+        logger.info(TraceUtils.getFormatTrace()+"LoadPolicyDefinitionByPartnerManager start");
 
         //取得策略定义列表
         List<PolicyDefinition> PolicyModifiedDOList = policyDefinitionRepository.queryByPartner(partnerCode);
@@ -48,7 +49,7 @@ public class PolicyDefinitionLoadByPartnerManager implements ILoadByPartner {
             policyDefinitionCache.put(policyDefinition.getUuid(),policyDefinition);
         }
 
-        logger.info("LoadPolicyDefinitionByPartnerManager success, size:"+PolicyModifiedDOList.size());
+        logger.info(TraceUtils.getFormatTrace()+"LoadPolicyDefinitionByPartnerManager success, size:"+PolicyModifiedDOList.size());
         return true;
     }
 }

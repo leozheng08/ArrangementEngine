@@ -13,6 +13,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
@@ -164,7 +165,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 //其他bizType待后期扩展
             }
         } catch (Exception e){
-            logger.error("Rule batchAddOrUpdate failed",e);
+            logger.error(TraceUtils.getFormatTrace()+"Rule batchAddOrUpdate failed",e);
             return false;
         }
         return true;
@@ -178,13 +179,13 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
      */
     public boolean addOrUpdate(RuleEventDO eventDO){
         String uuid = eventDO.getUuid();
-        logger.debug("Rule reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"Rule reload start, uuid:{}",uuid);
         try {
             Long timestamp = eventDO.getGmtModify().getTime();
             Rule oldRule = ruleCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
             if(timestamp != null && oldRule != null && timestampCompare(oldRule.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug("Rule reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace()+"Rule reload localCache is newest, ignore uuid:{}",uuid);
                 return true;
             }
 
@@ -201,10 +202,10 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
         } catch (Exception e){
-            logger.error("Rule reload failed, uuid:{}",uuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"Rule reload failed, uuid:{}",uuid,e);
             return false;
         }
-        logger.debug("Rule reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace()+"Rule reload success, uuid:{}",uuid);
         return true;
     }
 
@@ -227,7 +228,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 Rule oldRule = ruleCache.get(uuid);
                 //缓存中的数据是相同版本或更新的，则不刷新
                 if(timestamp != null && oldRule != null && timestampCompare(oldRule.getModifiedVersion(), timestamp) >= 0) {
-                    logger.debug("Rule reload localCache is newest, ignore uuid:{}",uuid);
+                    logger.debug(TraceUtils.getFormatTrace()+"Rule reload localCache is newest, ignore uuid:{}",uuid);
                     return true;
                 }
 
@@ -258,7 +259,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 //其他bizType待后期扩展
             }
         } catch (Exception e){
-            logger.error("Rule batchAddOrUpdate failed",e);
+            logger.error(TraceUtils.getFormatTrace()+"Rule batchAddOrUpdate failed",e);
             return false;
         }
         return true;
@@ -280,10 +281,10 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
         } catch (Exception e){
-            logger.error("Rule remove failed, uuid:{}",eventDO.getUuid(),e);
+            logger.error(TraceUtils.getFormatTrace()+"Rule remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
         }
-        logger.debug("Rule remove success, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace()+"Rule remove success, uuid:{}",eventDO.getUuid());
         return true;
     }
 

@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.IndexDefinitionEventDO;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionEventDO
     }
 
     private boolean reload(String policyUuid){
-        logger.debug("PolicyIndex reload start, policyUuid:{}",policyUuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyIndex reload start, policyUuid:{}",policyUuid);
         try {
             List<IndexDefinitionDTO> indexDefinitionDTOList = policyIndexRepository.queryByPolicyUuid(policyUuid);
             //缓存策略指标
@@ -86,10 +87,10 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionEventDO
             policyIndicatrixItemReloadManager.reload(policyUuid);
 
         } catch (Exception e){
-            logger.error("PolicyIndex reload failed, policyUuid:{}",policyUuid,e);
+            logger.error(TraceUtils.getFormatTrace()+"PolicyIndex reload failed, policyUuid:{}",policyUuid,e);
             return false;
         }
-        logger.debug("PolicyIndex reload success, policyUuid:{}",policyUuid);
+        logger.debug(TraceUtils.getFormatTrace()+"PolicyIndex reload success, policyUuid:{}",policyUuid);
         return true;
     }
 

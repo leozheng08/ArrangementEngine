@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.config;
 
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.util.NetWorkUtil;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +117,7 @@ public class LocalEnvironment implements ILocalEnvironment{
         try {
             ip = obtainLocalIpAddress();
         } catch (Exception e) {
-            logger.error("获取本机ip出现异常", e);
+            logger.error(TraceUtils.getFormatTrace()+"获取本机ip出现异常", e);
         }
     }
 
