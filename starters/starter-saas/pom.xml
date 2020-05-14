@@ -2,14 +2,202 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>starters</artifactId>
-        <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>starter-saas</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
+    <name>starter-saas</name>
+    <groupId>cn.tongdun.kunpeng-api</groupId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <api-core.version>1.0.2-SNAPSHOT</api-core.version>
+        <api-extension.version>1.0.2-SNAPSHOT</api-extension.version>
+
+        <maven_deploy_version>2.8.2</maven_deploy_version>
+        <skip_maven_deploy>false</skip_maven_deploy>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>dependencies-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <!-- kunpeng-api核心包，必选 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>core-spring-boot-starter</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- 决策接口入参校验 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-check</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- 决策接口支持挑战者 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-challenger</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- 决策接口支持groovy脚本 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-groovy</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口支持ruledata,主要平台指标 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-basedata</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口支持ruledata,主要平台指标 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-ruledata</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口支持策略指标-->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-policyindex</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 决策接口输出 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-output</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 start-->
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>event-notify-kafka-rawevent</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>event-notify-redis</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+        <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 start-->
+
+        <dependency>
+            <!-- redis基件，以支持自定义列表 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>kv-cache-redis</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 采用prometheus监控统计 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>metrics-prometheus</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- 按多集群部署，不同集群分别加载不同的合作列表 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>partner-cluster-single</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 多合作方信息从数据库加载 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>admin-partner-db</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+        <dependency>
+            <!-- 应用只有一个default应用 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>admin-application-db</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- 决策接口的activity消息在决策流程中直接发kafka(不需要内存队列) -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-activity-direct-kafka</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven_deploy_version}</version>
+                <configuration>
+                    <skip>${skip_maven_deploy}</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 同步刷新系统各个模块版本 -->
+            <!--    参考syn-modules-version.sh脚本        -->
+            <!--    mvn -N versions:update-child-modules        -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>fraudmetrixRepo</id>
+            <url>http://maven.fraudmetrix.cn/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>fraudmetrixRepo</id>
+            <url>http://maven.fraudmetrix.cn/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 
 </project>

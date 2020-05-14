@@ -48,6 +48,9 @@ public class PolicyRepository implements IPolicyRepository{
     //根据合作列表，取得运行版本的策略清单
     @Override
     public List<PolicyModifiedDTO> queryDefaultPolicyByPartners(Set<String> partners){
+        if (null==partners||partners.isEmpty()){
+            return Collections.emptyList();
+        }
         return policyDAO.selectDefaultPolicyByPartners(partners);
     }
 
@@ -55,6 +58,9 @@ public class PolicyRepository implements IPolicyRepository{
     //根据合作列表，取得挑战者版本的策略清单
     @Override
     public List<PolicyModifiedDTO> queryChallengerPolicyByPartners(Set<String> partners){
+        if (null==partners||partners.isEmpty()){
+            return Collections.emptyList();
+        }
         List<PolicyModifiedDTO> result = new ArrayList<>();
         List<String> policyUuidList = new ArrayList<>();
         List<PolicyChallengerDO> policyChallengerDOList = policyChallengerDAO.selectAvailableByPartners(partners);

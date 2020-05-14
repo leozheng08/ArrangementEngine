@@ -2,15 +2,153 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>dependencies</artifactId>
-        <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>api-core</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven_deploy_version>2.8.2</maven_deploy_version>
+        <skip_maven_deploy>false</skip_maven_deploy>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>dependencies-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>acl-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>interface-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>rule-detail</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- kunpeng-api application start -->
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-activity-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-activity-direct-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-activity-memoryq-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-auth</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-basedata</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-challenger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-check</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-groovy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-output</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-policyindex</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-ruledata</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-runengine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- kunpeng-api application end -->
+
+        </dependencies>
+
+    </dependencyManagement>
 
     <modules>
         <module>common</module>
@@ -20,6 +158,67 @@
         <module>infrastructure</module>
         <module>interface-adapter</module>
         <module>application</module>
+        <module>autoconfigure</module>
     </modules>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven_deploy_version}</version>
+                <configuration>
+                    <skip>${skip_maven_deploy}</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 同步刷新系统各个模块版本 -->
+            <!--    参考syn-modules-version.sh脚本        -->
+            <!--    mvn -N versions:update-child-modules        -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>fraudmetrixRepo</id>
+            <url>http://maven.fraudmetrix.cn/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>fraudmetrixRepo</id>
+            <url>http://maven.fraudmetrix.cn/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

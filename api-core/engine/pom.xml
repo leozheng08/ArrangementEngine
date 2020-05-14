@@ -4,13 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>risk-core</artifactId>
+        <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>engine</artifactId>
     <packaging>jar</packaging>
     <name>engine</name>

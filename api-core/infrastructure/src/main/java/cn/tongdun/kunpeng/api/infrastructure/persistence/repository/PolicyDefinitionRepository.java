@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,6 +22,9 @@ public class PolicyDefinitionRepository  implements IPolicyDefinitionRepository{
     //取得所有策略定义清单
     @Override
     public List<PolicyDefinition> queryByPartners(Set<String> partners){
+        if (null==partners||partners.isEmpty()){
+            return Collections.emptyList();
+        }
         List<PolicyDefinitionDO> list = policyDefinitionDAO.selectByPartners(partners);
 
         List<PolicyDefinition> result = null;

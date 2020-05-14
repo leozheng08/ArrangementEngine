@@ -2,23 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>dependencies</artifactId>
-        <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>starters</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
+
     <packaging>pom</packaging>
     <modules>
         <module>core-spring-boot-starter</module>
         <module>starter-paas</module>
         <module>starter-saas</module>
         <module>starter-mini</module>
-        <module>mybatis-spring-boot-autoconfigure</module>
-        <module>kafka-spring-boot-autoconfigure</module>
-        <module>dubbo-spring-boot-autoconfigure</module>
     </modules>
 
 

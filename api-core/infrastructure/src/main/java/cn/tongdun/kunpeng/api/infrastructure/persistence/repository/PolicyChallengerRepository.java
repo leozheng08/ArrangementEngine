@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +35,9 @@ public class PolicyChallengerRepository implements IPolicyChallengerRepository {
     //根据合作方取得所有有效的挑战者任务
     @Override
     public List<PolicyChallenger> queryAvailableByPartners(Set<String> partners){
+        if (null==partners||partners.isEmpty()){
+            return Collections.emptyList();
+        }
         List<PolicyChallengerDO> list = policyChallengerDAO.selectAvailableByPartners(partners);
 
         List<PolicyChallenger> result = null;

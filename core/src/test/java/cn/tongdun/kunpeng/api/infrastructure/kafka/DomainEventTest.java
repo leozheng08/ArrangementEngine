@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.kafka;
 import cn.fraudmetrix.module.kafka.object.ProducerException;
 import cn.fraudmetrix.module.kafka.producer.IProducer;
 import cn.tongdun.kunpeng.api.AppMain;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.junit.Before;

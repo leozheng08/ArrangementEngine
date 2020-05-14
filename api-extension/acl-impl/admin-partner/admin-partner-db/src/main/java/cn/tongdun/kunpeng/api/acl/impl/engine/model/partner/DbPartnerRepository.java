@@ -2,13 +2,13 @@ package cn.tongdun.kunpeng.api.acl.impl.engine.model.partner;
 
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
-import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminPartnerDO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminPartnerDAO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +34,9 @@ public class DbPartnerRepository implements IPartnerRepository{
     //取得所有策略定义清单
     @Override
     public List<PartnerDTO> queryEnabledByPartners(Set<String> partners){
+        if (null==partners||partners.isEmpty()){
+            return Collections.emptyList();
+        }
         List<AdminPartnerDO> list = adminPartnerDAO.selectEnabledByPartners(partners);
 
         List<PartnerDTO> result = list.stream().map(adminPartnerDO->{

@@ -1,15 +1,10 @@
 package cn.tongdun.kunpeng.api.intf.adapter.dubbo;
 
 import cn.tongdun.kunpeng.api.AppMain;
-import cn.tongdun.kunpeng.client.api.IRiskService;
-import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
 
 /**
  * @Author: liang.chen

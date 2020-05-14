@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +32,9 @@ public class DbAdminApplicationRepository implements IAdminApplicationRepository
 
     @Override
     public List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners){
+        if (null==partners||partners.isEmpty()){
+            return Collections.emptyList();
+        }
         List<AdminApplicationDO> list = adminApplicationDAO.queryApplicationsByPartners(partners);
 
         List<AdminApplicationDTO> result = list.stream().map(adminApplicationDO->{

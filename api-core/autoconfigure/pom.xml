@@ -9,19 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rule-detail</artifactId>
-    <packaging>jar</packaging>
-    <name>rule-detail</name>
+    <artifactId>autoconfigure</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>dubbo-spring-boot-autoconfigure</module>
+        <module>kafka-spring-boot-autoconfigure</module>
+        <module>mybatis-spring-boot-autoconfigure</module>
+    </modules>
 
 
-    <dependencies>
-        <dependency>
-            <groupId>cn.fraudmetrix</groupId>
-            <artifactId>module-tdrule</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-    </dependencies>
 </project>

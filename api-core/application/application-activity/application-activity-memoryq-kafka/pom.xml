@@ -16,18 +16,15 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>common</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-activity-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>

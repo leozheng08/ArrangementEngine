@@ -2,52 +2,65 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>starters</artifactId>
-        <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-SNAPSHOT</version>
-    </parent>
 
     <!-- 核心功能，包含决策接口的主要处理流程、策略配置启动加载、策略配置变更 -->
     <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>core-spring-boot-starter</artifactId>
     <name>core-spring-boot-starter</name>
+    <version>1.0.2-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <api-core.version>1.0.2-SNAPSHOT</api-core.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>dependencies-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
+            <version>${api-core.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>dubbo-spring-boot-autoconfigure</artifactId>
+            <version>${api-core.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>kafka-spring-boot-autoconfigure</artifactId>
+            <version>${api-core.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>infrastructure</artifactId>
-            <version>${project.version}</version>
+            <version>${api-core.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>interface-adapter</artifactId>
-            <version>${project.version}</version>
+            <version>${api-core.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>rule-detail</artifactId>
-            <version>${project.version}</version>
+            <version>${api-core.version}</version>
         </dependency>
 
 

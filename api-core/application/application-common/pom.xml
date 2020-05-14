@@ -31,7 +31,6 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>engine</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.tongdun</groupId>
