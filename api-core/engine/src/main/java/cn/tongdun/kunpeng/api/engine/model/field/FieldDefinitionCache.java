@@ -134,14 +134,14 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
             map.put(field.getFieldCode(),field);
 
             //删除其他事件类型下的此字段
-            for (EventType et : eventTypeList) {
-                String sysKey = getSystemFieldKey(et.getEventCode());
-                if(key.equals(sysKey)){
-                    continue;
-                }
-                Map<String,IFieldDefinition> sysMap = getFieldMap(systemFieldMap,sysKey);
-                sysMap.remove(field.getFieldCode());
-            }
+//            for (EventType et : eventTypeList) {
+//                String sysKey = getSystemFieldKey(et.getEventCode());
+//                if(key.equals(sysKey)){
+//                    continue;
+//                }
+//                Map<String,IFieldDefinition> sysMap = getFieldMap(systemFieldMap,sysKey);
+//                sysMap.remove(field.getFieldCode());
+//            }
         }
     }
 
@@ -166,14 +166,14 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
             map.put(field.getFieldCode(),field);
 
             //删除其他事件类型下的此字段
-            for (EventType et : eventTypeList) {
-                String extKey = getExtendFieldKey(field.getPartnerCode(), et.getEventCode());
-                if(key.equals(extKey)){
-                    continue;
-                }
-                Map<String,IFieldDefinition> extendMap = getFieldMap(extendFieldMap,extKey);
-                extendMap.remove(field.getFieldCode());
-            }
+//            for (EventType et : eventTypeList) {
+//                String extKey = getExtendFieldKey(field.getPartnerCode(), et.getEventCode());
+//                if(key.equals(extKey)){
+//                    continue;
+//                }
+//                Map<String,IFieldDefinition> extendMap = getFieldMap(extendFieldMap,extKey);
+//                extendMap.remove(field.getFieldCode());
+//            }
         }
     }
 
