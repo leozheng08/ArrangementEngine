@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
 
-import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminApplicationDO;
+import cn.tongdun.kunpeng.share.dataobject.AdminApplicationDO;
 
 import java.util.List;
 import java.util.Set;

@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.application.activity.memoryq;
 
 import cn.tongdun.kunpeng.api.application.activity.common.IEventWorker;
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class WorkerThread extends Thread {
         try {
             worker.onEvent(item);
         } catch (Throwable ex) {
-            logger.error("onEventCaught", ex);
+            logger.error(TraceUtils.getFormatTrace()+"onEventCaught", ex);
         }
     }
 

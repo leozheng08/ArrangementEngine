@@ -34,6 +34,6 @@ public interface IRiskStep extends IStep {
 
     @Override
     default void errorHandle(Throwable e) {
-//        logger.error("riskStep error", e);
+//        logger.error(TraceUtils.getFormatTrace()+"riskStep error", e);
     }
 }

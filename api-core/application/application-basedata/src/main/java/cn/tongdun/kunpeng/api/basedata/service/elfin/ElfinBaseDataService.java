@@ -51,7 +51,7 @@ public class ElfinBaseDataService {
             }
         }
         catch (Exception e) {
-            logger.error("ip query geoinfo failed ip {}", ip, e);
+            logger.error(TraceUtils.getFormatTrace()+"ip query geoinfo failed ip {}", ip, e);
         }
         return null;
     }
@@ -91,7 +91,7 @@ public class ElfinBaseDataService {
             ipInfos = baseDataQueryService.getIpInfos(notInCacheIpList);
         }
         catch (Exception e) {
-            logger.error("getIpInfos error, ipList={}", ips, e);
+            logger.error(TraceUtils.getFormatTrace()+"getIpInfos error, ipList={}", ips, e);
             return finalResultMap;
         }
 
@@ -119,7 +119,7 @@ public class ElfinBaseDataService {
             return baseDataQueryService.getStationInfo(ip);
         }
         catch (Exception e) {
-            logger.error("ip query stationinfo error ip {}", ip, e);
+            logger.error(TraceUtils.getFormatTrace()+"ip query stationinfo error ip {}", ip, e);
             return null;
         }
     }
@@ -133,7 +133,7 @@ public class ElfinBaseDataService {
             return baseDataQueryService.isStation(ip);
         }
         catch (Exception e) {
-            logger.error("ip check isstation error ip {}", ip, e);
+            logger.error(TraceUtils.getFormatTrace()+"ip check isstation error ip {}", ip, e);
             return false;
         }
     }
@@ -147,7 +147,7 @@ public class ElfinBaseDataService {
             return baseDataQueryService.getIdcInfo(ip);
         }
         catch (Exception e) {
-            logger.error("ip query idcinfo error ip {}", ip, e);
+            logger.error(TraceUtils.getFormatTrace()+"ip query idcinfo error ip {}", ip, e);
 
             return null;
         }
@@ -162,7 +162,7 @@ public class ElfinBaseDataService {
             return baseDataQueryService.isIdc(ip);
         }
         catch (Exception e) {
-            logger.error("ip check id idc error ip {}", ip, e);
+            logger.error(TraceUtils.getFormatTrace()+"ip check id idc error ip {}", ip, e);
             return false;
         }
     }
@@ -187,7 +187,7 @@ public class ElfinBaseDataService {
             return null;
         }
         catch (Exception e) {
-            logger.error("phone query detailinfo error phone {}", phone, e);
+            logger.error(TraceUtils.getFormatTrace()+"phone query detailinfo error phone {}", phone, e);
             return null;
         }
     }

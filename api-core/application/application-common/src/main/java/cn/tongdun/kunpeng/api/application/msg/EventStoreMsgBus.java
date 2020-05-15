@@ -43,7 +43,7 @@ public class EventStoreMsgBus {
                     logger.error(TraceUtils.getFormatTrace()+"EventStoreMsgBus Failed to store event, workerName:{}", wrappedQueue.getWorkerName());
                 }
             } catch (Exception e){
-                logger.error("EventStoreMsgBus error, Failed to store event, workerName:{}", wrappedQueue.getWorkerName(),e);
+                logger.error(TraceUtils.getFormatTrace()+"EventStoreMsgBus error, Failed to store event, workerName:{}", wrappedQueue.getWorkerName(),e);
             }
         }
     }

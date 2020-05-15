@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.RegexDetail;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -109,7 +110,7 @@ public class RegexFunction extends AbstractFunction {
         try {
             futures = regexThreadPool.invokeAll(tasks, 100, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            logger.error("RegexFunction error", e);
+            logger.error(TraceUtils.getFormatTrace()+"RegexFunction error", e);
         }
         if (null == futures || futures.isEmpty()) {
             return new FunctionResult(false);
@@ -139,7 +140,7 @@ public class RegexFunction extends AbstractFunction {
                     break;
                 }
             } catch (Exception e) {
-                logger.error("RegexFunction error", e);
+                logger.error(TraceUtils.getFormatTrace()+"RegexFunction error", e);
                 future.cancel(true);
             }
         }

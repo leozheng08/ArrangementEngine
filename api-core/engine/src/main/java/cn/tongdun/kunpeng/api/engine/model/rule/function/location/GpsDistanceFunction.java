@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.GpsDistanceDetail;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class GpsDistanceFunction extends AbstractFunction {
             try {
                 difference = Integer.parseInt(distanceSlice);
             } catch (NumberFormatException e) {
-                logger.error("distanceSlice {} 格式错误", distanceSlice, e);
+                logger.error(TraceUtils.getFormatTrace()+"distanceSlice {} 格式错误", distanceSlice, e);
             }
         }
 
@@ -109,7 +110,7 @@ public class GpsDistanceFunction extends AbstractFunction {
             }
             return null;
         } catch (ClassCastException e) {
-            logger.error("getGpsEntity class cast error {}", obj, e);
+            logger.error(TraceUtils.getFormatTrace()+"getGpsEntity class cast error {}", obj, e);
             return null;
         }
     }
@@ -125,7 +126,7 @@ public class GpsDistanceFunction extends AbstractFunction {
             double longitude = Double.parseDouble(longitudeStr.trim());
             gps = new GpsEntity(longitude, latitude);
         } catch (Exception e) {
-            logger.error("经纬度格式转换错误, lat-lon {}",latitudeStr+","+longitudeStr, e);
+            logger.error(TraceUtils.getFormatTrace()+"经纬度格式转换错误, lat-lon {}",latitudeStr+","+longitudeStr, e);
         }
         return gps;
     }
@@ -141,7 +142,7 @@ public class GpsDistanceFunction extends AbstractFunction {
             double longitude = Double.parseDouble(latitudeNLongitude[1].trim());
             gps = new GpsEntity(longitude, latitude);
         } catch (Exception e) {
-            logger.error("经纬度格式转换错误, lat-lon {}", latitudeNLongitude, e);
+            logger.error(TraceUtils.getFormatTrace()+"经纬度格式转换错误, lat-lon {}", latitudeNLongitude, e);
         }
         return gps;
     }

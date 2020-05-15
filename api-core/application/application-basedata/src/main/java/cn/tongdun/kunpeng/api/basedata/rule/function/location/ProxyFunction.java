@@ -13,6 +13,7 @@ import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,7 +69,7 @@ public class ProxyFunction extends AbstractFunction {
                     proxyType = ProxyType.valueOf(proxyIpType);
                 }
                 catch (Exception e) {
-                    logger.error("isProxyIp proxyType convert failed proxyIpType {}", proxyIpType, e);
+                    logger.error(TraceUtils.getFormatTrace()+"isProxyIp proxyType convert failed proxyIpType {}", proxyIpType, e);
                 }
                 isProxyIp = proxyIpService.isProxy(ip, proxyType);
             }

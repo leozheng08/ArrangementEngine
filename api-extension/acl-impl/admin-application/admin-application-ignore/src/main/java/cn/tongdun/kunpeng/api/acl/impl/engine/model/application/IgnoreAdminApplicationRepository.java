@@ -29,12 +29,10 @@ public class IgnoreAdminApplicationRepository implements IAdminApplicationReposi
 
     private static AdminApplicationDTO createDefaultApplication(){
         AdminApplicationDTO applicationDTO = new AdminApplicationDTO();
-        applicationDTO.setName(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setCode(Constant.DEFAULT_APP_NAME);
         applicationDTO.setSecretKey(Constant.DEFAULT_APP_NAME);
         applicationDTO.setUuid(Constant.DEFAULT_APP_NAME);
         applicationDTO.setDisplayName(Constant.DEFAULT_APP_NAME);
-        applicationDTO.setAppType(Constant.DEFAULT_APP_TYPE);
-        applicationDTO.setAppTypeName(Constant.DEFAULT_APP_TYPE);
         applicationDTO.setPartnerCode(Constant.DEFAULT_PARTNER);
         applicationDTO.setStatus(1);
         return applicationDTO;

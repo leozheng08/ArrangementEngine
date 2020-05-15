@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleManager;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
         } catch (Exception e){
             subPolicyResponse.setSuccess(false);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
-            logger.error("SubPolicyManager execute uuid:{}, seqId:{} ",uuid,context.getSeqId(), e);
+            logger.error(TraceUtils.getFormatTrace()+"SubPolicyManager execute uuid:{}, seqId:{} ",uuid,context.getSeqId(), e);
         }
         subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
         return subPolicyResponse;

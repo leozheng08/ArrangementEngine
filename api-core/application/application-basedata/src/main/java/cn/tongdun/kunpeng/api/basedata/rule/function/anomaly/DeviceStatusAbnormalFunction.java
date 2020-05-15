@@ -8,6 +8,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public class DeviceStatusAbnormalFunction extends AbstractFunction {
         }
         catch (Exception e) {
             result = false;
-            logger.error("[Abnormality] isDeviceStatusAbnormal", e);
+            logger.error(TraceUtils.getFormatTrace()+"[Abnormality] isDeviceStatusAbnormal", e);
         }
 
         return new FunctionResult(result);

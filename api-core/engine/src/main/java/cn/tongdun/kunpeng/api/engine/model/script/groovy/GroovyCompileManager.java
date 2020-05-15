@@ -93,7 +93,7 @@ public class GroovyCompileManager {
             AbstractFraudContext context = mockFraudContext();
             executeGroovyField(context, field);
         } catch (Exception ex) {
-            logger.error("动态脚本预热失败",ex);
+            logger.error(TraceUtils.getFormatTrace()+"动态脚本预热失败",ex);
         }
     }
 
@@ -142,7 +142,7 @@ public class GroovyCompileManager {
 
                 context.setField(fieldName, value);
             } catch(Throwable ex) {
-                logger.error("动态脚本执行失败,fieldName:{},methodName:{}", fieldName, methodName,ex);
+                logger.error(TraceUtils.getFormatTrace()+"动态脚本执行失败,fieldName:{},methodName:{}", fieldName, methodName,ex);
                 failedCnt++;
             }
         }
