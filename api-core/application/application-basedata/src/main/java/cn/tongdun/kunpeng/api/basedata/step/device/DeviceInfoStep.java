@@ -102,7 +102,7 @@ public class DeviceInfoStep implements IRiskStep {
             deviceMap.put("success", false);
             postProcessAfterFail(blackBox, deviceMap, jsonMap, version);
         } else {
-            postProcessAfterSuccess(context, deviceMap);
+            postProcessAfterSuccess(context, deviceMap,jsonMap,blackBoxOs);
         }
 
         return true;
@@ -138,7 +138,7 @@ public class DeviceInfoStep implements IRiskStep {
 
     }
 
-    private void postProcessAfterSuccess(AbstractFraudContext context, Map<String, Object> deviceMap) {
+    private void postProcessAfterSuccess(AbstractFraudContext context, Map<String, Object> deviceMap,Map jsonMap,String appType) {
 
         Object smartIdObj = deviceMap.get("smartId");
         if (smartIdObj != null) {
@@ -150,6 +150,34 @@ public class DeviceInfoStep implements IRiskStep {
         }
         //处理真实IP
         dealWithTrueIp(deviceMap);
+
+        postProcessMobileScene(appType,context,jsonMap);
+    }
+
+    private void postProcessMobileScene(String appType, AbstractFraudContext context, Map jsonMap) {
+
+        if (appType.equalsIgnoreCase("Android")) {
+            String phoneNumberStr = jsonMap.get("phoneNumber") == null ? null : jsonMap.get("phoneNumber").toString();
+            if (phoneNumberStr != null) {
+                Integer length = phoneNumberStr.length();
+                if (length > 11) {
+                    phoneNumberStr = phoneNumberStr.substring(length - 11, length);
+                }
+                context.set("deviceMobile", phoneNumberStr);
+            }
+
+            String bssidStr = jsonMap.get("bssid") == null ? null : jsonMap.get("bssid").toString();
+            if (bssidStr != null) {
+                context.set("deviceBssid", bssidStr);
+            }
+
+        }
+        if (appType.equalsIgnoreCase("iOS")) {
+            String bssidStr = jsonMap.get("bssid") == null ? null : jsonMap.get("bssid").toString();
+            if (bssidStr != null) {
+                context.set("deviceBssid", bssidStr);
+            }
+        }
     }
 
     private void dealWithTrueIp(Map<String, Object> deviceMap) {
