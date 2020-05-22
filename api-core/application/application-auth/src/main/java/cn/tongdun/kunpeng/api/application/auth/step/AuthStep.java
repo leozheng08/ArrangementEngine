@@ -43,8 +43,7 @@ public class AuthStep implements IRiskStep {
             response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
             return false;
         }
-        context.setAppName(adminApplication.getName());
-        context.setAppType(adminApplication.getAppType());
+        context.setAppName(adminApplication.getCode());
 
         context.setPartnerCode(partnerCode);
         context.setSecretKey(secretKey);

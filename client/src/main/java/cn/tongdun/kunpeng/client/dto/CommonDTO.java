@@ -24,6 +24,16 @@ public class CommonDTO implements Serializable {
      */
     private boolean deleted;
 
+    /**
+     * 创建人
+     */
+    private String creator;
+
+    /**
+     * 操作人
+     */
+    private String operator;
+
     public boolean isValid(){
         if(status != null && status.equals(1)) {
             return false;

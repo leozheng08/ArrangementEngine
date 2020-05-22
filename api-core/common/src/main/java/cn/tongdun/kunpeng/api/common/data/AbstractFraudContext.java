@@ -260,12 +260,6 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 设备指纹信息
      */
     private Map<String, Object> deviceInfo = new HashMap<String, Object>();
-
-
-
-
-
-
     /*************外部接口返回结果 end******************/
 
 

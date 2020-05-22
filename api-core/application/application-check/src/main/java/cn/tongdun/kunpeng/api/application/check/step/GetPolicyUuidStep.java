@@ -147,7 +147,6 @@ public class GetPolicyUuidStep implements IRiskStep {
             return;
         }
         context.setAppName(Constant.DEFAULT_APP_NAME);
-        context.setAppType(Constant.DEFAULT_APP_TYPE);
     }
 
 

@@ -7,8 +7,7 @@ import lombok.Data;
  * 应用对象
  */
 @Data
-public class AdminApplicationDTO extends CommonDTO {
-
+public class AdminApplicationDTO extends Comm
     private String code;
     private String displayName;
     private String partnerCode;
