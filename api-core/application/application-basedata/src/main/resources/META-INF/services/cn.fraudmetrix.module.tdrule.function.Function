@@ -1,0 +1,15 @@
+anomaly/device=cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.WebDeviceLostFunction
+anomaly/fpException=cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.WebFpFetchExceptionFunction
+anomaly/profile=cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.WebDeviceSampleExcetionFunction
+anomaly/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.WebDeviceStatusAbnormalFunction
+ios/isCheat=cn.tongdun.kunpeng.api.basedata.rule.function.ios.IosCheatFunction
+ios/isJailBreak=cn.tongdun.kunpeng.api.basedata.rule.function.ios.IosJailBreakFunction
+ios/useVpn=cn.tongdun.kunpeng.api.basedata.rule.function.ios.IosUseVpnFunction
+ios/useHttpProxy=cn.tongdun.kunpeng.api.basedata.rule.function.ios.IosHttpProxyFunction
+ios/notOfficialApp=cn.tongdun.kunpeng.api.basedata.rule.function.ios.IosNotOfficialAppFunction
+android/isCheatV2=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidCheatFunction
+android/emulator=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidEmulatorFunction
+android/vpn=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidUseVpnFunction
+android/http=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidUseHttpFunction
+android/notOfficialApp=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidNotOfficialAppFunction
+android/root=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidRootFunction
