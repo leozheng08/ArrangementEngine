@@ -8,7 +8,7 @@ import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.WebDeviceSampleExcetionFunction;
 
-public class ProfileRule extends AbstractRule {
+public class WebProfileRule extends AbstractRule {
 
     private WebDeviceSampleExcetionFunction function;
 

@@ -6,11 +6,11 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.ios.IosJailBreakFunction;
+import cn.tongdun.kunpeng.api.basedata.rule.function.ios.IosUseVpnFunction;
 
-public class JailBreakRule extends AbstractRule {
+public class IosUseVpnRule extends AbstractRule {
 
-    private IosJailBreakFunction function;
+    private IosUseVpnFunction function;
 
 
     @Override
@@ -28,6 +28,6 @@ public class JailBreakRule extends AbstractRule {
             throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
-        function = (IosJailBreakFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (IosUseVpnFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }

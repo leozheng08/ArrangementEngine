@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.template.anomaly;
+package cn.tongdun.kunpeng.api.basedata.rule.template.android;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
@@ -6,11 +6,11 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.WebDeviceLostFunction;
+import cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidUseVpnFunction;
 
-public class DeviceLostRule extends AbstractRule {
+public class AndroidUseVpnRule extends AbstractRule {
 
-    private WebDeviceLostFunction function;
+    private AndroidUseVpnFunction function;
 
 
     @Override
@@ -28,6 +28,6 @@ public class DeviceLostRule extends AbstractRule {
             throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
-        function = (WebDeviceLostFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (AndroidUseVpnFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }
