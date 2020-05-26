@@ -7,13 +7,17 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class DeviceLostFunction extends AbstractFunction {
 
+    private static Logger logger = LoggerFactory.getLogger(DeviceLostFunction.class);
 
     private String codes;
 
@@ -51,8 +55,7 @@ public class DeviceLostFunction extends AbstractFunction {
             if (code == null) {
                 if (StringUtils.isNotBlank(deviceId)) {
                     return new FunctionResult(false);
-                }
-                else {
+                } else {
                     return new FunctionResult(true);
                 }
             }
@@ -62,8 +65,8 @@ public class DeviceLostFunction extends AbstractFunction {
             }
 
             return new FunctionResult(false);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "DeviceLostFunction run error,codes:" + codes, e);
             return new FunctionResult(false);
         }
     }

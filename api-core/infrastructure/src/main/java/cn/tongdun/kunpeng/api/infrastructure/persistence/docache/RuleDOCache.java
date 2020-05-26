@@ -2,11 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.docache;
 
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.reload.docache.AbstractDataObjectCache;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyDAO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDAO;
-import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
-import cn.tongdun.kunpeng.share.dataobject.PolicyDO;
-import cn.tongdun.kunpeng.share.dataobject.PolicyIndicatrixItemDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

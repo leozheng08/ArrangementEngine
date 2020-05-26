@@ -15,11 +15,11 @@ import java.io.Serializable;
 public class AdminDictionaryDO extends CommonDO implements Serializable {
 
     private static final long serialVersionUID = 3151001191137443801L;
-
-    private String            uuid;
-    private String            key;                                    // 键
-    private String            value;                                  // 值
-    private String            description;                            // 描述
-    private String            updatedBy;
+    // 键
+    private String key;
+    // 值
+    private String value;
+    // 描述
+    private String description;
 
 }

@@ -9,7 +9,7 @@ import cn.tongdun.kunpeng.api.common.Constant;
 
 import java.util.Map;
 
-public class ProfileFunction extends AbstractFunction {
+public class DeviceSampleExcetionFunction extends AbstractFunction {
 
 
     @Override
@@ -34,12 +34,9 @@ public class ProfileFunction extends AbstractFunction {
         if (map.get("imageLoaded") != null) {
             imageLoaded = Boolean.valueOf((String) map.get("imageLoaded"));
         }
-
         if (!imageLoaded && deviceId != null) {
-
             return new FunctionResult(true);
-        }
-        else {
+        } else {
             return new FunctionResult(false);
         }
     }

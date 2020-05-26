@@ -214,8 +214,18 @@ public class DeviceInfoStep implements IRiskStep {
         BaseResult<DeviceResp> baseResult = null;
         try {
             baseResult = deviceInfoQuery.query(params);
-            result.putAll(baseResult.getResult().getDeviceMap());
-            result.put("success", true);
+
+            if (null == baseResult) {
+                logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,blackBox:" + blackBox);
+                FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
+                return result;
+            }
+            if (baseResult.isSuccess()) {
+                result.putAll(baseResult.getResult().getDeviceMap());
+                result.put("success", true);
+            } else {
+                FpReasonUtils.put(result, baseResult.getCode(), baseResult.getMsg());
+            }
             return result;
 
         } catch (Exception e) {
@@ -229,13 +239,8 @@ public class DeviceInfoStep implements IRiskStep {
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery query error,blackBox:" + blackBox, e);
                 FpReasonUtils.put(result, FpReasonCodeEnum.CONNECT_ERROR);
             }
-        }
-        if (null == baseResult) {
-            logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,blackBox:" + blackBox);
-            FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
             return result;
         }
-        return result;
     }
 
     private String getDetailType(String respDetailType) {

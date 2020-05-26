@@ -14,8 +14,10 @@ public class CommonDO implements Serializable {
 
 
     private static final long serialVersionUID = 1911389989055349715L;
-    protected Long            id;
-    protected String          uuid;
-    protected Timestamp       gmtCreate;
-    protected Timestamp       gmtModified;
+    protected Long id;
+    protected String uuid;
+    protected Timestamp gmtCreate;
+    protected Timestamp gmtModify;
+    private String creator;
+    private String operator;
 }

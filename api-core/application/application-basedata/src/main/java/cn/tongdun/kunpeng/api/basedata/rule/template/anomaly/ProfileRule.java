@@ -6,11 +6,11 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.ProfileFunction;
+import cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.DeviceSampleExcetionFunction;
 
 public class ProfileRule extends AbstractRule {
 
-    private ProfileFunction function;
+    private DeviceSampleExcetionFunction function;
 
 
     @Override
@@ -28,6 +28,6 @@ public class ProfileRule extends AbstractRule {
             throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
-        function = (ProfileFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (DeviceSampleExcetionFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }
