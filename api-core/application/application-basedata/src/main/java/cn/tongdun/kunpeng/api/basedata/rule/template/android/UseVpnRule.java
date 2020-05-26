@@ -6,11 +6,11 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.android.UseVpnFunction;
+import cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidUseVpnFunction;
 
 public class UseVpnRule extends AbstractRule {
 
-    private UseVpnFunction function;
+    private AndroidUseVpnFunction function;
 
 
     @Override
@@ -28,6 +28,6 @@ public class UseVpnRule extends AbstractRule {
             throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
-        function = (UseVpnFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (AndroidUseVpnFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }

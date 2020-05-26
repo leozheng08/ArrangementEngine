@@ -19,10 +19,70 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EmulatorFunction extends AbstractFunction {
-    private static final Logger logger = LoggerFactory.getLogger(EmulatorFunction.class);
+public class AndroidEmulatorFunction extends AbstractFunction {
+    private static final Logger logger = LoggerFactory.getLogger(AndroidEmulatorFunction.class);
 
-
+    private static final String[] vmApps= new String[]{
+        //amiduos
+        "com.ami.duosupdater.ui",
+                "com.ami.launchmetro",
+                "com.ami.syncduosservices",
+                //bluestacks
+                "com.bluestacks.home",
+                "com.bluestacks.windowsfilemanager",
+                "com.bluestacks.settings",
+                "com.bluestacks.bluestackslocationprovider",
+                "com.bluestacks.appsettings",
+                "com.bluestacks.bstfolder",
+                "com.bluestacks.BstCommandProcessor",
+                "com.bluestacks.s2p",
+                "com.bluestacks.setup",
+                //kaopu tiantian
+                "com.kaopu001.tiantianserver",
+                "com.kpzs.helpercenter",
+                "com.kaopu001.tiantianime",
+                //googleAVD
+                "com.android.development_settings",
+                "com.android.development",
+                "com.android.customlocale2",
+                "com.example.android.apis",
+                //genymotion
+                "com.genymotion.superuser",
+                "com.genymotion.clipboardproxy",
+                //
+                "com.uc.xxzs.keyboard",
+                "com.uc.xxzs",
+                //蓝光大师
+                "com.blue.huang17.agent",
+                "com.blue.huang17.launcher",
+                "com.blue.huang17.ime",
+                // MEmu
+                "com.microvirt.guide",
+                "com.microvirt.market",
+                "com.microvirt.memuime",
+                // itoolsVm
+                "cn.itools.vm.launcher",
+                "cn.itools.vm.proxy",
+                "cn.itools.vm.softkeyboard",
+                "cn.itools.avdmarket",
+                // syd
+                "com.syd.IME",
+                //nox
+                "com.bignox.app.store.hd",
+                "com.bignox.launcher",
+                "com.bignox.app.phone",
+                "com.bignox.app.noxservice",
+                "com.android.noxpush",
+                //haimawan
+                "com.haimawan.push",
+                "me.haima.helpcenter",
+                "me.haima.androidassist",
+                //windroy
+                "com.windroy.launcher",
+                "com.windroy.superuser",
+                "com.windroy.launcher",
+                "com.windroy.ime"
+    };
     @Override
     public String getName() {
         return Constant.Function.ANDROID_EMULATOR;
@@ -127,68 +187,6 @@ public class EmulatorFunction extends AbstractFunction {
                 }
             }
         }
-
-        String[] vmApps = new String[]{
-                //amiduos
-                "com.ami.duosupdater.ui",
-                "com.ami.launchmetro",
-                "com.ami.syncduosservices",
-                //bluestacks
-                "com.bluestacks.home",
-                "com.bluestacks.windowsfilemanager",
-                "com.bluestacks.settings",
-                "com.bluestacks.bluestackslocationprovider",
-                "com.bluestacks.appsettings",
-                "com.bluestacks.bstfolder",
-                "com.bluestacks.BstCommandProcessor",
-                "com.bluestacks.s2p",
-                "com.bluestacks.setup",
-                //kaopu tiantian
-                "com.kaopu001.tiantianserver",
-                "com.kpzs.helpercenter",
-                "com.kaopu001.tiantianime",
-                //googleAVD
-                "com.android.development_settings",
-                "com.android.development",
-                "com.android.customlocale2",
-                "com.example.android.apis",
-                //genymotion
-                "com.genymotion.superuser",
-                "com.genymotion.clipboardproxy",
-                //
-                "com.uc.xxzs.keyboard",
-                "com.uc.xxzs",
-                //蓝光大师
-                "com.blue.huang17.agent",
-                "com.blue.huang17.launcher",
-                "com.blue.huang17.ime",
-                // MEmu
-                "com.microvirt.guide",
-                "com.microvirt.market",
-                "com.microvirt.memuime",
-                // itoolsVm
-                "cn.itools.vm.launcher",
-                "cn.itools.vm.proxy",
-                "cn.itools.vm.softkeyboard",
-                "cn.itools.avdmarket",
-                // syd
-                "com.syd.IME",
-                //nox
-                "com.bignox.app.store.hd",
-                "com.bignox.launcher",
-                "com.bignox.app.phone",
-                "com.bignox.app.noxservice",
-                "com.android.noxpush",
-                //haimawan
-                "com.haimawan.push",
-                "me.haima.helpcenter",
-                "me.haima.androidassist",
-                //windroy
-                "com.windroy.launcher",
-                "com.windroy.superuser",
-                "com.windroy.launcher",
-                "com.windroy.ime"
-        };
 
         //installedPackages
         int installedPackagesScore = 0;

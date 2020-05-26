@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class RootFunction extends AbstractFunction {
+public class AndroidRootFunction extends AbstractFunction {
 
     @Override
     public String getName() {
@@ -37,7 +37,6 @@ public class RootFunction extends AbstractFunction {
         if (isRoot != null && StringUtils.equalsIgnoreCase(isRoot.toString(), "true")) {
             return new FunctionResult(true);
         }
-
         if (isRootNew != null && Boolean.TRUE.equals(isRootNew)) {
             return new FunctionResult(true);
         }

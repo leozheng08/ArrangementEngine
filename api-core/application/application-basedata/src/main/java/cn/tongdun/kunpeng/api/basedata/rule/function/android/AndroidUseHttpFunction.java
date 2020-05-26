@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class UseHttpFunction extends AbstractFunction {
+public class AndroidUseHttpFunction extends AbstractFunction {
 
     @Override
     public String getName() {
