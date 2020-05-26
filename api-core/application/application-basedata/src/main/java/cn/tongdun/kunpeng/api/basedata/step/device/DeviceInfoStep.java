@@ -96,6 +96,7 @@ public class DeviceInfoStep implements IRiskStep {
         String tokenId = request.getTokenId();
         Map<String, Object> deviceMap = invokeFingerPrint(context, context.getPartnerCode(), context.getAppName(), tokenId, blackBox, respDetailType);
         context.setDeviceInfo(deviceMap);
+        context.setAppType(blackBoxOs);
 
         boolean success = DataUtil.toBoolean(deviceMap.get("success"));
         if (!success) {

@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class DeviceStatusAbnormalFunction extends AbstractFunction {
+public class WebDeviceStatusAbnormalFunction extends AbstractFunction {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(DeviceStatusAbnormalFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebDeviceStatusAbnormalFunction.class);
 
 
     private Set<String> abnomalTagSet;

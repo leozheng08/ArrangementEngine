@@ -6,7 +6,6 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.android.CheatV2Function;
 import cn.tongdun.kunpeng.api.basedata.rule.function.android.EmulatorFunction;
 
 public class EmulatorRule extends AbstractRule {

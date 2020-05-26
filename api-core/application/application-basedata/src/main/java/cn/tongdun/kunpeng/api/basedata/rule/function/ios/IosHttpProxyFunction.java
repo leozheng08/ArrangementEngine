@@ -4,17 +4,16 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
-import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 
 import java.util.Map;
 
-public class JailBreakFunction extends AbstractFunction {
-
+public class IosHttpProxyFunction extends AbstractFunction {
 
     @Override
     public String getName() {
-        return Constant.Function.IOS_IS_JAILBREAK;
+        return Constant.Function.IOS_USE_HTTP_PROXY;
     }
 
 
@@ -25,16 +24,15 @@ public class JailBreakFunction extends AbstractFunction {
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
-        FraudContext context = (FraudContext) executeContext;
+        AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
             return new FunctionResult(false);
         }
         else {
-            Object jailBreak = deviceInfo.get("jailbreak");
-            String appType = "";//context.getAppType();
-            if ("ios".equalsIgnoreCase(appType) && "1".equals(jailBreak)) {
+            Object proxyType = deviceInfo.get("proxyType");
+            if (proxyType != null && !"none".equalsIgnoreCase(proxyType.toString())) {
                 return new FunctionResult(true);
             }
             else {

@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class DeviceLostFunction extends AbstractFunction {
+public class WebDeviceLostFunction extends AbstractFunction {
 
-    private static Logger logger = LoggerFactory.getLogger(DeviceLostFunction.class);
+    private static Logger logger = LoggerFactory.getLogger(WebDeviceLostFunction.class);
 
     private String codes;
 

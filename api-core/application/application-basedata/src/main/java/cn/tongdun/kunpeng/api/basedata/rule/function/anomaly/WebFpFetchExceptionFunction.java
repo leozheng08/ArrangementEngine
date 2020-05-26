@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class FpFetchExceptionFunction extends AbstractFunction {
+public class WebFpFetchExceptionFunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(FpFetchExceptionFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebFpFetchExceptionFunction.class);
 
     private Set<String> codeSet;
 

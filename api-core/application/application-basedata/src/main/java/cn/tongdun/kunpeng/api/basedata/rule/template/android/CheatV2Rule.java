@@ -6,12 +6,11 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.android.CheatV2Function;
-import cn.tongdun.kunpeng.api.basedata.rule.function.anomaly.DeviceLostFunction;
+import cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidCheatFunction;
 
 public class CheatV2Rule extends AbstractRule {
 
-    private CheatV2Function function;
+    private AndroidCheatFunction function;
 
 
     @Override
@@ -29,6 +28,6 @@ public class CheatV2Rule extends AbstractRule {
             throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
-        function = (CheatV2Function) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
+        function = (AndroidCheatFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));
     }
 }

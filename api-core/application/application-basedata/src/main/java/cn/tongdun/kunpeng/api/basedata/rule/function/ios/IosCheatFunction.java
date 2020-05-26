@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class CheatFunction extends AbstractFunction {
+public class IosCheatFunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(CheatFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(IosCheatFunction.class);
 
 
     @Override

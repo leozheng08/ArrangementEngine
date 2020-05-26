@@ -1,52 +1,40 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function.ios;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
-import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
-import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
-import org.apache.commons.collections.CollectionUtils;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class NotOfficialAppFunction extends AbstractFunction {
-
-    private String bundleId;
+public class IosUseVpnFunction extends AbstractFunction {
 
 
     @Override
     public String getName() {
-        return Constant.Function.IOS_NOT_OFFICIAL_APP;
+        return Constant.Function.IOS_USE_VPN;
     }
 
 
     @Override
     public void parseFunction(FunctionDesc functionDesc) {
-        if (null == functionDesc || CollectionUtils.isEmpty(functionDesc.getParamList())) {
-            throw new ParseException("ios NotOfficialApp function parse error,no params!");
-        }
 
-        functionDesc.getParamList().forEach(param -> {
-            if (StringUtils.equals("bundleId", param.getName())) {
-                bundleId = param.getValue();
-            }
-        });
     }
 
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
-        FraudContext context = (FraudContext) executeContext;
+        AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
             return new FunctionResult(false);
         }
         else {
-            Object officialBundleId = deviceInfo.get("bundleId");
-            if (officialBundleId != null && !officialBundleId.equals(bundleId)) {
+            Object vpnIp = deviceInfo.get("vpnIp");
+            if (vpnIp != null && StringUtils.isNotBlank(vpnIp.toString())) {
                 return new FunctionResult(true);
             }
             else {
