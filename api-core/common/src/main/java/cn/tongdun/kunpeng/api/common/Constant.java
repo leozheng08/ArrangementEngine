@@ -42,9 +42,9 @@ public class Constant {
 
 
         public static final String ANOMALY_DEVICE = "anomaly/device";
-        public static final String ANOMALY_DEVICE_STATUS_ABNORMAL = "anomaly/deviceStatusAbnormal";
         public static final String ANOMALY_FP_EXCEPTION = "anomaly/fpException";
         public static final String ANOMALY_PROFILE = "anomaly/profile";
+        public static final String ANOMALY_DEVICE_STATUS_ABNORMAL = "anomaly/deviceStatusAbnormal";
 
 
         public static final String IOS_IS_CHEAT = "ios/isCheat";
@@ -52,6 +52,7 @@ public class Constant {
         public static final String IOS_USE_VPN = "ios/useVpn";
         public static final String IOS_USE_HTTP_PROXY = "ios/useHttpProxy";
         public static final String IOS_NOT_OFFICIAL_APP = "ios/notOfficialApp";
+        public static final String IOS_DEVICE_STATUS_ABNORMAL = "ios/deviceStatusAbnormal";
 
 
         public static final String ANDROID_EMULATOR = "android/emulator";
@@ -60,6 +61,7 @@ public class Constant {
         public static final String ANDROID_HTTP = "android/http";
         public static final String ANDROID_NOT_OFFICIAL_APP = "android/notOfficialApp";
         public static final String ANDROID_ROOT = "android/root";
+        public static final String ANDROID_DEVICE_STATUS_ABNORMAL = "android/deviceStatusAbnormal";
 
 
         public static final String KEYWORD_WORDLIST = "keyword/wordList";
