@@ -127,6 +127,14 @@ public enum ReasonCode {
     CREDIT_LIST_DETAIL_SERVICE_CALL_ERROR("50736", "信贷名单库详情服务调用出错"),
     INDICATRIX_QUERY_LIMITING("50737", "指标平台限流"),
 
+    MAIL_PARAM_NOT_FOUND("50738", "用户未传递邮箱参数"),
+    MAIL_MODEL_TIMEOUT_ERROR("50739", "邮件模型服务超时"),
+    MAIL_MODEL_RANDOM_TIMEOUT_ERROR("50739", "邮件模型随机率服务超时"),
+    MAIL_MODEL_REQUEST_FAILED("50740", "邮件模型服务请求5XX"),
+    MAIL_MODEL_RANDOM_REQUEST_FAILED("50741", "邮件模型随机率服务请求5XX"),
+    MAIL_MODEL_NOT_AVAILABLE_ERROR("50742", "邮件模型服务不可用"),
+    MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR("50743", "邮件模型随机率服务不可用"),
+
 
     RULE_ENGINE_TIMEOUT("50601", "规则引擎运行超时"),
     RULE_ENGINE_ERROR("50602", "规则引擎运行异常"),

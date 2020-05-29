@@ -16,8 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.MailParamKey;
 import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.StarkDeviceResult;
 
 /**
@@ -101,6 +103,21 @@ public class DictionaryManager {
             appCache.put(StarkDeviceResult.name(), resultMap);
             return resultMap;
         }
+    }
+
+    /**
+     * 获取租户邮箱对应的key命名
+     * // TODO fix threadsafe yuanhang
+     * @return
+     */
+    public List<Dictionary> getMailKey() {
+        List<Dictionary> dictionaries = null;
+        try {
+            dictionaries = dict10MinuteCache.get(MailParamKey.name());
+        } catch (Exception e) {
+            logger.error("");
+        }
+        return dictionaries;
     }
 
 }

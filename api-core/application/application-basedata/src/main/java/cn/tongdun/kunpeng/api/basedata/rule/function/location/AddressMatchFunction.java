@@ -30,12 +30,14 @@ public class AddressMatchFunction extends AbstractFunction {
     private String scope;
     private int isMatch;
 
+    private ElfinBaseDataService elfinBaseDataService = SpringContextHolder.getBean("elfinBaseDataService", ElfinBaseDataService.class);
+    private IdInfoQueryService idInfoQueryService = SpringContextHolder.getBean("idInfoQueryService", IdInfoQueryService.class);
+    private BinInfoQueryService binInfoQueryService = SpringContextHolder.getBean("binInfoQueryService", BinInfoQueryService.class);
 
     @Override
     public String getName() {
         return Constant.Function.LOCATION_ADDRESS_MATCH;
     }
-
 
     @Override
     public void parseFunction(FunctionDesc functionDesc) {
@@ -46,14 +48,11 @@ public class AddressMatchFunction extends AbstractFunction {
         functionDesc.getParamList().forEach(param -> {
             if (StringUtils.equals("addressA", param.getName())) {
                 addressA = param.getValue();
-            }
-            else if (StringUtils.equals("addressB", param.getName())) {
+            } else if (StringUtils.equals("addressB", param.getName())) {
                 addressB = param.getValue();
-            }
-            else if (StringUtils.equals("scope", param.getName())) {
+            } else if (StringUtils.equals("scope", param.getName())) {
                 scope = param.getValue();
-            }
-            else if (StringUtils.equals("isMatch", param.getName())) {
+            } else if (StringUtils.equals("isMatch", param.getName())) {
                 isMatch = Integer.parseInt(param.getValue());
             }
         });
@@ -68,242 +67,124 @@ public class AddressMatchFunction extends AbstractFunction {
         if (StringUtils.isBlank(addrOne) || StringUtils.isBlank(addrTwo)) {
             return new FunctionResult(false);
         }
-
-        int result = 0;
-        if (StringUtils.equalsIgnoreCase(addrOne, addrTwo)) {
-            result = 1;
-        }
-        else {
-            result = 0;
-        }
-
-        return new FunctionResult(isMatch == result);
+        return new FunctionResult(!StringUtils.equalsIgnoreCase(addrOne, addrTwo));
     }
 
 
     private String getAddress(AbstractFraudContext context, String address, String scope) {
-        ElfinBaseDataService elfinBaseDataService = SpringContextHolder.getBean("elfinBaseDataService", ElfinBaseDataService.class);
-        IdInfoQueryService idInfoQueryService = SpringContextHolder.getBean("idInfoQueryService", IdInfoQueryService.class);
-        BinInfoQueryService binInfoQueryService = SpringContextHolder.getBean("binInfoQueryService", BinInfoQueryService.class);
+        String lowCaseAddress = address.toLowerCase();
+        String lowCaseScope = scope.toLowerCase();
+        // IP地理位置 OR True IP地理位置
+        if (BasedataConstant.IP_ADDRESS.equals(lowCaseAddress) || BasedataConstant.TRUE_IP_ADDRESS.equals(lowCaseAddress)) {
+            // FIXME: 2/13/20 hanle geoip
+            GeoipEntity geoInfo;
+            String trueIp;
 
-        if ("ipAddress".equalsIgnoreCase(address)) {// IP地理位置
-            GeoipEntity geoInfo = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY,GeoipEntity.class);         // FIXME: 2/13/20 hanle geoip
+            if (BasedataConstant.TRUE_IP_ADDRESS.equals(lowCaseAddress)) {
+                trueIp = (String) context.getDeviceInfo().get("trueIp");
+                if (StringUtils.isBlank(trueIp)) {
+                    return null;
+                }
+                geoInfo = elfinBaseDataService.getIpInfo(trueIp);
+            } else {
+                geoInfo = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, GeoipEntity.class);
+            }
+
             if (null == geoInfo) {
                 return null;
             }
 
-            if ("country".equalsIgnoreCase(scope)) {
-                return geoInfo.getCountry();
+            switch (lowCaseScope) {
+                case "country":
+                    return geoInfo.getCountry();
+                case "province":
+                    String province = geoInfo.getProvince();
+                    return StringUtils.isBlank(province) ? null : province.endsWith("省") ? province : province + "省";
+                default:
+                    String city = geoInfo.getCity();
+                    return StringUtils.isBlank(city) ? null : city.endsWith("市") ? city : city + "市";
             }
-            else if ("province".equalsIgnoreCase(scope)) {
-                String province = geoInfo.getProvince();
-                if (StringUtils.isBlank(province)) {
-                    return null;
-                }
+        // 手机位置
+        } else if (BasedataConstant.MOBILE_ADDRESS.equalsIgnoreCase(address)) {
 
-                if (!province.endsWith("省")) {
-                    province += "省";
-                }
-                return province;
-            }
-            else { // city
-                String city = geoInfo.getCity();
-
-                if (StringUtils.isBlank(city)) {
-                    return null;
-                }
-
-                if (!city.endsWith("市")) {
-                    city += "市";
-                }
-                return city;
-            }
-
-        }
-        else if ("trueIpAddress".equalsIgnoreCase(address)) {// True IP地理位置
-            String trueIp = (String) context.getDeviceInfo().get("trueIp");
-            if (StringUtils.isBlank(trueIp)) {
-                return null;
-            }
-
-            GeoipEntity geoipInfo = elfinBaseDataService.getIpInfo(trueIp);
-            if (null == geoipInfo) {
-                return null;
-            }
-
-            if ("country".equalsIgnoreCase(scope)) {
-                return geoipInfo.getCountry();
-            }
-            else if ("province".equalsIgnoreCase(scope)) {
-                String province = geoipInfo.getProvince();
-                if (StringUtils.isBlank(province)) {
-                    return null;
-                }
-
-                if (!province.endsWith("省")) {
-                    province += "省";
-                }
-                return province;
-            }
-            else { // city
-                String city = geoipInfo.getCity();
-                if (StringUtils.isBlank(city)) {
-                    return null;
-                }
-
-                if (!city.endsWith("市")) {
-                    city += "市";
-                }
-                return city;
-            }
-        }
-        else if ("mobileAddress".equalsIgnoreCase(address)) {// 手机归属地
-            MobileInfoDO mobileInfo = null;
+            MobileInfoDO mobileInfo;
             if (StringUtils.isBlank((String) context.get("accountMobileArea"))) {
                 mobileInfo = elfinBaseDataService.getMobileInfo((String) context.get("accountMobile"));
-            }
-            else {
+            } else {
                 mobileInfo = elfinBaseDataService.getMobileInfo((String) context.get("accountMobileArea"));
             }
             if (null == mobileInfo) {
                 return null;
             }
-            if ("country".equalsIgnoreCase(scope)) {
-                return "中国";
-            }
-            else if ("province".equalsIgnoreCase(scope)) {
-                String province = mobileInfo.getProvince();
-                if (StringUtils.isBlank(province)) {
-                    return null;
-                }
 
-                if (!province.endsWith("省")) {
-                    province += "省";
-                }
-                return province;
+            switch (lowCaseScope) {
+                case "country":
+                    return "中国";
+                case "province":
+                    String province = mobileInfo.getProvince();
+                    return StringUtils.isBlank(province) ? null : province.endsWith("省") ? province : province + "省";
+                default:
+                    String city = mobileInfo.getCity();
+                    return StringUtils.isBlank(city) ? null : city.endsWith("市") ? city : city + "市";
             }
-            else { // city
-                String city = mobileInfo.getCity();
-                if (StringUtils.isBlank(city)) {
-                    return null;
-                }
-
-                if (!city.endsWith("市")) {
-                    city += "市";
-                }
-                return city;
-            }
-
-        }
-        else if ("snAddress".equalsIgnoreCase(address)) {// 身份证归属地
+        // 身份证归属地
+        } else if (BasedataConstant.SN_ADDRESS.equals(lowCaseAddress)) {
             if (StringUtils.isBlank(context.getFieldToString("IdNumber"))) {
                 return null;
             }
-            IdInfo idInfo = null;
-            if ("country".equalsIgnoreCase(scope)) {
-                return "中国";
+            IdInfo idInfo;
+            switch (lowCaseScope) {
+                case "country":
+                    return "中国";
+                case "province":
+                    String provinceCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
+                    idInfo = idInfoQueryService.getIdInfo(provinceCode);
+                    if (null == idInfo) {
+                        return null;
+                    }
+                    String province = idInfo.getProvince();
+                    return StringUtils.isBlank(province) ? null : province.endsWith("省") ? province : province + "省";
+                default:
+                    String cityCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
+                    idInfo = idInfoQueryService.getIdInfo(cityCode);
+                    if (null == idInfo) {
+                        return null;
+                    }
+                    String city = idInfo.getCity();
+                    return StringUtils.isBlank(city) ? null : city.endsWith("市") ? city : city + "市";
             }
-            else if ("province".equalsIgnoreCase(scope)) {
-                String provinceCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
-                idInfo = idInfoQueryService.getIdInfo(provinceCode);
-                if (null == idInfo) {
-                    return null;
-                }
-                String province = idInfo.getProvince();
-                if (StringUtils.isBlank(province)) {
-                    return null;
-                }
-
-                if (!province.endsWith("省")) {
-                    province += "省";
-                }
-                return province;
-            }
-            else { // city
-                String cityCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
-                idInfo = idInfoQueryService.getIdInfo(cityCode);
-                if (null == idInfo) {
-                    return null;
-                }
-                String city = idInfo.getCity();
-                if (StringUtils.isBlank(city)) {
-                    return null;
-                }
-
-                if (!city.endsWith("市")) {
-                    city += "市";
-                }
-                return city;
-            }
-        }
-        else if ("binAddress".equalsIgnoreCase(address)) {// BIN卡发卡地
+        // BIN卡发卡地
+        } else if (BasedataConstant.BIN_ADDRESS.equalsIgnoreCase(address)) {
             BinInfoDO binInfo = binInfoQueryService.getBinInfo((String) context.get("ccBin"));
             if (null == binInfo) {
                 return null;
             }
-
-            if ("country".equalsIgnoreCase(scope)) {
-                return binInfo.getCountry();
+            return null == binInfo || !"country".equals(lowCaseScope) ? null : binInfo.getCountry();
+            // 账单地址
+        } else if (BasedataConstant.BILL_ADDRESS.equals(lowCaseAddress)) {
+            switch (lowCaseScope) {
+                case "country":
+                    return (String) context.get("billingAddressCountry");
+                case "province":
+                    String province = (String) context.get("billingAddressProvince");
+                    return StringUtils.isBlank(province) ? null : province.endsWith("省") ? province : province + "省";
+                default:
+                    String city = (String) context.get("billingAddressCity");
+                    return StringUtils.isBlank(city) ? null : city.endsWith("市") ? city : city + "市";
             }
-            else {
-                return null;
-            }
-        }
-        else if ("billAddress".equalsIgnoreCase(address)) {// 账单地址
-            if ("country".equalsIgnoreCase(scope)) {
-                return (String) context.get("billingAddressCountry");
-            }
-            else if ("province".equalsIgnoreCase(scope)) {
-                String province = (String) context.get("billingAddressProvince");
-                if (StringUtils.isBlank(province)) {
-                    return null;
-                }
-
-                if (!province.endsWith("省")) {
-                    province += "省";
-                }
-                return province;
-            }
-            else { // city
-                String city = (String) context.get("billingAddressCity");
-                if (StringUtils.isBlank(city)) {
-                    return null;
-                }
-
-                if (!city.endsWith("市")) {
-                    city += "市";
-                }
-                return city;
+            // 收货地址
+        } else if (BasedataConstant.DELIVERY_ADDRESS.equalsIgnoreCase(address)) {
+            switch (lowCaseScope) {
+                case "country":
+                    return (String) context.get("deliverAddressCountry");
+                case "province":
+                    String province = (String) context.get("deliverAddressProvince");
+                    return StringUtils.isBlank(province) ? null : province.endsWith("省") ? province : province + "省";
+                default:
+                    String city = (String) context.get("deliverAddressCity");
+                    return StringUtils.isBlank(city) ? null : city.endsWith("市") ? city : city + "市";
             }
         }
-        else if ("deliveryAddress".equalsIgnoreCase(address)) {// 收货地址
-            if ("country".equalsIgnoreCase(scope)) {
-                return (String) context.get("deliverAddressCountry");
-            }
-            else if ("province".equalsIgnoreCase(scope)) {
-                String province = (String) context.get("deliverAddressProvince");
-                if (StringUtils.isBlank(province)) {
-                    return null;
-                }
-
-                if (!province.endsWith("省")) {
-                    province += "省";
-                }
-                return province;
-            }
-            else { // city
-                String city = (String) context.get("deliverAddressCity");
-                if (StringUtils.isBlank(city)) {
-                    return null;
-                }
-
-                if (!city.endsWith("市")) {
-                    city += "市";
-                }
-                return city;
-            }
-        }
-
         return null;
     }
 

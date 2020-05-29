@@ -9,7 +9,10 @@ public enum DictionaryEnum {
     /**
      * dict中的字段描述
      */
-    StarkDeviceResult("设备指纹结果获取类型");
+    StarkDeviceResult("设备指纹结果获取类型"),
+
+    MailParamKey("租户传递邮箱字段key");
+
     private String desc;
     DictionaryEnum(String desc){
         this.desc=desc;

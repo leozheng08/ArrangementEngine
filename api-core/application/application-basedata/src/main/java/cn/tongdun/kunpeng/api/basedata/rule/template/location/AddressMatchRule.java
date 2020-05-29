@@ -12,7 +12,6 @@ public class AddressMatchRule extends AbstractRule {
 
     private AddressMatchFunction function;
 
-
     @Override
     public EvalResult run(ExecuteContext executeContext) {
         Object ret = function.eval(executeContext);
@@ -22,10 +21,10 @@ public class AddressMatchRule extends AbstractRule {
     @Override
     public void parse(RawRule rawRule) {
         if (null == rawRule || rawRule.getFunctionDescList() == null || rawRule.getFunctionDescList().isEmpty()) {
-            throw new ParseException("GpsDistanceRule parse error!null == rawRule or rawRule.getFunctionDescList is blank!");
+            throw new ParseException("AddressMatchRule parse error!null == rawRule or rawRule.getFunctionDescList is blank!");
         }
         if (rawRule.getFunctionDescList().size() > 1) {
-            throw new ParseException("GpsDistanceRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
+            throw new ParseException("AddressMatchRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
         }
 
         function = (AddressMatchFunction) FunctionLoader.getFunction(rawRule.getFunctionDescList().get(0));

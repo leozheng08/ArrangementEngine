@@ -27,6 +27,7 @@ public class Constant {
         public static final String TIME_TIME_DIFFER = "time/timediffer";
         public static final String TIME_TIME_POINT_COMPARISON = "time/timePointComparison";
 
+        public static final String MAIL_MODEL = "mail/model";
 
         public static final String LOCATION_ADDRESS_MATCH = "location/addressMatch";
         public static final String LOCATION_PROXY = "location/proxy";

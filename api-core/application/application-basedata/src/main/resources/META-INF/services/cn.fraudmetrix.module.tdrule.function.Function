@@ -13,3 +13,4 @@ android/vpn=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidUseVpnF
 android/http=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidUseHttpFunction
 android/notOfficialApp=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidNotOfficialAppFunction
 android/root=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidRootFunction
+mail/model=cn.tongdun.kunpeng.api.basedata.rule.function.mail.MailModelFunction

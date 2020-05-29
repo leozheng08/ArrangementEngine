@@ -26,7 +26,7 @@ public class EngineExecuteStep implements IRiskStep {
 
 
     @Autowired
-    DecisionModeCache cecisionModeCache;
+    DecisionModeCache decisionModeCache;
 
     @Autowired
     DecisionToolFactory decisionToolFactory;
@@ -35,7 +35,7 @@ public class EngineExecuteStep implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
 
-        AbstractDecisionMode decisionMode = cecisionModeCache.get(context.getPolicyUuid());
+        AbstractDecisionMode decisionMode = decisionModeCache.get(context.getPolicyUuid());
         DecisionTool decisionTool = decisionToolFactory.getDecisionTool(decisionMode);
         PolicyResponse policyResponse = decisionTool.execute(decisionMode,context);
         context.setPolicyResponse(policyResponse);
