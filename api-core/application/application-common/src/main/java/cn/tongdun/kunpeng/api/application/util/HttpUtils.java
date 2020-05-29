@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.util;
+package cn.tongdun.kunpeng.api.application.util;
 
 import lombok.SneakyThrows;
 import okhttp3.*;
@@ -25,18 +25,16 @@ public class HttpUtils {
     /**
      * 多个请求异步访问http服务
      *
-     * @param results
      * @param requests
+     * @param results
      * @return
      */
     public static Map postAsyncJson(List<Request> requests, Map<Request, Object> results) throws Exception {
         requests.forEach(r -> {
             Call call = client.newCall(r);
             call.enqueue(new Callback() {
-                @SneakyThrows
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    call.timeout().throwIfReached();
                     results.put(r, e);
                 }
 
@@ -52,6 +50,7 @@ public class HttpUtils {
     /**
      * 串行访问接口
      * // TODO 单个请求异常处理逻辑
+     *
      * @param requests
      * @param results
      * @return
