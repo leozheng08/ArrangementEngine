@@ -230,13 +230,15 @@ public class DeviceInfoStep implements IRiskStep {
             return result;
 
         } catch (Exception e) {
-            if (e.getCause() instanceof TimeoutException) {
+            if (ReasonCodeUtil.isTimeout(e)) {
+                ReasonCodeUtil.add(context, ReasonCode.FP_QUERY_TIMEOUT, "fp");
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery query timeout,blackBox:" + blackBox, e);
                 FpReasonUtils.put(result, FpReasonCodeEnum.INVOKE_TIMEOUT_ERROR);
                 if (null != result.get("code") && null != result.get("message")) {
                     ReasonCodeUtil.addExtCode(context, ReasonCode.FP_QUERY_TIMEOUT.getCode(), ReasonCode.FP_QUERY_TIMEOUT.getDescription(), "FP", "DeviceInfoQuery", result.get("code").toString(), result.get("message").toString());
                 }
             } else {
+                ReasonCodeUtil.add(context, ReasonCode.FP_QUERY_ERROR, "fp");
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery query error,blackBox:" + blackBox, e);
                 FpReasonUtils.put(result, FpReasonCodeEnum.CONNECT_ERROR);
             }
