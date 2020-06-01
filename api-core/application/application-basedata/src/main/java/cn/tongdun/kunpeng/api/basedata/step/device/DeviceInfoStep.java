@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.basedata.constant.AppTypeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.FpReasonCodeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.RespDetailTypeEnum;
+import cn.tongdun.kunpeng.api.basedata.service.GeoIpService;
 import cn.tongdun.kunpeng.api.basedata.util.FpReasonUtils;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -19,8 +20,8 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.alibaba.dubbo.remoting.TimeoutException;
 import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +49,9 @@ public class DeviceInfoStep implements IRiskStep {
 
     @Autowired
     private DeviceInfoQuery deviceInfoQuery;
+
+    @Autowired
+    private ExtensionExecutor extensionExecutor;
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
@@ -103,7 +107,7 @@ public class DeviceInfoStep implements IRiskStep {
             deviceMap.put("success", false);
             postProcessAfterFail(blackBox, deviceMap, jsonMap, version);
         } else {
-            postProcessAfterSuccess(context, deviceMap,jsonMap,blackBoxOs);
+            postProcessAfterSuccess(context, deviceMap, jsonMap, blackBoxOs);
         }
 
         return true;
@@ -139,7 +143,7 @@ public class DeviceInfoStep implements IRiskStep {
 
     }
 
-    private void postProcessAfterSuccess(AbstractFraudContext context, Map<String, Object> deviceMap,Map jsonMap,String appType) {
+    private void postProcessAfterSuccess(AbstractFraudContext context, Map<String, Object> deviceMap, Map jsonMap, String appType) {
 
         Object smartIdObj = deviceMap.get("smartId");
         if (smartIdObj != null) {
@@ -150,9 +154,9 @@ public class DeviceInfoStep implements IRiskStep {
             context.set("deviceId", deviceIdObj.toString());
         }
         //处理真实IP
-        dealWithTrueIp(deviceMap);
+        dealWithTrueIp(context,deviceMap);
 
-        postProcessMobileScene(appType,context,jsonMap);
+        postProcessMobileScene(appType, context, jsonMap);
     }
 
     private void postProcessMobileScene(String appType, AbstractFraudContext context, Map jsonMap) {
@@ -181,14 +185,13 @@ public class DeviceInfoStep implements IRiskStep {
         }
     }
 
-    private void dealWithTrueIp(Map<String, Object> deviceMap) {
+    private void dealWithTrueIp(AbstractFraudContext context, Map<String, Object> deviceMap) {
         // 处理geoIp
         String trueIp = deviceMap.get("trueIp") + "";
         if (StringUtils.isNotEmpty(trueIp)) {
             GeoipEntity geoip = null;
             try {
-//                geoip = elfinBaseDataService.getIpInfo(trueIp);
-                ///todo
+                geoip = extensionExecutor.execute(GeoIpService.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp));
             } catch (Exception e) {
                 logger.warn(TraceUtils.getFormatTrace() + "GeoIp查询 IP查询错误", e);
             }

@@ -36,6 +36,7 @@
         <module.kafka.version>3.1.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
         <fp.version>3.1.5</fp.version>
+        <gaea-fact.version>1.0.6-SNAPSHOT</gaea-fact.version>
 
         <lz4.version>1.7.1</lz4.version>
 
@@ -98,6 +99,12 @@
                 <groupId>cn.fraudmetrix.forseti.fp</groupId>
                 <artifactId>fp-client</artifactId>
                 <version>${fp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.gaea</groupId>
+                <artifactId>gaea-factservice-client</artifactId>
+                <version>${gaea-fact.version}</version>
             </dependency>
 
             <!-- compress -->

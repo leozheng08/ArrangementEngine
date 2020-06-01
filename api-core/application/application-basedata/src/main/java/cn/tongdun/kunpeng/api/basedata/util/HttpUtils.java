@@ -36,8 +36,8 @@ public class HttpUtils {
                 @SneakyThrows
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    call.timeout().throwIfReached();
-                    results.put(r, e);
+//                    call.timeout().throwIfReached();
+//                    results.put(r, e);
                 }
 
                 @Override

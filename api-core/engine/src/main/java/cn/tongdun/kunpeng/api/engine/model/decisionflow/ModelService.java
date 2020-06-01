@@ -2,14 +2,14 @@ package cn.tongdun.kunpeng.api.engine.model.decisionflow;
 
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 
-public interface IHolmes {
+public interface ModelService {
 
     /**
      * 调用模型平台接口
      *
      * @param fraudContext 上下文
-     * @param decisionFlowModel
+     * @param configInfo
      */
-    boolean calculate(AbstractFraudContext fraudContext, DecisionFlowModel decisionFlowModel);
+    boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo configInfo);
 
 }
