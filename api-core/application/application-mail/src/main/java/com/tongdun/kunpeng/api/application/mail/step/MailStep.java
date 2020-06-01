@@ -6,12 +6,12 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
-import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.tongdun.kunpeng.api.application.mail.model.MailModelRule;
 import org.apache.commons.collections.CollectionUtils;
@@ -34,6 +34,9 @@ public class MailStep implements IRiskStep {
     @Value("${mail.model.url}")
     String mailModelUrl;
 
+    @Value("${mail.model.rand.url}")
+    String mailModelRandUrl;
+
     @Autowired
     RuleCache ruleCache;
 
@@ -55,17 +58,19 @@ public class MailStep implements IRiskStep {
             List<SubPolicy> subPolicies = subPolicyCache.getSubPolicyByPolicyUuid(policyId);
             if (CollectionUtils.isNotEmpty(subPolicies)) {
                 if (subPolicies.stream().filter(r  -> ruleCache.get(r.getPolicyUuid()).getEval() instanceof MailModelRule).count() == 0){
+                    logger.warn(TraceUtils.getFormatTrace() + "this policy contains no mailRule, skip filter, policyId :{}", policyId);
                     return true;
                 }
             }
         }
 
         // 获取邮件模型地址
-        if (StringUtils.isEmpty(mailModelUrl)) {
+        if (StringUtils.isEmpty(mailModelUrl) || StringUtils.isEmpty(mailModelRandUrl)) {
             logger.warn("mail model url empty, partnerCode :" + context.getPartnerCode());
             return true;
         }
-        context.getFieldValues().put("mail.model.url", mailModelUrl);
+        context.getFieldValues().put("mailModelUrl", mailModelUrl);
+        context.getFieldValues().put("mailModelRandUrl", mailModelRandUrl);
 
         // 获取数据库中租户绑定的key, 对应的邮件参数名称
         List<Dictionary> dictionaryList = dictionaryManager.getMailKey();

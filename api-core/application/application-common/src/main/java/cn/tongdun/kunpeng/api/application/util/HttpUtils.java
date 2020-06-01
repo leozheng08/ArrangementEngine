@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.application.util;
 
-import lombok.SneakyThrows;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -49,7 +48,6 @@ public class HttpUtils {
 
     /**
      * 串行访问接口
-     * // TODO 单个请求异常处理逻辑
      *
      * @param requests
      * @param results
@@ -58,8 +56,13 @@ public class HttpUtils {
      */
     public static Map postJson(List<Request> requests, Map<Request, Object> results) throws Exception {
         for (int var0 = 0; var0 < requests.size(); var0++) {
-            Response response = client.newCall(requests.get(var0)).execute();
-            results.put(requests.get(var0), response);
+            try {
+                Response response = client.newCall(requests.get(var0)).execute();
+                results.put(requests.get(var0), response);
+            }catch (Exception e) {
+                results.put(requests.get(var0), e);
+                throw e;
+            }
         }
         return results;
     }

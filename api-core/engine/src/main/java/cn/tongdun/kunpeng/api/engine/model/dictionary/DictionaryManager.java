@@ -107,7 +107,6 @@ public class DictionaryManager {
 
     /**
      * 获取租户邮箱对应的key命名
-     * // TODO fix threadsafe yuanhang
      * @return
      */
     public List<Dictionary> getMailKey() {
@@ -115,7 +114,7 @@ public class DictionaryManager {
         try {
             dictionaries = dict10MinuteCache.get(MailParamKey.name());
         } catch (Exception e) {
-            logger.error("");
+            logger.error(TraceUtils.getFormatTrace() + "get mail dictionary failed");
         }
         return dictionaries;
     }
