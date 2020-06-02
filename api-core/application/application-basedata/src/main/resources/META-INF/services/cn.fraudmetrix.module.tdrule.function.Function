@@ -17,3 +17,4 @@ android/root=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidRootFu
 android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidDeviceStatusAbnormalFunction
 mail/model=cn.tongdun.kunpeng.api.basedata.rule.function.mail.MailModelFunction
 location/addressMatch=cn.tongdun.kunpeng.api.basedata.rule.function.location.AddressMatchFunction
+mail/model=com.tongdun.kunpeng.api.application.mail.function.MailModelFunction
