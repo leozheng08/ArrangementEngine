@@ -58,9 +58,9 @@ public class ModelNode extends AbstractBizNode {
     @Override
     protected NodeResult run(ExecuteContext executeContext) {
         NodeResult nodeResult = new NodeResult();
-        ModelService holmes;
+        ModelServiceExtPt holmes;
         try {
-            holmes = (ModelService) SpringContextHolder.getBean("holmes");
+            holmes = (ModelServiceExtPt) SpringContextHolder.getBean("holmes");
             holmes.calculate((AbstractFraudContext) executeContext, modelConfigInfo);
         } catch (Exception e) {
         }

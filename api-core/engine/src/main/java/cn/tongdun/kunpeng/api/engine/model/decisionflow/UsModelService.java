@@ -9,7 +9,7 @@ import cn.tongdun.tdframework.core.extension.Extension;
  * @Date: 2020/5/29 5:37 下午
  */
 @Extension(tenant = "us",business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
-public class UsModelService implements ModelService{
+public class UsModelService implements ModelServiceExtPt{
 
     @Override
     public boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo configInfo) {

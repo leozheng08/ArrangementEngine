@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
+import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 @Service("holmes")
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
-public class SaaSModelService implements ModelService {
+public class SaaSModelService implements ModelServiceExtPt{
     private static final Logger logger = LoggerFactory.getLogger(SaaSModelService.class);
 
     @Autowired
