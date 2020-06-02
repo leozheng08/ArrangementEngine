@@ -64,6 +64,7 @@ public class PlatformIndexStep implements IRiskStep {
             try {
                 indicatrixsParam.add(Long.valueOf(key));
             } catch (Exception e) {
+                logger.error(TraceUtils.getFormatTrace() + "PlatformIndexStep param parse error,key:" + key, e);
                 continue;
             }
         }

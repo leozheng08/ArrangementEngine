@@ -43,7 +43,7 @@
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <skip_maven_deploy>false</skip_maven_deploy>
-        <elfin.version>1.0.3</elfin.version>
+        <elfin.version>1.3.1</elfin.version>
         <module.ruledetail.version>3.4.15</module.ruledetail.version>
         <cargo-service-share-version>1.0.3</cargo-service-share-version>
         <httpclient-version>4.5.5</httpclient-version>
@@ -224,6 +224,12 @@
                 <version>${kunpeng-share.version}</version>
             </dependency>
             <!-- ddd end-->
+
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>elfin-biz-intf</artifactId>
+                <version>${elfin.version}</version>
+            </dependency>
 
 
 
