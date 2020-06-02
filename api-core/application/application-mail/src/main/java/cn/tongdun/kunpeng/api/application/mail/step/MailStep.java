@@ -1,4 +1,4 @@
-package com.tongdun.kunpeng.api.application.mail.step;
+package cn.tongdun.kunpeng.api.application.mail.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
@@ -13,7 +13,7 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.tongdun.kunpeng.api.application.mail.model.MailModelRule;
+import cn.tongdun.kunpeng.api.application.mail.model.MailModelRule;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

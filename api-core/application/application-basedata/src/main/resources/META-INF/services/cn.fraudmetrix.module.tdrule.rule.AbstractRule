@@ -15,4 +15,3 @@ android/http=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidUseHtt
 android/notOfficialApp=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidNotOfficialAppRule
 android/root=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidRootRule
 android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidDeviceStatusAbnormalRule
-mail/model=com.tongdun.kunpeng.api.application.mail.model.MailModelRule
