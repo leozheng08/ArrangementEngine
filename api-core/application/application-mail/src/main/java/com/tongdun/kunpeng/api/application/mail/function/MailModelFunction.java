@@ -15,6 +15,7 @@ import cn.tongdun.kunpeng.api.ruledetail.MailModelDetail;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.common.json.JSONObject;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.tongdun.kunpeng.api.application.mail.constant.MailModelTypeEnum;
 import okhttp3.MediaType;
@@ -22,6 +23,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +45,7 @@ public class MailModelFunction extends AbstractFunction {
 
     private Set<String> keys;
 
-    private Integer operate;
+    private String operate;
 
     private Integer threshold;
 
@@ -68,7 +70,7 @@ public class MailModelFunction extends AbstractFunction {
                 keys.add(param.getValue());
             }
             if (StringUtils.equals("operate", param.getName())) {
-                operate = Integer.valueOf(param.getValue());
+                operate = param.getValue();
             }
             if (StringUtils.equals("threshold", param.getName())) {
                 threshold = Integer.valueOf(param.getValue());
@@ -82,8 +84,12 @@ public class MailModelFunction extends AbstractFunction {
     protected FunctionResult run(ExecuteContext executeContext) {
 
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
-        String url = (String) context.getFieldValues().get("mail.model.url");
-        String ranUrl = (String) context.getFieldValues().get("mail.model.random.url");
+        String url = (String) context.getFieldValues().get("mailModelUrl");
+        String ranUrl = (String) context.getFieldValues().get("mailModelRandomUrl");
+        if (CollectionUtils.isEmpty(mailTypes)) {
+            return new FunctionResult(false);
+        }
+
         String mail = getFirstMail(context);
         if (StringUtils.isNotEmpty(mail)) {
             logger.warn("mails empty, not found mail parameters");
@@ -91,21 +97,19 @@ public class MailModelFunction extends AbstractFunction {
             return new FunctionResult(false);
         }
 
-        // TODO 先正则匹配校验一边邮箱格式，减少http接口压力 yuanhang
         try {
+
             long start = System.currentTimeMillis();
-
             Map<String, Object> params = constructParams(context);
-
             url = url + mail;
             ranUrl = ranUrl + mail;
             Map<String, Object> resultMap = getAsyncResponse(url, ranUrl, params);
 
             // 接口返回Exception情况处理
-            if (resultMap.get("urlResult") instanceof ReasonCode) {
+            if (ObjectUtils.allNotNull(resultMap.get("simResult")) && resultMap.get("simResult") instanceof ReasonCode) {
                 ReasonCodeUtil.add(context, (ReasonCode) resultMap.get("urlResult"), "mail_model");
                 return new FunctionResult(false);
-            } else if (resultMap.get("randResult") instanceof ReasonCode) {
+            } else if (ObjectUtils.allNotNull(resultMap.get("randResult")) && resultMap.get("randResult") instanceof ReasonCode) {
                 ReasonCodeUtil.add(context, (ReasonCode) resultMap.get("randResult"), "mail_model");
                 return new FunctionResult(false);
             } else {
@@ -130,14 +134,14 @@ public class MailModelFunction extends AbstractFunction {
                 if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                     Integer random = (Integer) resultMap.get("ranResult");
                     switch (operate) {
-                        case 0:
-                            randResult = random > threshold;
+                        case ">=":
+                            randResult = random >= threshold;
                             break;
-                        case 1:
+                        case "=":
                             randResult = random.equals(threshold);
                             break;
-                        case 2:
-                            randResult = random < threshold;
+                        case ">":
+                            randResult = random > threshold;
                             break;
                         default:
                             randResult = false;
@@ -158,7 +162,7 @@ public class MailModelFunction extends AbstractFunction {
     }
 
     /**
-     * 根据参数获取模型接口结果
+     * 根据参数异步获取模型接口结果
      *
      * @param url
      * @param params
@@ -170,19 +174,21 @@ public class MailModelFunction extends AbstractFunction {
         Map<Request, Object> httpResults = Maps.newHashMap();
 
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSON.toJSONString(params));
-        Request request = new Request.Builder().url(url).post(body).build();
 
+        List<Request> requests = Lists.newArrayList();
         // 规则配置了随机率参数时，添加并行请求
         if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
             Request ranRequest = new Request.Builder().url(ranUrl).post(body).build();
-            HttpUtils.postAsyncJson(Arrays.asList(new Request[]{request, ranRequest}), httpResults);
+            requests.add(ranRequest);
         } else {
-            HttpUtils.postAsyncJson(Arrays.asList(new Request[]{request}), httpResults);
+            Request request = new Request.Builder().url(url).post(body).build();
+            requests.add(request);
         }
+        HttpUtils.postAsyncJson(requests, httpResults);
 
         //处理接口返回结果
         httpResults.entrySet().forEach(r -> {
-            String key = url.equals(r.getKey().url()) ? "urlResult" : "randResult";
+            String key = url.equals(r.getKey().url()) ? "simResult" : "randResult";
             String resKey = url.equals(r.getKey().url()) ? "sim_result" : "ran_result";
             if (r.getValue() instanceof Response) {
                 Response response = (Response) r.getValue();
@@ -196,6 +202,11 @@ public class MailModelFunction extends AbstractFunction {
         return result;
     }
 
+    /**
+     * 字典表可能存在多个mail类型字典，取第一个
+     * @param context
+     * @return
+     */
     private String getFirstMail(AbstractFraudContext context) {
         Iterator iterable = keys.iterator();
         while (iterable.hasNext()) {
@@ -207,6 +218,11 @@ public class MailModelFunction extends AbstractFunction {
         return null;
     }
 
+    /**
+     * 构建接口需要的参数
+     * @param context
+     * @return
+     */
     private Map<String, Object> constructParams(AbstractFraudContext context) {
         Map params = Maps.newHashMap();
         // TODO 等待接口文档
@@ -215,11 +231,6 @@ public class MailModelFunction extends AbstractFunction {
         params.put("time_inteval", "");
         params.put("sim_num", "");
         return params;
-    }
-
-    public static void main(String[] args) {
-        JSONObject temp = JSON.parseObject("{\"sim_result\":0}\"", JSONObject.class);
-        System.out.println(temp.get("sim_result"));
     }
 
 }

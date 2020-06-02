@@ -24,6 +24,7 @@
         <module>application-auth</module>
         <module>application-activity</module>
         <module>application-challenger</module>
+        <module>application-mail</module>
     </modules>
 
 
