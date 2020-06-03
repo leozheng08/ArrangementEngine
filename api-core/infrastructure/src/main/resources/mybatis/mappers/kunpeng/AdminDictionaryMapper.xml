@@ -14,7 +14,7 @@
 	</resultMap>
 	
 	<sql id="queryColumns">
-		id,uuid,mykey,myvalue,description,gmt_create,gmt_modified,created_by,updated_by
+		id,uuid,mykey,myvalue,description,gmt_create,gmt_modify,creator,operator
 	</sql>
 
 

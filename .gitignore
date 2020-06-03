@@ -46,6 +46,7 @@ application-parent/application-check/target
 application-parent/application-groovy/target
 application-parent/application-output/target
 application-parent/application-policyindex/target
+application-parent/application-mail/target
 application-parent/application-ruledata/target
 application-parent/application-runengine/target
 /output

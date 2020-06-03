@@ -113,6 +113,10 @@ public class DictionaryManager {
         List<Dictionary> dictionaries = null;
         try {
             dictionaries = dict10MinuteCache.get(MailParamKey.name());
+            if (null == dictionaries) {
+                loadDictionary(MailParamKey.name());
+                return dict10MinuteCache.get(MailParamKey.name());
+            }
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "get mail dictionary failed");
         }
