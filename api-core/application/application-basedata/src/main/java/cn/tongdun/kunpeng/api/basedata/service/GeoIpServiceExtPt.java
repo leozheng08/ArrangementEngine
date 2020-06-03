@@ -10,7 +10,7 @@ import java.util.Map;
  * @Author: liuq
  * @Date: 2020/5/29 1:49 下午
  */
-public interface GeoIpService extends IExtensionPoint {
+public interface GeoIpServiceExtPt extends IExtensionPoint {
 
     GeoipEntity getIpInfo(String ip);
 

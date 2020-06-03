@@ -10,7 +10,7 @@ import cn.tongdun.tdframework.core.extension.Extension;
  * @Date: 2020/5/29 2:23 下午
  */
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
-public class SaaSMobileInfoService implements MobileInfoService {
+public class SaaSMobileInfoService implements MobileInfoServiceExtPt {
 
     @Override
     public MobileInfoDO getMobileInfo(String phone) {

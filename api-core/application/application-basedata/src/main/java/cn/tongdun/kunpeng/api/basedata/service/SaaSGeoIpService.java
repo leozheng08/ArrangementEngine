@@ -20,7 +20,7 @@ import java.util.*;
  * @Date: 2020/5/29 2:17 下午
  */
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
-public class SaaSGeoIpService implements GeoIpService {
+public class SaaSGeoIpService implements GeoIpServiceExtPt {
 
     private static final Logger logger = LoggerFactory.getLogger(SaaSGeoIpService.class);
 

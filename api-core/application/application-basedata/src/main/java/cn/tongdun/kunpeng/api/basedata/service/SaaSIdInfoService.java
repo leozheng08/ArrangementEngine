@@ -9,7 +9,7 @@ import cn.tongdun.tdframework.core.extension.Extension;
  * @Date: 2020/5/29 2:34 下午
  */
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
-public class SaaSIdInfoService implements IdInfoService{
+public class SaaSIdInfoService implements IdInfoServiceExtPt{
 
     @Override
     public IdInfo getIdInfo(String id) {

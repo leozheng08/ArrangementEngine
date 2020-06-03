@@ -10,7 +10,7 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.basedata.constant.AppTypeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.FpReasonCodeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.RespDetailTypeEnum;
-import cn.tongdun.kunpeng.api.basedata.service.GeoIpService;
+import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.util.FpReasonUtils;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -191,7 +191,7 @@ public class DeviceInfoStep implements IRiskStep {
         if (StringUtils.isNotEmpty(trueIp)) {
             GeoipEntity geoip = null;
             try {
-                geoip = extensionExecutor.execute(GeoIpService.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp));
+                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp));
             } catch (Exception e) {
                 logger.warn(TraceUtils.getFormatTrace() + "GeoIp查询 IP查询错误", e);
             }

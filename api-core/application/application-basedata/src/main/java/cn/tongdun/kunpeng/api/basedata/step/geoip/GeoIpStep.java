@@ -4,12 +4,12 @@ import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
-import cn.tongdun.kunpeng.api.basedata.service.GeoIpService;
+import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
@@ -43,7 +43,7 @@ public class GeoIpStep implements IRiskStep {
             GeoipEntity geoip = null;
             try {
                 final String finalIp = ip;
-                geoip = extensionExecutor.execute(GeoIpService.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp));
+                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp));
             } catch (Exception e) {
                 ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoip");
                 logger.error(TraceUtils.getFormatTrace() + "GeoIp query error!ip:" + ip, e);

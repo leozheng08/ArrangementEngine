@@ -12,10 +12,10 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
-import cn.tongdun.kunpeng.api.basedata.service.BinInfoService;
-import cn.tongdun.kunpeng.api.basedata.service.GeoIpService;
-import cn.tongdun.kunpeng.api.basedata.service.IdInfoService;
-import cn.tongdun.kunpeng.api.basedata.service.MobileInfoService;
+import cn.tongdun.kunpeng.api.basedata.service.BinInfoServiceExtPt;
+import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
+import cn.tongdun.kunpeng.api.basedata.service.IdInfoServiceExtPt;
+import cn.tongdun.kunpeng.api.basedata.service.MobileInfoServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.util.AddressDisplayNameUtils;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -101,7 +101,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 if (StringUtils.isBlank(trueIp)) {
                     return null;
                 }
-                geoInfo = extensionExecutor.execute(GeoIpService.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp));
+                geoInfo = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp));
             } else {
                 geoInfo = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, GeoipEntity.class);
             }
@@ -129,7 +129,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 mobileInfoStr = (String) context.get("accountMobile");
             }
             final String mobileStr = mobileInfoStr;
-            mobileInfo = extensionExecutor.execute(MobileInfoService.class, context.getBizScenario(), extension -> extension.getMobileInfo(mobileStr));
+            mobileInfo = extensionExecutor.execute(MobileInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getMobileInfo(mobileStr));
             if (null == mobileInfo) {
                 return null;
             }
@@ -155,7 +155,7 @@ public class AddressMatchFunction extends AbstractFunction {
                     return "中国";
                 case "province":
                     String provinceCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
-                    idInfo = extensionExecutor.execute(IdInfoService.class, context.getBizScenario(), extension -> extension.getIdInfo(provinceCode));
+                    idInfo = extensionExecutor.execute(IdInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getIdInfo(provinceCode));
                     if (null == idInfo) {
                         return null;
                     }
@@ -163,7 +163,7 @@ public class AddressMatchFunction extends AbstractFunction {
                     return StringUtils.isBlank(province) ? null : province.endsWith("省") ? province : province + "省";
                 default:
                     String cityCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
-                    idInfo = extensionExecutor.execute(IdInfoService.class, context.getBizScenario(), extension -> extension.getIdInfo(cityCode));
+                    idInfo = extensionExecutor.execute(IdInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getIdInfo(cityCode));
                     if (null == idInfo) {
                         return null;
                     }
@@ -172,7 +172,7 @@ public class AddressMatchFunction extends AbstractFunction {
             }
             // BIN卡发卡地
         } else if (BasedataConstant.BIN_ADDRESS.equalsIgnoreCase(address)) {
-            BinInfoDO binInfo = extensionExecutor.execute(BinInfoService.class, context.getBizScenario(), extension -> extension.getBinInfo((String) context.get("ccBin")));
+            BinInfoDO binInfo = extensionExecutor.execute(BinInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getBinInfo((String) context.get("ccBin")));
             if (null == binInfo) {
                 return null;
             }
