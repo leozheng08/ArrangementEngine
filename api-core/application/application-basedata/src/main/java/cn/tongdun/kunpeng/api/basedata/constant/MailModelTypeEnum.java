@@ -1,4 +1,4 @@
-package com.tongdun.kunpeng.api.application.mail.constant;
+package cn.tongdun.kunpeng.api.basedata.constant;
 
 import com.google.common.collect.Maps;
 

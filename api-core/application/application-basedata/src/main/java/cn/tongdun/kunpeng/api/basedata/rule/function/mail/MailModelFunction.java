@@ -1,4 +1,4 @@
-package com.tongdun.kunpeng.api.application.mail.function;
+package cn.tongdun.kunpeng.api.basedata.rule.function.mail;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.util.HttpUtils;
+import cn.tongdun.kunpeng.api.basedata.constant.MailModelTypeEnum;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -17,7 +18,6 @@ import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.common.json.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.tongdun.kunpeng.api.application.mail.constant.MailModelTypeEnum;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -127,7 +127,6 @@ public class MailModelFunction extends AbstractFunction {
                     return detail;
                 };
 
-                // TODO 确认勾选中多个条件，返回的唯一结果如何定义
                 Map<Integer, String> mapping = MailModelTypeEnum.mappingCode(mailTypes);
                 boolean randResult = true;
                 // 随机率判定
@@ -148,7 +147,7 @@ public class MailModelFunction extends AbstractFunction {
                             break;
                     }
                 }
-                return new FunctionResult(null == mapping.get(simResult) && randResult ? 0 : simResult, callable);
+                return new FunctionResult(null == mapping.get(simResult) || randResult, callable);
             }
         } catch (Exception e) {
             if (ReasonCodeUtil.isTimeout(e)) {
@@ -173,7 +172,7 @@ public class MailModelFunction extends AbstractFunction {
         Map<String, Object> result = Maps.newHashMap();
         Map<Request, Object> httpResults = Maps.newHashMap();
 
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSON.toJSONString(params));
+        RequestBody body = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), JSON.toJSONString(params));
 
         List<Request> requests = Lists.newArrayList();
         // 规则配置了随机率参数时，添加并行请求
