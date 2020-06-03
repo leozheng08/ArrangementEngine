@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.engine.model.decisionflow;
 import lombok.Data;
 
 @Data
-public class ModelParamInfo {
+public class ModelParam {
 
     private String field;
 

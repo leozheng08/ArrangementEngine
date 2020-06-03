@@ -16,4 +16,24 @@
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:reference>
 
+    <dubbo:reference id="gpsQueryService" interface="cn.tongdun.gaea.dubbo.GpsQueryService"
+                     version="${gps.query.dubbo.version}" retries="0" timeout="${gps.query.dubbo.timeout}" check="false" connections="2" >
+        <dubbo:parameter key="threadname" value="Gps-query-"/>
+        <dubbo:parameter key="threadpool" value="cached"/>
+        <dubbo:parameter key="corethreads" value="1" />
+        <dubbo:parameter key="threads" value="10" />
+        <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
+
+    <dubbo:reference id="baseDataQueryService" interface="cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService"
+                     version="${elfin.dubbo.version}"
+                     timeout="${elfin.dubbo.timeout}"
+                     retries="${elfin.dubbo.retries}" connections="2" check="false">
+        <dubbo:parameter key="threadname" value="Dubbo-elfin-"/>
+        <dubbo:parameter key="threadpool" value="cached"/>
+        <dubbo:parameter key="corethreads" value="1" />
+        <dubbo:parameter key="threads" value="25" />
+        <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
+
 </beans>

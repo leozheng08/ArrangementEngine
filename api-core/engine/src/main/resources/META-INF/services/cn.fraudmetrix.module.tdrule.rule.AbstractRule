@@ -1,4 +1,3 @@
-mail/model=cn.tongdun.kunpeng.api.application.mail.model.MailModelRule
 pattern/regex=cn.tongdun.kunpeng.api.engine.model.rule.template.LocalRegexRule
 common/custom=cn.fraudmetrix.module.tdrule.rule.CustomRule
 time/timediffer=cn.tongdun.kunpeng.api.engine.model.rule.template.TimeDiffRule

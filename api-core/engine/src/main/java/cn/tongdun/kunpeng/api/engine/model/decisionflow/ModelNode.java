@@ -17,43 +17,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DecisionFlowModelManager extends AbstractBizNode {
+public class ModelNode extends AbstractBizNode {
 
 
-    private DecisionFlowModel decisionFlowModel;
+    private ModelConfigInfo modelConfigInfo;
 
 
     @Override
     public void parse(NodeDesc nodeDesc) {
         this.setId(nodeDesc.getId());
-        Map<String, String> paramMap = (Map)nodeDesc.getParamList().stream().collect(Collectors.toMap((a) -> {
-            return a.getName();
-        }, (b) -> {
-            return b.getValue();
-        }));
-        String modelConfig = (String)paramMap.get("tns:modelTask");
+        Map<String, String> paramMap = nodeDesc.getParamList().stream().collect(Collectors.toMap(a -> a.getName(), b -> b.getValue()));
+        String modelConfig = (String) paramMap.get("tns:modelTask");
         if (StringUtils.isBlank(modelConfig)) {
             throw new ParseException("Model Node id:" + this.getId() + " tns:modelTask is blank!");
         }
         try {
-            decisionFlowModel = new DecisionFlowModel();
+            modelConfigInfo = new ModelConfigInfo();
             Map json = JSON.parseObject(modelConfig, HashMap.class);
-            decisionFlowModel.setUuid(JsonUtil.getString(json,"uuid"));
-            decisionFlowModel.setInputList(buildParaInfo((List)json.get("inputs")));
-            decisionFlowModel.setOutputList(buildParaInfo((List)json.get("outputs")));
+            modelConfigInfo.setUuid(JsonUtil.getString(json, "uuid"));
+            modelConfigInfo.setInputList(buildParaInfo((List) json.get("inputs")));
+            modelConfigInfo.setOutputList(buildParaInfo((List) json.get("outputs")));
             boolean isNewModel = false;
             if (json.containsKey("newModel")) {
-                isNewModel = JsonUtil.getBoolean(json,"newModel");
+                isNewModel = JsonUtil.getBoolean(json, "newModel");
             }
-            decisionFlowModel.setNewModel(isNewModel);
+            modelConfigInfo.setNewModel(isNewModel);
 
             boolean isRiskServiceOutput = false;
             if (json.containsKey("isRiskServiceOutput")) {
-                isRiskServiceOutput = JsonUtil.getBoolean(json,"isRiskServiceOutput");
+                isRiskServiceOutput = JsonUtil.getBoolean(json, "isRiskServiceOutput");
             }
 
-            decisionFlowModel.setRiskServiceOutput(isRiskServiceOutput);
-            decisionFlowModel.setModelVersion(JsonUtil.getString(json,"modelVersion"));
+            modelConfigInfo.setRiskServiceOutput(isRiskServiceOutput);
+            modelConfigInfo.setModelVersion(JsonUtil.getString(json, "modelVersion"));
         } catch (Exception e) {
             throw new ParseException("modelConfig parse json error, modelConfig : " + modelConfig);
         }
@@ -62,10 +58,10 @@ public class DecisionFlowModelManager extends AbstractBizNode {
     @Override
     protected NodeResult run(ExecuteContext executeContext) {
         NodeResult nodeResult = new NodeResult();
-        IHolmes holmes;
+        ModelServiceExtPt holmes;
         try {
-            holmes = (IHolmes) SpringContextHolder.getBean("holmes");
-            holmes.calculate((AbstractFraudContext) executeContext, decisionFlowModel);
+            holmes = (ModelServiceExtPt) SpringContextHolder.getBean("holmes");
+            holmes.calculate((AbstractFraudContext) executeContext, modelConfigInfo);
         } catch (Exception e) {
         }
         nodeResult.putOneResult("Thread", Thread.currentThread().getName());
@@ -79,18 +75,19 @@ public class DecisionFlowModelManager extends AbstractBizNode {
 
     /**
      * 解析输入|输出参数
+     *
      * @param array
      * @return
      */
-    private List<ModelParamInfo> buildParaInfo(List<Map> array) {
+    private List<ModelParam> buildParaInfo(List<Map> array) {
         if (null != array) {
-            List<ModelParamInfo> list = Lists.newArrayList();
+            List<ModelParam> list = Lists.newArrayList();
             array.stream().forEach(json -> {
-                ModelParamInfo paramInfo = new ModelParamInfo();
-                paramInfo.setField(JsonUtil.getString(json,"field"));
-                paramInfo.setRightField(JsonUtil.getString(json,"rightField"));
-                paramInfo.setRightFieldType(JsonUtil.getString(json,"rightFieldType"));
-                paramInfo.setRightFieldName(JsonUtil.getString(json,"rightFieldName"));
+                ModelParam paramInfo = new ModelParam();
+                paramInfo.setField(JsonUtil.getString(json, "field"));
+                paramInfo.setRightField(JsonUtil.getString(json, "rightField"));
+                paramInfo.setRightFieldType(JsonUtil.getString(json, "rightFieldType"));
+                paramInfo.setRightFieldName(JsonUtil.getString(json, "rightFieldName"));
                 list.add(paramInfo);
             });
             return list;

@@ -13,7 +13,6 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import cn.tongdun.kunpeng.api.application.mail.model.MailModelRule;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,16 +52,16 @@ public class MailStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         //该策略下所有子策略均无邮箱模型规则时，跳过后续
-        String policyId = policyCache.getPolicyUuid(context.getPartnerCode(), context.getAppName(), context.getEventId(), context.getPolicyVersion());
-        if (StringUtils.isNotEmpty(policyId)) {
-            List<SubPolicy> subPolicies = subPolicyCache.getSubPolicyByPolicyUuid(policyId);
-            if (CollectionUtils.isNotEmpty(subPolicies)) {
-                if (subPolicies.stream().filter(r  -> ruleCache.get(r.getPolicyUuid()).getEval() instanceof MailModelRule).count() == 0){
-                    logger.warn(TraceUtils.getFormatTrace() + "this policy contains no mailRule, skip filter, policyId :{}", policyId);
-                    return true;
-                }
-            }
-        }
+//        String policyId = policyCache.getPolicyUuid(context.getPartnerCode(), context.getAppName(), context.getEventId(), context.getPolicyVersion());
+//        if (StringUtils.isNotEmpty(policyId)) {
+//            List<SubPolicy> subPolicies = subPolicyCache.getSubPolicyByPolicyUuid(policyId);
+//            if (CollectionUtils.isNotEmpty(subPolicies)) {
+//                if (subPolicies.stream().filter(r  -> ruleCache.get(r.getPolicyUuid()).getEval() instanceof MailModelRule).count() == 0){
+//                    logger.warn(TraceUtils.getFormatTrace() + "this policy contains no mailRule, skip filter, policyId :{}", policyId);
+//                    return true;
+//                }
+//            }
+//        }
 
         // 获取邮件模型地址
         if (StringUtils.isEmpty(mailModelUrl) || StringUtils.isEmpty(mailModelRandUrl)) {

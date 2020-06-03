@@ -15,3 +15,6 @@ android/http=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidUseHtt
 android/notOfficialApp=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidNotOfficialAppFunction
 android/root=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidRootFunction
 android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidDeviceStatusAbnormalFunction
+android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidDeviceStatusAbnormalFunction
+location/addressMatch=cn.tongdun.kunpeng.api.basedata.rule.function.location.AddressMatchFunction
+mail/model=cn.tongdun.kunpeng.api.basedata.rule.function.mail.MailModelFunction

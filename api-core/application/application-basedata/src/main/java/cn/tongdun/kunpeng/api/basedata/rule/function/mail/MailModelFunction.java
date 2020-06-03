@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.application.mail.function;
+package cn.tongdun.kunpeng.api.basedata.rule.function.mail;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.util.HttpUtils;
+import cn.tongdun.kunpeng.api.basedata.constant.MailModelTypeEnum;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -17,7 +18,6 @@ import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.common.json.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import cn.tongdun.kunpeng.api.application.mail.constant.MailModelTypeEnum;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
