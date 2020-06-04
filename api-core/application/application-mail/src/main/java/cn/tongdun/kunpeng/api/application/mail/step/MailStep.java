@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.application.mail.step;
 
-import cn.tongdun.kunpeng.api.application.mail.rule.MailModelRule;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -8,7 +7,6 @@ import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
@@ -50,18 +48,6 @@ public class MailStep implements IRiskStep {
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
-
-        //该策略下所有子策略均无邮箱模型规则时，跳过后续
-        String policyId = policyCache.getPolicyUuid(context.getPartnerCode(), context.getAppName(), context.getEventId(), context.getPolicyVersion());
-        if (StringUtils.isNotEmpty(policyId)) {
-            List<SubPolicy> subPolicies = subPolicyCache.getSubPolicyByPolicyUuid(policyId);
-            if (CollectionUtils.isNotEmpty(subPolicies)) {
-                if (subPolicies.stream().filter(r  -> ruleCache.get(r.getPolicyUuid()).getEval() instanceof MailModelRule).count() == 0){
-                    logger.warn(TraceUtils.getFormatTrace() + "this policy contains no mailRule, skip filter, policyId :{}", policyId);
-                    return true;
-                }
-            }
-        }
 
         // 获取邮件模型地址
         if (StringUtils.isEmpty(mailModelUrl) || StringUtils.isEmpty(mailModelRandUrl)) {

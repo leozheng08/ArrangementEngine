@@ -104,7 +104,7 @@ public class MailModelFunction extends AbstractFunction {
             Object result = getAsyncResponse(url, ranUrl, params);
 
             // 接口返回Exception情况处理
-            if (ObjectUtils.allNotNull(result) && result instanceof ReasonCode) {
+            if (null == result && result instanceof ReasonCode) {
                 ReasonCodeUtil.add(context, (ReasonCode) result, "mail_model");
                 return new FunctionResult(false);
             } else {
