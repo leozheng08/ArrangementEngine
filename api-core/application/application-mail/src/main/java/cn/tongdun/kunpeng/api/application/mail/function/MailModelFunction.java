@@ -82,7 +82,7 @@ public class MailModelFunction extends AbstractFunction {
             if (StringUtils.equals("timeInterval", param.getName())) {
                 timeInterval = param.getValue();
             }
-            if (StringUtils.equals("simResult", param.getName())) {
+            if (StringUtils.equals("simNum", param.getName())) {
                 simResult = param.getValue();
             }
         });
@@ -139,7 +139,7 @@ public class MailModelFunction extends AbstractFunction {
                 boolean randResult = true;
                 // 随机率判定
                 if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                    Double random = mailModelResult.getRanResult() * 100;
+                    Double random = mailModelResult.getRanResult();
                     if (null != random) {
                         switch (operate) {
                             case ">=":
@@ -241,7 +241,7 @@ public class MailModelFunction extends AbstractFunction {
                                 return ReasonCode.MAIL_MODEL_RANDOM_TIMEOUT_ERROR;
 
                         }
-                        result.setRanResult(Double.parseDouble(randResult.getResult().toString()));
+                        result.setRanResult(Double.parseDouble(randResult.getResult().toString()) * 100);
                     } else {
                         return entry.getValue() instanceof TimeoutException ? ReasonCode.MAIL_MODEL_RANDOM_TIMEOUT_ERROR : ReasonCode.MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR;
                     }
