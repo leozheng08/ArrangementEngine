@@ -135,7 +135,7 @@ public class MailModelFunction extends AbstractFunction {
                 boolean randResult = true;
                 // 随机率判定
                 if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                    Double random = mailModelResult.getRanResult();
+                    Double random = mailModelResult.getRanResult() * 100;
                     if (null != random) {
                         switch (operate) {
                             case ">=":
@@ -267,29 +267,4 @@ public class MailModelFunction extends AbstractFunction {
         return null;
     }
 
-    public static void main(String[] args) throws Exception {
-        Map params = Maps.newHashMap();
-        Map result = Maps.newHashMap();
-        params.put("mail", "10272722@qq.com");
-        params.put("business", "test");
-        params.put("time_inteval", "7");
-        params.put("sim_num", "10");
-        params.put("event_time", "2020-05-01 12:12:12");
-        String url = "http://10.57.17.222:8078/detect_rand_email";
-        System.out.println(url);
-
-        RequestBody body = new FormBody.Builder()
-                .add("mail", "yuanhang.ding@tongdun.net")
-                .add("business", "test")
-                .add("event_time", "2020-05-01 12:12:12")
-                .build();
-        Request request = new Request
-                .Builder()
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .url(url)
-                .post(body).build();
-
-        HttpUtils.postJson(Lists.newArrayList(request), result);
-        System.out.println(result);
-    }
 }
