@@ -65,8 +65,8 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
         geoipEntity.setCounty(gpsInfoDTO.getCounty());
         geoipEntity.setCountyId(gpsInfoDTO.getCountyId());
         geoipEntity.setDesc(gpsInfoDTO.getDesc());
-        geoipEntity.setExtra1(geoipEntity.getExtra1());
-        geoipEntity.setExtra2(geoipEntity.getExtra2());
+        geoipEntity.setExtra1(gpsInfoDTO.getExtra1());
+        geoipEntity.setExtra2(gpsInfoDTO.getExtra2());
         geoipEntity.setIp(gpsInfoDTO.getIp());
         geoipEntity.setIsp(gpsInfoDTO.getIsp());
         geoipEntity.setIspId(gpsInfoDTO.getIspId());

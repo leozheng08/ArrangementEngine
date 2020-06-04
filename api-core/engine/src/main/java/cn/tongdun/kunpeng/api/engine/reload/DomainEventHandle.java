@@ -75,7 +75,7 @@ public class DomainEventHandle {
                         if(isFinish(domainEvent)){
                             return true;
                         }
-
+                        logger.info(TraceUtils.getFormatTrace()+"handle domainEvent,eventType:"+domainEvent.getEventType()+",entity:"+domainEvent.getEntity());
                         boolean result = handleMessage(domainEvent);
                         if (result) {
                             //如果处理成功，则标记到本地缓存中

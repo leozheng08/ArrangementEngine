@@ -140,7 +140,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private String appName;
     /**
-     * 根据app_name，从缓存取得appType
+     * 根据客户传入的,若没有传，则以设备指纹服务查询回来的为准
      */
     private String appType;
 

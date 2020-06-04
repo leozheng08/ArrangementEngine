@@ -39,17 +39,12 @@ public class ReLoadScheduler implements ILoad {
 
     @Autowired
     private DomainEventHandle domainEventHandle;
-
-//    List<ILoad> reLoadTasks = new ArrayList<>();
-
     /**
      * 应用启动成功后，增加定时刷新任务
      */
     @Override
     public boolean load(){
 
-//        reLoadTasks.add(eventTypeLoadManager);
-//        reLoadTasks.add(fieldLoadManager);
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
         //定时器10秒钟执行一次
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
@@ -66,24 +61,16 @@ public class ReLoadScheduler implements ILoad {
         return true;
     }
 
-//    public void reLoad(){
-//        for(ILoad task:reLoadTasks) {
-//            try {
-//                task.load();
-//            } catch (Exception e){
-//                logger.error(TraceUtils.getFormatTrace()+"定时刷新缓存异常",e);
-//            }
-//        }
-//    }
-
-
-    //定时刷新取得最新的domain事件，并更新本地缓存
+    /**
+     * 定时刷新取得最新的domain事件，并更新本地缓存
+     */
     public void reLoad(){
         //拉取得最新两分钟的domain事件
         List<String> eventMsgs = domainEventRepository.pullLastEventMsgs();
         if(eventMsgs == null || eventMsgs.isEmpty()){
             return;
         }
+        //logger.info(TraceUtils.getFormatTrace()+"eventMsgs size:"+eventMsgs.size());
         domainEventHandle.handleMessage(eventMsgs);
     }
 
