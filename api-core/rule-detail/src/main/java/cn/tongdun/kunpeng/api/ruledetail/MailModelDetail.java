@@ -18,6 +18,8 @@ public class MailModelDetail extends ConditionDetail implements DetailCallable {
 
     private Long time;
 
+    private Long interfaceTime;
+
     @Override
     public IDetail call() {
         return this;
@@ -45,5 +47,13 @@ public class MailModelDetail extends ConditionDetail implements DetailCallable {
 
     public void setTime(Long time) {
         this.time = time;
+    }
+
+    public Long getInterfaceTime() {
+        return interfaceTime;
+    }
+
+    public void setInterfaceTime(Long interfaceTime) {
+        this.interfaceTime = interfaceTime;
     }
 }
