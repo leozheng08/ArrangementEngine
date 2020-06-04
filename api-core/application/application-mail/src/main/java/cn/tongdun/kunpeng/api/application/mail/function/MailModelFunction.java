@@ -118,6 +118,7 @@ public class MailModelFunction extends AbstractFunction {
                         detail.setRanResult(mailModelResult.getRand_result());
                     }
                     detail.setSimResult(mailModelResult.getSim_result());
+                    detail.setInterfaceTime(Double.doubleToLongBits(mailModelResult.getTime()));
                     detail.setTime(System.currentTimeMillis() - start);
                     return detail;
                 };
@@ -196,8 +197,17 @@ public class MailModelFunction extends AbstractFunction {
                         result.setStatus_code(temp.getStatus_code());
                         result.setTime(result.getTime() + temp.getTime());
                         result.setStatus_msg(result.getStatus_msg());
-                        if (!"ok".equals(temp.getStatus_msg())) {
+                        switch (temp.getStatus_code()) {
+                            case -1:
+                                return ReasonCode.MAIL_MODEL_REQUEST_FAILED;
+                            case 408 :
+                                return ReasonCode.MAIL_MODEL_TIMEOUT_ERROR;
+
+                        }
+                        if (-1 == temp.getStatus_code()) {
                             return ReasonCode.MAIL_MODEL_REQUEST_FAILED;
+                        } else if (0 == temp.getStatus_code()) {
+
                         }
                     } else {
                         result.setRand_result(result.getRand_result());
@@ -245,22 +255,8 @@ public class MailModelFunction extends AbstractFunction {
         params.put("mail", getFirstMail(context));
         params.put("time_inteval", "");
         params.put("sim_num", "");
+        params.put("event_time", "");
         return params;
     }
 
-
-
-    public static void main(String[] args) throws Exception {
-        Map params = Maps.newHashMap();
-        Map result = Maps.newHashMap();
-        params.put("mail", "yuanhang.ding@tongdun.net");
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), JSON.toJSONString(params));
-        Request request = new Request
-                .Builder()
-                .url("http://10.57.17.222:8078/detect_sim_email")
-                .post(body)
-                .build();
-        HttpUtils.postJson(Lists.newArrayList(request), result);
-        System.out.println(result);
-    }
 }
