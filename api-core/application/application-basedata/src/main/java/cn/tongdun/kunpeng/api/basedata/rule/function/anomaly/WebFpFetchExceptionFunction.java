@@ -82,7 +82,7 @@ public class WebFpFetchExceptionFunction extends AbstractFunction {
         boolean ret = false;
         DetailCallable detailCallable = null;
         DictionaryManager dictionaryManager= (DictionaryManager) SpringContextHolder.getBean("dictionaryManager");
-        if (codeSet.contains(code) && null != dictionaryManager.getFpResultMap().get(code)) {
+        if (codeSet.contains(code)) {
             ret = true;
             detailCallable = () -> {
                 FpExceptionDetail detail = new FpExceptionDetail();
