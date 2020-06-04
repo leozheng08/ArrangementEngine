@@ -7,9 +7,9 @@
 		<result property="key" column="mykey" />
 		<result property="value" column="myvalue" />
 		<result property="gmtCreate" column="gmt_create" />
-		<result property="gmtModified" column="gmt_modified" />
-		<result property="createdBy" column="created_by" />
-		<result property="updatedBy" column="updated_by" />		
+		<result property="gmtModify" column="gmt_modify" />
+		<result property="creator" column="creator" />
+		<result property="operator" column="operator" />
 		<result property="description" column="description" />
 	</resultMap>
 	
@@ -29,8 +29,8 @@
 			<if test="value != null">
 				AND myvalue = #{value}
 			</if>
-			<if test="createdBy != null">
-				AND created_by = #{createdBy}
+			<if test="creator != null">
+				AND creator = #{creator}
 			</if>
 		    <if test="description != null">
 				AND description like #{description}

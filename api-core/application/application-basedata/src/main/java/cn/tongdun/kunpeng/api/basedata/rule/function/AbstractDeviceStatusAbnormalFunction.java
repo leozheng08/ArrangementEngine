@@ -44,6 +44,19 @@ public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunct
 
     public abstract String getAppType();
 
+    /**
+     * 目前小程序等价于web，所以要特殊判断
+     * @param inheritAppType
+     * @param deviceInfoAppType
+     * @return
+     */
+    private boolean appTypeEqual(String inheritAppType,String deviceInfoAppType){
+        if (StringUtils.equalsIgnoreCase(inheritAppType,deviceInfoAppType)){
+            return true;
+        }
+        return StringUtils.equalsIgnoreCase(inheritAppType, "web");
+    }
+
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
@@ -65,7 +78,7 @@ public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunct
                         null == fpAbnormalTags) {
                     flag = false;
                 }
-                if (null != fpAbnormalTags && null != deviceInfo.get("appOs") && StringUtils.equalsIgnoreCase(this.getAppType(), deviceInfo.get("appOs").toString())) {
+                if (null != fpAbnormalTags && null != deviceInfo.get("appOs") && appTypeEqual(this.getAppType(), deviceInfo.get("appOs").toString())) {
                     flag = true;
                 }
                 if (flag) {

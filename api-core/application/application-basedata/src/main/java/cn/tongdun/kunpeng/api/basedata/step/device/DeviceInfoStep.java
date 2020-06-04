@@ -7,7 +7,6 @@ import cn.fraudmetrix.forseti.fp.model.QueryParams;
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.basedata.constant.AppTypeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.FpReasonCodeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.RespDetailTypeEnum;
 import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
@@ -18,19 +17,16 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.google.common.collect.Sets;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -72,78 +68,59 @@ public class DeviceInfoStep implements IRiskStep {
             return true;
         }
 
-        // 解密black_box
-        String deviceInfo = decodeBlackBox(blackBox);
-        if (StringUtils.isBlank(deviceInfo)) {
-            FpReasonUtils.put(param, FpReasonCodeEnum.BLACK_BOX_ERROR);
-            context.setDeviceInfo(param);
-            return true;
-        }
-        //调用设备指纹之前，调用参数的组织
-        Map jsonMap = JSON.parseObject(deviceInfo, HashMap.class);
-        if (jsonMap == null) {
-            logger.warn(TraceUtils.getFormatTrace() + "black_box信息格式不对,blackBox:" + blackBox);
-            FpReasonUtils.put(param, FpReasonCodeEnum.BLACK_BOX_ERROR);
-            context.setDeviceInfo(param);
-            return true;
-        }
-        String version = jsonMap.get("version") == null ? null : jsonMap.get("version").toString();
-        String blackBoxOs = jsonMap.get("os") == null ? null : jsonMap.get("os").toString();
-        if (StringUtils.isBlank(blackBoxOs)) {
-            logger.warn(TraceUtils.getFormatTrace() + "os is blank,blackBox:" + blackBox);
-            FpReasonUtils.put(param, FpReasonCodeEnum.BLACK_BOX_ERROR);
-            context.setDeviceInfo(param);
-            return true;
-        }
         //调用设备指纹
         String respDetailType = request.getRespDetailType();
         String tokenId = request.getTokenId();
         Map<String, Object> deviceMap = invokeFingerPrint(context, context.getPartnerCode(), context.getAppName(), tokenId, blackBox, respDetailType);
         context.setDeviceInfo(deviceMap);
-        context.setAppType(blackBoxOs);
+
+        String appType = deviceMap.get("appOs") == null ? null : deviceMap.get("appOs").toString();
+        if (StringUtils.isBlank(context.getAppType()) && StringUtils.isNotBlank(appType)) {
+            context.setAppType(appType);
+        }
 
         boolean success = DataUtil.toBoolean(deviceMap.get("success"));
         if (!success) {
             deviceMap.put("success", false);
-            postProcessAfterFail(blackBox, deviceMap, jsonMap, version);
+            //postProcessAfterFail(blackBox, deviceMap, jsonMap, version);
         } else {
-            postProcessAfterSuccess(context, deviceMap, jsonMap, blackBoxOs);
+            postProcessAfterSuccess(context, deviceMap, appType);
         }
 
         return true;
     }
 
-    private void postProcessAfterFail(String appType, Map<String, Object> deviceMap, Map jsonMap, String version) {
+//    private void postProcessAfterFail(String appType, Map<String, Object> deviceMap, Map jsonMap, String version) {
+//
+//        String tokenId = jsonMap.get("token_id") == null ? null : jsonMap.get("token_id").toString();
+//        String sessionId = jsonMap.get("session_id") == null ? null : jsonMap.get("session_id").toString();
+//
+//        if (StringUtils.equalsIgnoreCase(appType, AppTypeEnum.ios.name())) {
+//            if (StringUtils.isNotBlank(tokenId)) {
+//                deviceMap.put("tokenId", tokenId);
+//                //ios有可能是tokenId,所以上面为空的话再取这个看看
+//            } else if (StringUtils.isNotBlank(tokenId)) {
+//                deviceMap.put("tokenId", tokenId);
+//            }
+//        } else {
+//            //android3.0以下版本还是使用session_id
+//            if (StringUtils.isNoneBlank(version, sessionId) && "3.0.0".compareTo(version) > 0) {
+//                deviceMap.put("sessionId", sessionId);
+//            }
+//            //android3.0以上版本使用token_id
+//            //但为了在网页上统一展示为sessionId,这里进行转换
+//            if (StringUtils.isNoneBlank(version, tokenId) && ("3.0.0".compareTo(version) < 0 || "3.0.0".compareTo(version) == 0)) {
+//                deviceMap.put("sessionId", tokenId);
+//            }
+//        }
+//        // 回填完deviceId之后，删除“查无结果”相关信息，并将success置为true
+//        if (StringUtils.isNotBlank((String) deviceMap.get("deviceId"))) {
+//            FpReasonUtils.resetToTrue(deviceMap);
+//        }
+//
+//    }
 
-        String tokenId = jsonMap.get("token_id") == null ? null : jsonMap.get("token_id").toString();
-        String sessionId = jsonMap.get("session_id") == null ? null : jsonMap.get("session_id").toString();
-
-        if (StringUtils.equalsIgnoreCase(appType, AppTypeEnum.ios.name())) {
-            if (StringUtils.isNotBlank(tokenId)) {
-                deviceMap.put("tokenId", tokenId);
-                //ios有可能是tokenId,所以上面为空的话再取这个看看
-            } else if (StringUtils.isNotBlank(tokenId)) {
-                deviceMap.put("tokenId", tokenId);
-            }
-        } else {
-            //android3.0以下版本还是使用session_id
-            if (StringUtils.isNoneBlank(version, sessionId) && "3.0.0".compareTo(version) > 0) {
-                deviceMap.put("sessionId", sessionId);
-            }
-            //android3.0以上版本使用token_id
-            //但为了在网页上统一展示为sessionId,这里进行转换
-            if (StringUtils.isNoneBlank(version, tokenId) && ("3.0.0".compareTo(version) < 0 || "3.0.0".compareTo(version) == 0)) {
-                deviceMap.put("sessionId", tokenId);
-            }
-        }
-        // 回填完deviceId之后，删除“查无结果”相关信息，并将success置为true
-        if (StringUtils.isNotBlank((String) deviceMap.get("deviceId"))) {
-            FpReasonUtils.resetToTrue(deviceMap);
-        }
-
-    }
-
-    private void postProcessAfterSuccess(AbstractFraudContext context, Map<String, Object> deviceMap, Map jsonMap, String appType) {
+    private void postProcessAfterSuccess(AbstractFraudContext context, Map<String, Object> deviceMap, String appType) {
 
         Object smartIdObj = deviceMap.get("smartId");
         if (smartIdObj != null) {
@@ -154,9 +131,9 @@ public class DeviceInfoStep implements IRiskStep {
             context.set("deviceId", deviceIdObj.toString());
         }
         //处理真实IP
-        dealWithTrueIp(context,deviceMap);
+        dealWithTrueIp(context, deviceMap);
 
-        postProcessMobileScene(appType, context, jsonMap);
+        postProcessMobileScene(appType, context, deviceMap);
     }
 
     private void postProcessMobileScene(String appType, AbstractFraudContext context, Map jsonMap) {
@@ -262,24 +239,6 @@ public class DeviceInfoStep implements IRiskStep {
         } else {
             return respDetailType;
         }
-    }
-
-    /**
-     * 解密blackbox字段
-     *
-     * @param blackBox
-     * @return 解密后的blackbox的内容
-     */
-    private String decodeBlackBox(String blackBox) {
-        String deviceInfo = "";
-        try {
-            blackBox = blackBox.replaceAll(" ", "+");
-            byte[] byts = Base64.decodeBase64(blackBox);
-            deviceInfo = new String(byts, Charset.defaultCharset().name());
-        } catch (Exception e) {
-            logger.warn(TraceUtils.getFormatTrace() + "blackbox解析错误,blackBox:" + blackBox, e);
-        }
-        return deviceInfo;
     }
 
 

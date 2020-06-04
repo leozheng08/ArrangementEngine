@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.acl.impl.event.notify.kafka;
 
 import cn.tongdun.kunpeng.api.acl.event.notice.IRawDomainEventHandle;
+import cn.tongdun.kunpeng.share.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class DomainEventConsumer extends AbstractConsumer {
 
     @Override
     public void onMessage(String topic, Map message) {
+        logger.info("DomainEventConsumer consumer message,topic:"+topic+",message:"+ JSON.toJSONString(message));
         rawDomainEventHandle.handleRawMessage(message);
     }
 
