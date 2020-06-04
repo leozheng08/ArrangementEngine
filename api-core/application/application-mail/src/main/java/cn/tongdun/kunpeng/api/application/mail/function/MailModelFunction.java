@@ -112,8 +112,12 @@ public class MailModelFunction extends AbstractFunction {
             long start = System.currentTimeMillis();
             Object result = getModelResponse(url, ranUrl, mail, context);
 
+            if (null == result) {
+                ReasonCodeUtil.add(context, ReasonCode.MAIL_MODEL_OTHER_EXCEPTION, "mail_model");
+                return new FunctionResult(false);
+            }
             // 接口返回Exception情况处理
-            if (null != result && result instanceof ReasonCode) {
+            if (result instanceof ReasonCode) {
                 ReasonCodeUtil.add(context, (ReasonCode) result, "mail_model");
                 return new FunctionResult(false);
             } else {
@@ -246,7 +250,7 @@ public class MailModelFunction extends AbstractFunction {
             return result;
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "http request raise exception :{}", e);
-            return ReasonCode.MAIL_MODEL_UN_EXCEPTION;
+            return ReasonCode.MAIL_MODEL_OTHER_EXCEPTION;
         }
     }
 
