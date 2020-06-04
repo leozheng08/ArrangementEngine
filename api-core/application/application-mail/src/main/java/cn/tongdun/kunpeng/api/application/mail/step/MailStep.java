@@ -25,7 +25,7 @@ import java.util.List;
  * @date 05/27/2020
  */
 @Component
-@Step(pipeline = Risk.NAME, phase = Risk.MAIL_MODEL)
+@Step(pipeline = Risk.NAME, phase = Risk.BASIC_DATA)
 public class MailStep implements IRiskStep {
 
     @Value("${mail.model.url}")

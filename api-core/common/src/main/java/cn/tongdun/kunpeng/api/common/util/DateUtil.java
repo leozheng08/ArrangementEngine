@@ -67,6 +67,14 @@ public class DateUtil {
 	}
 
 	/**
+	 * 获取当前时间的datetime格式
+	 * @return
+	 */
+	public static String parseNowDatetimeFormat() {
+		return datetimeFormat.format(new Date());
+	}
+
+	/**
 	 * 将时间戳转换为Date对象
 	 * 
 	 * @param timestamp

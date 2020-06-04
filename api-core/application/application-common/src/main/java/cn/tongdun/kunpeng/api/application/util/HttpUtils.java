@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,24 +31,34 @@ public class HttpUtils {
      * @return
      */
     public static Map postAsyncJson(List<Request> requests, Map<Request, Object> results) throws Exception {
-        CountDownLatch countDownLatch = new CountDownLatch(requests.size());
-        requests.forEach(r -> {
-            Call call = client.newCall(r);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    results.put(r, e);
-                    countDownLatch.countDown();
-                }
+        CountDownLatch latch = new CountDownLatch(1);
+        if (requests.size() > 0) {
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    results.put(r, response.body().string());
-                    countDownLatch.countDown();
-                }
+            requests.forEach(r -> {
+                Call call = client.newCall(r);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        results.put(r, e);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        results.put(r, response.body().string());
+                    }
+                });
             });
-        });
-        countDownLatch.await();
+        }
+
+        // TODO 优化异步等待模式
+        while (true) {
+            if (requests.size() == results.size()) {
+                latch.countDown();
+                break;
+            }
+        }
+        latch.await();
+
         return results;
     }
 
@@ -63,7 +74,7 @@ public class HttpUtils {
         for (int var0 = 0; var0 < requests.size(); var0++) {
             try {
                 Response response = client.newCall(requests.get(var0)).execute();
-                results.put(requests.get(var0), response);
+                results.put(requests.get(var0), response.body().string());
             }catch (Exception e) {
                 results.put(requests.get(var0), e);
                 throw e;
@@ -71,5 +82,7 @@ public class HttpUtils {
         }
         return results;
     }
+
+
 
 }

@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.application.util.HttpUtils;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.ruledetail.MailModelDetail;
 import cn.tongdun.kunpeng.share.json.JSON;
@@ -19,14 +20,13 @@ import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;
@@ -51,6 +51,10 @@ public class MailModelFunction extends AbstractFunction {
 
     private List<String> mailTypes;
 
+    private String timeInterval = "2";
+
+    private String simResult = "10";
+
     @Override
     public String getName() {
         return Constant.Function.MAIL_MODEL;
@@ -74,6 +78,12 @@ public class MailModelFunction extends AbstractFunction {
             }
             if (StringUtils.equals("threshold", param.getName())) {
                 threshold = Integer.valueOf(param.getValue());
+            }
+            if (StringUtils.equals("timeInterval", param.getName())) {
+                timeInterval = param.getValue();
+            }
+            if (StringUtils.equals("simResult", param.getName())) {
+                simResult = param.getValue();
             }
         });
 
@@ -100,11 +110,10 @@ public class MailModelFunction extends AbstractFunction {
         try {
 
             long start = System.currentTimeMillis();
-            Map<String, Object> params = constructParams(context);
-            Object result = getAsyncResponse(url, ranUrl, params);
+            Object result = getModelResponse(url, ranUrl, mail, context);
 
             // 接口返回Exception情况处理
-            if (null == result && result instanceof ReasonCode) {
+            if (null != result && result instanceof ReasonCode) {
                 ReasonCodeUtil.add(context, (ReasonCode) result, "mail_model");
                 return new FunctionResult(false);
             } else {
@@ -115,10 +124,9 @@ public class MailModelFunction extends AbstractFunction {
                     detail.setConditionUuid(this.getConditionUuid());
                     detail.setRuleUuid(this.ruleUuid);
                     if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                        detail.setRanResult(mailModelResult.getRand_result());
+                        detail.setRanResult(mailModelResult.getRanResult());
                     }
-                    detail.setSimResult(mailModelResult.getSim_result());
-                    detail.setInterfaceTime(Double.doubleToLongBits(mailModelResult.getTime()));
+                    detail.setSimResult(null == mailModelResult.getResult() ? 0 : (Integer)mailModelResult.getResult());
                     detail.setTime(System.currentTimeMillis() - start);
                     return detail;
                 };
@@ -127,7 +135,7 @@ public class MailModelFunction extends AbstractFunction {
                 boolean randResult = true;
                 // 随机率判定
                 if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                    Double random = mailModelResult.getRand_result();
+                    Double random = mailModelResult.getRanResult();
                     if (null != random) {
                         switch (operate) {
                             case ">=":
@@ -145,7 +153,7 @@ public class MailModelFunction extends AbstractFunction {
                         }
                     }
                 }
-                return new FunctionResult(null == mapping.get(mailModelResult.getSim_result()) || randResult, callable);
+                return new FunctionResult(null == mapping.get(mailModelResult.getResult()) || randResult, callable);
             }
         } catch (Exception e) {
             if (ReasonCodeUtil.isTimeout(e)) {
@@ -162,24 +170,36 @@ public class MailModelFunction extends AbstractFunction {
      * 根据参数异步获取模型接口结果
      *
      * @param url
-     * @param params
+     * @param ranUrl
      * @return
      */
-    private Object getAsyncResponse(String url, String ranUrl, Map<String, Object> params) {
+    private Object getModelResponse(String url, String ranUrl, String mail, AbstractFraudContext context) {
 
         Map<Request, Object> httpResults = Maps.newHashMap();
 
         MailModelResult result = new MailModelResult();
         try {
 
-            RequestBody body = RequestBody.create(MediaType.parse("application/json"), JSON.toJSONString(params));
+            // 表单格式请求
+            RequestBody body = new FormBody.Builder()
+                    .add("business", context.getPartnerCode())
+                    .add("mail", mail)
+                    .add("time_inteval", timeInterval)
+                    .add("sim_num", simResult)
+                    .add("event_time", DateUtil.parseNowDatetimeFormat())
+                    .build();
 
             List<Request> requests = Lists.newArrayList();
             // 规则配置了随机率参数时，添加并行请求
+
             if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                 Request ranRequest = new Request.Builder().url(ranUrl).post(body).build();
                 requests.add(ranRequest);
-            } else if (CollectionUtils.isNotEmpty(mailTypes)) {
+            }
+
+            boolean flag = (mailTypes.contains(MailModelTypeEnum.RANDOM.code()) && mailTypes.size() > 1)
+                    || mailTypes.size() > 0;
+            if (flag) {
                 Request request = new Request.Builder().url(url).post(body).build();
                 requests.add(request);
             }
@@ -189,34 +209,38 @@ public class MailModelFunction extends AbstractFunction {
             Iterator<Map.Entry<Request, Object>> var0 = httpResults.entrySet().iterator();
             while (var0.hasNext()) {
                 Map.Entry<Request, Object> entry = var0.next();
-                if (entry.getValue() instanceof String) {
-                    String response = (String) entry.getValue();
-                    MailModelResult temp = JSON.parseObject(response, MailModelResult.class);
-                    if (url.equals(entry.getKey().url())) {
-                        result.setSim_result(temp.getSim_result());
-                        result.setStatus_code(temp.getStatus_code());
-                        result.setTime(result.getTime() + temp.getTime());
+                // 邮箱模型服务
+                String response = (String) entry.getValue();
+                if (url.equals(entry.getKey().url().toString())) {
+                    if (entry.getValue() instanceof String) {
+                        MailModelResult simResult = JSON.parseObject(response, MailModelResult.class);
+                        result.setStatus_code(simResult.getStatus_code());
                         result.setStatus_msg(result.getStatus_msg());
-                        switch (temp.getStatus_code()) {
+                        switch (simResult.getStatus_code()) {
                             case -1:
                                 return ReasonCode.MAIL_MODEL_REQUEST_FAILED;
-                            case 408 :
+                            case 408:
                                 return ReasonCode.MAIL_MODEL_TIMEOUT_ERROR;
 
                         }
-                        if (-1 == temp.getStatus_code()) {
-                            return ReasonCode.MAIL_MODEL_REQUEST_FAILED;
-                        } else if (0 == temp.getStatus_code()) {
+                    } else {
+                        return entry.getValue() instanceof TimeoutException ? ReasonCode.MAIL_MODEL_TIMEOUT_ERROR : ReasonCode.MAIL_MODEL_NOT_AVAILABLE_ERROR;
+                    }
+                    // 随机率服务
+                } else {
+                    if (entry.getValue() instanceof String) {
+                        MailModelResult randResult = JSON.parseObject(response, MailModelResult.class);
+                        switch (randResult.getStatus_code()) {
+                            case -1:
+                                return ReasonCode.MAIL_MODEL_RANDOM_REQUEST_FAILED;
+                            case 408:
+                                return ReasonCode.MAIL_MODEL_RANDOM_TIMEOUT_ERROR;
 
                         }
+                        result.setRanResult(Double.parseDouble(randResult.getResult().toString()));
                     } else {
-                        result.setRand_result(result.getRand_result());
-                        if (!"ok".equals(temp.getStatus_msg())) {
-                            return ReasonCode.MAIL_MODEL_RANDOM_REQUEST_FAILED;
-                        }
+                        return entry.getValue() instanceof TimeoutException ? ReasonCode.MAIL_MODEL_RANDOM_TIMEOUT_ERROR : ReasonCode.MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR;
                     }
-                } else {
-                    return entry.getValue() instanceof TimeoutException ? ReasonCode.MAIL_MODEL_TIMEOUT_ERROR : ReasonCode.MAIL_MODEL_NOT_AVAILABLE_ERROR;
                 }
             }
             return result;
@@ -243,20 +267,29 @@ public class MailModelFunction extends AbstractFunction {
         return null;
     }
 
-    /**
-     * 构建接口需要的参数
-     *
-     * @param context
-     * @return
-     */
-    private Map<String, Object> constructParams(AbstractFraudContext context) {
+    public static void main(String[] args) throws Exception {
         Map params = Maps.newHashMap();
-        params.put("business", context.getPartnerCode());
-        params.put("mail", getFirstMail(context));
-        params.put("time_inteval", "");
-        params.put("sim_num", "");
-        params.put("event_time", "");
-        return params;
-    }
+        Map result = Maps.newHashMap();
+        params.put("mail", "10272722@qq.com");
+        params.put("business", "test");
+        params.put("time_inteval", "7");
+        params.put("sim_num", "10");
+        params.put("event_time", "2020-05-01 12:12:12");
+        String url = "http://10.57.17.222:8078/detect_rand_email";
+        System.out.println(url);
 
+        RequestBody body = new FormBody.Builder()
+                .add("mail", "yuanhang.ding@tongdun.net")
+                .add("business", "test")
+                .add("event_time", "2020-05-01 12:12:12")
+                .build();
+        Request request = new Request
+                .Builder()
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .url(url)
+                .post(body).build();
+
+        HttpUtils.postJson(Lists.newArrayList(request), result);
+        System.out.println(result);
+    }
 }
