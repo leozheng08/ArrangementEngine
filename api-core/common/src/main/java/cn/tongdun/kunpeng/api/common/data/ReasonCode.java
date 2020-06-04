@@ -134,6 +134,7 @@ public enum ReasonCode {
     MAIL_MODEL_RANDOM_REQUEST_FAILED("50742", "邮件模型随机率服务请求5XX"),
     MAIL_MODEL_NOT_AVAILABLE_ERROR("50743", "邮件模型服务不可用"),
     MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR("50744", "邮件模型随机率服务不可用"),
+    MAIL_MODEL_UN_EXCEPTION("50745", "邮箱模型服务其他异常"),
 
 
     RULE_ENGINE_TIMEOUT("50601", "规则引擎运行超时"),

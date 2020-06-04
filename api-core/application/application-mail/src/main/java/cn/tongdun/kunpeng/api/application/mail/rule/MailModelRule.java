@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.basedata.rule.template.mail;
+package cn.tongdun.kunpeng.api.application.mail.rule;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
@@ -6,7 +6,7 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.basedata.rule.function.mail.MailModelFunction;
+import cn.tongdun.kunpeng.api.application.mail.function.MailModelFunction;
 
 /**
  * @author yuanhang

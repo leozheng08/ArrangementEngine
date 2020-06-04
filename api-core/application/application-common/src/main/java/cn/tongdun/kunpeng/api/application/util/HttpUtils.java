@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,20 +30,24 @@ public class HttpUtils {
      * @return
      */
     public static Map postAsyncJson(List<Request> requests, Map<Request, Object> results) throws Exception {
+        CountDownLatch countDownLatch = new CountDownLatch(requests.size());
         requests.forEach(r -> {
             Call call = client.newCall(r);
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     results.put(r, e);
+                    countDownLatch.countDown();
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    results.put(r, response);
+                    results.put(r, response.body().string());
+                    countDownLatch.countDown();
                 }
             });
         });
+        countDownLatch.await();
         return results;
     }
 

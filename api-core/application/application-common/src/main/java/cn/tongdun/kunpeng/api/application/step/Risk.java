@@ -24,6 +24,9 @@ public class Risk {
     @Phase(parallel = true, timeOut = 800, poolSize = 100, order = 4000)
     public final static String RULE_DATA = "ruleData";
 
+    @Phase(parallel = false, order = 4000)
+    public final static String MAIL_MODEL = "mail";
+
     @Phase(parallel = false, order = 5000)
     public final static String POLICY_INDEX = "policyIndex";
 
