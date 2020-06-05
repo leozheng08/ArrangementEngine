@@ -11,7 +11,9 @@ public enum DictionaryEnum {
      */
     StarkDeviceResult("设备指纹结果获取类型"),
 
-    MailParamKey("租户传递邮箱字段key");
+    MailParamKey("租户传递邮箱字段key"),
+
+    PhoneSwitch("是否调用手机号三方接口key");
 
     private String desc;
     DictionaryEnum(String desc){

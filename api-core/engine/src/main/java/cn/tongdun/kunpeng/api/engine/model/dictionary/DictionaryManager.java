@@ -19,8 +19,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.MailParamKey;
-import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.StarkDeviceResult;
+import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.*;
 
 /**
  * @Author: liuq
@@ -123,4 +122,21 @@ public class DictionaryManager {
         return dictionaries;
     }
 
+    /**
+     * 获取调用三方手机号接口配置
+     * @return
+     */
+    public List<Dictionary> getPhoneSwitchKey() {
+        List<Dictionary> dictionaries = null;
+        try {
+            dictionaries = dict10MinuteCache.get(PhoneSwitch.name());
+            if (null == dictionaries) {
+                loadDictionary(PhoneSwitch.name());
+                return dict10MinuteCache.get(PhoneSwitch.name());
+            }
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "get phoneSwitch dictionary failed");
+        }
+        return dictionaries;
+    }
 }

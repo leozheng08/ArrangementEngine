@@ -150,6 +150,12 @@
                 <artifactId>application-mail</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-mix</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- kunpeng-api application end -->
 
         </dependencies>
