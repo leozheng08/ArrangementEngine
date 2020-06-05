@@ -1,13 +1,13 @@
 package cn.tongdun.kunpeng.api.application.util;
 
 import okhttp3.*;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,33 +31,26 @@ public class HttpUtils {
      * @return
      */
     public static Map postAsyncJson(List<Request> requests, Map<Request, Object> results) throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        if (requests.size() > 0) {
-
+        if (CollectionUtils.isNotEmpty(requests)) {
+            CountDownLatch latch = new CountDownLatch(requests.size());
             requests.forEach(r -> {
                 Call call = client.newCall(r);
                 call.enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        latch.countDown();
                         results.put(r, e);
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
+                        latch.countDown();
                         results.put(r, response.body().string());
                     }
                 });
             });
+            latch.await();
         }
-
-        // TODO 优化异步等待模式
-        while (true) {
-            if (requests.size() == results.size()) {
-                latch.countDown();
-                break;
-            }
-        }
-        latch.await();
 
         return results;
     }

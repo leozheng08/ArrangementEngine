@@ -146,7 +146,7 @@ public class MailModelFunction extends AbstractFunction {
                                 randResult = random >= threshold;
                                 break;
                             case "=":
-                                randResult = random.equals(threshold);
+                                randResult = random.intValue() == threshold;
                                 break;
                             case ">":
                                 randResult = random > threshold;
@@ -179,7 +179,7 @@ public class MailModelFunction extends AbstractFunction {
      */
     private Object getModelResponse(String url, String ranUrl, String mail, AbstractFraudContext context) {
 
-        Map<Request, Object> httpResults = Maps.newHashMap();
+        Map<Request, Object> httpResults = Maps.newConcurrentMap();
 
         MailModelResult result = new MailModelResult();
         try {
@@ -214,9 +214,9 @@ public class MailModelFunction extends AbstractFunction {
             while (var0.hasNext()) {
                 Map.Entry<Request, Object> entry = var0.next();
                 // 邮箱模型服务
-                String response = (String) entry.getValue();
-                if (url.equals(entry.getKey().url().toString())) {
-                    if (entry.getValue() instanceof String) {
+                if (entry.getValue() instanceof String) {
+                    String response = (String) entry.getValue();
+                    if (url.equals(entry.getKey().url().toString())) {
                         MailModelResult simResult = JSON.parseObject(response, MailModelResult.class);
                         result.setStatus_code(simResult.getStatus_code());
                         result.setStatus_msg(result.getStatus_msg());
@@ -225,27 +225,29 @@ public class MailModelFunction extends AbstractFunction {
                                 return ReasonCode.MAIL_MODEL_REQUEST_FAILED;
                             case 408:
                                 return ReasonCode.MAIL_MODEL_TIMEOUT_ERROR;
-
+                            default:
+                                break;
                         }
                     } else {
-                        return entry.getValue() instanceof TimeoutException ? ReasonCode.MAIL_MODEL_TIMEOUT_ERROR : ReasonCode.MAIL_MODEL_NOT_AVAILABLE_ERROR;
-                    }
-                    // 随机率服务
-                } else {
-                    if (entry.getValue() instanceof String) {
                         MailModelResult randResult = JSON.parseObject(response, MailModelResult.class);
                         switch (randResult.getStatus_code()) {
                             case -1:
                                 return ReasonCode.MAIL_MODEL_RANDOM_REQUEST_FAILED;
                             case 408:
                                 return ReasonCode.MAIL_MODEL_RANDOM_TIMEOUT_ERROR;
-
+                            default:
+                                break;
                         }
                         result.setRanResult(Double.parseDouble(randResult.getResult().toString()) * 100);
+                    }
+                } else {
+                    if (url.equals(entry.getKey().url().toString())) {
+                        return entry.getValue() instanceof TimeoutException ? ReasonCode.MAIL_MODEL_TIMEOUT_ERROR : ReasonCode.MAIL_MODEL_NOT_AVAILABLE_ERROR;
                     } else {
                         return entry.getValue() instanceof TimeoutException ? ReasonCode.MAIL_MODEL_RANDOM_TIMEOUT_ERROR : ReasonCode.MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR;
                     }
                 }
+
             }
             return result;
         } catch (Exception e) {
