@@ -84,6 +84,13 @@
             <artifactId>application-mail</artifactId>
             <version>${api-core.version}</version>
         </dependency>
+
+        <dependency>
+            <!-- 决策接口支持策略指标-->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-mix</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
         <dependency>
             <!-- 决策接口输出 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
