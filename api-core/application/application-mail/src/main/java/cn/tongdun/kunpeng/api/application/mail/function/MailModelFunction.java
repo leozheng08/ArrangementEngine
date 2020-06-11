@@ -77,7 +77,7 @@ public class MailModelFunction extends AbstractFunction {
                 operate = param.getValue();
             }
             if (StringUtils.equals("threshold", param.getName())) {
-                threshold = Integer.valueOf(param.getValue());
+                threshold = Integer.valueOf(StringUtils.isEmpty(param.getValue()) ? "0": param.getValue());
             }
             if (StringUtils.equals("timeInterval", param.getName())) {
                 timeInterval = param.getValue();
