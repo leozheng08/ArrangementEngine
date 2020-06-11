@@ -346,6 +346,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>holmes-share-enterprise</artifactId>
+                <version>1.0.0-RELEASE</version>
+            </dependency>
 
 
             <!-- groovy -->
