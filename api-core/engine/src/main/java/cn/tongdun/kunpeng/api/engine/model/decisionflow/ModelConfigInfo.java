@@ -7,8 +7,14 @@ import java.util.List;
 @Data
 public class ModelConfigInfo {
 
+    /**
+     * 模型uuid
+     */
     private String uuid;
 
+    /**
+     * 模型版本
+     */
     private String modelVersion;
 
     /**

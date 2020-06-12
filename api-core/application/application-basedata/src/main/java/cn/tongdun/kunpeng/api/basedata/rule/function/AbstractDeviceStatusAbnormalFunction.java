@@ -36,7 +36,7 @@ public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunct
         }
         abnomalTagSet = Sets.newHashSet();
         functionDesc.getParamList().forEach(param -> {
-            if (StringUtils.equals("abnormalTags", param.getName())) {
+            if (StringUtils.equals("codes", param.getName())) {
                 abnomalTagSet.addAll(Splitter.on(",").splitToList(param.getValue()));
             }
         });
