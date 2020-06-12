@@ -12,32 +12,40 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
  */
 public class MailModelDetail extends ConditionDetail implements DetailCallable {
 
-    private Double ranResult;
+    private Double rand;
 
-    private Integer simResult;
+    private String ranResult;
+
+    private String simResult;
 
     private Long time;
-
-    private Long interfaceTime;
 
     @Override
     public IDetail call() {
         return this;
     }
 
-    public Double getRanResult() {
+    public Double getRand() {
+        return rand;
+    }
+
+    public void setRand(Double rand) {
+        this.rand = rand;
+    }
+
+    public String getRanResult() {
         return ranResult;
     }
 
-    public void setRanResult(Double ranResult) {
+    public void setRanResult(String ranResult) {
         this.ranResult = ranResult;
     }
 
-    public Integer getSimResult() {
+    public String getSimResult() {
         return simResult;
     }
 
-    public void setSimResult(Integer simResult) {
+    public void setSimResult(String simResult) {
         this.simResult = simResult;
     }
 
@@ -49,11 +57,4 @@ public class MailModelDetail extends ConditionDetail implements DetailCallable {
         this.time = time;
     }
 
-    public Long getInterfaceTime() {
-        return interfaceTime;
-    }
-
-    public void setInterfaceTime(Long interfaceTime) {
-        this.interfaceTime = interfaceTime;
-    }
 }

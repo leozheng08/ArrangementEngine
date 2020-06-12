@@ -8,11 +8,12 @@ import org.springframework.stereotype.Component;
  * @author: yuanhang
  * @date: 2020-06-10 18:52
  **/
-//@Component
+@Component
 public class AccessBusinessReloadManager implements IReload<AccessBusiness> {
 
     @Override
     public boolean create(AccessBusiness accessBusiness) {
+
         return false;
     }
 

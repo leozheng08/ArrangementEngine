@@ -1,11 +1,46 @@
 package cn.tongdun.kunpeng.api.engine.model.access;
 
+import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.engine.model.application.AdminApplicationCache;
+import com.google.common.collect.Maps;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.Map;
+
 /**
  * @author: yuanhang
  * @date: 2020-06-10 14:28
  **/
-public class AccessBusinessCache {
+@Component
+public class AccessBusinessCache extends AbstractLocalCache<String, AccessBusiness> {
 
+    @Autowired
+    AdminApplicationCache adminApplicationCache;
 
+    /**
+     * uuid -> accessBusiness
+      */
+    private final Map<String, AccessBusiness> accessBusinessMap = Maps.newConcurrentMap();
 
+    @PostConstruct
+    public void init() {
+        register(AccessBusiness.class);
+    }
+
+    @Override
+    public AccessBusiness get(String key) {
+        return accessBusinessMap.get(key);
+    }
+
+    @Override
+    public void put(String uuid, AccessBusiness accessBusiness) {
+        accessBusinessMap.put(uuid, accessBusiness);
+    }
+
+    @Override
+    public AccessBusiness remove(String uuid) {
+        return accessBusinessMap.remove(uuid);
+    }
 }

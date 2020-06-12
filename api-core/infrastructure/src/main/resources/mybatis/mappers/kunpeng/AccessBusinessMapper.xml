@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AccessBusinessDAO">
+	<resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.AccessBusinessDO" >
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="uuid" property="uuid" jdbcType="VARCHAR" />
+		<result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
+		<result column="app_name" property="appName" jdbcType="VARCHAR" />
+		<result column="access_type" property="accessType" jdbcType="VARCHAR" />
+		<result column="access_name" property="accessName" jdbcType="VARCHAR" />
+		<result column="access_tag" property="accessTag" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="is_deleted" property="isDeleted" jdbcType="TINYINT" />
+		<result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="operator" property="operator" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List" >
+		id, uuid, partner_code, app_name, access_type, access_name, access_tag, status, is_deleted,
+    gmt_create, gmt_modify, creator, operator
+	</sql>
+
+	<select id="queryAllUsableAccess" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from access_business
+		where is_deleted = 0;
+	</select>
+
+</mapper>

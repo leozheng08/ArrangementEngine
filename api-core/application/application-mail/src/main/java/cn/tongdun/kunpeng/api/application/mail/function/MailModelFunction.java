@@ -123,20 +123,8 @@ public class MailModelFunction extends AbstractFunction {
             } else {
                 // 处理接口返回结果
                 MailModelResult mailModelResult = (MailModelResult) result;
-                DetailCallable callable = () -> {
-                    MailModelDetail detail = new MailModelDetail();
-                    detail.setConditionUuid(this.getConditionUuid());
-                    detail.setRuleUuid(this.ruleUuid);
-                    if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                        detail.setRanResult(mailModelResult.getRanResult());
-                    }
-                    detail.setSimResult(null == mailModelResult.getResult() ? 0 : (Integer)mailModelResult.getResult());
-                    detail.setTime(System.currentTimeMillis() - start);
-                    return detail;
-                };
-
                 Map<Integer, String> mapping = MailModelTypeEnum.mappingCode(mailTypes);
-                boolean randResult = true;
+                boolean randResult = false;
                 // 随机率判定
                 if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                     Double random = mailModelResult.getRanResult();
@@ -157,7 +145,20 @@ public class MailModelFunction extends AbstractFunction {
                         }
                     }
                 }
-                return new FunctionResult(null == mapping.get(mailModelResult.getResult()) || randResult, callable);
+                boolean finalRandResult = randResult;
+                DetailCallable callable = () -> {
+                    MailModelDetail detail = new MailModelDetail();
+                    detail.setConditionUuid(this.getConditionUuid());
+                    detail.setRuleUuid(this.ruleUuid);
+                    if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
+                        detail.setRanResult(finalRandResult ? "邮箱随机率符合":"邮箱随机率不符");
+                        detail.setRand(mailModelResult.getRanResult());
+                    }
+                    detail.setSimResult(null == mailModelResult.getResult() ? "未命中规则" : mapping.get(mailModelResult.getResult()));
+                    detail.setTime(System.currentTimeMillis() - start);
+                    return detail;
+                };
+                return new FunctionResult(null != mapping.get(mailModelResult.getResult()) || randResult, callable);
             }
         } catch (Exception e) {
             if (ReasonCodeUtil.isTimeout(e)) {
