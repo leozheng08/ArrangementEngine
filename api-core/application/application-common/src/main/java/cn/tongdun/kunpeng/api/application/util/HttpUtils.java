@@ -1,7 +1,10 @@
 package cn.tongdun.kunpeng.api.application.util;
 
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import okhttp3.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -15,6 +18,8 @@ import java.util.concurrent.TimeUnit;
  * @date 05/27/2020
  */
 public class HttpUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(HttpUtils.class);
 
     private static final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(Duration.ofMillis(100))
@@ -30,26 +35,31 @@ public class HttpUtils {
      * @param results
      * @return
      */
-    public static Map postAsyncJson(List<Request> requests, Map<Request, Object> results) throws Exception {
-        if (CollectionUtils.isNotEmpty(requests)) {
-            CountDownLatch latch = new CountDownLatch(requests.size());
-            requests.forEach(r -> {
-                Call call = client.newCall(r);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        latch.countDown();
-                        results.put(r, e);
-                    }
+    public static Map postAsyncJson(List<Request> requests, Map<Request, Object> results) {
+        try {
+            if (CollectionUtils.isNotEmpty(requests)) {
+                CountDownLatch latch = new CountDownLatch(requests.size());
+                requests.forEach(r -> {
+                    Call call = client.newCall(r);
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            results.put(r, e);
+                            latch.countDown();
+                        }
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        latch.countDown();
-                        results.put(r, response.body().string());
-                    }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            results.put(r, response.body().string());
+                            latch.countDown();
+                        }
+                    });
                 });
-            });
-            latch.await();
+                latch.await();
+            }
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "mail model http request raise exception :{}", e);
+            results.put(requests.get(0), e);
         }
 
         return results;

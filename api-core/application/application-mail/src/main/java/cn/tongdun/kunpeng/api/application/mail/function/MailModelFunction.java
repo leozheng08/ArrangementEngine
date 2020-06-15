@@ -123,7 +123,6 @@ public class MailModelFunction extends AbstractFunction {
             } else {
                 // 处理接口返回结果
                 MailModelResult mailModelResult = (MailModelResult) result;
-                logger.info(TraceUtils.getFormatTrace() + "get result from mail model :{}", mailModelResult);
                 Map<Integer, String> mapping = MailModelTypeEnum.mappingCode(mailTypes);
                 boolean randResult = false;
                 // 随机率判定
@@ -204,12 +203,13 @@ public class MailModelFunction extends AbstractFunction {
             }
 
             boolean flag = (mailTypes.contains(MailModelTypeEnum.RANDOM.code()) && mailTypes.size() > 1)
-                    || mailTypes.size() > 0;
+                    || (!mailTypes.contains(MailModelTypeEnum.RANDOM.code()) && mailTypes.size() > 0);
             if (flag) {
                 Request request = new Request.Builder().url(url).post(body).build();
                 requests.add(request);
             }
             HttpUtils.postAsyncJson(requests, httpResults);
+            logger.info(TraceUtils.getFormatTrace() + "get httpResults : {}", httpResults.values());
 
             //处理接口返回结果
             Iterator<Map.Entry<Request, Object>> var0 = httpResults.entrySet().iterator();
@@ -221,13 +221,14 @@ public class MailModelFunction extends AbstractFunction {
                     if (url.equals(entry.getKey().url().toString())) {
                         MailModelResult simResult = JSON.parseObject(response, MailModelResult.class);
                         result.setStatus_code(simResult.getStatus_code());
-                        result.setStatus_msg(result.getStatus_msg());
+                        result.setStatus_msg(simResult.getStatus_msg());
                         switch (simResult.getStatus_code()) {
                             case -1:
                                 return ReasonCode.MAIL_MODEL_REQUEST_FAILED;
                             case 408:
                                 return ReasonCode.MAIL_MODEL_TIMEOUT_ERROR;
                             default:
+                                result.setResult(simResult.getResult());
                                 break;
                         }
                     } else {
