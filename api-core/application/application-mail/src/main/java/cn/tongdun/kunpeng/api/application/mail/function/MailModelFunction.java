@@ -77,7 +77,7 @@ public class MailModelFunction extends AbstractFunction {
                 operate = param.getValue();
             }
             if (StringUtils.equals("threshold", param.getName())) {
-                threshold = Integer.valueOf(StringUtils.isEmpty(param.getValue()) ? "0": param.getValue());
+                threshold = Integer.valueOf(StringUtils.isEmpty(param.getValue()) ? "0" : param.getValue());
             }
             if (StringUtils.equals("timeInterval", param.getName())) {
                 timeInterval = param.getValue();
@@ -123,6 +123,7 @@ public class MailModelFunction extends AbstractFunction {
             } else {
                 // 处理接口返回结果
                 MailModelResult mailModelResult = (MailModelResult) result;
+                logger.info(TraceUtils.getFormatTrace() + "get result from mail model :{}", mailModelResult);
                 Map<Integer, String> mapping = MailModelTypeEnum.mappingCode(mailTypes);
                 boolean randResult = false;
                 // 随机率判定
@@ -151,7 +152,7 @@ public class MailModelFunction extends AbstractFunction {
                     detail.setConditionUuid(this.getConditionUuid());
                     detail.setRuleUuid(this.ruleUuid);
                     if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                        detail.setRanResult(finalRandResult ? "邮箱随机率符合":"邮箱随机率不符");
+                        detail.setRanResult(finalRandResult ? "邮箱随机率符合" : "邮箱随机率不符");
                         detail.setRand(mailModelResult.getRanResult());
                     }
                     detail.setSimResult(null == mailModelResult.getResult() ? "未命中规则" : mapping.get(mailModelResult.getResult()));

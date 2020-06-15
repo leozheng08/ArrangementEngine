@@ -1,11 +1,14 @@
 package cn.tongdun.kunpeng.api.application.mail.constant;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
  * @author: yuanhang
  * @date: 2020-06-03 17:00
  **/
+@JsonSerialize
 public class MailModelResult implements Serializable {
 
     private Integer status_code;
