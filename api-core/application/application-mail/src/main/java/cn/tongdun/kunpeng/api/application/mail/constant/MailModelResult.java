@@ -70,4 +70,15 @@ public class MailModelResult implements Serializable {
     public void setRanResult(Double ranResult) {
         this.ranResult = ranResult;
     }
+
+    @Override
+    public String toString() {
+        return "MailModelResult{" +
+                "status_code=" + status_code +
+                ", status_msg='" + status_msg + '\'' +
+                ", time=" + time +
+                ", result=" + result +
+                ", ranResult=" + ranResult +
+                '}';
+    }
 }

@@ -241,6 +241,11 @@ public class MailModelFunction extends AbstractFunction {
                                 break;
                         }
                         result.setRanResult(Double.parseDouble(randResult.getResult().toString()) * 100);
+                        if (null == result.getStatus_code()) {
+                            result.setStatus_code(randResult.getStatus_code());
+                            result.setStatus_msg(randResult.getStatus_msg());
+                            result.setResult(randResult.getResult());
+                        }
                     }
                 } else {
                     if (url.equals(entry.getKey().url().toString())) {
