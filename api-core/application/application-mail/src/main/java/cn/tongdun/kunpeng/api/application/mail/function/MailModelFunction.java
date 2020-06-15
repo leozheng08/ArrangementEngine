@@ -158,7 +158,7 @@ public class MailModelFunction extends AbstractFunction {
                     detail.setTime(System.currentTimeMillis() - start);
                     return detail;
                 };
-                return new FunctionResult(null != mapping.get(mailModelResult.getResult()) || randResult, callable);
+                return new FunctionResult(null != mapping.get(Integer.valueOf(String.valueOf(mailModelResult.getResult()))) || randResult, callable);
             }
         } catch (Exception e) {
             if (ReasonCodeUtil.isTimeout(e)) {
