@@ -154,7 +154,7 @@ public class MailModelFunction extends AbstractFunction {
                         detail.setRanResult(finalRandResult ? "邮箱随机率符合" : "邮箱随机率不符");
                         detail.setRand(mailModelResult.getRanResult());
                     }
-                    detail.setSimResult(null == mailModelResult.getResult() ? "未命中规则" : mapping.get(mailModelResult.getResult()));
+                    detail.setSimResult(null == mailModelResult.getResult() ? "未命中规则" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                     detail.setTime(System.currentTimeMillis() - start);
                     return detail;
                 };

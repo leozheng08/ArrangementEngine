@@ -35,6 +35,15 @@ public enum MailModelTypeEnum {
         return this.code;
     }
 
+    public static final String getDescByMappingCode(Integer mappingCode) {
+        for (MailModelTypeEnum mailEnum:MailModelTypeEnum.values()) {
+            if (mailEnum.mappingCode.equals(mappingCode)) {
+                return mailEnum.desc;
+            }
+        }
+        return null;
+    }
+
     public static final Map<Integer, String> mappingCode(List<String> codes) {
         Map<Integer, String> codeMapping = Maps.newHashMap();
         MailModelTypeEnum[] var0 = values();
