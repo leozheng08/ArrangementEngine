@@ -1,7 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.model.access.AccessBusiness;
+import cn.tongdun.kunpeng.api.engine.model.access.AccessBusinessCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,29 +13,36 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccessBusinessReloadManager implements IReload<AccessBusiness> {
 
+    @Autowired
+    AccessBusinessCache accessBusinessCache;
+
     @Override
     public boolean create(AccessBusiness accessBusiness) {
-
-        return false;
+        accessBusinessCache.put(accessBusiness.getAppName(), accessBusiness);
+        return true;
     }
 
     @Override
     public boolean update(AccessBusiness accessBusiness) {
-        return false;
+        accessBusinessCache.put(accessBusiness.getAppName(), accessBusiness);
+        return true;
     }
 
     @Override
     public boolean activate(AccessBusiness accessBusiness) {
-        return false;
+        accessBusinessCache.put(accessBusiness.getAppName(), accessBusiness);
+        return true;
     }
 
     @Override
     public boolean deactivate(AccessBusiness accessBusiness) {
-        return false;
+        accessBusinessCache.remove(accessBusiness.getAppName());
+        return true;
     }
 
     @Override
     public boolean remove(AccessBusiness accessBusiness) {
-        return false;
+        accessBusinessCache.put(accessBusiness.getUuid(), accessBusiness);
+        return true;
     }
 }

@@ -7,8 +7,6 @@ import cn.tongdun.kunpeng.api.engine.model.access.AccessBusinessCache;
 import cn.tongdun.kunpeng.api.engine.model.access.IAccessBusinessRepository;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import javafx.scene.Group;
-import org.codehaus.janino.Access;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ import static java.util.stream.Collectors.groupingBy;
  * @date: 2020-06-10 14:31
  * 业务接入相关缓存数据
  **/
-//@Component
+@Component
 //@Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_COMM)
 public class AccessBusinessLoadManager implements ILoad {
 
@@ -47,6 +45,6 @@ public class AccessBusinessLoadManager implements ILoad {
             entry.getValue().stream().forEach(r -> accessBusinessCache.put(entry.getKey(), r));
         }
         logger.info(TraceUtils.getFormatTrace() + "load accessBusiness end cost time :{}", System.currentTimeMillis() - start);
-        return false;
+        return true;
     }
 }

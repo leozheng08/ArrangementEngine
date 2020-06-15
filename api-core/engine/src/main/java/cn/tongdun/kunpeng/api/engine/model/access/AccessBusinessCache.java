@@ -20,9 +20,9 @@ public class AccessBusinessCache extends AbstractLocalCache<String, AccessBusine
     AdminApplicationCache adminApplicationCache;
 
     /**
-     * uuid -> accessBusiness
-      */
-    private final Map<String, AccessBusiness> accessBusinessMap = Maps.newConcurrentMap();
+     * appName -> accessBusiness
+     */
+    public Map<String, AccessBusiness> accessBusinessMap = Maps.newConcurrentMap();
 
     @PostConstruct
     public void init() {
@@ -40,7 +40,11 @@ public class AccessBusinessCache extends AbstractLocalCache<String, AccessBusine
     }
 
     @Override
-    public AccessBusiness remove(String uuid) {
-        return accessBusinessMap.remove(uuid);
+    public AccessBusiness remove(String appName) {
+        return accessBusinessMap.remove(appName);
+    }
+
+    public Map<String, AccessBusiness> getAccessBusinessMap() {
+        return accessBusinessMap;
     }
 }
