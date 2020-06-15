@@ -108,8 +108,6 @@ public class MailModelFunction extends AbstractFunction {
         }
 
         try {
-
-            long start = System.currentTimeMillis();
             Object result = getModelResponse(url, ranUrl, mail, context);
 
             if (null == result) {
@@ -148,14 +146,17 @@ public class MailModelFunction extends AbstractFunction {
                 boolean finalRandResult = randResult;
                 DetailCallable callable = () -> {
                     MailModelDetail detail = new MailModelDetail();
+                    StringBuffer mailResult = new StringBuffer();
                     detail.setConditionUuid(this.getConditionUuid());
-                    detail.setRuleUuid(this.ruleUuid);
+                    mailResult.append(null == mailModelResult.getResult() ? "" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                     if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                        detail.setRanResult(finalRandResult ? "邮箱随机率符合" : "邮箱随机率不符");
-                        detail.setRand(mailModelResult.getRanResult());
+                        mailResult.append(mailResult.length() > 0 ? "," : "");
+                        mailResult.append(finalRandResult ? "邮箱随机生成" : "邮箱随机非生成");
+                        detail.setRandResult("随机生成率:" + mailModelResult.getRanResult());
                     }
-                    detail.setSimResult(null == mailModelResult.getResult() ? "未命中规则" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
-                    detail.setTime(System.currentTimeMillis() - start);
+                    detail.setSimResult(mailResult.toString());
+                    detail.setMail(mail);
+                    detail.setRuleDesc(this.description);
                     return detail;
                 };
                 return new FunctionResult(null != mapping.get(Integer.valueOf(String.valueOf(mailModelResult.getResult()))) || randResult, callable);
