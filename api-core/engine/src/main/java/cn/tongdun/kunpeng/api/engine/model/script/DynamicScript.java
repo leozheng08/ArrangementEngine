@@ -22,6 +22,11 @@ public class DynamicScript extends StatusEntity {
     private String partnerCode;
 
     /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
      * 产品 product_code
      */
     private String productCode;

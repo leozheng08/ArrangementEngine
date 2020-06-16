@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -10,50 +10,77 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * @Author: liang.chen
- * @Date: 2020/2/19 下午10:04
+ * @Author: huangjin
  */
 @Component
 public class GroovyObjectCache {
 
     //dynamicScriptUuid -> WrappedGroovyObject
-    private Map<String,WrappedGroovyObject> groovyMap = new ConcurrentHashMap<>(30); // 缓存编译后的对象
+    private Map<String, WrappedGroovyObject> groovyMap = new ConcurrentHashMap<>(30); // 缓存编译后的对象
 
     //scope(适用范围) -> WrappedGroovyObject(包含编译后groovy对象)
     private Map<String, Set<String>> scopeToGroovyMap = new ConcurrentHashMap<>(30); // 缓存编译后的对象
 
-    //scope(适用范围) -> fieldName(字段名) -> WrappedGroovyObject(包含编译后groovy对象)
-    //scope(适用范围)包含：
-    //   合作方指定事件类型: context.getPartnerCode() + context.getEventType()
-    //   合作方全部事件类型: context.getPartnerCode() + "All";
-    //   全局指定事件类型:   "All" + context.getEventType();
-    //   全局全部事件类型:   "All" + "All";
+    /**
+     * scope(适用范围) -> fieldName(字段名) -> WrappedGroovyObject(包含编译后groovy对象)
+     * scope(适用范围)包含：
+     * 全局全部应用事件类型:   "all" + "all" + "all";
+     * 全局全部应用指定事件类型:   "all" + "all" + context.getEventType();
+     * 全局全部合作方指定应用全部事件类型:   "all" + "context.getAppName" + "all";
+     * 局全部合作全部应用指定应用指定事件类型:   "all" + "context.getAppName" + context.getEventType();
+     * 指定合作方全部应用全部事件类型  context.getPartnerCode() + "all" + "all"
+     * 指定合作方全部应用指定事件类型  context.getPartnerCode() + "all" + context.getEventType();
+     * 指定合作方指定应用全部事件类型  context.getPartnerCode() +"context.getAppName" + "all";
+     * 指定合作方指定应用指定事件类型  context.getPartnerCode() +"context.getAppName" + context.getEventType();
+     * @param wrappedGroovyObject
+     * @return
+     */
 //    private Map<String, Map<String,WrappedGroovyObject>> groovyFields = new ConcurrentHashMap<String, Map<String,WrappedGroovyObject>>(30); // 缓存编译后的对象
 
 
-    public void put(String uuid, WrappedGroovyObject wrappedGroovyObject){
-        groovyMap.put(uuid,wrappedGroovyObject);
+//    public void put(String uuid, WrappedGroovyObject wrappedGroovyObject) {
+//        groovyMap.put(uuid, wrappedGroovyObject);
+//
+//        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
+//        Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
+//        if (dynamicScriptUuidSet == null) {
+//            dynamicScriptUuidSet = new ConcurrentHashSet();
+//            Set oldDynamicScriptUuidSet = scopeToGroovyMap.putIfAbsent(key, dynamicScriptUuidSet);
+//            if (oldDynamicScriptUuidSet != null) {
+//                dynamicScriptUuidSet = oldDynamicScriptUuidSet;
+//            }
+//        }
+//        dynamicScriptUuidSet.add(uuid);
+//    }
 
-        String key = generateKey(wrappedGroovyObject.getPartnerCode() , wrappedGroovyObject.getEventType());
-        Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-        if(dynamicScriptUuidSet == null){
-            dynamicScriptUuidSet = new ConcurrentHashSet();
-            Set oldDynamicScriptUuidSet = scopeToGroovyMap.putIfAbsent(key,dynamicScriptUuidSet);
-            if(oldDynamicScriptUuidSet != null){
-                dynamicScriptUuidSet = oldDynamicScriptUuidSet;
-            }
+    public void put(String uuid, WrappedGroovyObject wrappedGroovyObject) {
+        groovyMap.put(uuid, wrappedGroovyObject);
+
+        List<String> keys=CacheKeyGenerator.getkey(wrappedGroovyObject);
+        if (!CollectionUtils.isEmpty(keys)){
+            keys.forEach(key->{
+                Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
+                if (dynamicScriptUuidSet == null) {
+                    dynamicScriptUuidSet = new ConcurrentHashSet();
+                    Set oldDynamicScriptUuidSet = scopeToGroovyMap.putIfAbsent(key, dynamicScriptUuidSet);
+                    if (oldDynamicScriptUuidSet != null) {
+                        dynamicScriptUuidSet = oldDynamicScriptUuidSet;
+                    }
+                }
+                dynamicScriptUuidSet.add(uuid);
+            });
         }
-        dynamicScriptUuidSet.add(uuid);
+
     }
 
-    public WrappedGroovyObject remove(String uuid){
+    public WrappedGroovyObject remove(String uuid) {
         WrappedGroovyObject wrappedGroovyObject = groovyMap.remove(uuid);
 
-        if(wrappedGroovyObject == null){
+        if (wrappedGroovyObject == null) {
             return null;
         }
 
-        String key = generateKey(wrappedGroovyObject.getPartnerCode() , wrappedGroovyObject.getEventType());
+        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
         Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
         dynamicScriptUuidSet.remove(uuid);
 
@@ -66,13 +93,13 @@ public class GroovyObjectCache {
 
     public List<WrappedGroovyObject> getByScope(String key) {
         Set<String> dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-        if(dynamicScriptUuidSet == null){
+        if (dynamicScriptUuidSet == null) {
             return null;
         }
         List<WrappedGroovyObject> wrappedGroovyObjectList = new ArrayList<>(dynamicScriptUuidSet.size());
-        for(String dynamicScriptUuid:dynamicScriptUuidSet){
+        for (String dynamicScriptUuid : dynamicScriptUuidSet) {
             WrappedGroovyObject wrappedGroovyObject = groovyMap.get(dynamicScriptUuid);
-            if(wrappedGroovyObject != null){
+            if (wrappedGroovyObject != null) {
                 wrappedGroovyObjectList.add(wrappedGroovyObject);
             }
         }
@@ -116,13 +143,13 @@ public class GroovyObjectCache {
 //        return groovyFields.keySet();
 //    }
 
-    public Collection<WrappedGroovyObject> getAll(){
+    public Collection<WrappedGroovyObject> getAll() {
         return groovyMap.values();
     }
 
 
     public String generateKey(String partnerCode, String eventType) {
-            return StringUtils.join(partnerCode,eventType);
+        return StringUtils.join(partnerCode, eventType);
 
     }
 }

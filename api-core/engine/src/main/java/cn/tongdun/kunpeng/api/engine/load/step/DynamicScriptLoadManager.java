@@ -43,7 +43,7 @@ public class DynamicScriptLoadManager implements ILoad {
         long beginTime = System.currentTimeMillis();
 
         Set allPartners = new HashSet(partnerClusterCache.getPartners());
-        allPartners.add("All");
+        allPartners.add("all");
         List<DynamicScript> scripts = groovyRepository.queryGroovyByPartners(allPartners);
 
         int failedCount = 0;

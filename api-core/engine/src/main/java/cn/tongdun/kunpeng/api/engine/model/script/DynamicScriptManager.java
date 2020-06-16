@@ -21,8 +21,7 @@ import java.util.concurrent.*;
 
 /**
  * 子策略执行，根据subPolicyUuid从缓存中取得子策略实体SubPolicy对象后运行。
- * @Author: liang.chen
- * @Date: 2019/12/16 下午7:58
+ * @Author: huangjin
  */
 @Component
 public class DynamicScriptManager {
@@ -51,35 +50,127 @@ public class DynamicScriptManager {
         try {
             handleField(context);
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"动态脚本调用异常", e);
+            logger.error(TraceUtils.getFormatTrace() + "动态脚本调用异常", e);
         }
         return true;
     }
 
 
+//    private void handleField(AbstractFraudContext context) {
+//        List<WrappedGroovyObject> groovyObjectList = new ArrayList<>(50);
+//        String classKey = null;
+//        // 合作方指定事件类型
+//        classKey = context.getPartnerCode() + context.getEventType();
+//        List<WrappedGroovyObject> tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        // 合作方全部事件类型
+//        classKey = context.getPartnerCode() + "all";
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        // 全局指定事件类型
+//        classKey =  "all" + context.getEventType();
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        // 全局全部事件类型
+//        classKey = "all" + "all" ;
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        if (groovyObjectList.isEmpty()) {
+//            return;
+//        }
+//
+//        List<Callable<Boolean>> tasks =new ArrayList<>(groovyObjectList.size());
+//        for (WrappedGroovyObject wrappedGroovyObject : groovyObjectList) {
+//            tasks.add(TaskWrapLoader.getTaskWrapper().wrap(new GroovyRunTask(context, wrappedGroovyObject)));
+//        }
+//        List<Future<Boolean>> futures = null;
+//        long t1 = System.currentTimeMillis();
+//        try {
+//            futures = executeThreadPool.invokeAll(tasks,500,TimeUnit.MILLISECONDS);
+//        } catch (InterruptedException | NullPointerException e) {
+//            logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行出错", e);
+//        } catch (RejectedExecutionException e) {
+//            logger.error(TraceUtils.getFormatTrace()+"动态脚本丢弃执行", e);
+//        }
+//        long t2 = System.currentTimeMillis();
+//
+//        if(t2 - t1 > 30){
+//            logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行时间太长, groovy_execute_too_long costTime : {}", t2-t1);
+//        }
+//
+//        List<Boolean> results = new ArrayList(futures!= null?futures.size():0);
+//        if (null != futures && !futures.isEmpty()) {
+//            for (Future<Boolean> future : futures) {
+//                if (future.isDone() && !future.isCancelled()) {
+//                    try {
+//                        results.add(future.get());
+//                    } catch (InterruptedException | ExecutionException e) {
+//                        logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行获取结果失败", e);
+//                    }
+//                }
+//                else{
+//                    logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行任务被cancel");
+//                }
+//            }
+//        }
+//    }
+
     private void handleField(AbstractFraudContext context) {
         List<WrappedGroovyObject> groovyObjectList = new ArrayList<>(50);
         String classKey = null;
-        // 合作方指定事件类型
-        classKey = context.getPartnerCode() + context.getEventType();
+        /**
+         * 合作方指定应用指定事件类型
+         */
+        classKey = context.getPartnerCode() + "-" + context.getAppName() + "-" + context.getEventType();
         List<WrappedGroovyObject> tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
         if (null != tmpGroovyObjects) {
             groovyObjectList.addAll(tmpGroovyObjects);
         }
-        // 合作方全部事件类型
-        classKey = context.getPartnerCode() + "All";
+        /**
+         * 合作方指定应用全部事件类型
+         */
+        classKey = context.getPartnerCode() + "-" + context.getAppName() + "-all";
         tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
         if (null != tmpGroovyObjects) {
             groovyObjectList.addAll(tmpGroovyObjects);
         }
-        // 全局指定事件类型
-        classKey =  "All" + context.getEventType();
+
+        /**
+         * 合作方全部应用指定事件类型
+         */
+        classKey = context.getPartnerCode() + "-" + "all" + "-" + context.getEventType();
         tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
         if (null != tmpGroovyObjects) {
             groovyObjectList.addAll(tmpGroovyObjects);
         }
-        // 全局全部事件类型
-        classKey = "All" + "All" ;
+        /**
+         * 合作方全部应用全部事件类型
+         */
+        classKey = context.getPartnerCode() + "-all" + "-all";
+        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+        if (null != tmpGroovyObjects) {
+            groovyObjectList.addAll(tmpGroovyObjects);
+        }
+        /**
+         * 全部合作方全部应用指定事件类型
+         */
+        classKey = "all-all-" + context.getEventType();
+        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+        if (null != tmpGroovyObjects) {
+            groovyObjectList.addAll(tmpGroovyObjects);
+        }
+        /**
+         *全部合作方全部应用全部事件类型
+         */
+        classKey = "all"+"-all" + "-all";
         tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
         if (null != tmpGroovyObjects) {
             groovyObjectList.addAll(tmpGroovyObjects);
@@ -88,37 +179,36 @@ public class DynamicScriptManager {
             return;
         }
 
-        List<Callable<Boolean>> tasks =new ArrayList<>(groovyObjectList.size());
+        List<Callable<Boolean>> tasks = new ArrayList<>(groovyObjectList.size());
         for (WrappedGroovyObject wrappedGroovyObject : groovyObjectList) {
             tasks.add(TaskWrapLoader.getTaskWrapper().wrap(new GroovyRunTask(context, wrappedGroovyObject)));
         }
         List<Future<Boolean>> futures = null;
         long t1 = System.currentTimeMillis();
         try {
-            futures = executeThreadPool.invokeAll(tasks,500,TimeUnit.MILLISECONDS);
+            futures = executeThreadPool.invokeAll(tasks, 500, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | NullPointerException e) {
-            logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行出错", e);
+            logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行出错", e);
         } catch (RejectedExecutionException e) {
-            logger.error(TraceUtils.getFormatTrace()+"动态脚本丢弃执行", e);
+            logger.error(TraceUtils.getFormatTrace() + "动态脚本丢弃执行", e);
         }
         long t2 = System.currentTimeMillis();
 
-        if(t2 - t1 > 30){
-            logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行时间太长, groovy_execute_too_long costTime : {}", t2-t1);
+        if (t2 - t1 > 30) {
+            logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间太长, groovy_execute_too_long costTime : {}", t2 - t1);
         }
 
-        List<Boolean> results = new ArrayList(futures!= null?futures.size():0);
+        List<Boolean> results = new ArrayList(futures != null ? futures.size() : 0);
         if (null != futures && !futures.isEmpty()) {
             for (Future<Boolean> future : futures) {
                 if (future.isDone() && !future.isCancelled()) {
                     try {
                         results.add(future.get());
                     } catch (InterruptedException | ExecutionException e) {
-                        logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行获取结果失败", e);
+                        logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行获取结果失败", e);
                     }
-                }
-                else{
-                    logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行任务被cancel");
+                } else {
+                    logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行任务被cancel");
                 }
             }
         }
@@ -133,11 +223,11 @@ public class DynamicScriptManager {
             GroovyObject groovyObject = wrappedGroovyObject.getGroovyObject();
             value = executeGroovy(context, groovyObject, methodName);
             long t2 = System.currentTimeMillis();
-            if(t2 - t1 > 30){
-                logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
+            if (t2 - t1 > 30) {
+                logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
             }
             context.setField(fieldName, value);
-        } catch(Throwable ex) {
+        } catch (Throwable ex) {
             return false;
         }
 
@@ -145,7 +235,7 @@ public class DynamicScriptManager {
     }
 
     private Object executeGroovy(AbstractFraudContext context, GroovyObject groovyObject, String methodName) {
-        Object[] args = new Object[] {context};
+        Object[] args = new Object[]{context};
         Object value = groovyObject.invokeMethod(methodName, args);
         return value;
     }

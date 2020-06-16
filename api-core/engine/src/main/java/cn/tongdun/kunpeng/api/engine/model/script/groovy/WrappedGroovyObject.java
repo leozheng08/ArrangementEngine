@@ -18,9 +18,15 @@ public class WrappedGroovyObject extends VersionedEntity {
     private String partnerCode;
 
     /**
+     * 应用名称 app_name
+     */
+    private String appName;
+
+    /**
      * 事件类型 event_type
      */
     private String eventType;
+
 
     private GroovyObject        groovyObject;                                // 编译后的对象
     private String              source;                                      // 源代码

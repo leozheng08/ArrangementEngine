@@ -46,8 +46,6 @@ public class GroovyCompileManager {
             InstantiationException,
             IllegalAccessException,
             IOException {
-        String partnerCode = KunpengStringUtils.valNullToAll(script.getPartnerCode());
-        String eventType = script.getEventType();
         String field = script.getAssignField();
         String methodBody = script.getScriptCode();
 
@@ -69,6 +67,7 @@ public class GroovyCompileManager {
         groovyField.setUuid(script.getUuid());
         groovyField.setGmtModify(script.getGmtModify());
         groovyField.setPartnerCode(script.getPartnerCode());
+        groovyField.setAppName(script.getEventType());
         groovyField.setEventType(script.getEventType());
         groovyField.setAssignField(script.getAssignField());
         groovyField.setFieldMethodName(methodName);
