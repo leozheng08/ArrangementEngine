@@ -35,8 +35,8 @@ public class AccessBusinessCache extends AbstractLocalCache<String, AccessBusine
     }
 
     @Override
-    public void put(String uuid, AccessBusiness accessBusiness) {
-        accessBusinessMap.put(uuid, accessBusiness);
+    public void put(String appName, AccessBusiness accessBusiness) {
+        accessBusinessMap.put(appName, accessBusiness);
     }
 
     @Override

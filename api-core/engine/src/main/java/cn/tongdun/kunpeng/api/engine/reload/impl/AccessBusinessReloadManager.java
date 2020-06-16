@@ -36,13 +36,13 @@ public class AccessBusinessReloadManager implements IReload<AccessBusiness> {
 
     @Override
     public boolean deactivate(AccessBusiness accessBusiness) {
-        accessBusinessCache.remove(accessBusiness.getAppName());
+        accessBusinessCache.put(accessBusiness.getAppName(), accessBusiness);
         return true;
     }
 
     @Override
     public boolean remove(AccessBusiness accessBusiness) {
-        accessBusinessCache.put(accessBusiness.getUuid(), accessBusiness);
+        accessBusinessCache.remove(accessBusiness.getAppName());
         return true;
     }
 }

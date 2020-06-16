@@ -26,7 +26,7 @@
 		select
 		<include refid="Base_Column_List"/>
 		from access_business
-		where is_deleted = 0;
+		where is_deleted = 0 and status = 1;
 	</select>
 
 </mapper>

@@ -41,12 +41,13 @@ public class AccessBusinessRepository implements IAccessBusinessRepository {
             return accessParam;
         }).collect(Collectors.toList());
         Map<String, List<AccessParam>>  uuidAccessParamMap = accessParams.stream().collect(groupingBy(AccessParam::getAccessUuid));
-        return accessBusinesses.stream().map(r -> {
+        List<AccessBusiness> result = accessBusinesses.stream().map(r -> {
             AccessBusiness accessBusiness = new AccessBusiness();
             BeanUtils.copyProperties(r, accessBusiness);
             accessBusiness.setAccessParams(uuidAccessParamMap.get(r.getUuid()));
             return accessBusiness;
         }).collect(Collectors.toList());
+        return result;
     }
 
 }
