@@ -23,6 +23,10 @@ public class MailModelDetail extends ConditionDetail implements DetailCallable {
 
     private String mail;
 
+    public MailModelDetail() {
+        super("mail_model");
+    }
+
     @Override
     public IDetail call() {
         return this;
