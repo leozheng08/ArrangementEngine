@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: liang.chen
@@ -56,4 +57,16 @@ public interface IRiskResponse extends IApiResponse {
 
 
     IRiskResponseFactory getFactory();
+
+    void setCustomPolicyResult(Map customPolicyResult);
+
+    Map getCustomPolicyResult();
+
+    void setIgnoreReq(Boolean ignoreReq);
+
+    Boolean getIgnoreReq();
+
+    void setPolicyDetailResult(List policyDetailResult);
+
+    List getPolicyDetailResult();
 }

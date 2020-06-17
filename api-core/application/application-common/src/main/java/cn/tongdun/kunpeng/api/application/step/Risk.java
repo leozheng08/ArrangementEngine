@@ -12,9 +12,6 @@ public class Risk {
 
     public final static String NAME = "risk";
 
-    @Phase(parallel = false, order = 100)
-    public static final String FIELD_MAPPING = "field_mapping";
-
     @Phase(parallel = false, order = 1000)
     public final static String CHECK = "check";
 

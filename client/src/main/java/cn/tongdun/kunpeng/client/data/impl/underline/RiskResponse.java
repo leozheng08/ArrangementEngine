@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 风险扫描返回结果
@@ -192,6 +193,36 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @Override
     public IRiskResponseFactory getFactory(){
         return factory;
+    }
+
+    @Override
+    public void setCustomPolicyResult(Map customPolicyResult) {
+
+    }
+
+    @Override
+    public Map getCustomPolicyResult() {
+        return null;
+    }
+
+    @Override
+    public void setIgnoreReq(Boolean ignoreReq) {
+
+    }
+
+    @Override
+    public Boolean getIgnoreReq() {
+        return null;
+    }
+
+    @Override
+    public void setPolicyDetailResult(List policyDetailResult) {
+
+    }
+
+    @Override
+    public List getPolicyDetailResult() {
+        return null;
     }
 
 
