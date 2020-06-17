@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.application.fieldmapping;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
-import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.model.access.AccessBusiness;
 import cn.tongdun.kunpeng.api.engine.model.access.AccessBusinessCache;
@@ -10,18 +9,13 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import cn.tongdun.tdframework.core.pipeline.Step;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.sun.xml.internal.bind.v2.TODO;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.proxy.InvocationHandler;
 import org.springframework.cglib.proxy.Proxy;
 import org.springframework.stereotype.Component;
-import sun.jvm.hotspot.ui.Annotation;
 
 import java.lang.reflect.Field;
 import java.util.List;

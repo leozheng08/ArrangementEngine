@@ -43,7 +43,7 @@ public class DataObjectCacheController {
         try {
 
             Collection<IDataObjectCache> list = dataObjectCacheFactory.getDOCaches();
-            if(list == null && list.isEmpty()){
+            if(list == null || list.isEmpty()){
                 return "dataObjectCaches is empty!";
             }
             //刷新全部
