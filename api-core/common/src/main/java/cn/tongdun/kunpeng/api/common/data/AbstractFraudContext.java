@@ -24,8 +24,8 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private static final Field[] classFields = AbstractFraudContext.class.getDeclaredFields();
     private static final Set<String> classFieldNames = new HashSet<>(classFields.length / 3);
 
-    private static final Map<String,Method> fieldGetMethodMap = new HashMap<>();
-    private static final Map<String,Method> fieldSetMethodMap = new HashMap<>();
+    private static final Map<String, Method> fieldGetMethodMap = new HashMap<>();
+    private static final Map<String, Method> fieldSetMethodMap = new HashMap<>();
 
     static {
         Set<String> includeTypes = Sets.newHashSet("int", "integer", "string", "double", "long", "float", "date", "boolean");
@@ -37,7 +37,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                 String getMethodName = "get" + KunpengStringUtils.upperCaseFirstChar(field.getName());
                 try {
                     Method method = RiskRequest.class.getMethod(getMethodName);
-                    fieldGetMethodMap.put(field.getName(),method);
+                    fieldGetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
                     // ignore
                 }
@@ -45,7 +45,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                 String setMethodName = "set" + KunpengStringUtils.upperCaseFirstChar(field.getName());
                 try {
                     Method method = RiskRequest.class.getMethod(setMethodName);
-                    fieldSetMethodMap.put(field.getName(),method);
+                    fieldSetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
                     // ignore
                 }
@@ -117,9 +117,8 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private String recallSeqId;
 
 
-
     /**
-     *  仿真的合作方编码
+     * 仿真的合作方编码
      */
     private String simulationPartner;
     /**
@@ -188,8 +187,8 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 本次请求适用的字段列表，每次初始化的时候再设置进来
      * key:fieldCode
      */
-    private Map<String,IFieldDefinition> systemFieldMap;
-    private Map<String,IFieldDefinition> extendFieldMap;
+    private Map<String, IFieldDefinition> systemFieldMap;
+    private Map<String, IFieldDefinition> extendFieldMap;
 
     /**
      * 字段值
@@ -232,14 +231,14 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 调外部接口返回的结果
      */
-    private Map<String,Object> externalReturnObj = new ConcurrentHashMap<>() ;
+    private Map<String, Object> externalReturnObj = new ConcurrentHashMap<>();
 
-    private Map<String,Supplier> externalFieldValues = new ConcurrentHashMap<>();
+    private Map<String, Supplier> externalFieldValues = new ConcurrentHashMap<>();
 
     /**
      * 外部的服务实例
      */
-    private Map<String,Object> externalService = new ConcurrentHashMap<>() ;
+    private Map<String, Object> externalService = new ConcurrentHashMap<>();
 
     /**
      * 规则引擎dubbo泛化输入参数/调用结果放在这里
@@ -265,6 +264,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 添加异常子码及对应外部系统的原因码
+     *
      * @param subReasonCode
      * @param extCode
      */
@@ -291,6 +291,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 添加异常子码
+     *
      * @param subReasonCode
      */
     public void addSubReasonCode(SubReasonCode subReasonCode) {
@@ -311,7 +312,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             }
         }
 
-        setField(key,o);
+        setField(key, o);
     }
 
     // 向FraudContext里的属性字段赋值
@@ -366,9 +367,9 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         return getExternalFieldValues(key);
     }
 
-    public String getFieldToString(String key){
+    public String getFieldToString(String key) {
         Object value = get(key);
-        if(value == null){
+        if (value == null) {
             return null;
         }
         return value.toString();
@@ -382,6 +383,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 取得策略指标的结果值
+     *
      * @param policyIndexUuid
      * @return
      */
@@ -395,6 +397,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 设置策略指标的结果值
+     *
      * @param policyIndexUuid
      * @param indexValue
      */
@@ -404,6 +407,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 取得平台指标结果值
+     *
      * @param platformIndexId
      * @return
      */
@@ -421,11 +425,12 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 获取非Double类型的平台指标，对getPlatformIndex泛化
+     *
      * @param platformIndexId
      * @return
      */
     @Override
-    public Object getPlatformIndex4Object(String platformIndexId){
+    public Object getPlatformIndex4Object(String platformIndexId) {
         if (StringUtils.isBlank(platformIndexId)) {
             return null;
         }
@@ -436,8 +441,20 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         return platformIndexData.getStringValue();
     }
 
+    public Object getPlatformIndexByDataType(String platformIndexId, String dataType) {
+        if (StringUtils.isBlank(platformIndexId)) {
+            return null;
+        }
+        if (StringUtils.equalsIgnoreCase("double", dataType)) {
+            return getPlatformIndex(platformIndexId);
+        } else {
+            return getPlatformIndex4Object(platformIndexId);
+        }
+    }
+
     /**
      * 取得平台指标原始结果值
+     *
      * @param platformIndexId
      * @return
      */
@@ -455,6 +472,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /**
      * 将平台指标放入map中
+     *
      * @param platformIndexId
      * @param platformIndexData
      */
@@ -491,29 +509,28 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     }
 
 
-
-    public void addExternalObj(String key,Object obj){
-        externalReturnObj.put(key,obj);
+    public void addExternalObj(String key, Object obj) {
+        externalReturnObj.put(key, obj);
     }
 
-    public <T> T getExternalReturnObj(String key, Class<T> calss){
+    public <T> T getExternalReturnObj(String key, Class<T> calss) {
         return (T) externalReturnObj.get(key);
     }
 
-    public Object getExternalFieldValues(String key){
+    public Object getExternalFieldValues(String key) {
         Supplier supplier = externalFieldValues.get(key);
-        if(supplier == null){
+        if (supplier == null) {
             return null;
         }
         return supplier.get();
     }
 
-    public void addExternalService(String key,Object obj){
-        externalService.put(key,obj);
+    public void addExternalService(String key, Object obj) {
+        externalService.put(key, obj);
     }
 
-    public <T> T getExternalService(String key,Class<T> calss){
-        return (T)externalService.get(key);
+    public <T> T getExternalService(String key, Class<T> calss) {
+        return (T) externalService.get(key);
     }
 
 
