@@ -22,6 +22,7 @@ public class PlatformIndexData {
      * 平台指标原始值
      */
     private Double originalValue;
+
     /**
      * 平台指标描述
      */
