@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.client.data.impl.us;
 
+import cn.tongdun.kunpeng.client.data.IHitRule;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
-import cn.tongdun.kunpeng.client.data.impl.camel.HitRule;
 
 import java.util.List;
 import java.util.Map;
@@ -12,35 +12,35 @@ import java.util.Map;
  **/
 public class PolicyResult {
 
-    public boolean success;
+    private boolean success;
 
-    public boolean finalScore;
+    private Integer finalScore;
 
-    public boolean policyName;
+    private String policyName;
 
-    public List<HitRule> hitRules;
+    private List<IHitRule> hitRules;
 
-    public String seqId;
+    private String seqId;
 
-    public long spendTime;
+    private long spendTime;
 
-    public List<ISubPolicyResult> policySet;
+    private List<ISubPolicyResult> policySet;
 
-    public String policySetName;
+    private String policySetName;
 
-    public List<String> riskType;
+    private List<String> riskType;
 
-    public String flowChargeSuccessed;
+    private String flowChargeSuccessed;
 
-    public String emergencySwithcOn;
+    private String emergencySwithcOn;
 
-    public String finalDealType;
+    private String finalDealType;
 
-    public String finalDealTypeName;
+    private String finalDealTypeName;
 
-    public String finalDealTypeGrade;
+    private String finalDealTypeGrade;
 
-    public Map nusspecialMap;
+    private Map nusspecialMap;
 
     public boolean isSuccess() {
         return success;
@@ -50,27 +50,27 @@ public class PolicyResult {
         this.success = success;
     }
 
-    public boolean isFinalScore() {
+    public Integer getFinalScore() {
         return finalScore;
     }
 
-    public void setFinalScore(boolean finalScore) {
+    public void setFinalScore(Integer finalScore) {
         this.finalScore = finalScore;
     }
 
-    public boolean isPolicyName() {
+    public String getPolicyName() {
         return policyName;
     }
 
-    public void setPolicyName(boolean policyName) {
+    public void setPolicyName(String policyName) {
         this.policyName = policyName;
     }
 
-    public List<HitRule> getHitRules() {
+    public List<IHitRule> getHitRules() {
         return hitRules;
     }
 
-    public void setHitRules(List<HitRule> hitRules) {
+    public void setHitRules(List<IHitRule> hitRules) {
         this.hitRules = hitRules;
     }
 

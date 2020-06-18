@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @date: 2020-06-12 18:01
  **/
 @Component
-//@Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 1500)
+@Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 1500)
 public class FieldMappingStep implements IRiskStep {
 
     private Logger logger = LoggerFactory.getLogger(FieldMappingStep.class);
@@ -36,6 +36,10 @@ public class FieldMappingStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String appName = context.getAppName();
         Map<String, AccessBusiness> uuidAccessMap = accessBusinessCache.getAccessBusinessMap();
+        if (null == uuidAccessMap) {
+            logger.info(TraceUtils.getFormatTrace() + "access cache empty, skip field mapping");
+            return true;
+        }
         AccessBusiness access = uuidAccessMap.get(appName);
         if (null == access) {
             logger.info(TraceUtils.getFormatTrace() + "access :{} not exits, use default parameters", appName);

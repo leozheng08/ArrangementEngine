@@ -77,4 +77,24 @@ public class HitRule implements IHitRule {
         this.parentUuid = parentUuid;
     }
 
+    @Override
+    public String getEnName() {
+        return null;
+    }
+
+    @Override
+    public void setEnName(String enName) {
+
+    }
+
+    @Override
+    public String getDealType() {
+        return null;
+    }
+
+    @Override
+    public void setDealType(String dealType) {
+
+    }
+
 }

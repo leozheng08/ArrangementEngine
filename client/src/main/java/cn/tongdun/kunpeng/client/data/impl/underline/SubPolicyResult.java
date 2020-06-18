@@ -116,4 +116,14 @@ public class SubPolicyResult implements ISubPolicyResult {
     public void setPolicyMode(PolicyMode policyMode) {
         this.policyMode = policyMode;
     }
+
+    @Override
+    public String getDealType() {
+        return null;
+    }
+
+    @Override
+    public void setDealType(String dealType) {
+
+    }
 }

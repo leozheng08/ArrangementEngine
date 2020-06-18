@@ -14,4 +14,11 @@ public interface IAccessBusinessRepository {
      * @return
      */
     List<AccessBusiness> queryAllUsableAccess();
+
+    /**
+     * 根据uuid查询业务对接
+     * @param uuid
+     * @return
+     */
+    AccessBusiness selectByUuid(String uuid);
 }

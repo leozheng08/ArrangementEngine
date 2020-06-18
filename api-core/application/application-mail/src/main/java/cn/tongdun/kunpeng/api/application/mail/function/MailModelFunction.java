@@ -210,7 +210,6 @@ public class MailModelFunction extends AbstractFunction {
                 requests.add(request);
             }
             HttpUtils.postAsyncJson(requests, httpResults);
-            logger.info(TraceUtils.getFormatTrace() + "get httpResults : {}", httpResults.values());
 
             //处理接口返回结果
             Iterator<Map.Entry<Request, Object>> var0 = httpResults.entrySet().iterator();

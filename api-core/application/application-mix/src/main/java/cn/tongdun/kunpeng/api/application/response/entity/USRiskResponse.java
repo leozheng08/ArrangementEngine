@@ -1,10 +1,11 @@
-package cn.tongdun.kunpeng.api.application.response;
+package cn.tongdun.kunpeng.api.application.response.entity;
 
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.kunpeng.share.json.JSON;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -15,13 +16,22 @@ import java.util.Map;
  **/
 public class USRiskResponse implements IRiskResponse {
 
-    private Boolean success;
+    /**
+     * 兼容保留字段， 默认为false
+     */
+    private Boolean success = false;
+
+    @JsonProperty("reason_code")
+    protected String          reasonCode;
 
     private Boolean ignoreReq;
 
     private Map customPolicyResult;
 
-    private List<PolicyResult> policyDetailResult;
+    private PolicyResult policyDetailResult;
+
+    @JsonIgnore
+    private USRiskResponseFactory factory;
     /**
      * 风险分数
      */
@@ -42,6 +52,12 @@ public class USRiskResponse implements IRiskResponse {
      */
     @JsonIgnore
     private String subPolicyName;
+
+    /**
+     * 子策略掩码
+     */
+    @JsonIgnore
+    private String subReasonCodes;
     /**
      * 命中规则列表
      */
@@ -80,12 +96,12 @@ public class USRiskResponse implements IRiskResponse {
 
     @Override
     public String getSubReasonCodes() {
-        return null;
+        return this.subReasonCodes;
     }
 
     @Override
     public void setSubReasonCodes(String subReasonCodes) {
-
+        this.subReasonCodes = subReasonCodes;
     }
 
     @Override
@@ -168,9 +184,13 @@ public class USRiskResponse implements IRiskResponse {
 
     }
 
+    public void setFactory(USRiskResponseFactory factory) {
+        this.factory = factory;
+    }
+
     @Override
     public IRiskResponseFactory getFactory() {
-        return null;
+        return this.factory;
     }
 
     @Override
@@ -213,12 +233,12 @@ public class USRiskResponse implements IRiskResponse {
     }
 
     @Override
-    public void setPolicyDetailResult(List policyDetailResult) {
-        this.policyDetailResult = policyDetailResult;
+    public void setPolicyDetailResult(Object policyDetailResult) {
+        this.policyDetailResult = (PolicyResult) policyDetailResult;
     }
 
     @Override
-    public List getPolicyDetailResult() {
+    public Object getPolicyDetailResult() {
         return this.policyDetailResult;
     }
 
