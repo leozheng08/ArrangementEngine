@@ -63,30 +63,31 @@ public class PhoneModelFunction extends AbstractFunction {
 
 //    }
 
-    public static void main(String[] args) throws Exception {
-        Map params = Maps.newHashMap();
-        Map result = Maps.newHashMap();
-        params.put("account_lifecycle_event", "create");
-        params.put("business", "test");
-        params.put("time_inteval", "7");
-        params.put("sim_num", "10");
-        params.put("event_time", "2020-05-01 12:12:12");
-        String url ="https://rest-ww.telesign.com/v1/score/";
-        String baseValue = BaseEncoding.base64().encode(("5A0C9ECE-D3C4-49A6-9010-5FAD59FDDEBB" + ":" + "55b2vF0ASzUy3dOtsVvo/J1SBxpbdvdw/wUr+6sUYc/LRpAEP8JcFPAyTJnnRYRT8FzR/uhPCDBgHJv2WH6nXQ==").getBytes());
-        System.out.println(url);
-
-        RequestBody body = new FormBody.Builder()
-                .add("account_lifecycle_event", "create")
-                .build();
-        Request request = new Request
-                .Builder()
-                .addHeader(HttpHeaders.AUTHORIZATION, baseValue)
-                .url(url+"15587688256")
-                .post(body).build();
-
-        cn.tongdun.kunpeng.api.application.util.HttpUtils.postJson(Lists.newArrayList(request), result);
-        System.out.println(result);
-    }
+//    public static void main(String[] args) throws Exception {
+//        Map params = Maps.newHashMap();
+//        Map result = Maps.newHashMap();
+//        params.put("account_lifecycle_event", "create");
+//        params.put("business", "test");
+//        params.put("time_inteval", "7");
+//        params.put("sim_num", "10");
+//        params.put("event_time", "2020-05-01 12:12:12");
+//        String url ="https://rest-ww.telesign.com/v1/score/";
+//        String baseValue = BaseEncoding.base64().encode(("5A0C9ECE-D3C4-49A6-9010-5FAD59FDDEBB" + ":" + "55b2vF0ASzUy3dOtsVvo/J1SBxpbdvdw/wUr+6sUYc/LRpAEP8JcFPAyTJnnRYRT8FzR/uhPCDBgHJv2WH6nXQ==").getBytes());
+//       String authorization="Basic "+baseValue;
+//        System.out.println(url);
+//
+//        RequestBody body = new FormBody.Builder()
+//                .add("account_lifecycle_event", "create")
+//                .build();
+//        Request request = new Request
+//                .Builder()
+//                .addHeader(HttpHeaders.AUTHORIZATION, authorization)
+//                .url(url+"15587688256")
+//                .post(body).build();
+//
+//        cn.tongdun.kunpeng.api.application.util.HttpUtils.postJson(Lists.newArrayList(request), result);
+//        System.out.println(result);
+//    }
 
 
 
