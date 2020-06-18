@@ -70,8 +70,7 @@ public class GpsDistanceFunction extends AbstractFunction {
         result = getDistance(gps1, gps2, false);
         double ret = result;
         DetailCallable detailCallable = () -> {
-            GpsDistanceDetail detail = null;
-            detail = new GpsDistanceDetail();
+            GpsDistanceDetail detail = new GpsDistanceDetail();
             detail.setConditionUuid(conditionUuid);
             detail.setRuleUuid(ruleUuid);
             detail.setDescription(description);

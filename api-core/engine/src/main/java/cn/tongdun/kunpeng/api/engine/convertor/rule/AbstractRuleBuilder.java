@@ -50,7 +50,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         //1.1把RuleDTO的基本信心填充到RawRule中
         rawRule.setId(String.valueOf(ruleDTO.getId()));
         rawRule.setName(ruleDTO.getName());
-        rawRule.setType(ruleDTO.getTemplate());
+        rawRule.setType(ruleDTO.getTemplate().trim());
         //1.2把RuleDTO中的条件转为到RawRule
         convertRuleCondtionElement2RawRule(ruleDTO.getRuleConditionElements(), rawRule);
         //1.3把RuleDTO中的动作转为RawRule中的动作

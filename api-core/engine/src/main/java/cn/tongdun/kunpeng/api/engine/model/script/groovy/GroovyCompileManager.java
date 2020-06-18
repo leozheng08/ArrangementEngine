@@ -106,6 +106,12 @@ public class GroovyCompileManager {
             public Double getPlatformIndex(String var1){return null;}
             @Override
             public Double getOriginPlatformIndex(String var1){return null;}
+
+            @Override
+            public Object getPlatformIndex4Object(String indexId) {
+                return null;
+            }
+
             @Override
             public Double getPolicyIndex(String var1){return null;}
             @Override

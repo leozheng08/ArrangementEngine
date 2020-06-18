@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.application.model;
 
 import cn.fraudmetrix.holmes.service.intf.IDubboHolmesApi;
 import cn.fraudmetrix.holmes.service.object.ModelCalResponse;
+import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -76,31 +77,29 @@ public class UsModelService implements ModelServiceExtPt {
 
         Map<String, Object> param = Maps.newHashMap();
         for (ModelParam modelParam : inputList) {
-            param.put(modelParam.getField(), getContextDataByType(fraudContext, modelParam.getRightFieldType(), modelParam.getRightField()));
+            param.put(modelParam.getField(), getContextDataByType(fraudContext, modelParam));
         }
         return param;
     }
 
-    private Object getContextDataByType(AbstractFraudContext fraudContext, String type, String key) {
-        if (StringUtils.isBlank(type) || StringUtils.isBlank(key)) {
+    private Object getContextDataByType(AbstractFraudContext fraudContext, ModelParam modelParam) {
+        if (StringUtils.isBlank(modelParam.getRightFieldType()) || StringUtils.isBlank(modelParam.getRightField())) {
             return null;
         }
 
-        String lowerType = type.toLowerCase();
-        switch (lowerType) {
-            case "field":
-                return fraudContext.getField(key);
-            case "gaea_index":
-            case "gaea_indicatrix":
-            case "platform_index":
-                return fraudContext.getPlatformIndex(key);
-            case "policy_index":
-            case "index":
-                return fraudContext.getPolicyIndex(key);
-            case "input":
-                return key;
+        String lowerType = modelParam.getRightFieldType().toLowerCase();
+        FieldTypeEnum fieldTypeEnum = FieldTypeEnum.getFieldType(lowerType);
+        switch (fieldTypeEnum) {
+            case CONTEXT:
+                return fraudContext.getField(modelParam.getRightField());
+            case PLATFORM_INDEX:
+                return fraudContext.getPlatformIndexByDataType(modelParam.getRightField(), modelParam.getRightDataType());
+            case POLICY_INDEX:
+                return fraudContext.getPolicyIndex(modelParam.getRightField());
+            case INPUT:
+                return modelParam.getRightField();
             default:
-                return fraudContext.getField(key);
+                return fraudContext.getField(modelParam.getRightField());
         }
     }
 

@@ -23,4 +23,8 @@ public class ModelParam {
      * 引擎变量名称
      */
     private String rightFieldName;
+    /**
+     * 引擎变量数据类型
+     */
+    private String rightDataType;
 }

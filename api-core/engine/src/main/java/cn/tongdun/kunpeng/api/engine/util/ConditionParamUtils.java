@@ -33,9 +33,9 @@ public class ConditionParamUtils {
             case PLATFORM_INDEX:
                 Object isUseOriginValue = conditionParam.getExtProperty(FieldConstants.INDEX_USE_ORIGIN_VALUE);
                 if (null != isUseOriginValue && Boolean.valueOf(isUseOriginValue.toString())) {
-                    return new PlatformIndex(conditionParam.getName(), true);
+                    return new PlatformIndex(conditionParam.getName(), true,conditionParam.getDataType());
                 } else {
-                    return new PlatformIndex(conditionParam.getName(), false);
+                    return new PlatformIndex(conditionParam.getName(), false,conditionParam.getDataType());
                 }
             default:
                 throw new ParseException("illegal filedType:" + conditionParam.getFieldType() + ",conditionId:" + conditionParam.getConditionId());

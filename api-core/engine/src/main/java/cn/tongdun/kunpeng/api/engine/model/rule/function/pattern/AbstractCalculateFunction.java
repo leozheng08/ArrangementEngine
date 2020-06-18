@@ -26,7 +26,7 @@ public abstract class AbstractCalculateFunction extends AbstractFunction {
             case INPUT:
                 return new Literal(functionParam.getValue(), dataType);
             case PLATFORM_INDEX:
-                return new PlatformIndex(functionParam.getValue(), false);
+                return new PlatformIndex(functionParam.getValue(), false,dataType);
             case POLICY_INDEX:
                 if (functionParam.getExtProperty(PolicyIndexConstant.POLICY_INDEX_STAGE_TAG) != null
                         && StringUtils.equalsIgnoreCase(functionParam.getExtProperty(PolicyIndexConstant.POLICY_INDEX_STAGE_TAG).toString(), "true")) {
