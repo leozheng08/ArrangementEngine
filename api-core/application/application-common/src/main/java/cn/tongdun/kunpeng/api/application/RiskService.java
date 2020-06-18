@@ -55,7 +55,7 @@ public class RiskService implements IRiskService {
 
         BizScenario bizScenario = createBizScenario(request);
 
-        RiskRequest riskRequest  = extensionExecutor.execute(ICreateRiskRequestExtPt.class,
+        RiskRequest riskRequest = extensionExecutor.execute(ICreateRiskRequestExtPt.class,
                 bizScenario,
                 extension -> extension.createRiskRequest(request));
 
@@ -74,14 +74,14 @@ public class RiskService implements IRiskService {
         context.setRiskRequest(riskRequest);
 
         //business 依赖event_id找到对应的event_type再确认，放到GetPolicyUuidStep步骤中实现。
-        BizScenario bizScenario = BizScenario.valueOf(localEnvironment.getTenant(),null,riskRequest.getPartnerCode());
+        BizScenario bizScenario = BizScenario.valueOf(localEnvironment.getTenant(), BizScenario.DEFAULT, riskRequest.getPartnerCode());
         context.setBizScenario(bizScenario);
 
         IRiskResponse riskResponse = null;
 
         try {
 
-            riskResponse  = extensionExecutor.execute(ICreateRiskResponseExtPt.class,
+            riskResponse = extensionExecutor.execute(ICreateRiskResponseExtPt.class,
                     bizScenario,
                     extension -> extension.createRiskResponse(context));
 
@@ -97,8 +97,8 @@ public class RiskService implements IRiskService {
                         return isSuccess != null && !isSuccess;
                     }
             );
-        }catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"决策接口内部异常",e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "决策接口内部异常", e);
             riskResponse.setReasonCode(ReasonCode.INTERNAL_ERROR.toString());
         } finally {
             ThreadContext.clear();
@@ -110,10 +110,10 @@ public class RiskService implements IRiskService {
     }
 
 
-    private BizScenario createBizScenario(Map<String, String> request){
+    private BizScenario createBizScenario(Map<String, String> request) {
         BizScenario bizScenario = new BizScenario();
         bizScenario.setTenant(localEnvironment.getTenant());
-        bizScenario.setPartner(request.get("partnerCode") != null ? request.get("partnerCode") :request.get("partner_code"));
+        bizScenario.setPartner(request.get("partnerCode") != null ? request.get("partnerCode") : request.get("partner_code"));
         return bizScenario;
     }
 }

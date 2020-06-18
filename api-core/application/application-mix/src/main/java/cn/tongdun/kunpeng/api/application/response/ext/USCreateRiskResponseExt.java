@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author: yuanhang
  * @date: 2020-06-18 13:33
  **/
-@Extension(business = BizScenario.DEFAULT,tenant = "us",partner = BizScenario.DEFAULT)
+@Extension(tenant = "us", business = BizScenario.DEFAULT, partner = "global")
 public class USCreateRiskResponseExt implements ICreateRiskResponseExtPt {
 
     @Autowired
