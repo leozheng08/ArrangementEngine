@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @date: 2020-06-16 11:26
  **/
 @Component
-//@Step(pipeline = Risk.NAME, phase = Risk.OUTPUT, order = 3500)
+@Step(pipeline = Risk.NAME, phase = Risk.OUTPUT, order = 3500)
 public class ResponseAdjustStep implements IRiskStep {
 
     private Logger logger = LoggerFactory.getLogger(ResponseAdjustStep.class);
@@ -37,6 +37,10 @@ public class ResponseAdjustStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String appName = context.getAppName();
         Map<String, AccessBusiness> uuidAccessMap = accessBusinessCache.getAccessBusinessMap();
+        if (null == accessBusinessCache) {
+            logger.info(TraceUtils.getFormatTrace() + "access cache empty, skip response adjust");
+            return true;
+        }
         AccessBusiness access = uuidAccessMap.get(appName);
         if (null == access) {
             logger.info(TraceUtils.getFormatTrace() + "access :{} not exits, use default response", appName);

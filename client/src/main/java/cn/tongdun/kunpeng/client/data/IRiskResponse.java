@@ -66,7 +66,7 @@ public interface IRiskResponse extends IApiResponse {
 
     Boolean getIgnoreReq();
 
-    void setPolicyDetailResult(List policyDetailResult);
+    void setPolicyDetailResult(Object policyDetailResult);
 
-    List getPolicyDetailResult();
+    Object getPolicyDetailResult();
 }

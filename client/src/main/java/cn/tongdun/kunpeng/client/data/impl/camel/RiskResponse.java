@@ -174,7 +174,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
     @Override
-    public void setPolicyDetailResult(List policyDetailResult) {
+    public void setPolicyDetailResult(Object policyDetailResult) {
 
     }
 

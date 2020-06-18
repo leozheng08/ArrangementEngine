@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.client.data.impl.us;
 import cn.tongdun.kunpeng.client.data.IHitRule;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.PolicyMode;
-import cn.tongdun.kunpeng.client.data.impl.camel.HitRule;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -21,34 +21,80 @@ public class SubPolicyResult implements ISubPolicyResult {
 
     private String riskType;
 
-    private List<HitRule> hitRules;
+    private List<IHitRule> hitRules;
 
-    private List<HitRule> hitTestRules;
+    private List<IHitRule> hitTestRules;
 
-    private String policyMode;
+    private PolicyMode policyMode;
 
     private String dealType;
 
-    private List<HitRule> immunoRuleList;
+    private List<IHitRule> immunoRuleList;
+
+    public String getPolicyUuid() {
+        return policyUuid;
+    }
+
+    public void setPolicyUuid(String policyUuid) {
+        this.policyUuid = policyUuid;
+    }
+
+    public String getPolicyName() {
+        return policyName;
+    }
+
+    public void setPolicyName(String policyName) {
+        this.policyName = policyName;
+    }
+
+    public void setPolicyScore(Integer policyScore) {
+        this.policyScore = policyScore;
+    }
+
+    public List<IHitRule> getHitTestRules() {
+        return Lists.newArrayList();
+    }
+
+    public void setHitTestRules(List<IHitRule> hitTestRules) {
+        this.hitTestRules = hitTestRules;
+    }
+
+    @Override
+    public String getDealType() {
+        return dealType;
+    }
+
+    @Override
+    public void setDealType(String dealType) {
+        this.dealType = dealType;
+    }
+
+    public List<IHitRule> getImmunoRuleList() {
+        return Lists.newArrayList();
+    }
+
+    public void setImmunoRuleList(List<IHitRule> immunoRuleList) {
+        this.immunoRuleList = immunoRuleList;
+    }
 
     @Override
     public String getSubPolicyUuid() {
-        return null;
+        return this.policyUuid;
     }
 
     @Override
     public void setSubPolicyUuid(String subPolicyUuid) {
-
+        this.policyUuid = subPolicyUuid;
     }
 
     @Override
     public String getSubPolicyName() {
-        return null;
+        return this.policyName;
     }
 
     @Override
     public void setSubPolicyName(String subPolicyName) {
-
+        this.policyName = subPolicyName;
     }
 
     @Override
@@ -63,41 +109,41 @@ public class SubPolicyResult implements ISubPolicyResult {
 
     @Override
     public int getPolicyScore() {
-        return 0;
+        return this.policyScore;
     }
 
     @Override
     public void setPolicyScore(int policyScore) {
-
+        this.policyScore = policyScore;
     }
 
     @Override
     public String getRiskType() {
-        return null;
+        return this.riskType;
     }
 
     @Override
     public void setRiskType(String riskType) {
-
+        this.riskType = riskType;
     }
 
     @Override
     public List<IHitRule> getHitRules() {
-        return null;
+        return this.hitRules;
     }
 
     @Override
     public void setHitRules(List<IHitRule> hitRules) {
-
+        this.hitRules = hitRules;
     }
 
     @Override
     public PolicyMode getPolicyMode() {
-        return null;
+        return this.policyMode;
     }
 
     @Override
     public void setPolicyMode(PolicyMode policyMode) {
-
+        this.policyMode = policyMode;
     }
 }

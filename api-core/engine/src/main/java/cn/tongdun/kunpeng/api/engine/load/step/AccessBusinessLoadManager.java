@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.groupingBy;
  * 业务接入相关缓存数据
  **/
 @Component
-//@Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_COMM)
+@Step(pipeline = LoadPipeline.NAME, phase = LoadPipeline.LOAD_COMM)
 public class AccessBusinessLoadManager implements ILoad {
 
     @Autowired

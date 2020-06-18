@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.client.data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Author: liang.chen
@@ -31,4 +32,13 @@ public interface IHitRule extends Serializable {
     String getParentUuid() ;
 
     void setParentUuid(String parentUuid) ;
+
+    String getEnName();
+
+    void setEnName(String enName);
+
+    String getDealType();
+
+    void setDealType(String dealType);
+
 }

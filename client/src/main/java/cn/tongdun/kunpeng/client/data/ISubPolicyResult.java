@@ -30,4 +30,9 @@ public interface ISubPolicyResult extends Serializable {
     PolicyMode getPolicyMode() ;
 
     void setPolicyMode(PolicyMode policyMode) ;
+
+    String getDealType();
+
+    void setDealType(String dealType);
+
 }

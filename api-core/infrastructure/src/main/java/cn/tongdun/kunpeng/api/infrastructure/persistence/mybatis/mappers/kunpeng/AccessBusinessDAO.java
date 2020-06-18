@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
+import cn.tongdun.kunpeng.api.engine.reload.docache.Cacheable;
 import cn.tongdun.kunpeng.share.dataobject.AccessBusinessDO;
 
 import java.util.List;
@@ -15,5 +16,13 @@ public interface AccessBusinessDAO {
      * @return
      */
     List<AccessBusinessDO> queryAllUsableAccess();
+
+    /**
+     * 根据uuid查询AccessBusiness
+     * @param uuid
+     * @return
+     */
+    @Cacheable
+    AccessBusinessDO selectByUuid(String uuid);
 
 }

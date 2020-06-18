@@ -29,4 +29,11 @@
 		where is_deleted = 0 and status = 1;
 	</select>
 
+	<select id="selectByUuid" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from access_business
+		where uuid = #{uuid, jdbcType=VARCHAR}
+	</select>
+
 </mapper>

@@ -1,35 +1,50 @@
-package cn.tongdun.kunpeng.client.data.impl.underline;
+package cn.tongdun.kunpeng.client.data.impl.us;
 
 import cn.tongdun.kunpeng.client.data.IHitRule;
 
 /**
- * @Author: liang.chen
- * @Date: 2019/12/13 下午4:44
- */
-public class HitRule implements IHitRule {
+ * @author: yuanhang
+ * @date: 2020-06-17 15:52
+ **/
+public class USHitRule implements IHitRule {
 
-    private static final long serialVersionUID = 6297666052880082771L;
-    private String            id;                                     // 规则编号
-    private String            uuid;
-    private String            name;                                   // 规则名称
-    private String            decision;                               // 该条规则决策结果
-    private Integer           score            = 0;                   // 规则分数
+    private String uuid;
 
-    private String            parentUuid;
+    private String name;
+
+    private String decision;
+
+    private Integer score;
+
+    private String enName;
+
+    private String dealType;
+
+    private String parentUuid;
 
     @Override
     public String getId() {
-        return id;
+        return null;
     }
 
     @Override
     public void setId(String id) {
-        this.id = id;
+
+    }
+
+    @Override
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    @Override
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -39,7 +54,7 @@ public class HitRule implements IHitRule {
 
     @Override
     public String getDecision() {
-        return decision;
+        return this.decision;
     }
 
     @Override
@@ -49,7 +64,7 @@ public class HitRule implements IHitRule {
 
     @Override
     public Integer getScore() {
-        return score;
+        return this.score;
     }
 
     @Override
@@ -58,18 +73,8 @@ public class HitRule implements IHitRule {
     }
 
     @Override
-    public String getUuid() {
-        return uuid;
-    }
-
-    @Override
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    @Override
     public String getParentUuid() {
-        return parentUuid;
+        return this.parentUuid;
     }
 
     @Override
@@ -79,22 +84,21 @@ public class HitRule implements IHitRule {
 
     @Override
     public String getEnName() {
-        return null;
+        return enName;
     }
 
     @Override
     public void setEnName(String enName) {
-
+        this.enName = enName;
     }
 
     @Override
     public String getDealType() {
-        return null;
+        return dealType;
     }
 
     @Override
     public void setDealType(String dealType) {
-
+        this.dealType = dealType;
     }
-
 }

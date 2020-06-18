@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.access;
 
 import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventDO;
 import lombok.Data;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * @date: 2020-06-10 14:29
  **/
 @Data
-public class AccessBusiness extends StatusEntity {
+public class AccessBusiness extends EventDO {
 
     /**
      * 合作方标识

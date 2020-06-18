@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AccessParamDAO;
 import cn.tongdun.kunpeng.share.dataobject.AccessBusinessDO;
 import cn.tongdun.kunpeng.share.dataobject.AccessParamDO;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,23 @@ public class AccessBusinessRepository implements IAccessBusinessRepository {
             return accessBusiness;
         }).collect(Collectors.toList());
         return result;
+    }
+
+    @Override
+    public AccessBusiness selectByUuid(String uuid) {
+        AccessBusinessDO accessBusinessDO = accessBusinessDAO.selectByUuid(uuid);
+        if (null == accessBusinessDO) {
+            return null;
+        }
+        AccessBusiness accessBusiness = new AccessBusiness();
+        BeanUtils.copyProperties(accessBusinessDO, accessBusiness);
+        List<AccessParamDO> accessParams = accessParamDAO.selectByAccessUUIDs(Lists.newArrayList(accessBusiness.getUuid()));
+        accessBusiness.setAccessParams(accessParams.stream().map(accessParamDO -> {
+            AccessParam accessParam = new AccessParam();
+            BeanUtils.copyProperties(accessParamDO, accessParam);
+            return accessParam;
+        }).collect(Collectors.toList()));
+        return accessBusiness;
     }
 
 }
