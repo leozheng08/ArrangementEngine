@@ -8,7 +8,7 @@ import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng
 import cn.tongdun.kunpeng.share.dataobject.AccessBusinessDO;
 import cn.tongdun.kunpeng.share.dataobject.AccessParamDO;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,20 +35,23 @@ public class AccessBusinessRepository implements IAccessBusinessRepository {
     @Override
     public List<AccessBusiness> queryAllUsableAccess() {
         List<AccessBusinessDO> accessBusinesses = accessBusinessDAO.queryAllUsableAccess();
-        List<AccessParamDO> accessParamDOS = accessParamDAO.selectByAccessUUIDs(accessBusinesses.stream().map(AccessBusinessDO::getUuid).collect(Collectors.toList()));
-        List<AccessParam> accessParams = accessParamDOS.stream().map(r -> {
-           AccessParam accessParam = new AccessParam();
-           BeanUtils.copyProperties(r, accessParam);
-            return accessParam;
-        }).collect(Collectors.toList());
-        Map<String, List<AccessParam>>  uuidAccessParamMap = accessParams.stream().collect(groupingBy(AccessParam::getAccessUuid));
-        List<AccessBusiness> result = accessBusinesses.stream().map(r -> {
-            AccessBusiness accessBusiness = new AccessBusiness();
-            BeanUtils.copyProperties(r, accessBusiness);
-            accessBusiness.setAccessParams(uuidAccessParamMap.get(r.getUuid()));
-            return accessBusiness;
-        }).collect(Collectors.toList());
-        return result;
+        if (CollectionUtils.isNotEmpty(accessBusinesses)) {
+            List<AccessParamDO> accessParamDOS = accessParamDAO.selectByAccessUUIDs(accessBusinesses.stream().map(AccessBusinessDO::getUuid).collect(Collectors.toList()));
+            List<AccessParam> accessParams = accessParamDOS.stream().map(r -> {
+                AccessParam accessParam = new AccessParam();
+                BeanUtils.copyProperties(r, accessParam);
+                return accessParam;
+            }).collect(Collectors.toList());
+            Map<String, List<AccessParam>>  uuidAccessParamMap = accessParams.stream().collect(groupingBy(AccessParam::getAccessUuid));
+            List<AccessBusiness> result = accessBusinesses.stream().map(r -> {
+                AccessBusiness accessBusiness = new AccessBusiness();
+                BeanUtils.copyProperties(r, accessBusiness);
+                accessBusiness.setAccessParams(uuidAccessParamMap.get(r.getUuid()));
+                return accessBusiness;
+            }).collect(Collectors.toList());
+            return result;
+        }
+        return Lists.newArrayList();
     }
 
     @Override
