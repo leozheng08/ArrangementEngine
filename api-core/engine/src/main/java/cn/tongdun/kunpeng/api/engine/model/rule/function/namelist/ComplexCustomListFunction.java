@@ -77,14 +77,14 @@ public class ComplexCustomListFunction extends AbstractFunction {
                 }
                 if (MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
                     if (CollectionUtils.isEmpty(matchList)) {
-                        return new FunctionResult(true, buildConditionDetail(matchList, dimValue, rowValues));
+                        return new FunctionResult(true, buildConditionDetail((AbstractFraudContext) context, matchList, dimValue, rowValues));
                     } else {
                         return new FunctionResult(false, null);
                     }
                 }
             }
             if (CollectionUtils.isNotEmpty(matchList)) {
-                return new FunctionResult(true, buildConditionDetail(matchList, dimValue, rowValues));
+                return new FunctionResult(true, buildConditionDetail((AbstractFraudContext) context, matchList, dimValue, rowValues));
             } else {
                 return new FunctionResult(false, null);
             }
@@ -92,7 +92,7 @@ public class ComplexCustomListFunction extends AbstractFunction {
         return new FunctionResult(false, null);
     }
 
-    private DetailCallable buildConditionDetail(Set<String> matchList, String dimValue, Map<Integer, List<String>> rowValues) {
+    private DetailCallable buildConditionDetail(AbstractFraudContext context, Set<String> matchList, String dimValue, Map<Integer, List<String>> rowValues) {
         String newDimValue = getOriginDim(rowValues, dimValue);
         return () -> {
             CustomListDetail detail = new CustomListDetail();
@@ -105,6 +105,7 @@ public class ComplexCustomListFunction extends AbstractFunction {
             }
             detail.setDescription(description);
             detail.setDimType(this.calcField);
+            detail.setDimTypeDisplayName(VelocityHelper.getFieldDisplayName(this.calcField,context));
             detail.setDimValue(newDimValue);
             return detail;
         };

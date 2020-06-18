@@ -12,14 +12,21 @@ import java.util.List;
  */
 @Data
 public class CustomListDetail extends ConditionDetail {
-
-    //匹配上的列表值
+    /**
+     * 匹配上的列表值
+     */
     private List<String> list;
-
-    //匹配字段
+    /**
+     * 匹配字段
+     */
     private String dimType;
-
-    //匹配字段值
+    /**
+     * 匹配字段显示名称
+     */
+    private String dimTypeDisplayName;
+    /**
+     * 匹配字段值
+     */
     private String dimValue;
 
     public CustomListDetail() {
