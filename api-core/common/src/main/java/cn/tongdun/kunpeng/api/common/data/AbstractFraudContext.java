@@ -420,6 +420,23 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     }
 
     /**
+     * 获取非Double类型的平台指标，对getPlatformIndex泛化
+     * @param platformIndexId
+     * @return
+     */
+    @Override
+    public Object getPlatformIndex4Object(String platformIndexId){
+        if (StringUtils.isBlank(platformIndexId)) {
+            return null;
+        }
+        PlatformIndexData platformIndexData = platformIndexMap.get(platformIndexId);
+        if (null == platformIndexData) {
+            return null;
+        }
+        return platformIndexData.getStringValue();
+    }
+
+    /**
      * 取得平台指标原始结果值
      * @param platformIndexId
      * @return

@@ -17,7 +17,7 @@ public class PlatformIndexData {
     /**
      * 返回历史取值 str
      */
-    private String historyValue;
+    private String stringValue;
     /**
      * 平台指标原始值
      */
