@@ -70,13 +70,13 @@ public class CustomListFunction extends AbstractFunction {
                     }
                     if (MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
                         if (CollectionUtils.isEmpty(matchList)) {
-                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                            return new FunctionResult(true, buildConditionDetail((AbstractFraudContext) context, matchList, dim));
                         } else {
                             return new FunctionResult(false, null);
                         }
                     } else {
                         if (CollectionUtils.isNotEmpty(matchList)) {
-                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                            return new FunctionResult(true, buildConditionDetail((AbstractFraudContext) context, matchList, dim));
                         } else {
                             return new FunctionResult(false, null);
                         }
@@ -95,13 +95,13 @@ public class CustomListFunction extends AbstractFunction {
                     }
                     if (MatchModeEnum.EXCLUDE.equals(matchModeEnum)) {
                         if (CollectionUtils.isEmpty(matchList)) {
-                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                            return new FunctionResult(true, buildConditionDetail((AbstractFraudContext) context, matchList, dim));
                         } else {
                             return new FunctionResult(false, null);
                         }
                     } else {
                         if (CollectionUtils.isNotEmpty(matchList)) {
-                            return new FunctionResult(true, buildConditionDetail(matchList, dim));
+                            return new FunctionResult(true, buildConditionDetail((AbstractFraudContext) context, matchList, dim));
                         } else {
                             return new FunctionResult(false, null);
                         }
@@ -112,7 +112,7 @@ public class CustomListFunction extends AbstractFunction {
         return new FunctionResult(false, null);
     }
 
-    private DetailCallable buildConditionDetail(Set<String> matchList, String dimValue) {
+    private DetailCallable buildConditionDetail(AbstractFraudContext context, Set<String> matchList, String dimValue) {
         return () -> {
             CustomListDetail detail = new CustomListDetail();
             detail.setRuleUuid(this.ruleUuid);
@@ -123,6 +123,7 @@ public class CustomListFunction extends AbstractFunction {
                 detail.setList(Lists.newLinkedList(matchList));
             }
             detail.setDimType(this.calcField);
+            detail.setDimTypeDisplayName(VelocityHelper.getFieldDisplayName(this.calcField, context));
             detail.setDescription(description);
             detail.setDimValue(dimValue);
             return detail;
