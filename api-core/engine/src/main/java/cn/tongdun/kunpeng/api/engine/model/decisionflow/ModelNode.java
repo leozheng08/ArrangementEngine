@@ -119,6 +119,7 @@ public class ModelNode extends AbstractBizNode {
                 paramInfo.setRightField(JsonUtil.getString(json, "rightField"));
                 paramInfo.setRightFieldType(JsonUtil.getString(json, "rightFieldType"));
                 paramInfo.setRightFieldName(JsonUtil.getString(json, "rightFieldName"));
+                paramInfo.setRightDataType(JsonUtil.getString(json, "rightDataType"));
                 modelParamList.add(paramInfo);
             });
             return modelParamList;
