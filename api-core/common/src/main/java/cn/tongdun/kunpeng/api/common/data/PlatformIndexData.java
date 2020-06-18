@@ -13,6 +13,11 @@ public class PlatformIndexData {
      * 平台指标转换后的值
      */
     private Double value;
+
+    /**
+     * 返回历史取值 str
+     */
+    private String historyValue;
     /**
      * 平台指标原始值
      */
