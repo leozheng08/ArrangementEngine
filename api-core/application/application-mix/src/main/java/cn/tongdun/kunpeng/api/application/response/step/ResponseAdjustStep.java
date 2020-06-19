@@ -37,13 +37,13 @@ public class ResponseAdjustStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String appName = context.getAppName();
         Map<String, AccessBusiness> uuidAccessMap = accessBusinessCache.getAccessBusinessMap();
-        if (null == accessBusinessCache) {
-            logger.info(TraceUtils.getFormatTrace() + "access cache empty, skip response adjust");
+        if (null == appName) {
+            logger.info(TraceUtils.getFormatTrace() + "null appName, skip response adjust");
             return true;
         }
         AccessBusiness access = uuidAccessMap.get(appName);
         if (null == access) {
-            logger.info(TraceUtils.getFormatTrace() + "access :{} not exits, use default response", appName);
+            logger.info(TraceUtils.getFormatTrace() + " access :{} not exits, use default response", appName);
             return true;
         }
         List<AccessParam> accessParams = access.getAccessParams().stream().filter(r -> r.getInputOutput().equals("output")).collect(Collectors.toList());

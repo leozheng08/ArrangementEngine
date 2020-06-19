@@ -20,6 +20,8 @@ public class PolicyResult {
 
     private List<IHitRule> hitRules;
 
+    private String reasonCode;
+
     private String seqId;
 
     private long spendTime;
@@ -30,9 +32,9 @@ public class PolicyResult {
 
     private List<String> riskType;
 
-    private String flowChargeSuccessed;
+    private Boolean flowChargeSuccessed;
 
-    private String emergencySwithcOn;
+    private Boolean emergencySwithcOn;
 
     private String finalDealType;
 
@@ -114,19 +116,19 @@ public class PolicyResult {
         this.riskType = riskType;
     }
 
-    public String getFlowChargeSuccessed() {
+    public Boolean isFlowChargeSuccessed() {
         return flowChargeSuccessed;
     }
 
-    public void setFlowChargeSuccessed(String flowChargeSuccessed) {
+    public void setFlowChargeSuccessed(Boolean flowChargeSuccessed) {
         this.flowChargeSuccessed = flowChargeSuccessed;
     }
 
-    public String getEmergencySwithcOn() {
+    public Boolean isEmergencySwithcOn() {
         return emergencySwithcOn;
     }
 
-    public void setEmergencySwithcOn(String emergencySwithcOn) {
+    public void setEmergencySwithcOn(Boolean emergencySwithcOn) {
         this.emergencySwithcOn = emergencySwithcOn;
     }
 
@@ -160,5 +162,13 @@ public class PolicyResult {
 
     public void setNusspecialMap(Map nusspecialMap) {
         this.nusspecialMap = nusspecialMap;
+    }
+
+    public String getReasonCode() {
+        return reasonCode;
+    }
+
+    public void setReasonCode(String reasonCode) {
+        this.reasonCode = reasonCode;
     }
 }

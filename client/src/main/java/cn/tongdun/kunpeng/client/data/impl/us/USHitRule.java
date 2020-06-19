@@ -1,9 +1,7 @@
 package cn.tongdun.kunpeng.client.data.impl.us;
 
 import cn.tongdun.kunpeng.client.data.IHitRule;
-import cn.tongdun.kunpeng.client.data.IRuleDetailList;
 
-import java.util.List;
 
 /**
  * @author: yuanhang
@@ -24,8 +22,6 @@ public class USHitRule implements IHitRule {
     private String dealType;
 
     private String parentUuid;
-
-    private List<IRuleDetailList> ruleDetailDataList;
 
     @Override
     public String getId() {

@@ -21,9 +21,6 @@ public class USRiskResponse implements IRiskResponse {
      */
     private Boolean success = false;
 
-    @JsonProperty("reason_code")
-    protected String          reasonCode;
-
     private Boolean ignoreReq;
 
     private Map customPolicyResult;
@@ -210,6 +207,7 @@ public class USRiskResponse implements IRiskResponse {
 
     @Override
     public void setReasonCode(String reasonCode) {
+
     }
 
     @Override

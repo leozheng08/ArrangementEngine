@@ -38,46 +38,50 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
 
         // 对于北美的场景，考虑到规则详情已经迁移到了调用日志，保持原有的逻辑不变
         PolicyResponse policyResponse = context.getPolicyResponse();
-        if (null == policyResponse) {
-            return true;
-        }
-        if (policyResponse.getSubPolicyResponses() == null || (policyResponse.getSubPolicyResponses().isEmpty())) {
+
+        if (null == policyResponse || CollectionUtils.isEmpty(policyResponse.getSubPolicyResponses())) {
+            response.setIgnoreReq(false);
+            response.setSuccess(true);
+            PolicyResult policyDetailResult = new PolicyResult();
+            policyDetailResult.setSuccess(false);
+            // TODO 确认耗时
+            policyDetailResult.setSpendTime(System.currentTimeMillis() - context.getEventOccurTime().getTime());
+            policyDetailResult.setSeqId(context.getSeqId());
+            policyDetailResult.setFinalDealType("Accept");
+            policyDetailResult.setFinalDealTypeName("通过");
+            response.setPolicyDetailResult(policyDetailResult);
             return true;
         }
 
         // 返回值中注入通用参数（兼容规则详情，不通过接口输出）
         injectCommonResponse(response, policyResponse);
 
-        // 返回值中注入北美/天策参数
-        injectUSResponse(context, response, policyResponse);
+        // 以下针对天策/环球易购注参
 
-        return true;
-    }
-
-    private void injectUSResponse(AbstractFraudContext context, IRiskResponse response, PolicyResponse policyResponse) {
         // 先填充deviceInfo信息，responseAdjust中填充业务对接中的映射
         Map customPolicyResult = Maps.newHashMap();
         customPolicyResult.put("deviceInfo", context.getDeviceInfo());
         response.setCustomPolicyResult(customPolicyResult);
-        // 先不知道是干嘛的，先写死
+        // 流控相关，默认false
         response.setIgnoreReq(false);
 
         // 填充policyDetailResult
         PolicyResult policyDetailResult = new PolicyResult();
         policyDetailResult.setSuccess(policyResponse.isSuccess());
-        policyDetailResult.setPolicyName(policyResponse.getPolicyName());
         policyDetailResult.setFinalScore(policyResponse.getScore());
         policyDetailResult.setSpendTime(policyResponse.getCostTime());
+        policyDetailResult.setPolicyName(policyResponse.getPolicyName());
         policyDetailResult.setSeqId(context.getSeqId());
         policyDetailResult.setFinalDealType(policyResponse.getDecision());
         policyDetailResult.setFinalDealTypeName(policyResponse.getDecision());
-        // TODO 确认grade是啥
-        policyDetailResult.setFinalDealTypeGrade("");
+        policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision()));
+        policyDetailResult.setFlowChargeSuccessed(false);
+        policyDetailResult.setEmergencySwithcOn(false);
         // TODO 确认这个map是啥
         policyDetailResult.setNusspecialMap(Maps.newHashMap());
         // 暂时填充策略名称名称
         policyDetailResult.setPolicySetName(context.getPolicyResponse().getPolicyName());
-        // 填充自策略
+        // 填充策略内容
         policyDetailResult.setPolicySet(buildUSPolicySets(response, policyResponse));
         // 填充riskType
         List<String> riskTypes = Lists.newArrayList();
@@ -91,6 +95,8 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
         // 规则详情不要了
         policyDetailResult.setHitRules(null);
         response.setPolicyDetailResult(policyDetailResult);
+
+        return true;
     }
 
     private void injectCommonResponse(IRiskResponse response, PolicyResponse policyResponse) {
@@ -186,7 +192,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
         hitRule.setName(ruleResponse.getName());
         hitRule.setEnName("");
         hitRule.setDecision("");
-        hitRule.setDealType("");
+        hitRule.setDealType(ruleResponse.getDecision());
         hitRule.setParentUuid(ruleResponse.getParentUuid());
         hitRule.setScore(ruleResponse.getScore());
         return hitRule;
@@ -212,5 +218,22 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
             subPolicyResults.add(subPolicyResult);
         }
         return subPolicyResults;
+    }
+
+    /**
+     * TODO 后续整理成枚举
+     * 每种决策结果都会定义不同的决策等级,当前适配环球易购
+     */
+    private String buildDealTypeGrade(String decision) {
+        switch (decision) {
+            case "Accept":
+                return "1";
+            case "Review":
+                return "20";
+            case "Reject":
+                return "99";
+            default:
+                return "-1";
+        }
     }
 }
