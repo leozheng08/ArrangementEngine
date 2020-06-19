@@ -417,7 +417,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             return null;
         }
         PlatformIndexData platformIndexData = platformIndexMap.get(platformIndexId);
-        if (null == platformIndexData) {
+        if (null == platformIndexData||Double.isNaN(platformIndexData.getValue())) {
             return null;
         }
         return platformIndexData.getValue();
@@ -429,7 +429,6 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * @param platformIndexId
      * @return
      */
-    @Override
     public Object getPlatformIndex4Object(String platformIndexId) {
         if (StringUtils.isBlank(platformIndexId)) {
             return null;
