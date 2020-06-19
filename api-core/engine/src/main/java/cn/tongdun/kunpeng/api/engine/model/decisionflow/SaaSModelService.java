@@ -13,6 +13,7 @@ import cn.tongdun.tdframework.core.extension.Extension;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +126,7 @@ public class SaaSModelService implements ModelServiceExtPt{
             return null;
         }
         Map<String, String> reqParams = new HashMap<>();
-        Double indexResult;
+        Object indexResult;
         String value;
 
         for (ModelParam paramInfo : list) {
@@ -142,8 +143,8 @@ public class SaaSModelService implements ModelServiceExtPt{
             }
             // 平台指标去缓存中取对应信息
             else if (StringUtils.equalsIgnoreCase(rightFieldType, RightFieldType.GAEA_INDICATRIX.getName())) {
-                indexResult = fraudContext.getPlatformIndex(rightField);
-                if (indexResult == null || Double.isNaN(indexResult)) {
+                indexResult = fraudContext.getPlatformIndexByDataType(rightField,paramInfo.getRightDataType());
+                if (indexResult == null) {
                     value = null;
                 } else {
                     value = String.valueOf(indexResult);
