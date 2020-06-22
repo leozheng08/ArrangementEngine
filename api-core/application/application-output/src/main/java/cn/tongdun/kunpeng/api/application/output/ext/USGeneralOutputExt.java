@@ -1,9 +1,6 @@
 package cn.tongdun.kunpeng.api.application.output.ext;
 
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.common.data.PolicyResponse;
-import cn.tongdun.kunpeng.api.common.data.RuleResponse;
-import cn.tongdun.kunpeng.api.common.data.SubPolicyResponse;
+import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.client.data.IHitRule;
@@ -22,13 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author: yuanhang
  * @date: 2020-06-17 14:05
  **/
-@Extension(tenant = "us",business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
-public class USGeneralOutputExt implements IGeneralOutputExtPt{
+@Extension(tenant = "us", business = BizScenario.DEFAULT, partner = "global")
+public class USGeneralOutputExt implements IGeneralOutputExtPt {
 
     @Autowired
     private DecisionResultTypeCache decisionResultTypeCache;
@@ -44,11 +42,11 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
             response.setSuccess(true);
             PolicyResult policyDetailResult = new PolicyResult();
             policyDetailResult.setSuccess(false);
-            // TODO 确认耗时
             policyDetailResult.setSpendTime(System.currentTimeMillis() - context.getEventOccurTime().getTime());
             policyDetailResult.setSeqId(context.getSeqId());
             policyDetailResult.setFinalDealType("Accept");
             policyDetailResult.setFinalDealTypeName("通过");
+            policyDetailResult.setReasonCode(buildReasonCode(context));
             response.setPolicyDetailResult(policyDetailResult);
             return true;
         }
@@ -77,17 +75,21 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
         policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision()));
         policyDetailResult.setFlowChargeSuccessed(false);
         policyDetailResult.setEmergencySwithcOn(false);
-        // TODO 确认这个map是啥
-        policyDetailResult.setNusspecialMap(Maps.newHashMap());
+        Map nusspecial = Maps.newHashMap();
+        nusspecial.put("emailExceptionType", context.getFieldValues().get("emailExceptionType"));
+        nusspecial.put("mobileRiskScore", context.getFieldValues().get("mobileRiskScore"));
+        policyDetailResult.setNusspecialMap(nusspecial);
         // 暂时填充策略名称名称
         policyDetailResult.setPolicySetName(context.getPolicyResponse().getPolicyName());
         // 填充策略内容
-        policyDetailResult.setPolicySet(buildUSPolicySets(response, policyResponse));
+        if (null == context.getFieldValues().get("subPolicys")) {
+            policyDetailResult.setPolicySet(buildUSPolicySets(response, policyResponse, context));
+        }
         // 填充riskType
         List<String> riskTypes = Lists.newArrayList();
         policyResponse.getSubPolicyResponses().stream().forEach(subPolicyResponse -> {
             DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
-            if(decisionResultType != null && decisionResultType.isRisky()){
+            if (decisionResultType != null && decisionResultType.isRisky()) {
                 riskTypes.add(subPolicyResponse.getRiskType());
             }
         });
@@ -111,7 +113,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
         for (SubPolicyResponse subPolicyResponse : policyResponse.getSubPolicyResponses()) {
             if (StringUtils.isNotBlank(subPolicyResponse.getRiskType())) {
                 DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
-                if(decisionResultType != null && decisionResultType.isRisky()){
+                if (decisionResultType != null && decisionResultType.isRisky()) {
                     if (riskTypeBuilder.length() > 0) {
                         riskTypeBuilder.append(",");
                     }
@@ -126,8 +128,8 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
             subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
             subPolicyResult.setPolicyDecision(subPolicyResponse.getDecision());
 
-            List<IHitRule> hitRuleList = getHitRules(response.getFactory(),subPolicyResponse);
-            if(hitRuleList != null && !hitRuleList.isEmpty()) {
+            List<IHitRule> hitRuleList = getHitRules(response.getFactory(), subPolicyResponse);
+            if (hitRuleList != null && !hitRuleList.isEmpty()) {
                 subPolicyResult.setHitRules(hitRuleList);
                 rules.addAll(hitRuleList);
             }
@@ -136,16 +138,16 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
         response.setSubPolicys(policyResults);
     }
 
-    private List<IHitRule> getHitRules(IRiskResponseFactory factory, SubPolicyResponse subPolicyResponse){
+    private List<IHitRule> getHitRules(IRiskResponseFactory factory, SubPolicyResponse subPolicyResponse) {
         List<RuleResponse> ruleResponseList = subPolicyResponse.getRuleResponses();
-        if(ruleResponseList == null || ruleResponseList.isEmpty()){
+        if (ruleResponseList == null || ruleResponseList.isEmpty()) {
             return null;
         }
 
         List<IHitRule> hitRuleList = new ArrayList<>();
-        for(RuleResponse ruleResponse:ruleResponseList){
+        for (RuleResponse ruleResponse : ruleResponseList) {
             if (ruleResponse.isHit()) {
-                IHitRule hitRule = createHitRule(factory,ruleResponse);
+                IHitRule hitRule = createHitRule(factory, ruleResponse);
                 hitRuleList.add(hitRule);
             }
         }
@@ -153,7 +155,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
         return hitRuleList;
     }
 
-    private IHitRule createHitRule(IRiskResponseFactory factory,RuleResponse ruleResponse){
+    private IHitRule createHitRule(IRiskResponseFactory factory, RuleResponse ruleResponse) {
         IHitRule hitRule = factory.newHitRule();
         hitRule.setId(ruleResponse.getId());
         hitRule.setName(ruleResponse.getName());
@@ -182,11 +184,12 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
     /**
      * // 规则详情不要了
      * 构建命中的规则
+     *
      * @param factory
      * @param ruleResponse
      * @return
      */
-    private IHitRule buildUSHitRule(IRiskResponseFactory factory, RuleResponse ruleResponse){
+    private IHitRule buildUSHitRule(IRiskResponseFactory factory, RuleResponse ruleResponse) {
         IHitRule hitRule = factory.newHitRule();
         hitRule.setUuid(ruleResponse.getUuid());
         hitRule.setName(ruleResponse.getName());
@@ -198,14 +201,14 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
         return hitRule;
     }
 
-    private List<ISubPolicyResult> buildUSPolicySets(IRiskResponse response, PolicyResponse policyResponse) {
+    private List<ISubPolicyResult> buildUSPolicySets(IRiskResponse response, PolicyResponse policyResponse, AbstractFraudContext context) {
         List<ISubPolicyResult> subPolicyResults = new ArrayList<>(policyResponse.getSubPolicyResponses().size());
         for (SubPolicyResponse subPolicyResponse : policyResponse.getSubPolicyResponses()) {
             ISubPolicyResult subPolicyResult = response.getFactory().newSubPolicyResult();
             // 填充子策略RiskType字段
             if (StringUtils.isNotEmpty(subPolicyResponse.getRiskType())) {
                 DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
-                if(decisionResultType != null && decisionResultType.isRisky()){
+                if (decisionResultType != null && decisionResultType.isRisky()) {
                     subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
                 }
                 subPolicyResult.setSubPolicyUuid(subPolicyResponse.getSubPolicyUuid());
@@ -213,7 +216,9 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
                 subPolicyResult.setPolicyScore(subPolicyResponse.getScore());
                 subPolicyResult.setPolicyMode(subPolicyResponse.getPolicyMode());
                 subPolicyResult.setDealType(subPolicyResponse.getDecision());
-                subPolicyResult.setHitRules(buildUSHitRules(response.getFactory(), subPolicyResponse));
+                if (null == context.getFieldValues().get("hitRules")) {
+                    subPolicyResult.setHitRules(buildUSHitRules(response.getFactory(), subPolicyResponse));
+                }
             }
             subPolicyResults.add(subPolicyResult);
         }
@@ -235,5 +240,53 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt{
             default:
                 return "-1";
         }
+    }
+
+
+    /**
+     * 将kunpeng标准输出错误码映射到天策输出
+     * @param context
+     * @return
+     */
+    private String buildReasonCode(AbstractFraudContext context) {
+        Set<SubReasonCode> subReasonCodes = context.getSubReasonCodes();
+        for (SubReasonCode subReasonCode : subReasonCodes) {
+            if (subReasonCode.getSub_code().startsWith(ReasonCode.AUTH_FAILED.getCode())) {
+                return GlobalEasyGoReasonCode.AUTH_FAILED.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.REQ_DATA_TYPE_ERROR.getCode())) {
+                return GlobalEasyGoReasonCode.REQ_DATA_TYPE_ERROR.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.PARAM_NULL_ERROR.getCode())) {
+                return GlobalEasyGoReasonCode.PARAM_NULL_ERROR.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.PARAM_DATA_TYPE_ERROR.getCode())) {
+                return GlobalEasyGoReasonCode.PARAM_DATA_TYPE_ERROR.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.PARAM_OVER_MAX_LEN.getCode())) {
+                return GlobalEasyGoReasonCode.PARAM_OVER_MAX_LEN.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.PARAM_FORMAT_ERROR.getCode())) {
+                return GlobalEasyGoReasonCode.PARAM_FORMAT_ERROR.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.QUERY_TIME_INTERVAL_INVALID.getCode())) {
+                return GlobalEasyGoReasonCode.QUERY_TIME_INTERVAL_INVALID.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.PARAM_DATA_NOT_EXIST_ERROR.getCode())) {
+                return GlobalEasyGoReasonCode.PARAM_DATA_NOT_EXIST_ERROR.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.LOAN_APPLY_ID_BLANK_ERROR.getCode())) {
+                return GlobalEasyGoReasonCode.PARAM_NULL_IDENTIFY.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.FLOW_POOR.getCode())) {
+                return GlobalEasyGoReasonCode.FLOW_POOR.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.NOT_BUY_SERVICE.getCode())) {
+                return GlobalEasyGoReasonCode.NOT_BUY_SERVICE.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.NOT_ALLOWED.getCode())) {
+                return GlobalEasyGoReasonCode.NOT_ALLOWED.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.OUT_OF_SERVICE_DATE.getCode())) {
+                return GlobalEasyGoReasonCode.OUT_OF_SERVICE_DATE.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.POLICY_NOT_EXIST.getCode())) {
+                return GlobalEasyGoReasonCode.POLICY_NOT_EXIST.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.RULE_ENGINE_TIMEOUT.getCode())) {
+                return GlobalEasyGoReasonCode.POLICY_EXECUTE_TIMEOUT.toString();
+            } else if (subReasonCode.getSub_code().startsWith(ReasonCode.NO_RESULT.getCode())) {
+                return GlobalEasyGoReasonCode.NO_RESULT.toString();
+            } else {
+                return GlobalEasyGoReasonCode.INTERNAL_ERROR.toString();
+            }
+        }
+        return null;
     }
 }

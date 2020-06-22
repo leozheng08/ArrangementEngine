@@ -156,10 +156,10 @@ public class MailModelFunction extends AbstractFunction {
                     }
                     detail.setSimResult(mailResult.toString());
                     detail.setMail(mail);
-                    detail.setRuleDesc(this.description);
+                    detail.setDescription(this.description);
                     return detail;
                 };
-//                context.getFieldValues().put("emailExceptionType", MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
+                context.getFieldValues().put("emailExceptionType", MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                 return new FunctionResult(null != mapping.get(Integer.valueOf(String.valueOf(mailModelResult.getResult()))) || randResult, callable);
             }
         } catch (Exception e) {

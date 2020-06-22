@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class MailModelDetail extends ConditionDetail implements DetailCallable {
 
-    private String ruleDesc;
+    private String description;
 
 
     private String simResult;

@@ -50,6 +50,10 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @JsonIgnore
     private String                    subReasonCodes;                              //原因子码
 
+    /**
+     * 用户自定义输出
+     */
+    private Map customPolicyResult;
 
     @JsonIgnore
     private transient IRiskResponseFactory      factory;
@@ -197,12 +201,12 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     @Override
     public void setCustomPolicyResult(Map customPolicyResult) {
-
+        this.customPolicyResult = customPolicyResult;
     }
 
     @Override
     public Map getCustomPolicyResult() {
-        return null;
+        return this.customPolicyResult;
     }
 
     @Override
