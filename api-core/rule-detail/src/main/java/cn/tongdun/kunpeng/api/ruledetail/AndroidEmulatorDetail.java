@@ -10,7 +10,9 @@ import lombok.Data;
 @Data
 public class AndroidEmulatorDetail extends ConditionDetail{
 
-    //设备模拟器类型
+    /**
+     * 设备模拟器类型
+     */
     private String emulatorType;
 
     public AndroidEmulatorDetail() {

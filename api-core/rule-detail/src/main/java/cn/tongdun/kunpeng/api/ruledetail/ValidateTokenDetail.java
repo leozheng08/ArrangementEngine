@@ -7,9 +7,13 @@ package cn.tongdun.kunpeng.api.ruledetail;
  */
 public class ValidateTokenDetail extends ConditionDetail {
 
-    //没有传递设备指纹参数
+    /**
+     * 没有传递设备指纹参数
+     */
     private Boolean isDeviceIdBlank;
-    //查无结果、校验失败
+    /**
+     * 查无结果、校验失败
+     */
     private Boolean isValidFalse;
 
     public ValidateTokenDetail(){

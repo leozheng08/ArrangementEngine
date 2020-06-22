@@ -9,8 +9,9 @@ import java.util.Map;
  */
 public class CustomDetail extends ConditionDetail{
 
-
-    //所有变量
+    /**
+     * 所有变量
+     */
     private Map<String,Object> variables;
 
     public CustomDetail(){

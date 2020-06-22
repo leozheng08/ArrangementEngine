@@ -13,10 +13,14 @@ import lombok.Data;
 @Data
 public class FpExceptionDetail extends ConditionDetail implements DetailCallable {
 
-    //异常码
+    /**
+     * 异常码
+     */
     private String code;
 
-    //异常码显示名
+    /**
+     * 异常码显示名
+     */
     private String codeDisplayName;
 
     public FpExceptionDetail() {

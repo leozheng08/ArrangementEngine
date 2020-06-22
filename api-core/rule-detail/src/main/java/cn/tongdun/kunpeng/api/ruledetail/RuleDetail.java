@@ -16,9 +16,13 @@ public class RuleDetail  implements Serializable {
     private String                ruleId;
     private String                decision;
     private Double                score;
-    //指标ID，关联指标详情的json信息
+    /**
+     * 指标ID，关联指标详情的json信息
+     */
     private List<String>          partnerIndicatrixIds;
-    //指标ID, 带描述信息
+    /**
+     * 指标ID, 带描述信息
+     */
     private Map<String, Object>   indicatrixDescripiton;
 
     private List<ConditionDetail> conditions;
