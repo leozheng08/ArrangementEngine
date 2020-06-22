@@ -11,13 +11,13 @@ import java.util.Map;
  **/
 public enum MailModelTypeEnum {
 
-    FORMAT_OBEY_NAME_RULE("900", "格式不符合命名规则", "FORMAT_OBEY_NAME_RULE", -1),
+    FORMAT_OBEY_NAME_RULE("900", "格式不符合命名规则", "ILLEGAL_MAIL", -1),
     NORMAL("901", "正常邮箱", "NORMAL", 0),
-    TEMPLATE("902", "临时邮箱", "TEMPLATE", 1),
-    SIMULATION("903", "相似邮箱", "SIMULATION", 2),
-    SUFFIX_SIMULATION("904", "用户名后缀相似", "SUFFIX_SIMULATION", 3),
-    TO_MUCH_SYMBOL("905", "包含特殊符号过多", "TO_MUCH_SYMBOL", 4),
-    RANDOM("906", "邮箱随机生成", "RANDOM", 5);
+    TEMPLATE("902", "临时邮箱", "DEA_MAIL", 1),
+    SIMULATION("903", "相似邮箱", "SPOOFING_VULNERABLE", 2),
+    SUFFIX_SIMULATION("904", "用户名后缀相似", "SPOOFING_VULNERABLE", 3),
+    TO_MUCH_SYMBOL("905", "包含特殊符号过多", "ILLEGAL_MAIL", 4),
+    RANDOM("906", "邮箱随机生成", "SPOOFING_VULNERABLE", 5);
 
     String code;
     String desc;
@@ -39,6 +39,15 @@ public enum MailModelTypeEnum {
         for (MailModelTypeEnum mailEnum:MailModelTypeEnum.values()) {
             if (mailEnum.mappingCode.equals(mappingCode)) {
                 return mailEnum.desc;
+            }
+        }
+        return null;
+    }
+
+    public static final String getDescEnByMappingCode(Integer mappingCode) {
+        for (MailModelTypeEnum mailEnum:MailModelTypeEnum.values()) {
+            if (mailEnum.mappingCode.equals(mappingCode)) {
+                return mailEnum.descEn;
             }
         }
         return null;
