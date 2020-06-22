@@ -147,7 +147,9 @@ public class MailModelFunction extends AbstractFunction {
                 DetailCallable callable = () -> {
                     MailModelDetail detail = new MailModelDetail();
                     StringBuffer mailResult = new StringBuffer();
-                    detail.setConditionUuid(this.getConditionUuid());
+                    detail.setConditionUuid(this.conditionUuid);
+                    detail.setRuleUuid(this.ruleUuid);
+                    detail.setDescription(description);
                     mailResult.append(null == mailModelResult.getResult() || mailModelResult.getResult().equals(-2) ? "" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                     if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                         mailResult.append(mailResult.length() > 0 ? "," : "");
@@ -156,7 +158,6 @@ public class MailModelFunction extends AbstractFunction {
                     }
                     detail.setSimResult(mailResult.toString());
                     detail.setMail(mail);
-                    detail.setDescription(this.description);
                     return detail;
                 };
                 context.getFieldValues().put("emailExceptionType", MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
