@@ -5,7 +5,6 @@ import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.kunpeng.share.json.JSON;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,9 @@ public class USRiskResponse implements IRiskResponse {
 
     private Boolean ignoreReq;
 
+    /**
+     * 用户自定义输出
+     */
     private Map customPolicyResult;
 
     private PolicyResult policyDetailResult;

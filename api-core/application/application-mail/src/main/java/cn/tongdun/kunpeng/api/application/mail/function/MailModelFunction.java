@@ -147,8 +147,10 @@ public class MailModelFunction extends AbstractFunction {
                 DetailCallable callable = () -> {
                     MailModelDetail detail = new MailModelDetail();
                     StringBuffer mailResult = new StringBuffer();
-                    detail.setConditionUuid(this.getConditionUuid());
-                    mailResult.append(null == mailModelResult.getResult() ? "" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
+                    detail.setConditionUuid(this.conditionUuid);
+                    detail.setRuleUuid(this.ruleUuid);
+                    detail.setDescription(description);
+                    mailResult.append(null == mailModelResult.getResult() || mailModelResult.getResult().equals(-2) ? "" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                     if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                         mailResult.append(mailResult.length() > 0 ? "," : "");
                         mailResult.append(finalRandResult ? "邮箱随机生成" : "邮箱随机非生成");
@@ -156,10 +158,9 @@ public class MailModelFunction extends AbstractFunction {
                     }
                     detail.setSimResult(mailResult.toString());
                     detail.setMail(mail);
-                    detail.setRuleDesc(this.description);
                     return detail;
                 };
-//                context.getFieldValues().put("emailExceptionType", MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
+                context.getFieldValues().put("emailExceptionType", MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                 return new FunctionResult(null != mapping.get(Integer.valueOf(String.valueOf(mailModelResult.getResult()))) || randResult, callable);
             }
         } catch (Exception e) {

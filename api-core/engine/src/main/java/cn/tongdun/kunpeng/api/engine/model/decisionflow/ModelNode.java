@@ -55,7 +55,7 @@ public class ModelNode extends AbstractBizNode {
             }
             modelConfigInfo.setRiskServiceOutput(isRiskServiceOutput);
 
-            modelConfigInfo.setModelVersion(JsonUtil.getString(json, "modelVersion"));
+            modelConfigInfo.setModelVersion(JsonUtil.getString(json, "version"));
             modelConfigInfo.setModelType(JsonUtil.getString(json,"modelType"));
         } catch (Exception e) {
             logger.error("ModelNode parse error,nodeId:" + this.getId() + ",modelConfig:" + modelConfig, e);
@@ -111,7 +111,7 @@ public class ModelNode extends AbstractBizNode {
      * @return
      */
     private List<ModelParam> buildParaInfo(List<Map> array) {
-        if (CollectionUtils.isEmpty(array)) {
+        if (!CollectionUtils.isEmpty(array)) {
             List<ModelParam> modelParamList = Lists.newArrayList();
             array.forEach(json -> {
                 ModelParam paramInfo = new ModelParam();

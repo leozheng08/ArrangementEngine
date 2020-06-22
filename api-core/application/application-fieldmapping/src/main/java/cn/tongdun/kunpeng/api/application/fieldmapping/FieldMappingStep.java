@@ -53,7 +53,7 @@ public class FieldMappingStep implements IRiskStep {
                 requestParams.put(accessParam.getFieldName(), requestParams.get(accessParam.getAccessParam()));
             }
             // 常量参数类型
-            if ("const".equals(accessParam.getParamType())) {
+            if ("constant".equals(accessParam.getParamType())) {
                 requestParams.put(accessParam.getFieldName(), accessParam.getAccessParam());
             }
         }
