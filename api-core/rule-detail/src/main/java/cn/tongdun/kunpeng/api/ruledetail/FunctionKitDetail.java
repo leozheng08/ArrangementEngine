@@ -22,6 +22,4 @@ public class FunctionKitDetail extends ConditionDetail {
         super("function_kit");
     }
 
-
-
 }

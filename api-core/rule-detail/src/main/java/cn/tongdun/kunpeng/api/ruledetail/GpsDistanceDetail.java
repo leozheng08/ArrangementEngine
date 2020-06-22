@@ -20,6 +20,4 @@ public class GpsDistanceDetail extends ConditionDetail {
     public GpsDistanceDetail(){
         super("gps_distance");
     }
-
-
 }

@@ -14,16 +14,24 @@ import java.io.Serializable;
 @Data
 public class ConditionDetail implements Serializable, IDetail {
 
-    //条件uuid:rule_condition_element uuid
+    /**
+     * 条件uuid:rule_condition_element uuid
+     */
     private String conditionUuid;
 
-    //规则uuid:rule uuid
+    /**
+     * 规则uuid:rule uuid
+     */
     private String ruleUuid;
 
-    //详情类型，不同的详细类型有对应的子类
+    /**
+     * 详情类型，不同的详细类型有对应的子类
+     */
     private String type;
 
-    //描述
+    /**
+     * 描述
+     */
     private String description;
 
     public ConditionDetail() {

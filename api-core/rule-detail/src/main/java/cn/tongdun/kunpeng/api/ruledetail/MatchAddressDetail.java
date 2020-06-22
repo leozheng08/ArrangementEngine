@@ -16,6 +16,4 @@ public class MatchAddressDetail extends ConditionDetail {
     public MatchAddressDetail(){
         super("match_address");
     }
-
-
 }

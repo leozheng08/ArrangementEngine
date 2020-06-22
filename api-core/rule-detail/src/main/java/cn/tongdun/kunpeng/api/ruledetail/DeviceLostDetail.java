@@ -12,7 +12,9 @@ import java.util.List;
 @Data
 public class DeviceLostDetail extends ConditionDetail{
 
-    //设备异常编码
+    /**
+     * 设备异常编码
+     */
     private List<String> codes;
 
     public DeviceLostDetail(){
