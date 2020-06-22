@@ -42,7 +42,6 @@ public class PhoneStep implements IRiskStep {
         // 获取数据库中租户绑定的key, 对应的邮件参数名称
         List<Dictionary> dictionaryList = dictionaryManager.getPhoneSwitchKey();
         if (CollectionUtils.isEmpty(dictionaryList)) {
-            logger.warn("mail key dictionary empty, partnerCode :" + context.getPartnerCode());
             return true;
         }
         return true;
