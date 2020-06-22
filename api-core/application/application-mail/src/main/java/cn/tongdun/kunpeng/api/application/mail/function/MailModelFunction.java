@@ -20,13 +20,13 @@ import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import okhttp3.*;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;
@@ -152,13 +152,14 @@ public class MailModelFunction extends AbstractFunction {
                     if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                         mailResult.append(mailResult.length() > 0 ? "," : "");
                         mailResult.append(finalRandResult ? "邮箱随机生成" : "邮箱随机非生成");
-                        detail.setRandResult("随机生成率:" + mailModelResult.getRanResult());
+                        detail.setRandResult(String.valueOf(mailModelResult.getRanResult()));
                     }
                     detail.setSimResult(mailResult.toString());
                     detail.setMail(mail);
                     detail.setRuleDesc(this.description);
                     return detail;
                 };
+//                context.getFieldValues().put("emailExceptionType", MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                 return new FunctionResult(null != mapping.get(Integer.valueOf(String.valueOf(mailModelResult.getResult()))) || randResult, callable);
             }
         } catch (Exception e) {
@@ -245,7 +246,8 @@ public class MailModelFunction extends AbstractFunction {
                         if (null == result.getStatus_code()) {
                             result.setStatus_code(randResult.getStatus_code());
                             result.setStatus_msg(randResult.getStatus_msg());
-                            result.setResult(randResult.getResult());
+                            // 只有随机率的情况返回一个-2
+                            result.setResult(-2);
                         }
                     }
                 } else {
