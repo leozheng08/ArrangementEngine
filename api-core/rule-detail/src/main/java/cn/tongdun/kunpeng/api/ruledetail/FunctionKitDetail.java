@@ -12,10 +12,14 @@ import java.util.List;
 @Data
 public class FunctionKitDetail extends ConditionDetail {
 
-    //所有变量
+    /**
+     * 所有变量
+     */
     private List<Number> variables;
 
-    //计算结果
+    /**
+     * 计算结果
+     */
     private Double result;
 
     public FunctionKitDetail(){
