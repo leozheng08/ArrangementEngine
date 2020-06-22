@@ -148,7 +148,7 @@ public class MailModelFunction extends AbstractFunction {
                     MailModelDetail detail = new MailModelDetail();
                     StringBuffer mailResult = new StringBuffer();
                     detail.setConditionUuid(this.getConditionUuid());
-                    mailResult.append(null == mailModelResult.getResult() ? "" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
+                    mailResult.append(null == mailModelResult.getResult() || mailModelResult.getResult().equals(-2) ? "" : MailModelTypeEnum.getDescByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                     if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                         mailResult.append(mailResult.length() > 0 ? "," : "");
                         mailResult.append(finalRandResult ? "邮箱随机生成" : "邮箱随机非生成");
