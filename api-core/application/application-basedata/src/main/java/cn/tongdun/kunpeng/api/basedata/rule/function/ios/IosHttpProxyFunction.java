@@ -4,8 +4,11 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.ruledetail.IOSUseHttpProxyDetail;
+import cn.tongdun.kunpeng.api.ruledetail.UseHttpProxyDetail;
 
 import java.util.Map;
 
@@ -33,7 +36,15 @@ public class IosHttpProxyFunction extends AbstractFunction {
         else {
             Object proxyType = deviceInfo.get("proxyType");
             if (proxyType != null && !"none".equalsIgnoreCase(proxyType.toString())) {
-                return new FunctionResult(true);
+                DetailCallable detailCallable = () -> {
+                    UseHttpProxyDetail useHttpProxyDetail = new UseHttpProxyDetail();
+                    useHttpProxyDetail.setConditionUuid(this.getConditionUuid());
+                    useHttpProxyDetail.setRuleUuid(this.getRuleUuid());
+                    useHttpProxyDetail.setDescription(this.getDescription());
+                    useHttpProxyDetail.setProxyType(proxyType.toString());
+                    return useHttpProxyDetail;
+                };
+                return new FunctionResult(true, detailCallable);
             }
             else {
                 return new FunctionResult(false);

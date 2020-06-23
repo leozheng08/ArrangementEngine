@@ -5,15 +5,21 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.ruledetail.DeviceLostDetail;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class WebDeviceLostFunction extends AbstractFunction {
 
@@ -47,7 +53,7 @@ public class WebDeviceLostFunction extends AbstractFunction {
         try {
             Map<String, Object> deviceInfo = context.getDeviceInfo();
             if (deviceInfo == null) {
-                return new FunctionResult(true);
+                return new FunctionResult(true, genDetail(splitCodes()));
             }
 
             String deviceId = (String) context.get("deviceId");
@@ -56,12 +62,12 @@ public class WebDeviceLostFunction extends AbstractFunction {
                 if (StringUtils.isNotBlank(deviceId)) {
                     return new FunctionResult(false);
                 } else {
-                    return new FunctionResult(true);
+                    return new FunctionResult(true, genDetail(splitCodes()));
                 }
             }
 
             if (StringUtils.isNotBlank(codes) && codes.contains(code)) {
-                return new FunctionResult(true);
+                return new FunctionResult(true, genDetail(Lists.newArrayList(code)));
             }
 
             return new FunctionResult(false);
@@ -69,6 +75,26 @@ public class WebDeviceLostFunction extends AbstractFunction {
             logger.error(TraceUtils.getFormatTrace() + "DeviceLostFunction run error,codes:" + codes, e);
             return new FunctionResult(false);
         }
+    }
+
+    private DetailCallable genDetail(List<String> codeList){
+        DetailCallable detailCallable = ()->{
+            DeviceLostDetail deviceLostDetail = new DeviceLostDetail();
+            deviceLostDetail.setConditionUuid(this.conditionUuid);
+            deviceLostDetail.setRuleUuid(this.ruleUuid);
+            deviceLostDetail.setDescription(this.description);
+            deviceLostDetail.setCodes(codeList);
+            return deviceLostDetail;
+        };
+        return detailCallable;
+    }
+
+    private List<String> splitCodes(){
+        if(codes == null){
+            return Lists.newArrayList();
+        }
+        return Arrays.stream(codes.split(",")).filter(s->StringUtils.isNotBlank(s))
+                .collect(Collectors.toList());
     }
 
 

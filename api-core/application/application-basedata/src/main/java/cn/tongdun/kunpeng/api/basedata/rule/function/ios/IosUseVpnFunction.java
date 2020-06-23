@@ -4,8 +4,10 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.ruledetail.UseVpnDetail;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -35,7 +37,15 @@ public class IosUseVpnFunction extends AbstractFunction {
         else {
             Object vpnIp = deviceInfo.get("vpnIp");
             if (vpnIp != null && StringUtils.isNotBlank(vpnIp.toString())) {
-                return new FunctionResult(true);
+                DetailCallable detailCallable = ()->{
+                    UseVpnDetail useVpnDetail = new UseVpnDetail();
+                    useVpnDetail.setVpnIp(vpnIp.toString());
+                    useVpnDetail.setConditionUuid(this.conditionUuid);
+                    useVpnDetail.setRuleUuid(this.ruleUuid);
+                    useVpnDetail.setDescription(this.description);
+                    return useVpnDetail;
+                };
+                return new FunctionResult(true, detailCallable);
             }
             else {
                 return new FunctionResult(false);
