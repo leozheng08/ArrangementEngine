@@ -13,6 +13,8 @@ import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +51,7 @@ public class UsModelService implements ModelServiceExtPt {
 
         ModelCalResponse modelCalResponse = null;
         try {
-//            modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
+            modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
             if (null == modelCalResponse) {
                 logger.error(TraceUtils.getFormatTrace() + "UsModelService IDubboHolmesApi calculate error,modelCalResponse is null!modelUuid:" + configInfo.getUuid());
                 return false;
@@ -102,9 +104,9 @@ public class UsModelService implements ModelServiceExtPt {
     }
 
     private void mapModelOutput2Context(AbstractFraudContext context, List<ModelParam> modelOutput, Map<String, Object> responseData) {
-//        if (CollectionUtils.isEmpty(modelOutput) || MapUtils.isEmpty(responseData)) {
-//            return;
-//        }
+        if (CollectionUtils.isEmpty(modelOutput) || MapUtils.isEmpty(responseData)) {
+            return;
+        }
         for (ModelParam param : modelOutput) {
             context.set(param.getRightField(), responseData.get(param.getField()));
         }
