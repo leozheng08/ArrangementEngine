@@ -20,20 +20,26 @@ import java.util.Map;
 public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     private static final long         serialVersionUID    = 844958112006659504L;
-    private Integer                   finalScore;                                  // 风险分数
-    private String                    finalDecision;                               // 最终的风险决策结果
-    private String                    policyName;                                  // 策略名称
-//    private List<IHitRule>             hitRules;                                    // 命中规则列表
-    private String                    seqId;                                       // 请求序列号，每个请求进来都分配一个全局唯一的id
-    private Integer                   spendTime;                                   // 花费的时间，单位ms
-
-    private List<ISubPolicyResult>    subPolicys;                                  // 策略集信息
-
-    private List<IOutputField>        outputFields;                                // 策略结果自定义输出
-
-    private List                      ruleDetails;                                  //原始详情
-
-    private String                    subReasonCodes;                              //原因子码
+    // 风险分数
+    private Integer                   finalScore;
+    // 最终的风险决策结果
+    private String                    finalDecision;
+    // 策略名称
+    private String                    policyName;
+    // 命中规则列表
+//    private List<IHitRule>             hitRules;
+    // 请求序列号，每个请求进来都分配一个全局唯一的id
+    private String                    seqId;
+    // 花费的时间，单位ms
+    private Integer                   spendTime;
+    // 策略集信息
+    private List<ISubPolicyResult>    subPolicys;
+    // 策略结果自定义输出
+    private List<IOutputField>        outputFields;
+    //原始详情
+    private List                      ruleDetails;
+    //原因子码
+    private String                    subReasonCodes;
 
     /**
      * 用户自定义输出

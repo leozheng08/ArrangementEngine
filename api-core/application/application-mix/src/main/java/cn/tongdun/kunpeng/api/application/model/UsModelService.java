@@ -13,8 +13,6 @@ import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,10 +54,10 @@ public class UsModelService implements ModelServiceExtPt {
                 logger.error(TraceUtils.getFormatTrace() + "UsModelService IDubboHolmesApi calculate error,modelCalResponse is null!modelUuid:" + configInfo.getUuid());
                 return false;
             }
-            if (true) {
+            if (modelCalResponse.isSuccess()) {
                 mapModelOutput2Context(fraudContext, configInfo.getOutputList(), modelCalResponse.getData());
             } else {
-                logger.error(TraceUtils.getFormatTrace() + "IDubboHolmesApi calculate failed,code:" + modelCalResponse.getReasonCode() + ",message:" + modelCalResponse.getReasonMsg());
+                logger.error(TraceUtils.getFormatTrace() + "IDubboHolmesApi calculate failed,code:" + modelCalResponse.getCode() + ",message:" + modelCalResponse.getMessage());
             }
             return true;
         } catch (Exception e) {

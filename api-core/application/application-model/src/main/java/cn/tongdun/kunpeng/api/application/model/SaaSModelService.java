@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.model.decisionflow;
+package cn.tongdun.kunpeng.api.application.model;
 
 import cn.fraudmetrix.holmes.bean.PredictionInputDTO;
 import cn.fraudmetrix.holmes.bean.PredictionOutputDTO;
@@ -8,12 +8,15 @@ import cn.fraudmetrix.holmes.service.object.ModelResponse;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelConfigInfo;
+import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelParam;
+import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
+import cn.tongdun.kunpeng.api.engine.model.decisionflow.RightFieldType;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
-import org.omg.PortableInterceptor.INACTIVE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,7 @@ import java.util.Map;
 
 @Service("holmes")
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
-public class SaaSModelService implements ModelServiceExtPt{
+public class SaaSModelService implements ModelServiceExtPt {
     private static final Logger logger = LoggerFactory.getLogger(SaaSModelService.class);
 
     @Autowired
