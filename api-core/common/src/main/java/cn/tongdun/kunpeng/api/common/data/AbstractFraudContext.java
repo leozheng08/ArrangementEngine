@@ -429,6 +429,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * @param platformIndexId
      * @return
      */
+    @Override
     public Object getPlatformIndex4Object(String platformIndexId) {
         if (StringUtils.isBlank(platformIndexId)) {
             return null;

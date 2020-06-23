@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelConfigInfo;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelParam;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Maps;
@@ -57,6 +58,7 @@ public class UsModelService implements ModelServiceExtPt {
                 return false;
             }
             if (modelCalResponse.isSuccess()) {
+                logger.info(TraceUtils.getFormatTrace() + "holmes result:" + JSON.toJSONString(modelCalResponse));
                 mapModelOutput2Context(fraudContext, configInfo.getOutputList(), modelCalResponse.getData());
             } else {
                 logger.error(TraceUtils.getFormatTrace() + "IDubboHolmesApi calculate failed,code:" + modelCalResponse.getCode() + ",message:" + modelCalResponse.getMessage());
