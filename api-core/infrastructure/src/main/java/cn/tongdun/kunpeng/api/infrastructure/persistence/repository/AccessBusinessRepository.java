@@ -1,13 +1,14 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
-import cn.tongdun.kunpeng.api.engine.model.access.AccessBusiness;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessParam;
-import cn.tongdun.kunpeng.api.engine.model.access.IAccessBusinessRepository;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusiness;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessParam;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.IAccessBusinessRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AccessBusinessDAO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AccessParamDAO;
 import cn.tongdun.kunpeng.share.dataobject.AccessBusinessDO;
 import cn.tongdun.kunpeng.share.dataobject.AccessParamDO;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -33,8 +35,8 @@ public class AccessBusinessRepository implements IAccessBusinessRepository {
     AccessParamDAO accessParamDAO;
 
     @Override
-    public List<AccessBusiness> queryAllUsableAccess() {
-        List<AccessBusinessDO> accessBusinesses = accessBusinessDAO.queryAllUsableAccess();
+    public List<AccessBusiness> queryAllUsableAccess(Set<String> partnerCodes) {
+        List<AccessBusinessDO> accessBusinesses = accessBusinessDAO.queryAllUsableAccess(partnerCodes.stream().collect(Collectors.toList()));
         if (CollectionUtils.isNotEmpty(accessBusinesses)) {
             List<AccessParamDO> accessParamDOS = accessParamDAO.selectByAccessUUIDs(accessBusinesses.stream().map(AccessBusinessDO::getUuid).collect(Collectors.toList()));
             List<AccessParam> accessParams = accessParamDOS.stream().map(r -> {

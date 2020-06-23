@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.model.access.AccessBusiness;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessBusinessCache;
-import cn.tongdun.kunpeng.api.engine.model.access.IAccessBusinessRepository;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusiness;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusinessCache;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.IAccessBusinessRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
@@ -71,7 +71,7 @@ public class AccessBusinessReloadManager implements IReload<AccessBusiness> {
             accessBusinessCache.remove(access.getAppName());
             return true;
         }
-        accessBusinessCache.put(access.getAppName(), access);
+        accessBusinessCache.put(access.getAppName() + ":" + access.getAppName(), access);
         logger.debug(TraceUtils.getFormatTrace()+"reload access business success, uuid:{}",uuid);
         return true;
     }

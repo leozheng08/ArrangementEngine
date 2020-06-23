@@ -1,6 +1,5 @@
-package cn.tongdun.kunpeng.api.engine.model.access;
+package cn.tongdun.kunpeng.api.engine.model.fieldmapping;
 
-import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventDO;
 import lombok.Data;
 
