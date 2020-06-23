@@ -286,7 +286,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             } else if(IterateType.ANY.name().equalsIgnoreCase(param.getValue())){
                 op = "arrayAny" + KunpengStringUtils.upperCaseFirstChar(op);
             }
-            break;
+//            break;
         }
         return op;
     }
