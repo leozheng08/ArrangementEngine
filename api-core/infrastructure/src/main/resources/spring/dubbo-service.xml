@@ -16,13 +16,4 @@
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:consumer>
 
-    <dubbo:reference id="holmesService" interface="cn.fraudmetrix.holmes.service.intf.ICalculateService"
-                     version="${holmes.dubbo.version:1.0.0}" retries="0" timeout="${holmes.dubbo.timeout:1000}" connections="2" >
-        <dubbo:parameter key="threadname" value="Dubbo-holmes-"/>
-        <dubbo:parameter key="threadpool" value="cached"/>
-        <dubbo:parameter key="corethreads" value="2" />
-        <dubbo:parameter key="threads" value="5" />
-        <dubbo:parameter key="alive" value="600000" />
-    </dubbo:reference>
-
 </beans>
