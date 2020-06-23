@@ -51,12 +51,12 @@ public class UsModelService implements ModelServiceExtPt {
 
         ModelCalResponse modelCalResponse = null;
         try {
-            modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
+//            modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
             if (null == modelCalResponse) {
                 logger.error(TraceUtils.getFormatTrace() + "UsModelService IDubboHolmesApi calculate error,modelCalResponse is null!modelUuid:" + configInfo.getUuid());
                 return false;
             }
-            if (modelCalResponse.isSuccess()) {
+            if (true) {
                 mapModelOutput2Context(fraudContext, configInfo.getOutputList(), modelCalResponse.getData());
             } else {
                 logger.error(TraceUtils.getFormatTrace() + "IDubboHolmesApi calculate failed,code:" + modelCalResponse.getReasonCode() + ",message:" + modelCalResponse.getReasonMsg());
@@ -104,9 +104,9 @@ public class UsModelService implements ModelServiceExtPt {
     }
 
     private void mapModelOutput2Context(AbstractFraudContext context, List<ModelParam> modelOutput, Map<String, Object> responseData) {
-        if (CollectionUtils.isEmpty(modelOutput) || MapUtils.isEmpty(responseData)) {
-            return;
-        }
+//        if (CollectionUtils.isEmpty(modelOutput) || MapUtils.isEmpty(responseData)) {
+//            return;
+//        }
         for (ModelParam param : modelOutput) {
             context.set(param.getRightField(), responseData.get(param.getField()));
         }
