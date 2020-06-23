@@ -22,11 +22,17 @@
     gmt_create, gmt_modify, creator, operator
 	</sql>
 
-	<select id="queryAllUsableAccess" resultMap="BaseResultMap">
+	<select id="queryAllUsableAccess" resultMap="BaseResultMap" parameterType="java.lang.String">
 		select
 		<include refid="Base_Column_List"/>
 		from access_business
-		where is_deleted = 0 and status = 1;
+		where is_deleted = 0 and status = 1
+		<if test="list != null and list.size() > 0">
+			and partner_code in
+			<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		</if>
 	</select>
 
 	<select id="selectByUuid" resultMap="BaseResultMap">

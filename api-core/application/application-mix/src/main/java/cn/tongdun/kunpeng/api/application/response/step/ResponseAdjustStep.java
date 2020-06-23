@@ -4,16 +4,15 @@ import cn.tongdun.kunpeng.api.application.response.entity.USRiskResponse;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessBusiness;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessBusinessCache;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessParam;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusiness;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusinessCache;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessParam;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,12 +41,13 @@ public class ResponseAdjustStep implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String appName = context.getAppName();
+        String partnerCode = context.getPartnerCode();
         Map<String, AccessBusiness> uuidAccessMap = accessBusinessCache.getAccessBusinessMap();
         if (null == appName) {
             logger.info(TraceUtils.getFormatTrace() + "null appName, skip response adjust");
             return true;
         }
-        AccessBusiness access = uuidAccessMap.get(appName);
+        AccessBusiness access = uuidAccessMap.get(partnerCode + ":" + appName);
         if (null == access) {
             logger.info(TraceUtils.getFormatTrace() + " access :{} not exits, use default response", appName);
             return true;

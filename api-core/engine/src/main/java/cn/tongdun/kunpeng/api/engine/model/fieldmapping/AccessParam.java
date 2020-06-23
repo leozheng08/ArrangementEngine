@@ -1,4 +1,4 @@
-package cn.tongdun.kunpeng.api.engine.model.access;
+package cn.tongdun.kunpeng.api.engine.model.fieldmapping;
 
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import lombok.Data;

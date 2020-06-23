@@ -1,11 +1,12 @@
 package cn.tongdun.kunpeng.api.application.fieldmapping;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessBusiness;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessBusinessCache;
-import cn.tongdun.kunpeng.api.engine.model.access.AccessParam;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusiness;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusinessCache;
+import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessParam;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
@@ -14,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -35,12 +38,14 @@ public class FieldMappingStep implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String appName = context.getAppName();
+        String partnerCode = context.getPartnerCode();
         Map<String, AccessBusiness> uuidAccessMap = accessBusinessCache.getAccessBusinessMap();
         if (null == uuidAccessMap) {
             logger.info(TraceUtils.getFormatTrace() + "access cache empty, skip field mapping");
             return true;
         }
-        AccessBusiness access = uuidAccessMap.get(appName);
+
+        AccessBusiness access = uuidAccessMap.get(partnerCode + ":" + appName);
         if (null == access) {
             logger.info(TraceUtils.getFormatTrace() + "access :{} not exits, use default parameters", appName);
             return true;
