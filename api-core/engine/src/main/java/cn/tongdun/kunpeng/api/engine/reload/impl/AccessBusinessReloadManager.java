@@ -68,7 +68,7 @@ public class AccessBusinessReloadManager implements IReload<AccessBusiness> {
             return true;
         }
         if (access.getStatus().equals(0) || access.getIsDeleted().equals(1)) {
-            accessBusinessCache.remove(access.getAppName());
+            accessBusinessCache.remove(access.getPartnerCode() + ":" + access.getAppName());
             return true;
         }
         accessBusinessCache.put(access.getPartnerCode() + ":" + access.getAppName(), access);
