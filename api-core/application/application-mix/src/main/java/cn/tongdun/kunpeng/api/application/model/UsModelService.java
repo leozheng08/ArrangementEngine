@@ -49,6 +49,7 @@ public class UsModelService implements ModelServiceExtPt {
         modelRequest.put("modelUuid", configInfo.getUuid());
         modelRequest.put("modelType", configInfo.getModelType());
         modelRequest.put("version", configInfo.getModelVersion());
+        modelRequest.put("seqId",fraudContext.getSeqId());
 
         ModelCalResponse modelCalResponse = null;
         try {
