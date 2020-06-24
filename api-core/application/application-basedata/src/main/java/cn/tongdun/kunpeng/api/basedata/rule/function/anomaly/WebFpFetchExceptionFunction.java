@@ -86,6 +86,9 @@ public class WebFpFetchExceptionFunction extends AbstractFunction {
             ret = true;
             detailCallable = () -> {
                 FpExceptionDetail detail = new FpExceptionDetail();
+                detail.setConditionUuid(this.conditionUuid);
+                detail.setRuleUuid(this.ruleUuid);
+                detail.setDescription(this.description);
                 detail.setCode(code);
                 detail.setCodeDisplayName(dictionaryManager.getFpResultMap().get(code));
                 return detail;

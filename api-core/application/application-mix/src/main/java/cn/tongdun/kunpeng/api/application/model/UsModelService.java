@@ -10,11 +10,12 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelConfigInfo;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelParam;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +58,10 @@ public class UsModelService implements ModelServiceExtPt {
                 return false;
             }
             if (modelCalResponse.isSuccess()) {
+                logger.info(TraceUtils.getFormatTrace() + "holmes result:" + JSON.toJSONString(modelCalResponse));
                 mapModelOutput2Context(fraudContext, configInfo.getOutputList(), modelCalResponse.getData());
             } else {
-                logger.error(TraceUtils.getFormatTrace() + "IDubboHolmesApi calculate failed,code:" + modelCalResponse.getReasonCode() + ",message:" + modelCalResponse.getReasonMsg());
+                logger.error(TraceUtils.getFormatTrace() + "IDubboHolmesApi calculate failed,code:" + modelCalResponse.getCode() + ",message:" + modelCalResponse.getMessage());
             }
             return true;
         } catch (Exception e) {

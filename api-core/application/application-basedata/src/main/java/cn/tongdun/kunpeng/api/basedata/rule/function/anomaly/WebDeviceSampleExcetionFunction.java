@@ -4,8 +4,10 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.ruledetail.DeviceSampleDetail;
 
 import java.util.Map;
 
@@ -35,7 +37,16 @@ public class WebDeviceSampleExcetionFunction extends AbstractFunction {
             imageLoaded = Boolean.valueOf((String) map.get("imageLoaded"));
         }
         if (!imageLoaded && deviceId != null) {
-            return new FunctionResult(true);
+            DetailCallable detailCallable = ()->{
+                DeviceSampleDetail deviceSampleDetail = new DeviceSampleDetail();
+                deviceSampleDetail.setConditionUuid(this.conditionUuid);
+                deviceSampleDetail.setRuleUuid(this.ruleUuid);
+                deviceSampleDetail.setDescription(this.description);
+                deviceSampleDetail.setDeviceId(deviceId);
+                deviceSampleDetail.setImageLoaded(false);
+                return deviceSampleDetail;
+            };
+            return new FunctionResult(true, detailCallable);
         } else {
             return new FunctionResult(false);
         }

@@ -4,8 +4,10 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.ruledetail.UseHttpProxyDetail;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -28,6 +30,7 @@ public class AndroidUseHttpFunction extends AbstractFunction {
         FraudContext context = (FraudContext) executeContext;
 
         boolean result = false;
+        DetailCallable detailCallable = null;
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
             result = false;
@@ -37,16 +40,30 @@ public class AndroidUseHttpFunction extends AbstractFunction {
             Object isUseHttpProxyNew = deviceInfo.get("proxyInfo");
             if (isUseHttpProxy != null && StringUtils.isNotBlank(isUseHttpProxy.toString())) {
                 result = true;
+                detailCallable = genDetailCallable(isUseHttpProxy.toString());
             }
             else if (isUseHttpProxyNew != null && StringUtils.isNotBlank(isUseHttpProxyNew.toString())) {
                 result = true;
+                detailCallable = genDetailCallable(isUseHttpProxyNew.toString());
             }
             else {
                 result = false;
             }
         }
 
-        return new FunctionResult(result);
+        return new FunctionResult(result, detailCallable);
+    }
+
+    private DetailCallable genDetailCallable(String proxyType){
+        DetailCallable detailCallable = () -> {
+            UseHttpProxyDetail useHttpProxyDetail = new UseHttpProxyDetail();
+            useHttpProxyDetail.setConditionUuid(this.getConditionUuid());
+            useHttpProxyDetail.setRuleUuid(this.getRuleUuid());
+            useHttpProxyDetail.setDescription(this.getDescription());
+            useHttpProxyDetail.setProxyType(proxyType.toString());
+            return useHttpProxyDetail;
+        };
+        return detailCallable;
     }
 
 

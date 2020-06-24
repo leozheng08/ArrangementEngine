@@ -118,6 +118,9 @@ public class AndroidEmulatorFunction extends AbstractFunction {
         if (result && null != deviceInfo.get("emulatorType")) {
             detailCallable = () -> {
                 AndroidEmulatorDetail detail = new AndroidEmulatorDetail();
+                detail.setConditionUuid(this.conditionUuid);
+                detail.setRuleUuid(this.ruleUuid);
+                detail.setDescription(this.description);
                 detail.setEmulatorType(deviceInfo.get("emulatorType").toString());
                 return detail;
             };

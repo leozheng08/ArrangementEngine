@@ -19,7 +19,6 @@ public class IosCheatFunction extends AbstractFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(IosCheatFunction.class);
 
-
     @Override
     public String getName() {
         return Constant.Function.IOS_IS_CHEAT;
@@ -28,7 +27,6 @@ public class IosCheatFunction extends AbstractFunction {
 
     @Override
     public void parseFunction(FunctionDesc functionDesc) {
-
     }
 
     @Override
@@ -59,6 +57,9 @@ public class IosCheatFunction extends AbstractFunction {
                 if (null != context.getDeviceInfo().get("hookIMP")) {
                     detail.setHookIMP(context.getDeviceInfo().get("hookIMP").toString());
                 }
+                detail.setRuleUuid(this.getRuleUuid());
+                detail.setConditionUuid(this.getConditionUuid());
+                detail.setDescription(this.getDescription());
                 return detail;
             };
         }

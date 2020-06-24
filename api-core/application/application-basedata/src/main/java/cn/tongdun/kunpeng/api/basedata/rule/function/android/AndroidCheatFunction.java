@@ -105,14 +105,15 @@ public class AndroidCheatFunction extends AbstractFunction {
         if (hitValue) {
             detailCallable = () -> {
                 AndroidCheatAppDetail detail = new AndroidCheatAppDetail();
-
+                detail.setConditionUuid(this.conditionUuid);
+                detail.setRuleUuid(this.ruleUuid);
+                detail.setDescription(this.description);
                 if (CollectionUtils.isNotEmpty(installedApps)) {
                     detail.setInstalledDangerApps(installedApps);
                 }
                 if (CollectionUtils.isNotEmpty(runningApps)) {
                     detail.setRunningDangerApps(runningApps);
                 }
-
                 return detail;
             };
         }

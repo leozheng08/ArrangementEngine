@@ -4,6 +4,7 @@ import cn.fraudmetrix.module.tdflow.model.GraphResult;
 import cn.fraudmetrix.module.tdflow.model.NodeResult;
 import cn.tongdun.kunpeng.api.engine.constant.DecisionFlowConstant;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionFlow;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author: liang.chen
@@ -32,6 +34,9 @@ public class DecisionFlowEngine extends DecisionTool {
     @Autowired
     private PolicyCache policyCache;
 
+    @Autowired
+    private DecisionResultTypeCache decisionResultTypeCache;
+
     @Override
     public PolicyResponse execute(AbstractDecisionMode decisionMode, AbstractFraudContext context) {
 
@@ -44,7 +49,7 @@ public class DecisionFlowEngine extends DecisionTool {
 
         GraphResult graphResult = decisionFlow.getGraph().execute(context);
         if (graphResult.getException() != null) {
-            logger.error(TraceUtils.getFormatTrace()+"DecisionFlowEngine execute error!", graphResult.getException());
+            logger.error(TraceUtils.getFormatTrace() + "DecisionFlowEngine execute error!", graphResult.getException());
         }
 
         Map<String, NodeResult> nodeResultMap = graphResult.getNodeResultMap();
@@ -58,7 +63,6 @@ public class DecisionFlowEngine extends DecisionTool {
             }
         }
 
-
         policyResponse.setSubPolicyResponses(subPolicyResponseList);
 
 
@@ -66,9 +70,12 @@ public class DecisionFlowEngine extends DecisionTool {
         policyResponse.setPolicyName(policy.getName());
         //取最坏策略结果
         SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponseList);
-        policyResponse.setDecision(finalSubPolicyResponse.getDecision());
-        policyResponse.setScore(finalSubPolicyResponse.getScore());
-
+        if (Objects.nonNull(finalSubPolicyResponse)) {
+            policyResponse.setDecision(finalSubPolicyResponse.getDecision());
+            policyResponse.setScore(finalSubPolicyResponse.getScore());
+        }else {
+            policyResponse.setDecision(decisionResultTypeCache.getDefaultType().getCode());
+        }
         policyResponse.setCostTime(System.currentTimeMillis() - start);
         policyResponse.setSuccess(true);
         return policyResponse;

@@ -95,6 +95,9 @@ public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunct
                         detailCallable = () -> {
                             DeviceStatusAbnormalDetail detail = new DeviceStatusAbnormalDetail();
                             detail.setAbnormalTags(hisTags);
+                            detail.setConditionUuid(this.conditionUuid);
+                            detail.setRuleUuid(this.ruleUuid);
+                            detail.setDescription(this.description);
                             return detail;
                         };
                     }

@@ -5,8 +5,10 @@ import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.ruledetail.IOSNotOfficialAppDetail;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,7 +49,15 @@ public class IosNotOfficialAppFunction extends AbstractFunction {
         else {
             Object officialBundleId = deviceInfo.get("bundleId");
             if (officialBundleId != null && !officialBundleId.equals(bundleId)) {
-                return new FunctionResult(true);
+                DetailCallable detailCallable = ()->{
+                    IOSNotOfficialAppDetail detail = new IOSNotOfficialAppDetail();
+                    detail.setBundleId(bundleId);
+                    detail.setConditionUuid(this.getConditionUuid());
+                    detail.setRuleUuid(this.getRuleUuid());
+                    detail.setDescription(this.getDescription());
+                    return detail;
+                };
+                return new FunctionResult(true, detailCallable);
             }
             else {
                 return new FunctionResult(false);
