@@ -8,7 +8,7 @@
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
     <name>core</name>
-    <version>1.0.2-beta-0624-4</version>
+    <version>1.0.2-beta-0624-5</version>
 
 
     <properties>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>starter-saas</artifactId>
-            <version>1.0.2-beta-0624-4</version>
+            <version>1.0.2-beta-0624-5</version>
         </dependency>
 
 
