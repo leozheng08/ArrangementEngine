@@ -3,14 +3,13 @@ package cn.tongdun.kunpeng.api.acl.impl.kvcache.factory;
 import cn.fraudmetrix.common.client.redis.RedisClient;
 import cn.fraudmetrix.common.client.redis.SimpleRedisClient;
 import cn.fraudmetrix.common.client.redis.factory.RoundRobinStandalonePool;
+import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import io.codis.jodis.JedisResourcePool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.springframework.beans.factory.DisposableBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.env.Environment;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisSentinelPool;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,9 +18,11 @@ import java.util.HashSet;
  * @author: yuanhang
  * @date: 2020-06-29 18:00
  **/
-public class RedisClientFactory implements InitializingBean, DisposableBean, FactoryBean<RedisClient> {
+public class RedisClientFactory implements InitializingBean, FactoryBean<RedisClient> {
 
-    Environment environment;
+    private static Logger logger = LoggerFactory.getLogger(RedisClientFactory.class);
+
+    ILocalEnvironment environment;
 
     String masterName;
 
@@ -49,18 +50,27 @@ public class RedisClientFactory implements InitializingBean, DisposableBean, Fac
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if ("staging".equals(environment.getActiveProfiles()) || "prod".equals(environment.getActiveProfiles())) {
+        if (environment.isInternalEnvironment()) {
+            this.pool = new RedisSentinelPoolAdapter(this.getMasterName(), new HashSet(Arrays.asList(sentinels)), new JedisPoolConfig(), socketTimeOut, this.getPassword());
+        } else {
             this.pool = RoundRobinStandalonePool.create().servers(servers.split(",")).connectionTimeoutMs(connectionTimeOut).soTimeoutMs(socketTimeOut).password(this.getPassword()).poolConfig(new JedisPoolConfig()).build();
         }
-        this.pool = new RedisSentinelPoolAdapter(this.getMasterName(), new HashSet(Arrays.asList(sentinels)), new JedisPoolConfig(), 3000, this.getPassword());
     }
 
-    public Environment getEnvironment() {
+    public ILocalEnvironment getEnvironment() {
         return environment;
     }
 
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(ILocalEnvironment environment) {
         this.environment = environment;
+    }
+
+    public JedisResourcePool getPool() {
+        return pool;
+    }
+
+    public void setPool(JedisResourcePool pool) {
+        this.pool = pool;
     }
 
     public String getMasterName() {
@@ -93,11 +103,6 @@ public class RedisClientFactory implements InitializingBean, DisposableBean, Fac
 
     public void setServers(String servers) {
         this.servers = servers;
-    }
-
-    @Override
-    public void destroy() throws Exception {
-
     }
 
     @Override

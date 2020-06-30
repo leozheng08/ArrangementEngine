@@ -6,7 +6,7 @@
        default-autowire="byName">
 
     <bean id="kunPengRedisClient" class="cn.tongdun.kunpeng.api.acl.impl.kvcache.factory.RedisClientFactory">
-        <property name="environment" ref="environment"/>
+        <property name="environment" ref="localEnvironment"/>
         <property name="masterName" value="${kunpeng-api.redis.master}"/>
         <property name="sentinels" value="${kunpeng-api.redis.sentinels}"/>
         <property name="namespace" value="${kunpeng-api.redis.namespace}"/>
