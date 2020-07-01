@@ -61,7 +61,7 @@ public class AndroidCheatFunction extends AbstractFunction {
 
         final Map<String, Object> deviceInfo = context.getDeviceInfo();
 
-        if (CollectionUtils.isEmpty(installedDangerAppCodeSet) && CollectionUtils.isEmpty(installedDangerAppCodeSet)) {
+        if (CollectionUtils.isEmpty(installedDangerAppCodeSet) && CollectionUtils.isEmpty(runningDangerAppCodeSet)) {
             logger.warn(TraceUtils.getFormatTrace() + "the installedDangerAppCodes and runningDangerAppCodes are blank, platform=android, deviceInfo={}", deviceInfo);
             return new FunctionResult(false);
         }
