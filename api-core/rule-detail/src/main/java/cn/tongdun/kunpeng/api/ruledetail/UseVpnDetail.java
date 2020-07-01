@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.ruledetail;
 import lombok.Data;
 
 /**
+ * vpn
  * @Author: liang.chen
  * @Date: 2020/2/6 下午7:54
  */
