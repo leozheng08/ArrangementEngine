@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function.anomaly;
 
+import cn.fraudmetrix.forseti.fp.model.anomaly.Anomaly;
+import cn.fraudmetrix.forseti.fp.utils.AnomalyUtil;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
@@ -16,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +87,7 @@ public class WebDeviceLostFunction extends AbstractFunction {
             deviceLostDetail.setRuleUuid(this.ruleUuid);
             deviceLostDetail.setDescription(this.description);
             deviceLostDetail.setCodes(codeList);
+            deviceLostDetail.setCodeNames(getCodeNames(codeList));
             return deviceLostDetail;
         };
         return detailCallable;
@@ -95,6 +99,21 @@ public class WebDeviceLostFunction extends AbstractFunction {
         }
         return Arrays.stream(codes.split(",")).filter(s->StringUtils.isNotBlank(s))
                 .collect(Collectors.toList());
+    }
+
+    private List<String> getCodeNames(List<String> codes){
+        List<Anomaly> anomalies = AnomalyUtil.getDeviceNullByPlatform("web");
+        List<String> codeNames = new ArrayList<>(8);
+        if(codes != null){
+            for(String code:codes){
+                for(Anomaly anomaly:anomalies){
+                    if(StringUtils.equals(code, anomaly.getCode())){
+                        codeNames.add(anomaly.getDesc());
+                    }
+                }
+            }
+        }
+        return codeNames;
     }
 
 
