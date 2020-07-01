@@ -12,7 +12,14 @@ import java.util.List;
 @Data
 public class DeviceStatusAbnormalDetail extends ConditionDetail{
 
+    /**
+     * 异常状态码
+     */
     private List<String> abnormalTags;
+    /**
+     * 对应中文显示
+     */
+    private List<String> abnormalTagNames;
 
     public DeviceStatusAbnormalDetail() {
         super("device_status_abnormal");
