@@ -43,12 +43,14 @@ public class UsModelService implements ModelServiceExtPt {
 
         if (null == configInfo) {
             logger.error(TraceUtils.getFormatTrace() + "IDubboHolmesApi configInfo is null!");
+            return false;
         }
 
         Map<String, Object> modelRequest = buildModelInputParam(fraudContext, configInfo.getInputList());
         modelRequest.put("modelUuid", configInfo.getUuid());
         modelRequest.put("modelType", configInfo.getModelType());
         modelRequest.put("version", configInfo.getModelVersion());
+        modelRequest.put("seqId",fraudContext.getSeqId());
 
         ModelCalResponse modelCalResponse = null;
         try {

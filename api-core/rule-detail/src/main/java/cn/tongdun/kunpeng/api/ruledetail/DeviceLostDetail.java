@@ -16,6 +16,7 @@ public class DeviceLostDetail extends ConditionDetail{
      * 设备异常编码
      */
     private List<String> codes;
+    private List<String> codeNames;
 
     public DeviceLostDetail(){
         super("device_lost");

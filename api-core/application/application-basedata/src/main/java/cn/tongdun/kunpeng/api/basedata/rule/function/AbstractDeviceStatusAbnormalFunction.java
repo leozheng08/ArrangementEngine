@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function;
 
+import cn.fraudmetrix.forseti.fp.model.anomaly.Anomaly;
+import cn.fraudmetrix.forseti.fp.utils.AnomalyUtil;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
@@ -84,10 +86,12 @@ public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunct
                 if (flag) {
                     boolean isHitFlag = false;
                     List<String> hisTags = new ArrayList<>();
+                    List<String> hisTagNames = new ArrayList<>();
                     for (String tag : fpAbnormalTags) {
                         if (abnomalTagSet.contains(tag)) {
                             isHitFlag = true;
                             hisTags.add(tag);
+                            hisTagNames.add(getTagName(getAppType(), tag));
                         }
                     }
                     if (isHitFlag) {
@@ -95,6 +99,7 @@ public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunct
                         detailCallable = () -> {
                             DeviceStatusAbnormalDetail detail = new DeviceStatusAbnormalDetail();
                             detail.setAbnormalTags(hisTags);
+                            detail.setAbnormalTagNames(hisTagNames);
                             detail.setConditionUuid(this.conditionUuid);
                             detail.setRuleUuid(this.ruleUuid);
                             detail.setDescription(this.description);
@@ -113,5 +118,19 @@ public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunct
         }
 
         return new FunctionResult(result, detailCallable);
+    }
+
+    private String getTagName(String appType, String tag){
+        List<Anomaly> anomalies = AnomalyUtil.getAnomaliesByPlatform(appType);
+        if(anomalies == null){
+            return tag;
+        }
+        String tagName = tag;
+        for(Anomaly anomaly:anomalies){
+            if(StringUtils.equals(tag, anomaly.getCode())){
+                tagName = anomaly.getDesc();
+            }
+        }
+        return tagName;
     }
 }
