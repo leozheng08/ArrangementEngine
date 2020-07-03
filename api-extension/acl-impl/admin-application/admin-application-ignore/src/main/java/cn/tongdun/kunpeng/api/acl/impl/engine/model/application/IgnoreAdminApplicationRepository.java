@@ -5,6 +5,8 @@ import cn.tongdun.kunpeng.api.acl.engine.model.application.IAdminApplicationRepo
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.share.dataobject.AdminApplicationDO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -25,6 +27,18 @@ public class IgnoreAdminApplicationRepository implements IAdminApplicationReposi
     @Override
     public List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners){
         return new ArrayList<AdminApplicationDTO>(){{add(DEFAULT_APPLICATION);}};
+    }
+
+    @Override
+    public AdminApplicationDTO selectApplicationByUuid(String uuid) {
+        AdminApplicationDTO applicationDTO = new AdminApplicationDTO();
+        applicationDTO.setCode(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setSecretKey(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setUuid(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setDisplayName(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setPartnerCode(Constant.DEFAULT_PARTNER);
+        applicationDTO.setStatus(1);
+        return applicationDTO;
     }
 
     private static AdminApplicationDTO createDefaultApplication(){
