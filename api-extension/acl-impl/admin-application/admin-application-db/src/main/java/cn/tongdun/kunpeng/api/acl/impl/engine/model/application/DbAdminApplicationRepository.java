@@ -41,4 +41,15 @@ public class DbAdminApplicationRepository implements IAdminApplicationRepository
             return adminApplication;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public AdminApplicationDTO selectApplicationByUuid(String uuid) {
+        AdminApplicationDO adminApplicationDO = adminApplicationDAO.queryByUuid(uuid);
+        if (null == adminApplicationDO) {
+            return null;
+        }
+        AdminApplicationDTO adminApplicationDTO = new AdminApplicationDTO();
+        BeanUtils.copyProperties(adminApplicationDO,adminApplicationDTO);
+        return adminApplicationDTO;
+    }
 }

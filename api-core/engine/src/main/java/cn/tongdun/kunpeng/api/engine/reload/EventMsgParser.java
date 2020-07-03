@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload;
 
+import cn.tongdun.kunpeng.api.engine.model.application.AdminApplication;
 import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusiness;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.*;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
@@ -40,6 +41,7 @@ public class EventMsgParser {
         put("partner",PartnerEventDO.class);
         put("custom_list_value",CustomListValueEventDO.class);
         put("access", AccessBusiness.class);
+        put("app", AdminApplication.class);
     }};
 
 

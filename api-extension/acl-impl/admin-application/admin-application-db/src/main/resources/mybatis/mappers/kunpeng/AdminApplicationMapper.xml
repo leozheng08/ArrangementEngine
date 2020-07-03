@@ -23,8 +23,8 @@
     <select id="queryByUuid" parameterType="String" resultMap="AdminApplicationMap">
         select
         <include refid="queryColumns" />
-        from admin_application
-        where uuid=#{uuid}
+        from admin_application a
+        where a.uuid=#{uuid}
     </select>
 
 
