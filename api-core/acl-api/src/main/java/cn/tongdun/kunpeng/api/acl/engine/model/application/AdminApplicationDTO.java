@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class AdminApplicationDTO extends CommonDTO {
     private String code;
+    private String uuid;
     private String displayName;
     private String partnerCode;
     private String secretKey;
