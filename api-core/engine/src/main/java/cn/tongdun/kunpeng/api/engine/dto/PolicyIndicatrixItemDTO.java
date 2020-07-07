@@ -55,9 +55,4 @@ public class PolicyIndicatrixItemDTO extends CommonDTO {
      * 子类型
      */
     private String bizItemType;
-
-    /**
-     * 状态 0：无效 1：有效 status
-     */
-    private Integer status;
 }

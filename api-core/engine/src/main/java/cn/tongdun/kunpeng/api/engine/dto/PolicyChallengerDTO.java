@@ -28,16 +28,6 @@ public class PolicyChallengerDTO extends CommonDTO {
     private Date endTime;
 
     /**
-     * 是否已删除 is_deleted
-     */
-    private boolean deleted;
-
-    /**
-     * 状态 1:已启用 0:未启用 status
-     */
-    private Integer status;
-
-    /**
      * 流量配置 [ {"policyUuid":"3333","percent":90}, {"policyUuid":"4444","percent":10} ] config
      */
     private String config;

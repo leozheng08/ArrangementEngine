@@ -29,11 +29,6 @@ public class DecisionFlowDTO extends CommonDTO {
     private String description;
 
     /**
-     * 决策流状态 0:未启用 1:已启用 status
-     */
-    private Integer status;
-
-    /**
      * 暂存决策流关联决策流uuid origin_uuid
      */
     private String originUuid;
@@ -47,11 +42,6 @@ public class DecisionFlowDTO extends CommonDTO {
      * 决策流图形定义内容 diagram_content
      */
     private String diagramContent;
-
-    /**
-     * 是否已删除
-     */
-    private boolean deleted;
 
     /**
      * 删除时间
