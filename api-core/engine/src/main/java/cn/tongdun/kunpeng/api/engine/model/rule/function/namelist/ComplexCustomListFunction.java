@@ -105,7 +105,7 @@ public class ComplexCustomListFunction extends AbstractFunction {
             }
             detail.setDescription(description);
             detail.setDimType(this.calcField);
-            detail.setDimTypeDisplayName(VelocityHelper.getFieldDisplayName(this.calcField,context));
+            detail.setDimTypeDisplayName(getDimTypeName(this.calcField, context));
             detail.setDimValue(newDimValue);
             return detail;
         };
@@ -180,6 +180,16 @@ public class ComplexCustomListFunction extends AbstractFunction {
             }
         }
         return null;
+    }
+
+    private String getDimTypeName(String dimType, AbstractFraudContext context){
+        List<String> dimTypeList = Lists.newArrayList(dimType.split(COMMA_SEPARATOR));
+        List<String> nameList = new ArrayList<>(8);
+        for(String type:dimTypeList){
+            String name = VelocityHelper.getFieldDisplayName(this.calcField,context);
+            nameList.add(name);
+        }
+        return String.join(COMMA_SEPARATOR, nameList);
     }
 
     private String replaceDimValue(String dimValue) {
