@@ -138,7 +138,7 @@ public class DeviceInfoStep implements IRiskStep {
 
     private void postProcessMobileScene(String appType, AbstractFraudContext context, Map jsonMap) {
 
-        if (appType.equalsIgnoreCase("Android")) {
+        if ("Android".equalsIgnoreCase(appType)) {
             String phoneNumberStr = jsonMap.get("phoneNumber") == null ? null : jsonMap.get("phoneNumber").toString();
             if (phoneNumberStr != null) {
                 Integer length = phoneNumberStr.length();
@@ -154,7 +154,7 @@ public class DeviceInfoStep implements IRiskStep {
             }
 
         }
-        if (appType.equalsIgnoreCase("iOS")) {
+        if ("iOS".equalsIgnoreCase(appType)) {
             String bssidStr = jsonMap.get("bssid") == null ? null : jsonMap.get("bssid").toString();
             if (bssidStr != null) {
                 context.set("deviceBssid", bssidStr);
