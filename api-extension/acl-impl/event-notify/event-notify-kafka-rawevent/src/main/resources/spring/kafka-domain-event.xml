@@ -17,11 +17,11 @@
     <!-- domainEvent消费者-->
     <bean id="domainEventPoller" class="cn.fraudmetrix.module.kafka.consumer.ConcurrentPoller" init-method="init" destroy-method="close">
         <property name="configCenter" ref="zkConfigCenter-domainEvent"/>
-        <property name="consumerName" value="kunpeng_api_domain_event_consumer" />
+        <property name="consumerName" value="${kafka.kunpeng.event.consumer.name:kunpeng_api_domain_event_consumer}" />
         <property name="mode" value="standard" />
         <property name="bizConsumers">
             <map>
-                <entry key="kunpeng_admin_event">
+                <entry key="${kafka.kunpeng.event.topic:kunpeng_admin_event}">
                     <ref bean="domainEventConsumer" />
                 </entry>
             </map>
@@ -37,7 +37,7 @@
     <bean id="domainEventProducerService" class="cn.fraudmetrix.module.kafka.producer.SimpleProducer" init-method="init" destroy-method="close">
         <property name="topics">
             <list>
-                <value>kunpeng_admin_event</value>
+                <value>"${kafka.kunpeng.event.topic:kunpeng_admin_event}</value>
             </list>
         </property>
         <property name="configCenter" ref="zkConfigCenter-domainEvent"/>

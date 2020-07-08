@@ -59,7 +59,7 @@ public class DictionaryManager {
 
     }
 
-    private List<Dictionary> loadDictionary(String key) {
+    public List<Dictionary> loadDictionary(String key) {
         if (StringUtils.isBlank(key)) {
             return Collections.emptyList();
         }

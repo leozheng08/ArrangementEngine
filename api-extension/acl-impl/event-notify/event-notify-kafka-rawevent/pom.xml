@@ -5,7 +5,7 @@
     <parent>
         <artifactId>event-notify</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.2-beta-0708-2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,4 +32,27 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven_deploy_version}</version>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <distributionManagement>
+        <repository>
+            <id>fraudmetrixRepo</id>
+            <url>http://maven.fraudmetrix.cn/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>fraudmetrixRepo</id>
+            <url>http://maven.fraudmetrix.cn/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

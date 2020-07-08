@@ -20,7 +20,7 @@
           >
         <property name="topics">
             <list>
-                <value>kunpeng_api_raw_activity</value>
+                <value>${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}</value>
             </list>
         </property>
         <property name="configCenter" ref="zkConfigCenter-activity"/>
