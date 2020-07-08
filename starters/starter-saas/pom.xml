@@ -174,6 +174,12 @@
         </dependency>
 
         <dependency>
+            <!-- kunpeng-api consume将activity同步到自定义列表 -->
+            <groupId>cn.tongdun.kunpeng-consumer</groupId>
+            <artifactId>consumer-custom-list</artifactId>
+            <version>${api-consumer.version}</version>
+        </dependency>
+        <dependency>
             <!-- kunpeng-api consume将activity消息保存到es -->
             <groupId>cn.tongdun.kunpeng-consumer</groupId>
             <artifactId>consumer-es</artifactId>
