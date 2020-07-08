@@ -22,11 +22,4 @@ public class PolicyFieldDTO extends CommonDTO {
      */
     private boolean required;
 
-    /**
-     * 状态
-     * 1：有效的
-     * 0：无效的
-     */
-    private Integer status;
-
 }

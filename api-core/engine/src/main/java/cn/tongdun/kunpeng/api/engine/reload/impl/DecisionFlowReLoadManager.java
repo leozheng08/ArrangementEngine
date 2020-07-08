@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.DecisionFlowEventDO;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,8 +92,9 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowEventDO> {
                 return true;
             }
             //如果失效则删除缓存
-            if(decisionFlowDTO == null || !decisionFlowDTO.isValid()){
-                return remove(eventDO);
+            if(!decisionFlowDTO.isValid()){
+                return true;
+//                return remove(eventDO);
             }
 
             DecisionFlow decisionFlow = decisionFlowConvertor.convert(decisionFlowDTO);
@@ -112,14 +114,19 @@ public class DecisionFlowReLoadManager implements IReload<DecisionFlowEventDO> {
      * @return
      */
     @Override
-    public boolean remove(DecisionFlowEventDO eventDO){
+    public boolean remove(DecisionFlowEventDO eventDO) {
         try {
-            decisionModeCache.remove(eventDO.getUuid());
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"DecisionFlow remove failed, uuid:{}",eventDO.getUuid(),e);
+            AbstractDecisionMode mode = decisionModeCache.get(eventDO.getUuid());
+            //只有当前是决策流时才能够删除
+            if ((mode instanceof DecisionFlow) && StringUtils.equals(eventDO.getUuid(), mode.getPolicyUuid())) {
+                decisionModeCache.remove(eventDO.getUuid());
+            }
+
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "DecisionFlow remove failed, uuid:{}", eventDO.getUuid(), e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace()+"DecisionFlow remove success, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace() + "DecisionFlow remove success, uuid:{}", eventDO.getUuid());
         return true;
     }
 

@@ -12,10 +12,6 @@ import java.util.Date;
 @Data
 public class DecisionFlowModelDTO extends CommonDTO {
 
-    private Long id;
-    private Date gmtCreate;
-    private Date gmtModify;
-
     /**
      * 关联holmes_model表的uuid model_uuid
      */

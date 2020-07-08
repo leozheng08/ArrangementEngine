@@ -44,13 +44,6 @@ public class IndexDefinitionDTO extends CommonDTO {
      */
     private String description;
 
-    /**
-     * 状态
-     * 1：已启用
-     * 0：未启用
-     */
-    private Integer status;
-    private boolean deleted;
     private Date gmtDelete;
 
 

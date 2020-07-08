@@ -18,13 +18,6 @@ public class SubPolicyDTO extends CommonDTO {
     private String name;
 
     /**
-     * 状态
-     * 0：已关闭
-     * 1：已启用
-     */
-    private Integer status;
-
-    /**
      * 策略模式
      * FirstMatch:最先匹配
      * WorstMatch：最坏匹配
@@ -89,11 +82,6 @@ public class SubPolicyDTO extends CommonDTO {
     private String policyUuid;
 
 
-
-    /**
-     * 是否删除
-     */
-    private boolean deleted;
 
     private Date gmtDelete;
 

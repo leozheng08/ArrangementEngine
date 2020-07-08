@@ -19,13 +19,6 @@ public class RuleDTO extends CommonDTO {
 
     private String name;
 
-    /**
-     * 状态
-     * 0：已关闭
-     * 1：已启用
-     */
-    private Integer status;
-
     private Date gmtBegin;
 
     private Date gmtEnd;
@@ -63,11 +56,6 @@ public class RuleDTO extends CommonDTO {
     private String attribute;
 
     private String policyUuid;
-
-    /**
-     * 是否已删除
-     */
-    private boolean deleted;
 
 
     /**

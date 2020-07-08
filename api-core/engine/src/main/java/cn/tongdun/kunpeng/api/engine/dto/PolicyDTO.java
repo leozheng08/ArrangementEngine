@@ -35,19 +35,6 @@ public class PolicyDTO extends CommonDTO {
     private String partnerCode;
 
     /**
-     * 状态
-     * 0：已关闭
-     * 1：已启用
-     */
-
-    private Integer status;
-
-    /**
-     * 是否删除
-     */
-    private boolean deleted;
-
-    /**
      * 删除时间
      */
     private Date gmtDelete;

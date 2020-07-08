@@ -6,11 +6,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
+/**
+ * 通用信息
+ */
 public class CommonDTO implements Serializable {
 
     private static final long serialVersionUID = 1911389989055349715L;
-    protected Long            id;
-    protected String          uuid;
+    protected Long id;
+    protected String uuid;
     private Date gmtCreate;
     private Date gmtModify;
 
@@ -34,11 +37,11 @@ public class CommonDTO implements Serializable {
      */
     private String operator;
 
-    public boolean isValid(){
-        if(status != null && status.equals(1)) {
+    public boolean isValid() {
+        if (status == null || !status.equals(1)) {
             return false;
         }
-        if(deleted) {
+        if (deleted) {
             return false;
         }
 
