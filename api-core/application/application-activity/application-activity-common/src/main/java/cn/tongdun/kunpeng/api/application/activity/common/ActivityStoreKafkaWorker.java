@@ -22,7 +22,7 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     @Autowired
     private IMsgProducer msgProducer;
 
-    @Value("kafka.kunpeng.activity.topic:kunpeng_api_raw_activity")
+    @Value("${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}")
     private String KUNPENG_API_RAW_ACTIVITY = "kunpeng_api_raw_activity";
 
 
