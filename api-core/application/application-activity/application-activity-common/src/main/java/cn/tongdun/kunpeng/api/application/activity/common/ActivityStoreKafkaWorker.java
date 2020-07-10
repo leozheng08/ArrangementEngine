@@ -40,6 +40,10 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
             if(item.getContext().isTestFlag()){
                 return false;
             }
+            //过滤掉调用失败无效的数据
+            if(!item.getResponse().isSuccess()){
+                return false;
+            }
             return true;
         };
     }
