@@ -32,6 +32,8 @@ public class ActitivyMsg implements IActitivyMsg {
     //详细的错误子码
     private Set<SubReasonCode> subReasonCodes;
 
+    private GeoipInfo geoipEntity;
+
 
     /**
      * 消息的key
