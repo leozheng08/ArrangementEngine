@@ -1,12 +1,18 @@
 package cn.tongdun.kunpeng.api.application.activity.ext;
 
+import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.kunpeng.api.application.activity.common.ActitivyMsg;
+import cn.tongdun.kunpeng.api.application.activity.common.GeoipInfo;
 import cn.tongdun.kunpeng.api.application.activity.common.IActitivyMsg;
 import cn.tongdun.kunpeng.api.application.activity.common.IGenerateActivityExtPt;
+import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.tdframework.core.extension.Extension;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -18,6 +24,8 @@ import java.util.Map;
  */
 @Extension(business = BizScenario.DEFAULT,tenant = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
 public class GenerateActivityExt implements IGenerateActivityExtPt{
+
+    private static final Logger logger = LoggerFactory.getLogger(GenerateActivityExt.class);
 
     private Map<String, Method> systemFieldGetter;
 
@@ -38,6 +46,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         actitivy.setRequest(encodeRequest(queueItem.getContext()));
         actitivy.setResponse(queueItem.getResponse());
         actitivy.setSubReasonCodes(context.getSubReasonCodes());
+        actitivy.setGeoipEntity(getGeoIpInfo(queueItem.getContext()));
         return actitivy;
     }
 
@@ -73,6 +82,37 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         result.put("policyVersion",context.getPolicyVersion());
         result.put("requestId",context.getRequestId());
         return result;
+    }
+
+    private GeoipInfo getGeoIpInfo(AbstractFraudContext context){
+        GeoipEntity geoipEntity = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, GeoipEntity.class);
+        if(geoipEntity != null){
+            GeoipInfo geoipInfo = new GeoipInfo();
+            String country = geoipEntity.getCountry();
+            try {
+                if (StringUtils.contains(country, "香港")
+                        || StringUtils.contains(country, "澳门")
+                        || StringUtils.contains(country, "台湾")) {
+                    country = "中国";
+                }
+            } catch (Exception e) {
+                logger.warn("国家转换异常, seq_id: {}", context.getSeqId(), e);
+            }
+            geoipInfo.setCountry(country);
+            geoipInfo.setCountyId(geoipEntity.getCountyId());
+            geoipInfo.setProvince(geoipEntity.getProvince());
+            geoipInfo.setProvinceId(geoipEntity.getProvinceId());
+            geoipInfo.setCity(geoipEntity.getCity());
+            geoipInfo.setCityId(geoipEntity.getCityId());
+            geoipInfo.setCounty(geoipEntity.getCounty());
+            geoipInfo.setCountyId(geoipEntity.getCountyId());
+            geoipInfo.setStreet(geoipEntity.getAddress());
+            geoipInfo.setLatitude(geoipEntity.getLatitude());
+            geoipInfo.setLongitude(geoipEntity.getLongitude());
+            geoipInfo.setIsp(geoipEntity.getIsp());
+            return geoipInfo;
+        }
+        return null;
     }
 
     private void putAllIfNotExists(Map<String, Object> result, Map<String, Object> map) {
