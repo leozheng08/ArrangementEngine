@@ -17,9 +17,11 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.DataUtil;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
+import com.eclipsesource.json.Json;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -72,6 +74,7 @@ public class DeviceInfoStep implements IRiskStep {
         String respDetailType = request.getRespDetailType();
         String tokenId = request.getTokenId();
         Map<String, Object> deviceMap = invokeFingerPrint(context, context.getPartnerCode(), context.getAppName(), tokenId, blackBox, respDetailType);
+        logger.info("deviceInfoQuery.query params:{}", JSON.toJSONString(deviceMap));
         context.setDeviceInfo(deviceMap);
 
         String appType = deviceMap.get("appOs") == null ? null : deviceMap.get("appOs").toString();
@@ -193,6 +196,7 @@ public class DeviceInfoStep implements IRiskStep {
             params.setResponseType(paramDetailType);
         }
         BaseResult<DeviceResp> baseResult = null;
+        logger.info("deviceInfoQuery.query result :{}", JSON.toJSONString(params));
         try {
             baseResult = deviceInfoQuery.query(params);
 
