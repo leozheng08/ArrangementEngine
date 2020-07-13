@@ -74,7 +74,7 @@ public class DeviceInfoStep implements IRiskStep {
         String respDetailType = request.getRespDetailType();
         String tokenId = request.getTokenId();
         Map<String, Object> deviceMap = invokeFingerPrint(context, context.getPartnerCode(), context.getAppName(), tokenId, blackBox, respDetailType);
-        logger.info("deviceInfoQuery.query params:{}", JSON.toJSONString(deviceMap));
+        logger.info("invokeFingerPrint result:{}", JSON.toJSONString(deviceMap));
         context.setDeviceInfo(deviceMap);
 
         String appType = deviceMap.get("appOs") == null ? null : deviceMap.get("appOs").toString();
@@ -196,7 +196,7 @@ public class DeviceInfoStep implements IRiskStep {
             params.setResponseType(paramDetailType);
         }
         BaseResult<DeviceResp> baseResult = null;
-        logger.info("deviceInfoQuery.query result :{}", JSON.toJSONString(params));
+        logger.info("deviceInfoQuery.query params :{}", JSON.toJSONString(params));
         try {
             baseResult = deviceInfoQuery.query(params);
 
@@ -211,6 +211,7 @@ public class DeviceInfoStep implements IRiskStep {
             } else {
                 FpReasonUtils.put(result, baseResult.getCode(), baseResult.getMsg());
             }
+            logger.info("deviceInfoQuery.query result :{}", JSON.toJSONString(baseResult));
             return result;
 
         } catch (Exception e) {
