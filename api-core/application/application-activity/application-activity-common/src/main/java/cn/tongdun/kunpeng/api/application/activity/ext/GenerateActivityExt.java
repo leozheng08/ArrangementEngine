@@ -47,6 +47,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         actitivy.setResponse(queueItem.getResponse());
         actitivy.setSubReasonCodes(context.getSubReasonCodes());
         actitivy.setGeoipEntity(getGeoIpInfo(queueItem.getContext()));
+        actitivy.setDeviceInfo(context.getDeviceInfo());
         return actitivy;
     }
 
