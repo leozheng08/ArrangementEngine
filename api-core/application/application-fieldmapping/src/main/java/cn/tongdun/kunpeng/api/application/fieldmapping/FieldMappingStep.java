@@ -41,7 +41,6 @@ public class FieldMappingStep implements IRiskStep {
         String partnerCode = context.getPartnerCode();
         Map<String, AccessBusiness> uuidAccessMap = accessBusinessCache.getAccessBusinessMap();
         if (null == uuidAccessMap) {
-            logger.info(TraceUtils.getFormatTrace() + "access cache empty, skip field mapping");
             return true;
         }
 
