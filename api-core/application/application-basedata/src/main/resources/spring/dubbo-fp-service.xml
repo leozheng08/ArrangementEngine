@@ -36,4 +36,13 @@
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:reference>
 
+    <dubbo:reference id="fraudService" interface="cn.fraudmetrix.api.dubbo.FraudService"
+                     version="${cardbin.query.dubbo.version}" retries="0" timeout="${cardbin.query.dubbo.timeout}" check="false" connections="2" >
+        <dubbo:parameter key="threadname" value="cardbin-query-"/>
+        <dubbo:parameter key="threadpool" value="cached"/>
+        <dubbo:parameter key="corethreads" value="1" />
+        <dubbo:parameter key="threads" value="10" />
+        <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
+
 </beans>
