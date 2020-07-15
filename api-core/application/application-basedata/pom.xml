@@ -17,6 +17,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>river-api</artifactId>
+            <version>us-1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>common</artifactId>
         </dependency>
