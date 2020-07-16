@@ -70,6 +70,8 @@ public class RiskService implements IRiskService {
 
         metrics.counter("kunpeng.api.riskservice.qps");
 
+
+
         ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
 
         FraudContext context = new FraudContext();
@@ -107,16 +109,17 @@ public class RiskService implements IRiskService {
             TraceUtils.removeTrace();
         }
         timeContext.stop();
-        printCode(riskResponse);
+        printCode(riskRequest,riskResponse);
         return riskResponse;
 
     }
 
     /**
      *  printCode
+     *  riskRequest
      * @param riskResponse
      */
-    private void  printCode(IRiskResponse riskResponse){
+    private void  printCode(RiskRequest riskRequest,IRiskResponse riskResponse){
         if (Objects.nonNull(riskResponse.getReasonCode())){
             String[] tags = {
                     "reason_code",riskResponse.getReasonCode()};
@@ -126,6 +129,14 @@ public class RiskService implements IRiskService {
             String[] tags = {
                     "sub_reason_code",riskResponse.getSubReasonCodes()};
             metrics.counter("kunpeng.api.subReasonCode",tags);
+        }
+        /**
+         * 按照合作方异常打点
+         */
+        if (Objects.nonNull(riskRequest.getPartnerCode())&&Objects.nonNull(riskResponse.getReasonCode())){
+            String[] tags = {
+                    "partner_code",riskRequest.getPartnerCode()};
+            metrics.counter("kunpeng.api.partner.code",tags);
         }
     }
 
