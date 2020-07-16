@@ -70,7 +70,7 @@ public class RiskService implements IRiskService {
 
         metrics.counter("kunpeng.api.riskservice.qps");
 
-        ITimeContext timeContext = metrics.metricTimer("kunpeng1.api.riskservice.rt");
+        ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
 
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
