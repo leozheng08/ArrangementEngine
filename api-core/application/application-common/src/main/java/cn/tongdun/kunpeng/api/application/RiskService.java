@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author: liang.chen
@@ -68,7 +69,8 @@ public class RiskService implements IRiskService {
     public IRiskResponse riskService(RiskRequest riskRequest) {
 
         metrics.counter("kunpeng.api.riskservice.qps");
-        ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
+
+        ITimeContext timeContext = metrics.metricTimer("kunpeng1.api.riskservice.rt");
 
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
@@ -104,9 +106,26 @@ public class RiskService implements IRiskService {
             ThreadContext.clear();
             TraceUtils.removeTrace();
         }
-        timeContext.stop();
+        printCode(riskResponse);
         return riskResponse;
 
+    }
+
+    /**
+     *  printCode
+     * @param riskResponse
+     */
+    private void  printCode(IRiskResponse riskResponse){
+        if (Objects.nonNull(riskResponse.getReasonCode())){
+            String[] tags = {
+                    "reason_code",riskResponse.getReasonCode()};
+            metrics.counter("kunpeng.api.reasonCode",tags);
+        }
+        if (Objects.nonNull(riskResponse.getSubReasonCodes())){
+            String[] tags = {
+                    "sub_reason_code",riskResponse.getSubReasonCodes()};
+            metrics.counter("kunpeng.api.subReasonCode",tags);
+        }
     }
 
 
