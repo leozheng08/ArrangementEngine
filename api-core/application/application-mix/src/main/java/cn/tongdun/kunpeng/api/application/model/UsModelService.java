@@ -13,12 +13,14 @@ import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -38,6 +40,9 @@ public class UsModelService implements ModelServiceExtPt {
     )
     private IDubboHolmesApi enterPriseHolmesApi;
 
+    @Autowired
+    private IMetrics metrics;
+
     @Override
     public boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo configInfo) {
 
@@ -54,6 +59,10 @@ public class UsModelService implements ModelServiceExtPt {
 
         ModelCalResponse modelCalResponse = null;
         try {
+
+            String[] tags = {
+                    "dubbo_qps","holmes.dubbo.IDubboHolmesApi"};
+            metrics.counter("kunpeng.api.dubbo.qps",tags);
             modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
             if (null == modelCalResponse) {
                 logger.error(TraceUtils.getFormatTrace() + "UsModelService IDubboHolmesApi calculate error,modelCalResponse is null!modelUuid:" + configInfo.getUuid());
