@@ -8,6 +8,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.application.mail.constant.MailModelResult;
 import cn.tongdun.kunpeng.api.application.mail.constant.MailModelTypeEnum;
+import cn.tongdun.kunpeng.api.application.util.ApplicationContextProvider;
 import cn.tongdun.kunpeng.api.application.util.HttpUtils;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -29,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;
@@ -39,6 +41,7 @@ import static cn.tongdun.kunpeng.api.common.data.ReasonCode.MAIL_PARAM_NOT_FOUND
  * @author yuanhang
  * @date 05/27/2020
  */
+@Service
 public class MailModelFunction extends AbstractFunction {
 
     private static Logger logger = LoggerFactory.getLogger(MailModelFunction.class);
@@ -56,9 +59,6 @@ public class MailModelFunction extends AbstractFunction {
     private String timeInterval = "2";
 
     private String simResult = "10";
-
-    @Autowired
-    private IMetrics metrics;
 
 
     @Override
@@ -216,9 +216,14 @@ public class MailModelFunction extends AbstractFunction {
                 Request request = new Request.Builder().url(url).post(body).build();
                 requests.add(request);
             }
-            String[] tags = {
-                    "dubbo_qps","mail.function.MailModelFunction"};
-            metrics.counter("kunpeng.api.dubbo.qps",tags);
+            try {
+                IMetrics metrics = (IMetrics) ApplicationContextProvider.getBean("prometheusMetricsImpl");
+                String[] tags = {
+                        "dubbo_qps","mail.function.MailModelFunction"};
+                metrics.counter("kunpeng.api.dubbo.qps",tags);
+            }catch (Exception e){
+
+            }
             HttpUtils.postAsyncJson(requests, httpResults);
 
             //处理接口返回结果
