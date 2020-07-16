@@ -91,6 +91,7 @@ public class WebFpFetchExceptionFunction extends AbstractFunction {
                 detail.setDescription(this.description);
                 detail.setCode(code);
                 detail.setCodeDisplayName(dictionaryManager.getFpResultMap().get(code));
+                detail.setCodeName(getCodeName(code));
                 return detail;
             };
         }
