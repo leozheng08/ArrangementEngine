@@ -103,7 +103,7 @@ public class MailModelFunction extends AbstractFunction {
         String mail = getFirstMail(context);
         if (StringUtils.isEmpty(mail)) {
             logger.warn(TraceUtils.getFormatTrace() + "mails empty, not found mail parameters");
-            return new FunctionResult(true);
+            return new FunctionResult(false);
         }
 
         try {
