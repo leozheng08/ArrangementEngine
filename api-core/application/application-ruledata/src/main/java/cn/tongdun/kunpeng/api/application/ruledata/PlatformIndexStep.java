@@ -18,6 +18,7 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class PlatformIndexStep implements IRiskStep {
     private FieldDefinitionCache fieldDefinitionCache;
 
     private static final String APP_NAME = "default";
+
+    @Autowired
+    private IMetrics metrics;
 
 
     @Override
@@ -88,6 +92,9 @@ public class PlatformIndexStep implements IRiskStep {
             PaasResult<List<GaeaIndicatrixVal>> indicatrixResult = null;
             try {
                 // 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
+                String[] tags = {
+                        "dubbo_qps","paas.api.GaeaApi"};
+                metrics.counter("kunpeng.api.dubbo.qps",tags);
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
                 logger.info(TraceUtils.getFormatTrace()+"平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {

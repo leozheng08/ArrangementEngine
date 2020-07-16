@@ -20,6 +20,7 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.eclipsesource.json.Json;
 import com.google.common.collect.Sets;
@@ -50,6 +51,9 @@ public class DeviceInfoStep implements IRiskStep {
 
     @Autowired
     private ExtensionExecutor extensionExecutor;
+
+    @Autowired
+    private IMetrics metrics;
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
@@ -198,8 +202,10 @@ public class DeviceInfoStep implements IRiskStep {
         BaseResult<DeviceResp> baseResult = null;
         logger.info("deviceInfoQuery.query params :{}", JSON.toJSONString(params));
         try {
+            String[] tags = {
+                    "dubbo_qps","fp.dubbo.DeviceInfoQuery"};
+            metrics.counter("kunpeng.api.dubbo.qps",tags);
             baseResult = deviceInfoQuery.query(params);
-
             if (null == baseResult) {
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,blackBox:" + blackBox);
                 FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);

@@ -17,6 +17,7 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.ruledetail.MailModelDetail;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -27,6 +28,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;
@@ -54,6 +56,10 @@ public class MailModelFunction extends AbstractFunction {
     private String timeInterval = "2";
 
     private String simResult = "10";
+
+    @Autowired
+    private IMetrics metrics;
+
 
     @Override
     public String getName() {
@@ -210,6 +216,9 @@ public class MailModelFunction extends AbstractFunction {
                 Request request = new Request.Builder().url(url).post(body).build();
                 requests.add(request);
             }
+            String[] tags = {
+                    "dubbo_qps","mail.function.MailModelFunction"};
+            metrics.counter("kunpeng.api.dubbo.qps",tags);
             HttpUtils.postAsyncJson(requests, httpResults);
 
             //处理接口返回结果
