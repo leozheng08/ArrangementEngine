@@ -23,6 +23,8 @@ public class FpExceptionDetail extends ConditionDetail implements DetailCallable
      */
     private String codeDisplayName;
 
+    private String codeName;
+
     public FpExceptionDetail() {
         super("fp_exception");
     }
