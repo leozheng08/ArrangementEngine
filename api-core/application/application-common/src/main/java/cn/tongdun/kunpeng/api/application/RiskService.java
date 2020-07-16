@@ -106,6 +106,7 @@ public class RiskService implements IRiskService {
             ThreadContext.clear();
             TraceUtils.removeTrace();
         }
+        timeContext.stop();
         printCode(riskResponse);
         return riskResponse;
 
