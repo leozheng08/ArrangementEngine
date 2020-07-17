@@ -4,6 +4,8 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.engine.model.application.AdminApplication;
 import cn.tongdun.kunpeng.api.engine.model.application.AdminApplicationCache;
+import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
+import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -25,6 +27,9 @@ public class AuthStep implements IRiskStep {
     @Autowired
     private AdminApplicationCache adminApplicationCache;
 
+    @Autowired
+    private PartnerCache partnerCache;
+
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
@@ -35,6 +40,21 @@ public class AuthStep implements IRiskStep {
         if(StringUtils.isAnyBlank(partnerCode,secretKey)){
             response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
             return false;
+        }
+
+        // 针对环球易购做兼容 TODO 想办法扔掉
+        if ("globalegrow".equalsIgnoreCase(partnerCode)) {
+            Partner partner = partnerCache.get(partnerCode);
+            String partnerKey = partner.getPartnerKey();
+            if (StringUtils.isNotEmpty(partnerKey) && partner.getPartnerKey().equalsIgnoreCase(partnerKey)) {
+                context.setAppName(request.getAppName());
+                context.setPartnerCode(partnerCode);
+                context.setSecretKey(secretKey);
+                return true;
+            } else {
+                response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
+                return false;
+            }
         }
 
         AdminApplication adminApplication = adminApplicationCache.getBySecretKey(secretKey);
