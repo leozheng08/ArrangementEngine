@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function.anomaly;
 
+import cn.fraudmetrix.forseti.fp.model.anomaly.Anomaly;
+import cn.fraudmetrix.forseti.fp.utils.AnomalyUtil;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
@@ -20,9 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class WebFpFetchExceptionFunction extends AbstractFunction {
 
@@ -91,11 +91,23 @@ public class WebFpFetchExceptionFunction extends AbstractFunction {
                 detail.setDescription(this.description);
                 detail.setCode(code);
                 detail.setCodeDisplayName(dictionaryManager.getFpResultMap().get(code));
+                detail.setCodeName(getCodeName(code));
                 return detail;
             };
         }
 
         return new FunctionResult(ret, detailCallable);
+    }
+
+    private String getCodeName(String code){
+        List<Anomaly> anomalies = AnomalyUtil.getDeviceExceptionByPlatform("web");
+        String codeName = code;
+        for(Anomaly anomaly:anomalies){
+            if(StringUtils.equals(code, anomaly.getCode())){
+                codeName = anomaly.getDesc();
+            }
+        }
+        return codeName;
     }
 
 

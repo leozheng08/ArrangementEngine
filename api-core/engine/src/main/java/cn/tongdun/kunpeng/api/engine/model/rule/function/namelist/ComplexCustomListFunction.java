@@ -186,7 +186,7 @@ public class ComplexCustomListFunction extends AbstractFunction {
         List<String> dimTypeList = Lists.newArrayList(dimType.split(COMMA_SEPARATOR));
         List<String> nameList = new ArrayList<>(8);
         for(String type:dimTypeList){
-            String name = VelocityHelper.getFieldDisplayName(this.calcField,context);
+            String name = VelocityHelper.getFieldDisplayName(type,context);
             nameList.add(name);
         }
         return String.join(COMMA_SEPARATOR, nameList);
