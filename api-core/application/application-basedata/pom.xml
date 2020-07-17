@@ -19,7 +19,7 @@
         <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>river-api</artifactId>
-            <version>us-1.0.0-SNAPSHOT</version>
+            <version>us-1.0.0-beta</version>
         </dependency>
 
         <dependency>
