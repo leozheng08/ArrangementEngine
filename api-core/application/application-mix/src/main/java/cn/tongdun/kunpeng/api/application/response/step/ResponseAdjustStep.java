@@ -93,7 +93,11 @@ public class ResponseAdjustStep implements IRiskStep {
     }
 
     /**
-     * TODO 优化代码逻辑
+     * 填充额外的参数
+     * @param response
+     * @param accessParam
+     * @param context
+     * @param request
      */
     private void injectExtraOutput(IRiskResponse response, AccessParam accessParam, AbstractFraudContext context, RiskRequest request) {
         Map customPolicyResult = response.getCustomPolicyResult();
@@ -106,6 +110,8 @@ public class ResponseAdjustStep implements IRiskStep {
         if (null == customPolicyResult.get(accessParam.getAccessParam())) {
             customPolicyResult.put(param,request.get(accessParam.getFieldName()));
         }
-        response.setCustomPolicyResult(customPolicyResult);
+        if (customPolicyResult.size() > 0) {
+            response.setCustomPolicyResult(customPolicyResult);
+        }
     }
 }
