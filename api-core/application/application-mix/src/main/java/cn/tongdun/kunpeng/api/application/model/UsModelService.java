@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.application.model;
 import cn.fraudmetrix.holmes.service.intf.IDubboHolmesApi;
 import cn.fraudmetrix.holmes.service.object.ModelCalResponse;
 import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
+import cn.tongdun.kunpeng.api.application.util.ApplicationContextProvider;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -40,9 +41,6 @@ public class UsModelService implements ModelServiceExtPt {
     )
     private IDubboHolmesApi enterPriseHolmesApi;
 
-    @Autowired
-    private IMetrics metrics;
-
     @Override
     public boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo configInfo) {
 
@@ -59,10 +57,14 @@ public class UsModelService implements ModelServiceExtPt {
 
         ModelCalResponse modelCalResponse = null;
         try {
+            try {
+                IMetrics metrics = (IMetrics) ApplicationContextProvider.getBean("prometheusMetricsImpl");
+                String[] tags = {
+                        "dubbo_qps","holmes.dubbo.IDubboHolmesApi"};
+                metrics.counter("kunpeng.api.dubbo.qps",tags);
+            }catch (Exception e){
 
-            String[] tags = {
-                    "dubbo_qps","holmes.dubbo.IDubboHolmesApi"};
-            metrics.counter("kunpeng.api.dubbo.qps",tags);
+            }
             modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
             if (null == modelCalResponse) {
                 logger.error(TraceUtils.getFormatTrace() + "UsModelService IDubboHolmesApi calculate error,modelCalResponse is null!modelUuid:" + configInfo.getUuid());

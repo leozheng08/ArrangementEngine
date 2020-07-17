@@ -204,12 +204,12 @@ public class USRiskResponse implements IRiskResponse {
 
     @Override
     public String getReasonCode() {
-        return null;
+        return this.subReasonCodes;
     }
 
     @Override
     public void setReasonCode(String reasonCode) {
-
+        this.subReasonCodes = reasonCode;
     }
 
     @Override
