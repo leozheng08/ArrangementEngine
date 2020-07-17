@@ -133,7 +133,7 @@ public class RiskService implements IRiskService {
         /**
          * 按照合作方异常打点
          */
-        if (Objects.nonNull(riskRequest.getPartnerCode())&&Objects.nonNull(riskResponse.getReasonCode())){
+        if (Objects.nonNull(riskRequest.getPartnerCode())&&Objects.nonNull(riskResponse.getSubReasonCodes())){
             String[] tags = {
                     "partner_code",riskRequest.getPartnerCode()};
             metrics.counter("kunpeng.api.partner.code",tags);
