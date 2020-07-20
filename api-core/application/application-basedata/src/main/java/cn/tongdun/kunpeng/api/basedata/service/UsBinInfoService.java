@@ -1,9 +1,11 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-import cn.fraudmetrix.api.dubbo.FraudService;
-import cn.fraudmetrix.api.entity.CardBinTO;
-import cn.fraudmetrix.api.result.RiverResult;
+//import cn.fraudmetrix.api.dubbo.FraudService;
+//import cn.fraudmetrix.api.entity.CardBinTO;
+//import cn.fraudmetrix.api.result.RiverResult;
 import cn.fraudmetrix.module.riskbase.object.BinInfoDO;
+import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
+import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinTO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
@@ -22,8 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UsBinInfoService implements BinInfoServiceExtPt{
     private static final Logger logger = LoggerFactory.getLogger(UsBinInfoService.class);
 
+//    @Autowired
+//    private FraudService fraudService;
+
     @Autowired
-    private FraudService fraudService;
+    private CardBinService cardBinService;
 
     @Override
     public BinInfoDO getBinInfo(String binCode){
@@ -35,14 +40,23 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
         String cardBin = (String)context.get("cardBin");
         if (StringUtils.isNotBlank(cardBin)) {
             // 调用river获取CardBin信息
-            RiverResult<CardBinTO> result = null;
+//            RiverResult<CardBinTO> result = null;
+//            try {
+//                result = fraudService.cardBin(cardBin);
+//            } catch (Exception e) {
+//                logger.error("调用river获取cardbin数据异常", e);
+//            }
+//            if (null != result && result.isSuccess()) {
+//                setContext(context, result.getData());
+//            }
+            CardBinTO cardBinTO = null;
             try {
-                result = fraudService.cardBin(cardBin);
-            } catch (Exception e) {
-                logger.error("调用river获取cardbin数据异常", e);
+                cardBinTO = cardBinService.getCardBinInfoById(cardBin);
+            }catch (Exception e){
+                logger.error("查询cardbin数据异常", e);
             }
-            if (null != result && result.isSuccess()) {
-                setContext(context, result.getData());
+            if(cardBinTO != null){
+                setContext(context, cardBinTO);
             }
         }
         return true;
