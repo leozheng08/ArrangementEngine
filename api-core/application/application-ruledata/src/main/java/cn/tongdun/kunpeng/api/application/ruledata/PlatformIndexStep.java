@@ -19,6 +19,7 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,9 @@ public class PlatformIndexStep implements IRiskStep {
                 String[] tags = {
                         "dubbo_qps","paas.api.GaeaApi"};
                 metrics.counter("kunpeng.api.dubbo.qps",tags);
+                ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
+                timeContext.stop();
                 logger.info(TraceUtils.getFormatTrace()+"平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {
                 // 临时通过LocalcachePeriod配置项做下开关

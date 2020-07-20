@@ -19,6 +19,7 @@ import cn.tongdun.kunpeng.api.ruledetail.MailModelDetail;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -221,11 +222,12 @@ public class MailModelFunction extends AbstractFunction {
                 String[] tags = {
                         "dubbo_qps","mail.function.MailModelFunction"};
                 metrics.counter("kunpeng.api.dubbo.qps",tags);
+                ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+                HttpUtils.postAsyncJson(requests, httpResults);
+                timeContext.stop();
             }catch (Exception e){
 
             }
-            HttpUtils.postAsyncJson(requests, httpResults);
-
             //处理接口返回结果
             Iterator<Map.Entry<Request, Object>> var0 = httpResults.entrySet().iterator();
             while (var0.hasNext()) {

@@ -21,6 +21,7 @@ import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.eclipsesource.json.Json;
 import com.google.common.collect.Sets;
@@ -205,7 +206,9 @@ public class DeviceInfoStep implements IRiskStep {
             String[] tags = {
                     "dubbo_qps","fp.dubbo.DeviceInfoQuery"};
             metrics.counter("kunpeng.api.dubbo.qps",tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
             baseResult = deviceInfoQuery.query(params);
+            timeContext.stop();
             if (null == baseResult) {
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,blackBox:" + blackBox);
                 FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
