@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.basedata.step.cardbin;
 
-import cn.fraudmetrix.api.entity.CardBinTO;
-import cn.fraudmetrix.api.result.RiverResult;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.basedata.service.BinInfoServiceExtPt;
@@ -35,8 +33,6 @@ public class CardBinStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String cardBin = (String)context.get("cardBin");
         if (StringUtils.isNotBlank(cardBin)) {
-            // 调用river获取CardBin信息
-            RiverResult<CardBinTO> result = null;
             try {
                 extensionExecutor.execute(BinInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getBinInfo(context, response, request));
             } catch (Exception e) {
