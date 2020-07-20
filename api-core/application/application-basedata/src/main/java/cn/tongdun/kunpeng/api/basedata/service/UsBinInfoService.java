@@ -57,6 +57,8 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
             }
             if(cardBinTO != null){
                 setContext(context, cardBinTO);
+            }else {
+                logger.warn("查询不到cardbin信息");
             }
         }
         return true;
