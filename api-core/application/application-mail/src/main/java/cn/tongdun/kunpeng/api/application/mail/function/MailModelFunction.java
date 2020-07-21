@@ -223,7 +223,10 @@ public class MailModelFunction extends AbstractFunction {
                         "dubbo_qps","mail.function.MailModelFunction"};
                 metrics.counter("kunpeng.api.dubbo.qps",tags);
                 ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+                Long startTime = System.currentTimeMillis();
                 HttpUtils.postAsyncJson(requests, httpResults);
+                Long endTime = System.currentTimeMillis();
+                logger.info("HttpUtils.postAsyncJson调用时间:"+(endTime - startTime));
                 timeContext.stop();
             }catch (Exception e){
 
