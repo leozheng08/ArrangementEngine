@@ -226,7 +226,10 @@ public class MailModelFunction extends AbstractFunction {
                 Long startTime = System.currentTimeMillis();
                 HttpUtils.postAsyncJson(requests, httpResults);
                 Long endTime = System.currentTimeMillis();
-                logger.info("HttpUtils.postAsyncJson调用时间:"+(endTime - startTime));
+                long time=(endTime - startTime);
+                if (time>100){
+                    logger.info("HttpUtils.postAsyncJson调用时间:"+time);
+                }
                 timeContext.stop();
             }catch (Exception e){
 
