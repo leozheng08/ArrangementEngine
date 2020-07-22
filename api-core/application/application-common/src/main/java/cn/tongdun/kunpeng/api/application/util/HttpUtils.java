@@ -25,7 +25,7 @@ public class HttpUtils {
             .connectTimeout(Duration.ofMillis(50))
             .writeTimeout(Duration.ofMillis(100))
             .readTimeout(Duration.ofMillis(100))
-            .connectionPool(new ConnectionPool(500, 10, TimeUnit.MILLISECONDS))
+            .connectionPool(new ConnectionPool(800, 30, TimeUnit.SECONDS))
             .build();
 
     /**
