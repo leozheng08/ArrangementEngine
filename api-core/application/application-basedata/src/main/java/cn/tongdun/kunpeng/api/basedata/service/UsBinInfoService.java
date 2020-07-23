@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinTO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -34,12 +35,6 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
     @Autowired
     private IMetrics metrics;
 
-    /**
-     *  USBIN_OTHER_ERROR("80001", "查询cardbin数据异常"),
-     *     USBIN_OTHER_DAT("80002", "查询不到cardbin信息");
-     */
-    static String USBIN_ERROR_OTHER="50746";
-    static String USBIN_ERROR_DATA="50747";
 
     @Override
     public BinInfoDO getBinInfo(String binCode){
@@ -66,7 +61,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
             }catch (Exception e){
                 logger.error("查询cardbin数据异常", e);
                 String[] tags = {
-                        "sub_reason_code",USBIN_ERROR_OTHER};
+                        "sub_reason_code", ReasonCode.USBIN_ERROR_OTHER.getCode()};
                 metrics.counter("kunpeng.api.subReasonCode",tags);
             }
             if(cardBinTO != null){
@@ -74,7 +69,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
             }else {
                 logger.warn("查询不到cardbin信息");
                 String[] tags = {
-                        "sub_reason_code",USBIN_ERROR_DATA};
+                        "sub_reason_code",ReasonCode.USBIN_ERROR_DATA.getCode()};
                 metrics.counter("kunpeng.api.subReasonCode",tags);
             }
         }
