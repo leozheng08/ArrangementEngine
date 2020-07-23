@@ -107,6 +107,10 @@ public class RiskService implements IRiskService {
         } finally {
             ThreadContext.clear();
             TraceUtils.removeTrace();
+            // 临时代码 TODO 移除
+            if ("kratos".equalsIgnoreCase(riskRequest.getPartnerCode())) {
+                throw new NullPointerException();
+            }
         }
         timeContext.stop();
         printCode(riskRequest,riskResponse);
