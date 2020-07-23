@@ -38,8 +38,8 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
      *  USBIN_OTHER_ERROR("80001", "查询cardbin数据异常"),
      *     USBIN_OTHER_DAT("80002", "查询不到cardbin信息");
      */
-    static String USBIN_ERROR_OTHER="80001";
-    static String USBIN_ERROR_DATA="80002";
+    static String USBIN_ERROR_OTHER="50746";
+    static String USBIN_ERROR_DATA="50747";
 
     @Override
     public BinInfoDO getBinInfo(String binCode){
