@@ -159,7 +159,12 @@ public enum ReasonCode {
 
     CALCULATE_QUERY_ERROR("70101", "决策结果自定义数据查询失败"),
     NO_OUTPUT_FORMULA("70102", "决策结果自定义公式有误"),
-    PART_CALCULATE_ERROR("70103", "部分计算失败"),;
+    PART_CALCULATE_ERROR("70103", "部分计算失败"),
+
+    USBIN_ERROR_OTHER("50746","查询cardbin数据异常"),
+    USBIN_ERROR_DATA("50747","查询不到cardbin信息"),
+    ;
+
 
     private String code;
     private String description;
