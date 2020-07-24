@@ -48,6 +48,9 @@ public class CardBinServiceImpl implements CardBinService {
     @Autowired
     AerospikeServiceImpl aerospikeService;
 
+    @Autowired
+    UsCardbinSetConfigCache usCardbinSetConfigCache;
+
 
     /**
      * 根据银行卡或者卡bin查询卡bin信息
@@ -67,8 +70,7 @@ public class CardBinServiceImpl implements CardBinService {
         boolean isCardNum = id.length() == CARD_PAN_LENGTH;
 
         // 获取路由信息
-//        String asSet = SyncClientControlCacheManager.getSet(dim_type);
-        String asSet = asCardbinSet;
+        String asSet = usCardbinSetConfigCache.getAsCardbinSet();
 
         // 从as查询卡bin信息
         String cardBin;
