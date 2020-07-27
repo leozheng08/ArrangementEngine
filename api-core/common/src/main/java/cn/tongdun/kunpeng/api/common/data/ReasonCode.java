@@ -162,7 +162,7 @@ public enum ReasonCode {
     PART_CALCULATE_ERROR("70103", "部分计算失败"),
 
     USBIN_ERROR_OTHER("50746","查询cardbin数据异常"),
-    USBIN_ERROR_DATA("50747","查询不到cardbin信息"),
+    USBIN_ERROR_TIMEOUT("50747","查询不到cardbin信息超时"),
     ;
 
 

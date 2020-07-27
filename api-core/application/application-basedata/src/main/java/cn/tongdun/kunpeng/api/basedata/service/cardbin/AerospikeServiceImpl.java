@@ -1,6 +1,9 @@
 package cn.tongdun.kunpeng.api.basedata.service.cardbin;
 
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
 import com.aerospike.client.*;
 import com.aerospike.client.policy.Priority;
 import com.aerospike.client.policy.RecordExistsAction;
@@ -27,6 +30,9 @@ public class AerospikeServiceImpl implements AerospikeService {
 
     @Value("${cardbin.aerospike.namespace:us-as-np}")
     private String asNameSpace;
+
+    @Autowired
+    private IMetrics metrics;
 
     // 相当于表的列
     private static final String asBinName = "DATA";
@@ -164,6 +170,15 @@ public class AerospikeServiceImpl implements AerospikeService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            if (ReasonCodeUtil.isTimeout(e)) {
+                String[] tags = {
+                        "sub_reason_code", ReasonCode.USBIN_ERROR_TIMEOUT.getCode()};
+                metrics.counter("kunpeng.api.subReasonCode",tags);
+            } else {
+                String[] tags = {
+                        "sub_reason_code", ReasonCode.USBIN_ERROR_OTHER.getCode()};
+                metrics.counter("kunpeng.api.subReasonCode",tags);
+            }
         }
         return null != value ? value.toString() : null;
     }

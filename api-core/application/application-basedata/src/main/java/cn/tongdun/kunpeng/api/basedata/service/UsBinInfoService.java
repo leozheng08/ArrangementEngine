@@ -69,9 +69,6 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
                 logger.info("查询到seqId={}, cardBin={}", context.getSeqId(), cardBinTO);
             }else {
                 logger.warn("查询不到cardbin信息");
-                String[] tags = {
-                        "sub_reason_code",ReasonCode.USBIN_ERROR_DATA.getCode()};
-                metrics.counter("kunpeng.api.subReasonCode",tags);
             }
         }
         return true;
