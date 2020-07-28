@@ -2,16 +2,12 @@ package cn.tongdun.kunpeng.api.application.auth.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.engine.model.application.AdminApplication;
-import cn.tongdun.kunpeng.api.engine.model.application.AdminApplicationCache;
-import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
-import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
+import cn.tongdun.kunpeng.api.application.step.ext.IAuthExtPt;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,48 +21,11 @@ import org.springframework.stereotype.Component;
 public class AuthStep implements IRiskStep {
 
     @Autowired
-    private AdminApplicationCache adminApplicationCache;
-
-    @Autowired
-    private PartnerCache partnerCache;
+    private ExtensionExecutor extensionExecutor;
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
-
-        String partnerCode = request.getPartnerCode();
-        String secretKey = request.getSecretKey();
-
-
-        if(StringUtils.isAnyBlank(partnerCode,secretKey)){
-            response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
-            return false;
-        }
-
-        // 针对环球易购做兼容 TODO 想办法扔掉
-        if ("globalegrow".equalsIgnoreCase(partnerCode)) {
-            Partner partner = partnerCache.get(partnerCode);
-            String partnerKey = partner.getPartnerKey();
-            if (StringUtils.isNotEmpty(partnerKey) && partner.getPartnerKey().equalsIgnoreCase(partnerKey)) {
-                context.setAppName(request.getAppName());
-                context.setPartnerCode(partnerCode);
-                context.setSecretKey(secretKey);
-                return true;
-            } else {
-                response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
-                return false;
-            }
-        }
-
-        AdminApplication adminApplication = adminApplicationCache.getBySecretKey(secretKey);
-
-        if(adminApplication == null){
-            response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
-            return false;
-        }
-        context.setAppName(adminApplication.getCode());
-
-        context.setPartnerCode(partnerCode);
-        context.setSecretKey(secretKey);
+        extensionExecutor.execute(IAuthExtPt.class, context.getBizScenario(), extension -> extension.invoke(context, response, request));
         return true;
     }
 }
