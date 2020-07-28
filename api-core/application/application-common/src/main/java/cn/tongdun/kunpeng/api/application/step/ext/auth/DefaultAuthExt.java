@@ -6,8 +6,6 @@ import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.engine.model.application.AdminApplication;
 import cn.tongdun.kunpeng.api.engine.model.application.AdminApplicationCache;
-import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
-import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.tdframework.core.extension.Extension;

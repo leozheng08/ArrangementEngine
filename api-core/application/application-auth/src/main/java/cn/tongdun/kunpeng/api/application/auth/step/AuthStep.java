@@ -25,7 +25,6 @@ public class AuthStep implements IRiskStep {
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
-        extensionExecutor.execute(IAuthExtPt.class, context.getBizScenario(), extension -> extension.invoke(context, response, request));
-        return true;
+        return extensionExecutor.execute(IAuthExtPt.class, context.getBizScenario(), extension -> extension.invoke(context, response, request));
     }
 }
