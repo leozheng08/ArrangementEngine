@@ -60,7 +60,7 @@ public class UsCardbinSetConfigCache {
 
     private void loadConfig(){
         try {
-            String sql = " select sim_type, route from sync_client_control where sim_type='bankcard_binall' ";
+            String sql = " select dim_type, route from sync_client_control where dim_type='bankcard_binall' ";
             List<Map<String, Object>> dataList = usJdbcTemplate2.queryForList(sql);
             if(!CollectionUtils.isEmpty(dataList)){
                 String route = dataList.get(0).get("route").toString();
