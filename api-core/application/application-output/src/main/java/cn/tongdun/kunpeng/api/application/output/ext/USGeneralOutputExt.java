@@ -25,7 +25,7 @@ import java.util.Set;
  * @author: yuanhang
  * @date: 2020-06-17 14:05
  **/
-@Extension(tenant = "us", business = BizScenario.DEFAULT, partner = "globalegrow")
+@Extension(business = BizScenario.DEFAULT, tenant = "us", partner = "globalegrow")
 public class USGeneralOutputExt implements IGeneralOutputExtPt {
 
     @Autowired
@@ -72,7 +72,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
         policyDetailResult.setSeqId(context.getSeqId());
         policyDetailResult.setFinalDealType(policyResponse.getDecision());
         policyDetailResult.setFinalDealTypeName(policyResponse.getDecision());
-        policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision()));
+        policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision() == null ? "" :policyResponse.getDecision()));
         policyDetailResult.setFlowChargeSuccessed(false);
         policyDetailResult.setEmergencySwithcOn(false);
         Map nusspecial = Maps.newHashMap();

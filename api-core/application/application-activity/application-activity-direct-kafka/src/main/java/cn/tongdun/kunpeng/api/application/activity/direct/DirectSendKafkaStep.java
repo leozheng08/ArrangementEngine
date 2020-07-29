@@ -3,10 +3,12 @@ package cn.tongdun.kunpeng.api.application.activity.direct;
 import cn.tongdun.kunpeng.api.application.activity.common.ActivityStoreKafkaWorker;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.application.step.ext.ISendKafkaExtPt;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,15 +23,13 @@ import org.springframework.stereotype.Component;
 public class DirectSendKafkaStep implements IRiskStep {
 
     @Autowired
-    private ActivityStoreKafkaWorker activityStoreKafkaWorker;
+    private ExtensionExecutor extensionExecutor;
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
 
-        QueueItem queueItem = new QueueItem(context,response,request);
-        if(activityStoreKafkaWorker.getFilter().test(queueItem)) {
-            activityStoreKafkaWorker.onEvent(queueItem);
-        }
+        extensionExecutor.execute(ISendKafkaExtPt.class, context.getBizScenario(),
+                extension -> extension.invoke(context, response, request));
         return true;
     }
 

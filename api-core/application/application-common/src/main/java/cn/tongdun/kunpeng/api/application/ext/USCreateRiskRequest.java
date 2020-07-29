@@ -15,7 +15,7 @@ import java.util.Set;
  * @author: yuanhang
  * @date: 2020-07-27 19:11
  **/
-@Extension(tenant = "us",business = BizScenario.DEFAULT,partner = "globalegrow")
+@Extension(business = BizScenario.DEFAULT,tenant = "us",partner = "globalegrow")
 public class USCreateRiskRequest implements ICreateRiskRequestExtPt {
     private static final Field[] fields = DefaultCreateRiskRequestExtPt.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length);
