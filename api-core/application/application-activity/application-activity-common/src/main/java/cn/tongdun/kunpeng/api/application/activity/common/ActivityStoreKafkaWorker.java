@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.application.activity.common;
 
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
-import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,13 +42,6 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
             }
             //过滤掉调用失败无效的数据
             if(!item.getResponse().isSuccess()){
-                return false;
-            }
-            // 适配天策
-            if(null != item.getResponse().getPolicyDetailResult() &&
-                    item.getResponse().getPolicyDetailResult() instanceof PolicyResult &&
-                    !((PolicyResult) item.getResponse().getPolicyDetailResult()).isSuccess()
-            ) {
                 return false;
             }
             return true;

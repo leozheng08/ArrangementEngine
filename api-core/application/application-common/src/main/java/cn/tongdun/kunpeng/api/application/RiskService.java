@@ -78,6 +78,10 @@ public class RiskService implements IRiskService {
 
         ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
 
+        String[] tags = {
+                "partner_code",riskRequest.getPartnerCode()};
+        ITimeContext timePartner = metrics.metricTimer("kunpeng.api.riskservice.partner.rt",tags);
+
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
 
@@ -113,6 +117,7 @@ public class RiskService implements IRiskService {
             TraceUtils.removeTrace();
         }
         timeContext.stop();
+        timePartner.stop();
         printCode(riskRequest,riskResponse);
         iCompareInfoRepository.insertFluid(buildCompareInfo(riskRequest, riskResponse));
         return riskResponse;

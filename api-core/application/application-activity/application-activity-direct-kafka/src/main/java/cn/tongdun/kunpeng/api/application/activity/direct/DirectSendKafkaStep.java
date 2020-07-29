@@ -1,11 +1,9 @@
 package cn.tongdun.kunpeng.api.application.activity.direct;
 
-import cn.tongdun.kunpeng.api.application.activity.common.ActivityStoreKafkaWorker;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.application.step.ext.ISendKafkaExtPt;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;

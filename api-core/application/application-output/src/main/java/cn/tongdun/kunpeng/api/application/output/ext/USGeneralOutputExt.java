@@ -25,7 +25,7 @@ import java.util.Set;
  * @author: yuanhang
  * @date: 2020-06-17 14:05
  **/
-@Extension(business = BizScenario.DEFAULT, tenant = "us", partner = "globalegrow")
+@Extension(tenant = "us", business = BizScenario.DEFAULT, partner = "globalegrow")
 public class USGeneralOutputExt implements IGeneralOutputExtPt {
 
     @Autowired
