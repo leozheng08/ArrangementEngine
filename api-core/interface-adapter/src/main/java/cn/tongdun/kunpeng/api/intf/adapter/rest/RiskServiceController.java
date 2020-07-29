@@ -1,10 +1,7 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
 import cn.tongdun.kunpeng.api.application.RiskService;
-import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
-import cn.tongdun.kunpeng.api.engine.model.compare.ICompareInfoRepository;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.Map;
 
 /**
