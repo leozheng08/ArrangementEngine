@@ -1,6 +1,8 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
 import cn.tongdun.kunpeng.api.application.RiskService;
+import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
+import cn.tongdun.kunpeng.api.engine.model.compare.ICompareInfoRepository;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -27,6 +30,8 @@ public class RiskServiceController {
 
     @Autowired
     RiskService riskService;
+
+
 
     @RequestMapping(value = {"riskService","riskService/v1.1","antifraudService","antifraudService/v1.1"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
@@ -47,4 +52,5 @@ public class RiskServiceController {
         String body = riskResponse.toJsonString();
         return body;
     }
+
 }

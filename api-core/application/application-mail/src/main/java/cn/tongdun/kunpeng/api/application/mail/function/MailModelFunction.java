@@ -30,13 +30,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 
-import static cn.tongdun.kunpeng.api.common.data.ReasonCode.MAIL_PARAM_NOT_FOUND;
 
 /**
  * @author yuanhang
@@ -61,6 +59,9 @@ public class MailModelFunction extends AbstractFunction {
 
     private String simResult = "10";
 
+    private static final Map<String, Object> cache = Maps.newConcurrentMap();
+
+    private static String seqId = "";
 
     @Override
     public String getName() {
@@ -114,7 +115,11 @@ public class MailModelFunction extends AbstractFunction {
         }
 
         try {
-            Object result = getModelResponse(url, ranUrl, mail, context);
+            // 先找缓存，没有则查询接口
+            Object result = getMailResult(context, mail);
+            if (null == result) {
+                result = getModelResponse(url, ranUrl, mail, context);
+            }
 
             if (null == result) {
                 ReasonCodeUtil.add(context, ReasonCode.MAIL_MODEL_OTHER_EXCEPTION, "mail_model");
@@ -127,6 +132,7 @@ public class MailModelFunction extends AbstractFunction {
             } else {
                 // 处理接口返回结果
                 MailModelResult mailModelResult = (MailModelResult) result;
+                cache.put(buildKey(mail), result);
                 Map<Integer, String> mapping = MailModelTypeEnum.mappingCode(mailTypes);
                 boolean randResult = false;
                 // 随机率判定
@@ -220,18 +226,18 @@ public class MailModelFunction extends AbstractFunction {
             try {
                 IMetrics metrics = (IMetrics) ApplicationContextProvider.getBean("prometheusMetricsImpl");
                 String[] tags = {
-                        "dubbo_qps","mail.function.MailModelFunction"};
-                metrics.counter("kunpeng.api.dubbo.qps",tags);
-                ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+                        "dubbo_qps", "mail.function.MailModelFunction"};
+                metrics.counter("kunpeng.api.dubbo.qps", tags);
+                ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
                 Long startTime = System.currentTimeMillis();
                 HttpUtils.postAsyncJson(requests, httpResults);
                 Long endTime = System.currentTimeMillis();
-                long time=(endTime - startTime);
-                if (time>100){
-                    logger.info("HttpUtils.postAsyncJson调用时间:"+time);
+                long time = (endTime - startTime);
+                if (time > 100) {
+                    logger.info("HttpUtils.postAsyncJson调用时间:" + time);
                 }
                 timeContext.stop();
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             //处理接口返回结果
@@ -303,6 +309,36 @@ public class MailModelFunction extends AbstractFunction {
             }
         }
         return null;
+    }
+
+    /**
+     * 构建缓存k
+     *
+     * @param mail
+     * @return
+     */
+    private String buildKey(String mail) {
+        return mailTypes.contains(MailModelTypeEnum.RANDOM.code()) ? mail + "_1" : mail + "_2";
+    }
+
+    /**
+     * 获取邮箱缓存结果
+     *
+     * @param context
+     * @param mail
+     * @return
+     */
+    private Object getMailResult(AbstractFraudContext context, String mail) {
+        if (StringUtils.isEmpty(seqId)) {
+            seqId = context.getSeqId();
+            return null;
+        } else if (seqId.equalsIgnoreCase(context.getSeqId())){
+            return cache.get(buildKey(mail));
+        } else {
+            seqId = context.getSeqId();
+            cache.clear();
+            return null;
+        }
     }
 
 }

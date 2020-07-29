@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.CompareInfoDAO" >
+	<resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo" >
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="seq_id" property="seqId" jdbcType="VARCHAR" />
+		<result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
+		<result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+		<result column="tc_request" property="tcRequest" jdbcType="LONGVARCHAR" />
+		<result column="tc_reponse" property="tcReponse" jdbcType="LONGVARCHAR" />
+		<result column="kp_request" property="kpRequest" jdbcType="LONGVARCHAR" />
+		<result column="kp_reponse" property="kpReponse" jdbcType="LONGVARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+		id, seq_id, partner_code, gmt_create, gmt_modify
+	</sql>
+	<sql id="Blob_Column_List" >
+		tc_request, tc_reponse, kp_request, kp_reponse
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from compare_info
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+		delete from compare_info
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo" >
+		insert into compare_info (id, seq_id, partner_code,
+								  gmt_create, gmt_modify, tc_request,
+								  tc_reponse, kp_request, kp_reponse
+		)
+		values (#{id,jdbcType=BIGINT}, #{seqId,jdbcType=VARCHAR}, #{partnerCode,jdbcType=VARCHAR},
+				#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP}, #{tcRequest,jdbcType=LONGVARCHAR},
+				#{tcReponse,jdbcType=LONGVARCHAR}, #{kpRequest,jdbcType=LONGVARCHAR}, #{kpReponse,jdbcType=LONGVARCHAR}
+			   )
+	</insert>
+	<insert id="insertSelective" parameterType="cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo" >
+		insert into compare_info
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				id,
+			</if>
+			<if test="seqId != null" >
+				seq_id,
+			</if>
+			<if test="partnerCode != null" >
+				partner_code,
+			</if>
+			<if test="gmtCreate != null" >
+				gmt_create,
+			</if>
+			<if test="gmtModify != null" >
+				gmt_modify,
+			</if>
+			<if test="tcRequest != null" >
+				tc_request,
+			</if>
+			<if test="tcReponse != null" >
+				tc_reponse,
+			</if>
+			<if test="kpRequest != null" >
+				kp_request,
+			</if>
+			<if test="kpReponse != null" >
+				kp_reponse,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="seqId != null" >
+				#{seqId,jdbcType=VARCHAR},
+			</if>
+			<if test="partnerCode != null" >
+				#{partnerCode,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null" >
+				#{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModify != null" >
+				#{gmtModify,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tcRequest != null" >
+				#{tcRequest,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="tcReponse != null" >
+				#{tcReponse,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="kpRequest != null" >
+				#{kpRequest,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="kpReponse != null" >
+				#{kpReponse,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo" >
+		update compare_info
+		<set >
+			<if test="seqId != null" >
+				seq_id = #{seqId,jdbcType=VARCHAR},
+			</if>
+			<if test="partnerCode != null" >
+				partner_code = #{partnerCode,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null" >
+				gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModify != null" >
+				gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tcRequest != null" >
+				tc_request = #{tcRequest,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="tcReponse != null" >
+				tc_reponse = #{tcReponse,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="kpRequest != null" >
+				kp_request = #{kpRequest,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="kpReponse != null" >
+				kp_reponse = #{kpReponse,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo" >
+		update compare_info
+		set seq_id = #{seqId,jdbcType=VARCHAR},
+			partner_code = #{partnerCode,jdbcType=VARCHAR},
+			gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+			gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+			tc_request = #{tcRequest,jdbcType=LONGVARCHAR},
+			tc_reponse = #{tcReponse,jdbcType=LONGVARCHAR},
+			kp_request = #{kpRequest,jdbcType=LONGVARCHAR},
+			kp_reponse = #{kpReponse,jdbcType=LONGVARCHAR}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo" >
+		update compare_info
+		set seq_id = #{seqId,jdbcType=VARCHAR},
+			partner_code = #{partnerCode,jdbcType=VARCHAR},
+			gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+			gmt_modify = #{gmtModify,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

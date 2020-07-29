@@ -5,6 +5,8 @@ import cn.tongdun.kunpeng.api.application.ext.ICreateRiskRequestExtPt;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.application.step.ext.ICreateRiskResponseExtPt;
+import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
+import cn.tongdun.kunpeng.api.engine.model.compare.ICompareInfoRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.client.api.IRiskService;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
@@ -12,6 +14,7 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -42,8 +46,8 @@ public class RiskService implements IRiskService {
     private PipelineExecutor pipelineExecutor;
     @Autowired
     private DecisionResultTypeCache decisionResultTypeCache;
-
-
+    @Autowired
+    ICompareInfoRepository iCompareInfoRepository;
     @Autowired
     private ExtensionExecutor extensionExecutor;
 
@@ -115,6 +119,7 @@ public class RiskService implements IRiskService {
         timeContext.stop();
         timePartner.stop();
         printCode(riskRequest,riskResponse);
+        iCompareInfoRepository.insertFluid(buildCompareInfo(riskRequest, riskResponse));
         return riskResponse;
 
     }
@@ -152,4 +157,16 @@ public class RiskService implements IRiskService {
         bizScenario.setPartner(request.get("partnerCode") != null ? request.get("partnerCode") : request.get("partner_code"));
         return bizScenario;
     }
+
+    private CompareInfo buildCompareInfo(RiskRequest request, IRiskResponse riskResponse) {
+        CompareInfo compareInfo = new CompareInfo();
+        compareInfo.setGmtCreate(new Date());
+        compareInfo.setGmtModify(new Date());
+        compareInfo.setSeqId(request.getSeqId());
+        compareInfo.setPartnerCode(request.getPartnerCode());
+        compareInfo.setKpReponse(JSON.toJSONString(riskResponse));
+        compareInfo.setKpRequest(JSON.toJSONString(request));
+        return compareInfo;
+    }
+
 }
