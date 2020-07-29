@@ -97,8 +97,14 @@ public class PlatformIndexStep implements IRiskStep {
                         "dubbo_qps","paas.api.GaeaApi"};
                 metrics.counter("kunpeng.api.dubbo.qps",tags);
                 ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+
+                String[] partnerTags = {
+                        "partner_code",request.getPartnerCode()};
+                ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt",partnerTags);
+
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
                 timeContext.stop();
+                timePartner.stop();
                 logger.info(TraceUtils.getFormatTrace()+"平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {
                 // 临时通过LocalcachePeriod配置项做下开关
