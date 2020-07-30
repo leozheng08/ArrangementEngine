@@ -16,7 +16,6 @@ public class CompareInfoRepository implements ICompareInfoRepository {
     @Autowired
     CompareInfoDAO compareInfoDAO;
 
-
     @Override
     public int insertFluid(CompareInfo compareInfo) {
         return compareInfoDAO.insert(compareInfo);

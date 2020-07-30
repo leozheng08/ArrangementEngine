@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.compare;
 
 import cn.tongdun.ddd.common.domain.CommonEntity;
-import java.util.Date;
 
 /**
  * @author: yuanhang
@@ -14,9 +13,13 @@ public class CompareInfo extends CommonEntity {
 
     private String partnerCode;
 
-    private Date gmtCreate;
+    private String appName;
 
-    private Date gmtModify;
+    private String orderCode;
+
+    private String policyName;
+
+    private String description;
 
     private String tcRequest;
 
@@ -72,5 +75,37 @@ public class CompareInfo extends CommonEntity {
 
     public void setPartnerCode(String partnerCode) {
         this.partnerCode = partnerCode == null ? null : partnerCode.trim();
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
+
+    public String getPolicyName() {
+        return policyName;
+    }
+
+    public void setPolicyName(String policyName) {
+        this.policyName = policyName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -22,4 +22,5 @@ public interface CompareInfoDAO {
     int updateByPrimaryKeyWithBLOBs(CompareInfo record);
 
     int updateByPrimaryKey(CompareInfo record);
+
 }

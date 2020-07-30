@@ -5,15 +5,17 @@ import cn.tongdun.kunpeng.api.application.ext.ICreateRiskRequestExtPt;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.application.step.ext.ICreateRiskResponseExtPt;
-import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
-import cn.tongdun.kunpeng.api.engine.model.compare.ICompareInfoRepository;
-import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.client.api.IRiskService;
-import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
+import cn.tongdun.kunpeng.api.engine.model.compare.ICompareInfoRepository;
+import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
+import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
+import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
+import cn.tongdun.kunpeng.client.api.IRiskService;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
@@ -48,6 +50,8 @@ public class RiskService implements IRiskService {
     private DecisionResultTypeCache decisionResultTypeCache;
     @Autowired
     ICompareInfoRepository iCompareInfoRepository;
+    @Autowired
+    private PolicyDefinitionCache policyDefinitionCache;
     @Autowired
     private ExtensionExecutor extensionExecutor;
 
@@ -119,7 +123,7 @@ public class RiskService implements IRiskService {
         timeContext.stop();
         timePartner.stop();
         printCode(riskRequest,riskResponse);
-        if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode())) {
+        if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode()) && riskResponse.isSuccess()) {
             iCompareInfoRepository.insertFluid(buildCompareInfo(riskRequest, riskResponse));
         }
         return riskResponse;
@@ -166,6 +170,9 @@ public class RiskService implements IRiskService {
         compareInfo.setGmtModify(new Date());
         compareInfo.setSeqId(request.getSeqId());
         compareInfo.setPartnerCode(request.getPartnerCode());
+        compareInfo.setAppName(request.getAppName());
+        PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(request.getPartnerCode(), request.getAppName(), request.getEventId());
+        compareInfo.setPolicyName(policyDefinition == null ? "" : policyDefinition.getName());
         compareInfo.setKpReponse(JSON.toJSONString(riskResponse));
         compareInfo.setKpRequest(JSON.toJSONString(request));
         return compareInfo;
