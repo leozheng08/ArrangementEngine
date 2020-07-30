@@ -173,6 +173,7 @@ public class RiskService implements IRiskService {
         compareInfo.setAppName(request.getAppName());
         PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(request.getPartnerCode(), request.getAppName(), request.getEventId());
         compareInfo.setPolicyName(policyDefinition == null ? "" : policyDefinition.getName());
+        compareInfo.setOrderCode(String.valueOf(request.getFieldValues().get("ORDERNO")));
         compareInfo.setKpReponse(JSON.toJSONString(riskResponse));
         compareInfo.setKpRequest(JSON.toJSONString(request));
         return compareInfo;
