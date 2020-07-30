@@ -119,7 +119,9 @@ public class RiskService implements IRiskService {
         timeContext.stop();
         timePartner.stop();
         printCode(riskRequest,riskResponse);
-        iCompareInfoRepository.insertFluid(buildCompareInfo(riskRequest, riskResponse));
+        if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode())) {
+            iCompareInfoRepository.insertFluid(buildCompareInfo(riskRequest, riskResponse));
+        }
         return riskResponse;
 
     }
