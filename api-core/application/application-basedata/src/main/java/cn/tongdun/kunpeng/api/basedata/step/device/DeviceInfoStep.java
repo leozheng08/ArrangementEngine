@@ -220,7 +220,7 @@ public class DeviceInfoStep implements IRiskStep {
             } else {
                 FpReasonUtils.put(result, baseResult.getCode(), baseResult.getMsg());
             }
-            logger.info("deviceInfoQuery.query result :{}", JSON.toJSONString(baseResult));
+//            logger.info("deviceInfoQuery.query result :{}", JSON.toJSONString(baseResult));
             return result;
 
         } catch (Exception e) {
