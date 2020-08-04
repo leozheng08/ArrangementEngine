@@ -22,7 +22,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -74,6 +73,9 @@ public class UsModelService implements ModelServiceExtPt {
                 return false;
             }
             if (modelCalResponse.isSuccess()) {
+                // TODO 上线前移除
+                fraudContext.getFieldValues().put("model_request", JSON.toJSONString(modelRequest));
+                fraudContext.getFieldValues().put("model_response", JSON.toJSONString(modelCalResponse));
                 logger.info(TraceUtils.getFormatTrace() + "holmes result:" + JSON.toJSONString(modelCalResponse));
                 mapModelOutput2Context(fraudContext, configInfo.getOutputList(), modelCalResponse.getData());
             } else {

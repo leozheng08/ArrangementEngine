@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author: yuanhang
@@ -71,7 +72,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
         policyDetailResult.setPolicyName(policyResponse.getPolicyName());
         policyDetailResult.setSeqId(context.getSeqId());
         policyDetailResult.setFinalDealType(policyResponse.getDecision());
-        policyDetailResult.setFinalDealTypeName(policyResponse.getDecision());
+        policyDetailResult.setFinalDealTypeName(decisionResultTypeCache.get(policyResponse.getDecision()).getName());
         policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision() == null ? "" :policyResponse.getDecision()));
         policyDetailResult.setFlowChargeSuccessed(false);
         policyDetailResult.setEmergencySwithcOn(false);
@@ -86,13 +87,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
             policyDetailResult.setPolicySet(buildUSPolicySets(response, policyResponse, context));
         }
         // 填充riskType
-        List<String> riskTypes = Lists.newArrayList();
-        policyResponse.getSubPolicyResponses().stream().forEach(subPolicyResponse -> {
-            DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
-            if (decisionResultType != null && decisionResultType.isRisky()) {
-                riskTypes.add(subPolicyResponse.getRiskType());
-            }
-        });
+        List<String> riskTypes = policyResponse.getSubPolicyResponses().stream().map(SubPolicyResponse::getRiskType).collect(Collectors.toList());
         policyDetailResult.setRiskType(riskTypes);
         // 规则详情不要了
         policyDetailResult.setHitRules(null);
@@ -207,12 +202,10 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
             ISubPolicyResult subPolicyResult = response.getFactory().newSubPolicyResult();
             // 填充子策略RiskType字段
             if (StringUtils.isNotEmpty(subPolicyResponse.getRiskType())) {
-                DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
-                if (decisionResultType != null && decisionResultType.isRisky()) {
+//                DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
+//                if (decisionResultType != null && decisionResultType.isRisky()) {
                     subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
-                }
-                subPolicyResult.setSubPolicyUuid(subPolicyResponse.getSubPolicyUuid());
-                subPolicyResult.setSubPolicyName(subPolicyResponse.getSubPolicyName());
+//                }
                 subPolicyResult.setPolicyScore(subPolicyResponse.getScore());
                 subPolicyResult.setPolicyMode(subPolicyResponse.getPolicyMode());
                 subPolicyResult.setDealType(subPolicyResponse.getDecision());

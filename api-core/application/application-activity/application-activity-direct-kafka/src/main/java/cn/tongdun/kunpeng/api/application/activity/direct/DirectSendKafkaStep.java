@@ -13,21 +13,25 @@ import org.springframework.stereotype.Component;
 
 /**
  * 在决策接口的处理过程中直接发送activity消息到kafka
+ *
  * @Author: liang.chen
  * @Date: 2020/2/20 下午5:54
  */
 @Component
-@Step(pipeline = Risk.NAME,phase = Risk.OUTPUT,order = 3000)
+@Step(pipeline = Risk.NAME, phase = Risk.OUTPUT, order = 3000)
 public class DirectSendKafkaStep implements IRiskStep {
 
     @Autowired
     private ExtensionExecutor extensionExecutor;
 
     @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         extensionExecutor.execute(ISendKafkaExtPt.class, context.getBizScenario(),
                 extension -> extension.invoke(context, response, request));
+        // TODO 上线前移除
+        request.getFieldValues().put("model_request", context.getFieldValues().get("model_request"));
+        request.getFieldValues().put("model_response", context.getFieldValues().get("model_response"));
         return true;
     }
 

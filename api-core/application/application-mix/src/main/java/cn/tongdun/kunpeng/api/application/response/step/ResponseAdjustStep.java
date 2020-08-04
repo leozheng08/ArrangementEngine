@@ -11,7 +11,6 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
@@ -44,12 +43,10 @@ public class ResponseAdjustStep implements IRiskStep {
         String partnerCode = context.getPartnerCode();
         Map<String, AccessBusiness> uuidAccessMap = accessBusinessCache.getAccessBusinessMap();
         if (null == appName) {
-            logger.info(TraceUtils.getFormatTrace() + "null appName, skip response adjust");
             return true;
         }
         AccessBusiness access = uuidAccessMap.get(partnerCode + ":" + appName);
         if (null == access) {
-            logger.info(TraceUtils.getFormatTrace() + " access :{} not exits, use default response", appName);
             return true;
         }
         List<AccessParam> accessParams = access.getAccessParams().stream().filter(r -> r.getInputOutput().equals("output")).collect(Collectors.toList());
@@ -105,7 +102,7 @@ public class ResponseAdjustStep implements IRiskStep {
             customPolicyResult = Maps.newHashMap();
         }
         String param = accessParam.getAccessParam();
-        // 现在context的fieldValues中找，找不到再去request中找
+        // 先在context的fieldValues中找，找不到再去request中找
         customPolicyResult.put(param, context.getFieldValues().get(accessParam.getFieldName()));
         if (null == customPolicyResult.get(accessParam.getAccessParam())) {
             customPolicyResult.put(param,request.get(accessParam.getFieldName()));
