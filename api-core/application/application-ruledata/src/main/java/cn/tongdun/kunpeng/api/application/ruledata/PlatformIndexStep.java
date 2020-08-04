@@ -43,8 +43,6 @@ public class PlatformIndexStep implements IRiskStep {
     @Autowired
     private FieldDefinitionCache fieldDefinitionCache;
 
-    private static final String APP_NAME = "default";
-
     @Autowired
     private IMetrics metrics;
 
@@ -85,7 +83,7 @@ public class PlatformIndexStep implements IRiskStep {
             indicatrixValQuery.setPartnerCode(context.getPartnerCode());
             indicatrixValQuery.setEventType(context.getEventType());
             indicatrixValQuery.setEventId(context.getEventId());
-            indicatrixValQuery.setAppName(APP_NAME);
+            indicatrixValQuery.setAppName(context.getAppName());
             indicatrixValQuery.setActivity(activityParam);
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
             indicatrixValQuery.setNeedDetail(true);
