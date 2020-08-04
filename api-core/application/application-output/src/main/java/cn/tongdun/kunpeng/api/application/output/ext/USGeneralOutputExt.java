@@ -219,7 +219,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
     }
 
     /**
-     * TODO 后续整理成枚举
+     *
      * 每种决策结果都会定义不同的决策等级,当前适配环球易购
      */
     private String buildDealTypeGrade(String decision) {
@@ -227,9 +227,9 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
             case "Accept":
                 return "1";
             case "Review":
-                return "20";
+                return "50";
             case "Reject":
-                return "99";
+                return "100";
             default:
                 return "-1";
         }
