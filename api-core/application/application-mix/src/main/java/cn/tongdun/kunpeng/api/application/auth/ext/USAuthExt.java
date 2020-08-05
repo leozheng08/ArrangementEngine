@@ -38,7 +38,7 @@ public class USAuthExt implements IAuthExtPt {
             return false;
         }
         String partnerKey = partner.getPartnerKey();
-        if (StringUtils.isNotEmpty(partnerKey) && partner.getPartnerKey().equalsIgnoreCase(partnerKey)) {
+        if (StringUtils.isNotEmpty(partnerKey)) {
             context.setAppName(request.getAppName());
             context.setPartnerCode(partnerCode);
             context.setSecretKey(secretKey);

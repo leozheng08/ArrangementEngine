@@ -24,6 +24,7 @@ import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,6 +162,9 @@ public class RiskService implements IRiskService {
         BizScenario bizScenario = new BizScenario();
         bizScenario.setTenant(localEnvironment.getTenant());
         bizScenario.setPartner(request.get("partnerCode") != null ? request.get("partnerCode") : request.get("partner_code"));
+        if (StringUtils.isEmpty(bizScenario.getPartner())) {
+            bizScenario.setPartner(request.get("PARTNERCODE"));
+        }
         return bizScenario;
     }
 
