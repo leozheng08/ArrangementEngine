@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.application.step.ext.ISendKafkaExtPt;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
+import cn.tongdun.kunpeng.client.data.IHitRule;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
@@ -48,19 +49,18 @@ public class USSendKafkaExt implements ISendKafkaExtPt {
                 for (int var0 = 0; var0 < policyResult.getPolicySet().size(); var0++) {
                     cn.tongdun.kunpeng.client.data.impl.us.SubPolicyResult subPolicyResult = (cn.tongdun.kunpeng.client.data.impl.us.SubPolicyResult) policyResult.getPolicySet().get(var0);
                     SubPolicyResult subRes = new SubPolicyResult();
-                    subRes.setHitRules(subPolicyResult.getHitRules().stream().map(r -> {
+                    List<IHitRule> hitRules = subPolicyResult.getHitRules().stream().map(r -> {
                         HitRule hitRule = new HitRule();
                         hitRule.setScore(r.getScore());
                         hitRule.setName(r.getName());
                         hitRule.setUuid(r.getUuid());
                         return hitRule;
-                    }).collect(Collectors.toList()));
+                    }).collect(Collectors.toList());
+                    subRes.setHitRules(CollectionUtils.isEmpty(hitRules) ? null : hitRules);
                     subRes.setPolicyScore(subPolicyResult.getPolicyScore());
                     subRes.setRiskType(subPolicyResult.getRiskType());
                     subRes.setPolicyDecision(subPolicyResult.getDealType());
-                    subRes.setSubPolicyUuid(subPolicyResult.getPolicyUuid());
                     subRes.setPolicyMode(subPolicyResult.getPolicyMode());
-                    subRes.setSubPolicyName(subPolicyResult.getPolicyName());
                     subPolicies.add(subRes);
                 }
             }
