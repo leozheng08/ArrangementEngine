@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallenger;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallengerCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
@@ -85,10 +86,19 @@ public class ChallengerStep implements IRiskStep {
             return false;
         }
 
-
-        if (StringUtils.isNotBlank(policyUuid) && !StringUtils.equals(originPolicyUuid, policyUuid)) {
-            logger.info(TraceUtils.getFormatTrace()+"[Challenger] policyUuid changed to challenger version! origin: {}, now: {}", originPolicyUuid, policyUuid);
-            context.setPolicyUuid(policyUuid);
+        //存在挑战者任务
+        if (StringUtils.isNotBlank(policyUuid)) {
+            PolicyChallenger.Config config = policyChallengerCache.getConfig(policyUuid);
+            context.setChallengerTag(config.getChallengerTag());
+            if(StringUtils.equals(originPolicyUuid, policyUuid)){
+                //冠军
+                context.setChallenger(false);
+            }else {
+                //挑战者
+                logger.info(TraceUtils.getFormatTrace()+"[Challenger] policyUuid changed to challenger version! origin: {}, now: {}", originPolicyUuid, policyUuid);
+                context.setPolicyUuid(policyUuid);
+                context.setChallenger(true);
+            }
         }
         return true;
     }
