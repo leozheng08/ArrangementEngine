@@ -1,7 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.model.policy;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class PolicyCache extends AbstractLocalCache<String,Policy> {
+
+    private static Logger logger = LoggerFactory.getLogger(PolicyCache.class);
 
     public static final String SPLIT_CHAR = "^^";
 
@@ -37,6 +42,9 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
 
     @Override
     public void put(String uuid, Policy policy){
+        if(StringUtils.equals("d017f6831352436a8c6e75bf68d6c429",uuid)){
+            logger.error("findAnd404 case put!");
+        }
         policyMap.put(uuid,policy);
         policyUuidMap.put(buildKey(policy),uuid);
     }
