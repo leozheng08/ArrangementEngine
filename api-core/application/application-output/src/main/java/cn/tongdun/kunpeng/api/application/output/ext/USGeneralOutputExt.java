@@ -72,13 +72,13 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
         policyDetailResult.setPolicyName(policyResponse.getPolicyName());
         policyDetailResult.setSeqId(context.getSeqId());
         policyDetailResult.setFinalDealType(policyResponse.getDecision());
-        policyDetailResult.setFinalDealTypeName(decisionResultTypeCache.get(policyResponse.getDecision()).getName());
-        policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision() == null ? "" :policyResponse.getDecision()));
+        DecisionResultType decisionResultType = decisionResultTypeCache.get(policyResponse.getDecision());
+        String name = decisionResultType == null ? "" : decisionResultType.getName();
+        policyDetailResult.setFinalDealTypeName(name);
+        policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision() == null ? "" : policyResponse.getDecision()));
         policyDetailResult.setFlowChargeSuccessed(false);
         policyDetailResult.setEmergencySwithcOn(false);
         Map nusspecial = Maps.newHashMap();
-        nusspecial.put("emailExceptionType", context.getFieldValues().get("emailExceptionType"));
-        nusspecial.put("mobileRiskScore", context.getFieldValues().get("mobileRiskScore"));
         policyDetailResult.setNusspecialMap(nusspecial);
         // 暂时填充策略名称名称
         policyDetailResult.setPolicySetName(context.getPolicyResponse().getPolicyName());
