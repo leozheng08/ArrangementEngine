@@ -28,6 +28,9 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
     //policyDefinitionUuid -> PolicyChallenger
     private Map<String,PolicyChallenger> policyChallengerMap = new ConcurrentHashMap<>(20);
 
+    //policyUuid -> PolicyChallenger.Config
+    private Map<String,PolicyChallenger.Config> policyChallengerConfigMap = new ConcurrentHashMap<>(20);
+
     //policyDefinitionUuid -> WeightRoundRobin 权重轮询
     private Map<String,WeightRoundRobin>  weightRoundRobinMap = new ConcurrentHashMap<>(20);
 
@@ -44,6 +47,10 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
     @Override
     public void put(String policyDefinitionUuid, PolicyChallenger policyChallenger){
         policyChallengerMap.put(policyDefinitionUuid,policyChallenger);
+
+        for(PolicyChallenger.Config config: policyChallenger.getChallengerConfig()){
+            policyChallengerConfigMap.put(config.getVersionUuid(), config);
+        }
 
         List<Integer> weights = new ArrayList<>();
         if (!checkConfig(policyChallenger.getChallengerConfig(), weights)) {
@@ -69,6 +76,11 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
             return null;
         }
         return policyChallenger.getChallengerConfig();
+    }
+
+    public PolicyChallenger.Config getConfig(String policyUuid){
+        PolicyChallenger.Config config = policyChallengerConfigMap.get(policyUuid);
+        return config;
     }
 
     /**
