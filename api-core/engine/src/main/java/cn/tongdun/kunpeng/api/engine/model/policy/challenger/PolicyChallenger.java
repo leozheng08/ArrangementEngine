@@ -36,6 +36,7 @@ public class PolicyChallenger extends StatusEntity {
 
     /**
      * 流量配置 [{"ratio":40.0,"versionUuid":"b225f25f34044a9a9a6929ce12703068"},{"ratio":60.0,"versionUuid":"efa8c9ea504f413caf0634dbab760583"}]
+     * 流量配置 [{"challengerTag":"CHAMP","ratio":40.0,"versionUuid":"b225f25f34044a9a9a6929ce12703068"},{"challengerTag":"CLG","ratio":60.0,"versionUuid":"efa8c9ea504f413caf0634dbab760583"}]
      */
     private String config;
 
@@ -58,6 +59,7 @@ public class PolicyChallenger extends StatusEntity {
         List<Config> configs = new ArrayList<>(size);
         for (HashMap map :jsonArray) {
             Config temp = new Config();
+            temp.setChallengerTag(JsonUtil.getString(map,"challengerTag"));
             temp.setVersionUuid(JsonUtil.getString(map,"versionUuid"));
             temp.setRatio(JsonUtil.getInteger(map,"ratio"));
             configs.add(temp);
@@ -68,6 +70,7 @@ public class PolicyChallenger extends StatusEntity {
 
     @Data
     public class Config {
+        String challengerTag;
         String versionUuid;
         Integer ratio;
     }
