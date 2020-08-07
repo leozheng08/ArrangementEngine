@@ -4,9 +4,9 @@ import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
-import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -14,7 +14,6 @@ import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -80,11 +79,6 @@ public class PolicyLoadByPartnerService {
     public boolean loadByPartner(Set<String> partners){
         //取得默认策略列表
         List<PolicyModifiedDTO> policyList = policyRepository.queryDefaultPolicyByPartners(partners);
-        for (PolicyModifiedDTO policyModifiedDTO:policyList){
-            if (StringUtils.equals("d017f6831352436a8c6e75bf68d6c429",policyModifiedDTO.getUuid())){
-                logger.error("findAnd404 case List<PolicyModifiedDTO> policyList!");
-            }
-        }
 
         //取得挑战者策略列表
         List<PolicyModifiedDTO> challengerPolicyList = policyRepository.queryChallengerPolicyByPartners(partners);
@@ -100,9 +94,6 @@ public class PolicyLoadByPartnerService {
                 Policy policy = convertor(policyModifiedDO);
                 policyCache.put(policy.getUuid(),policy);
                 continue;
-            }
-            if (StringUtils.equals("d017f6831352436a8c6e75bf68d6c429",policyModifiedDO.getUuid())){
-                logger.error("findAnd404 case PolicyLoadTask before!");
             }
 
             PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);

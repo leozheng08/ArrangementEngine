@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.policy;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
-import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +41,6 @@ public class PolicyCache extends AbstractLocalCache<String,Policy> {
 
     @Override
     public void put(String uuid, Policy policy){
-        if(StringUtils.equals("d017f6831352436a8c6e75bf68d6c429",uuid)){
-            logger.error("findAnd404 case put!");
-        }
         policyMap.put(uuid,policy);
         policyUuidMap.put(buildKey(policy),uuid);
     }

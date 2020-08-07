@@ -53,6 +53,7 @@ public class Constant {
         public static final String IOS_USE_VPN = "ios/useVpn";
         public static final String IOS_USE_HTTP_PROXY = "ios/useHttpProxy";
         public static final String IOS_NOT_OFFICIAL_APP = "ios/notOfficialApp";
+        public static final String IOS_DEVICE_ANOMALY = "ios/deviceAnomaly";
         public static final String IOS_DEVICE_STATUS_ABNORMAL = "ios/deviceStatusAbnormal";
 
 
@@ -62,6 +63,7 @@ public class Constant {
         public static final String ANDROID_HTTP = "android/http";
         public static final String ANDROID_NOT_OFFICIAL_APP = "android/notOfficialApp";
         public static final String ANDROID_ROOT = "android/root";
+        public static final String ANDROID_DEVICE_ANOMALY = "android/deviceAnomaly";
         public static final String ANDROID_DEVICE_STATUS_ABNORMAL = "android/deviceStatusAbnormal";
 
 
