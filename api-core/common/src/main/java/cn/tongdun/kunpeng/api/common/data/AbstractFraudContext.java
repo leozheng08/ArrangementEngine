@@ -157,6 +157,16 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private String eventType;
 
     /**
+     * 是否挑战者
+     */
+    private boolean isChallenger = false;
+
+    /**
+     * 冠军挑战者标签
+     */
+    private String challengerTag;
+
+    /**
      * 业务场景，用于按tenant、business、partnerCode三个维度实现扩展点
      */
     private IBizScenario bizScenario;
