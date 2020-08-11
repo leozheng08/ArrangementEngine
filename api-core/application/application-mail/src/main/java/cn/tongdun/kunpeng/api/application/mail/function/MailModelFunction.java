@@ -172,7 +172,8 @@ public class MailModelFunction extends AbstractFunction {
                     detail.setMail(mail);
                     return detail;
                 };
-                context.getFieldValues().put("emailExceptionType", MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
+                // TODO 确认邮箱额外字段的返回逻辑
+                context.getFieldValues().put("ISTEMPORARYEMAIL", finalRandResult ? "random" : MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                 return new FunctionResult(null != mapping.get(Integer.valueOf(String.valueOf(mailModelResult.getResult()))) || randResult, callable);
             }
         } catch (Exception e) {

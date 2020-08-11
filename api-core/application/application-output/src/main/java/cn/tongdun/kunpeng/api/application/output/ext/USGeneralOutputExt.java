@@ -173,6 +173,9 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
                 hitRuleList.add(buildUSHitRule(factory, ruleResponse));
             }
         });
+        if (CollectionUtils.isEmpty(hitRuleList)) {
+            return null;
+        }
         return hitRuleList;
     }
 
@@ -209,8 +212,6 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
                 subPolicyResult.setPolicyScore(subPolicyResponse.getScore());
                 subPolicyResult.setPolicyMode(subPolicyResponse.getPolicyMode());
                 subPolicyResult.setDealType(subPolicyResponse.getDecision());
-                subPolicyResult.setSubPolicyUuid(subPolicyResponse.getSubPolicyUuid());
-                subPolicyResult.setSubPolicyName(subPolicyResponse.getSubPolicyName());
                 if (null == context.getFieldValues().get("hitRules")) {
                     subPolicyResult.setHitRules(buildUSHitRules(response.getFactory(), subPolicyResponse));
                 }
