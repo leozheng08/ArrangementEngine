@@ -66,9 +66,10 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
             }
             if(cardBinTO != null){
                 setContext(context, cardBinTO);
+                request.getFieldValues().put("carBin_response", cardBinTO);
                 logger.info("查询到seqId={}, cardBin={}", context.getSeqId(), cardBinTO);
             }else {
-                logger.warn("查询不到cardbin信息");
+                logger.warn("查询不到cardbin信息 seqId :{}", context.getSeqId());
             }
         }
         return true;
