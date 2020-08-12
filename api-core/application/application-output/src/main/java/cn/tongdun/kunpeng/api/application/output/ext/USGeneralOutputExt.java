@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
+import cn.tongdun.kunpeng.client.data.impl.us.SubPolicyResult;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
@@ -202,7 +203,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
     private List<ISubPolicyResult> buildUSPolicySets(IRiskResponse response, PolicyResponse policyResponse, AbstractFraudContext context) {
         List<ISubPolicyResult> subPolicyResults = new ArrayList<>(policyResponse.getSubPolicyResponses().size());
         for (SubPolicyResponse subPolicyResponse : policyResponse.getSubPolicyResponses()) {
-            ISubPolicyResult subPolicyResult = response.getFactory().newSubPolicyResult();
+            SubPolicyResult subPolicyResult = (SubPolicyResult) response.getFactory().newSubPolicyResult();
             // 填充子策略RiskType字段
             if (StringUtils.isNotEmpty(subPolicyResponse.getRiskType())) {
 //                DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
@@ -212,6 +213,8 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
                 subPolicyResult.setPolicyScore(subPolicyResponse.getScore());
                 subPolicyResult.setPolicyMode(subPolicyResponse.getPolicyMode());
                 subPolicyResult.setDealType(subPolicyResponse.getDecision());
+                subPolicyResult.setPolicyName(subPolicyResponse.getPolicyName());
+                subPolicyResult.setPolicyUuid(subPolicyResponse.getPolicyUuid());
                 if (null == context.getFieldValues().get("hitRules")) {
                     subPolicyResult.setHitRules(buildUSHitRules(response.getFactory(), subPolicyResponse));
                 }
