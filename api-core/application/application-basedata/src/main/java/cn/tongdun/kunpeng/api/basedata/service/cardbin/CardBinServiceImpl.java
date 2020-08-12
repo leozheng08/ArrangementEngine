@@ -103,10 +103,11 @@ public class CardBinServiceImpl implements CardBinService {
     @Override
     public Map<String, Object> getRawCardBinInfo(String id) {
         Map<String, Object> resultMap = new HashMap<>(8);
+        resultMap.put("id", id);
         // 入参校验: 校验卡号或者卡bin
         if (!checkCardBinAll(id)) {
             logger.error("输入参数校验失败：id=[{}]", id);
-            resultMap.put("error_msg", String.format("输入参数校验失败：id=[%s]", id));
+            resultMap.put("error_msg", String.format("输入参数校验失败：id=%s", id));
             return resultMap;
         }
 
@@ -115,6 +116,7 @@ public class CardBinServiceImpl implements CardBinService {
 
         // 获取路由信息
         String asSet = usCardbinSetConfigCache.getAsCardbinSet();
+        resultMap.put("asSet", asSet);
 
         // 从as查询卡bin信息
         String cardBin;
@@ -131,11 +133,12 @@ public class CardBinServiceImpl implements CardBinService {
             cardBin = id;
             line = aerospikeService.get(asSet, cardBin);
             resultMap.put("data", line);
+            resultMap.put("cardBin", cardBin);
         }
 
         if (StringUtils.isEmpty(line)) {
             logger.error("获取不到卡bin信息：id=[{}]", id);
-            resultMap.put("error_msg2", String.format("获取不到卡bin信息：id=[%s]", id));
+            resultMap.put("error_msg2", String.format("获取不到卡bin信息：id=%s", id));
             return resultMap;
         }
 
