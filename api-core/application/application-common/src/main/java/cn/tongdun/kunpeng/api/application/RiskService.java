@@ -123,6 +123,7 @@ public class RiskService implements IRiskService {
         printCode(riskRequest,riskResponse);
         if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode()) && riskResponse.isSuccess()) {
             riskResponse.getCustomPolicyResult().put("kp_request", JSON.toJSONString(riskRequest));
+            riskResponse.getCustomPolicyResult().put("ctx_fieldValues", JSON.toJSONString(context.getFieldValues()));
         }
         return riskResponse;
 
