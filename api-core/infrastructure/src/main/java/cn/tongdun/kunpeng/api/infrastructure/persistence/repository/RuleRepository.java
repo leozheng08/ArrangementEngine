@@ -166,7 +166,8 @@ public class RuleRepository implements IRuleRepository {
     @Override
     public RuleDTO queryFullByUuid(String ruleUuid) {
 
-        RuleDO ruleDO = ruleruleDAO.selectEnabledByUuid(ruleUuid);
+        // TODO 此处有加载已删除规则问题，后续调整
+        RuleDO ruleDO = ruleruleDAO.selectByUuid(ruleUuid);
         if(ruleDO == null){
             return null;
         }
