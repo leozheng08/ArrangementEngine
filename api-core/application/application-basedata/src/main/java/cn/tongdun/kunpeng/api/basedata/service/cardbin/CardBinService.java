@@ -1,6 +1,8 @@
 package cn.tongdun.kunpeng.api.basedata.service.cardbin;
 
 
+import java.util.Map;
+
 /**
  * 全球卡BIN服务
  * 返回参数格式不同，使用新的接口
@@ -15,4 +17,6 @@ public interface CardBinService {
      * @return      卡bin信息
      */
     CardBinTO getCardBinInfoById(String id);
+
+    Map<String, Object> getRawCardBinInfo(String id);
 }

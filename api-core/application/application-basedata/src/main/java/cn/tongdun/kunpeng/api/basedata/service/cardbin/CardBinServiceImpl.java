@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -96,6 +98,52 @@ public class CardBinServiceImpl implements CardBinService {
         // 拼装结果
         CardBinAll cardBinAll = packageCardBinAll(line);
         return trans2to(cardBinAll);
+    }
+
+    @Override
+    public Map<String, Object> getRawCardBinInfo(String id) {
+        Map<String, Object> resultMap = new HashMap<>(8);
+        // 入参校验: 校验卡号或者卡bin
+        if (!checkCardBinAll(id)) {
+            logger.error("输入参数校验失败：id=[{}]", id);
+            resultMap.put("error_msg", String.format("输入参数校验失败：id=[%s]", id));
+            return resultMap;
+        }
+
+        // 目前卡号全是16位，如果不足16位，则认为传入的是卡bin
+        boolean isCardNum = id.length() == CARD_PAN_LENGTH;
+
+        // 获取路由信息
+        String asSet = usCardbinSetConfigCache.getAsCardbinSet();
+
+        // 从as查询卡bin信息
+        String cardBin;
+        String line = "";
+        if (isCardNum) {
+            for (int len = CARD_BIN_MAX_LENGTH; len >= CARD_BIN_MIN_LENGTH; len--) {
+                cardBin = id.substring(0, len);
+                line = aerospikeService.get(asSet, cardBin);
+                if (StringUtils.isNotEmpty(line)){
+                    break;
+                }
+            }
+        } else {
+            cardBin = id;
+            line = aerospikeService.get(asSet, cardBin);
+            resultMap.put("data", line);
+        }
+
+        if (StringUtils.isEmpty(line)) {
+            logger.error("获取不到卡bin信息：id=[{}]", id);
+            resultMap.put("error_msg2", String.format("获取不到卡bin信息：id=[%s]", id));
+            return resultMap;
+        }
+
+        // 拼装结果
+        CardBinAll cardBinAll = packageCardBinAll(line);
+        resultMap.put("cardBinAll", cardBinAll);
+        resultMap.put("cardBinTO",trans2to(cardBinAll));
+        return resultMap;
     }
 
     /**
