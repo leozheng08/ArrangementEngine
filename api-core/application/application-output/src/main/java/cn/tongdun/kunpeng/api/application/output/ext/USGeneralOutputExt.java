@@ -206,15 +206,12 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
             SubPolicyResult subPolicyResult = (SubPolicyResult) response.getFactory().newSubPolicyResult();
             // 填充子策略RiskType字段
             if (StringUtils.isNotEmpty(subPolicyResponse.getRiskType())) {
-//                DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
-//                if (decisionResultType != null && decisionResultType.isRisky()) {
-                    subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
-//                }
+                subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
                 subPolicyResult.setPolicyScore(subPolicyResponse.getScore());
                 subPolicyResult.setPolicyMode(subPolicyResponse.getPolicyMode());
                 subPolicyResult.setDealType(subPolicyResponse.getDecision());
-                subPolicyResult.setPolicyName(subPolicyResponse.getPolicyName());
-                subPolicyResult.setPolicyUuid(subPolicyResponse.getPolicyUuid());
+                subPolicyResult.setPolicyName(subPolicyResponse.getSubPolicyName());
+                subPolicyResult.setPolicyUuid(subPolicyResponse.getSubPolicyUuid());
                 if (null == context.getFieldValues().get("hitRules")) {
                     subPolicyResult.setHitRules(buildUSHitRules(response.getFactory(), subPolicyResponse));
                 }

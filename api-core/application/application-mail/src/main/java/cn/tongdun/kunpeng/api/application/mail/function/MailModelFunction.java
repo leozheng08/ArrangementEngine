@@ -136,8 +136,10 @@ public class MailModelFunction extends AbstractFunction {
                 Map<Integer, String> mapping = MailModelTypeEnum.mappingCode(mailTypes);
                 boolean randResult = false;
                 // 随机率判定
+                Double random = mailModelResult.getRanResult();
+                // 该参数给其他规则使用
+                context.getFieldValues().put("emailRandomRate", random);
                 if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
-                    Double random = mailModelResult.getRanResult();
                     if (null != random) {
                         switch (operate) {
                             case ">=":
@@ -155,6 +157,8 @@ public class MailModelFunction extends AbstractFunction {
                         }
                     }
                 }
+                // 该参数用作其他输出
+                context.getFieldValues().put("ISTEMPORARYEMAIL", randResult ? "random" : String.valueOf(mailModelResult.getResult()));
                 boolean finalRandResult = randResult;
                 DetailCallable callable = () -> {
                     MailModelDetail detail = new MailModelDetail();
@@ -172,8 +176,6 @@ public class MailModelFunction extends AbstractFunction {
                     detail.setMail(mail);
                     return detail;
                 };
-                // TODO 确认邮箱额外字段的返回逻辑
-                context.getFieldValues().put("ISTEMPORARYEMAIL", finalRandResult ? "random" : MailModelTypeEnum.getDescEnByMappingCode(Integer.valueOf(String.valueOf(mailModelResult.getResult()))));
                 return new FunctionResult(null != mapping.get(Integer.valueOf(String.valueOf(mailModelResult.getResult()))) || randResult, callable);
             }
         } catch (Exception e) {
