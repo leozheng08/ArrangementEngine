@@ -176,6 +176,10 @@ public class DeviceInfoStep implements IRiskStep {
             GeoipEntity geoip = null;
             try {
                 geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp));
+                context.set("trueIpAddressCountry",geoip.getCounty());
+                context.set("trueIpAddressProvince",geoip.getProvince());
+                context.set("trueIpAddressCity",geoip.getCity());
+                context.set("trueIpAddressCountryCode",geoip.getCounty());
             } catch (Exception e) {
                 logger.warn(TraceUtils.getFormatTrace() + "GeoIp查询 IP查询错误", e);
             }
