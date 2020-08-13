@@ -84,12 +84,13 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
 
 
     private void putCustomListValueToRemoteCache(Map rawEventMsg){
+        logger.info("putCustomListValueToRemoteCache:{}",JSON.toJSONString(rawEventMsg));
         try {
             DomainEvent<CustomListValueEventDO> domainEvent = eventMsgParser.parse(rawEventMsg);
             List<CustomListValueEventDO> listValueDOList = domainEvent.getData();
 
             if (listValueDOList == null || listValueDOList.isEmpty()) {
-                logger.debug(TraceUtils.getFormatTrace()+"CustomListValue put remote cache error,list is empty:{}", rawEventMsg);
+                logger.info(TraceUtils.getFormatTrace()+"CustomListValue put remote cache error,list is empty:{}", rawEventMsg);
                 return;
             }
 
@@ -101,10 +102,10 @@ public class RawDomainEventHandle implements IRawDomainEventHandle{
             for (CustomListValue customListValue : listValueList) {
                 if (customListValue.isValid()) {
                     customListValueKVRepository.putCustomListValueData(customListValue);
-                    logger.debug(TraceUtils.getFormatTrace()+"CustomListValue put remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
+                    logger.info(TraceUtils.getFormatTrace()+"CustomListValue put remote cache success data:{}",JSON.toJSONString(customListValue));
                 } else {
                     customListValueKVRepository.removeCustomListValueData(customListValue);
-                    logger.debug(TraceUtils.getFormatTrace()+"CustomListValue remove remote cache success,list uuid:{} data:{}",customListValue.getCustomListUuid(), customListValue.getValue());
+                    logger.info(TraceUtils.getFormatTrace()+"CustomListValue remove remote cache success data:{}",JSON.toJSONString(customListValue));
                 }
             }
         } catch (Exception e){
