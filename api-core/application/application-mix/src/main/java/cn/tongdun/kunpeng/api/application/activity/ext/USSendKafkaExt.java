@@ -49,19 +49,21 @@ public class USSendKafkaExt implements ISendKafkaExtPt {
                 for (int var0 = 0; var0 < policyResult.getPolicySet().size(); var0++) {
                     cn.tongdun.kunpeng.client.data.impl.us.SubPolicyResult subPolicyResult = (cn.tongdun.kunpeng.client.data.impl.us.SubPolicyResult) policyResult.getPolicySet().get(var0);
                     SubPolicyResult subRes = new SubPolicyResult();
-                    List<IHitRule> hitRules = subPolicyResult.getHitRules().stream().map(r -> {
-                        HitRule hitRule = new HitRule();
-                        hitRule.setScore(r.getScore());
-                        hitRule.setName(r.getName());
-                        hitRule.setUuid(r.getUuid());
-                        return hitRule;
-                    }).collect(Collectors.toList());
-                    subRes.setHitRules(CollectionUtils.isEmpty(hitRules) ? null : hitRules);
-                    subRes.setPolicyScore(subPolicyResult.getPolicyScore());
-                    subRes.setRiskType(subPolicyResult.getRiskType());
-                    subRes.setPolicyDecision(subPolicyResult.getDealType());
-                    subRes.setPolicyMode(subPolicyResult.getPolicyMode());
-                    subPolicies.add(subRes);
+                    if (null != subPolicyResult && CollectionUtils.isNotEmpty(subPolicyResult.getHitRules())) {
+                        List<IHitRule> hitRules = subPolicyResult.getHitRules().stream().map(r -> {
+                            HitRule hitRule = new HitRule();
+                            hitRule.setScore(r.getScore());
+                            hitRule.setName(r.getName());
+                            hitRule.setUuid(r.getUuid());
+                            return hitRule;
+                        }).collect(Collectors.toList());
+                        subRes.setHitRules(CollectionUtils.isEmpty(hitRules) ? null : hitRules);
+                        subRes.setPolicyScore(subPolicyResult.getPolicyScore());
+                        subRes.setRiskType(subPolicyResult.getRiskType());
+                        subRes.setPolicyDecision(subPolicyResult.getDealType());
+                        subRes.setPolicyMode(subPolicyResult.getPolicyMode());
+                        subPolicies.add(subRes);
+                    }
                 }
             }
             res.setSubPolicys(subPolicies);
