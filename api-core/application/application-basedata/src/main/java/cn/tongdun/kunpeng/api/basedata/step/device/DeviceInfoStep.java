@@ -180,6 +180,7 @@ public class DeviceInfoStep implements IRiskStep {
                 context.set("trueIpAddressCountry",geoip.getCounty());
                 context.set("trueIpAddressProvince",geoip.getProvince());
                 context.set("trueIpAddressCity",geoip.getCity());
+                context.set("trueIpAddressCountryCode",geoip.getCounty());
             } catch (Exception e) {
                 logger.warn(TraceUtils.getFormatTrace() + "GeoIp查询 IP查询错误", e);
             }

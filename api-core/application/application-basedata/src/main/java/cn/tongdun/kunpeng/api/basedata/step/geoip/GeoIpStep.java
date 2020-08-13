@@ -60,6 +60,7 @@ public class GeoIpStep implements IRiskStep {
             context.set("ipAddressCountry",geoip.getCounty());
             context.set("ipProvince",geoip.getProvince());
             context.set("ipAddressCity",geoip.getCity());
+            context.set("ipAddressCountryCode",geoip.getCounty());
         }
 
         return true;
