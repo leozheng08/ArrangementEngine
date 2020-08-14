@@ -2,6 +2,8 @@ package cn.tongdun.kunpeng.api.engine.model.policy;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class PolicyCache extends AbstractLocalCache<String,Policy> {
+
+    private static Logger logger = LoggerFactory.getLogger(PolicyCache.class);
 
     public static final String SPLIT_CHAR = "^^";
 

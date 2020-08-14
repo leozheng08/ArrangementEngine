@@ -23,7 +23,6 @@ import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import com.eclipsesource.json.Json;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -180,7 +179,8 @@ public class DeviceInfoStep implements IRiskStep {
                 context.set("trueIpAddressCountry",geoip.getCounty());
                 context.set("trueIpAddressProvince",geoip.getProvince());
                 context.set("trueIpAddressCity",geoip.getCity());
-                context.set("trueIpAddressCountryCode",geoip.getCounty());
+                context.set("trueIpAddressCountryCode",geoip.getCountryId());
+                logger.info("真实geoip的数据结果:"+JSON.toJSONString(geoip));
             } catch (Exception e) {
                 logger.warn(TraceUtils.getFormatTrace() + "GeoIp查询 IP查询错误", e);
             }
@@ -224,7 +224,6 @@ public class DeviceInfoStep implements IRiskStep {
             } else {
                 FpReasonUtils.put(result, baseResult.getCode(), baseResult.getMsg());
             }
-//            logger.info("deviceInfoQuery.query result :{}", JSON.toJSONString(baseResult));
             return result;
 
         } catch (Exception e) {

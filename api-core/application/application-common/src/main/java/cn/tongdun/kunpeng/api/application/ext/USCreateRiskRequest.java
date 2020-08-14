@@ -4,8 +4,6 @@ import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.tdframework.core.extension.Extension;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -19,7 +17,6 @@ import java.util.Set;
  **/
 @Extension(business = BizScenario.DEFAULT,tenant = "us",partner = "globalegrow")
 public class USCreateRiskRequest implements ICreateRiskRequestExtPt {
-    private Logger logger = LoggerFactory.getLogger(USCreateRiskRequest.class);
     private static final Field[] fields = DefaultCreateRiskRequestExtPt.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length);
     static {
@@ -76,9 +73,6 @@ public class USCreateRiskRequest implements ICreateRiskRequestExtPt {
         riskRequest.setSeqId(request.get(SEQ_ID));
         if(StringUtils.isBlank(riskRequest.getSeqId())){
             riskRequest.setSeqId(request.get(X_SEQUENCE_ID));
-            if(StringUtils.isBlank(riskRequest.getSeqId())) {
-                logger.error("get blank seqId from uig:{}", request);
-            }
         }
         riskRequest.setTokenId(request.get(TOKEN_ID));
         riskRequest.setRequestId(request.get(REQUEST_ID));
