@@ -85,6 +85,7 @@ public class PlatformIndexStep implements IRiskStep {
             indicatrixValQuery.setEventId(context.getEventId());
             indicatrixValQuery.setAppName(context.getAppName());
             indicatrixValQuery.setActivity(activityParam);
+            indicatrixValQuery.setEventOccurTime(context.getEventOccurTime().getTime());
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
             indicatrixValQuery.setNeedDetail(true);
 
