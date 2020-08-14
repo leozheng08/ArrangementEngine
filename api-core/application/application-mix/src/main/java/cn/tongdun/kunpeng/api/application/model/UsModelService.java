@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +98,11 @@ public class UsModelService implements ModelServiceExtPt {
 
         Map<String, Object> param = Maps.newHashMap();
         for (ModelParam modelParam : inputList) {
-            param.put(modelParam.getField(), getContextDataByType(fraudContext, modelParam));
+            Object value = getContextDataByType(fraudContext, modelParam);
+//            if (value instanceof Date) {
+//                value = ((Date) value).getTime();
+//            }
+            param.put(modelParam.getField(), value);
         }
         return param;
     }
