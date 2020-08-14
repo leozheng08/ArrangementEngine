@@ -166,10 +166,10 @@ public class AerospikeServiceImpl implements AerospikeService {
             Key asKey = new Key(asNameSpace, asSet, key);
             Record record = aerospikeClient.get(null, asKey);
             if (null != record) {
-                value = aerospikeClient.get(null, asKey).getString(asBinName);
+                value = record.getString(asBinName);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error("asp查询cardbin数据异常", e);
             if (ReasonCodeUtil.isTimeout(e)) {
                 String[] tags = {
                         "sub_reason_code", ReasonCode.USBIN_ERROR_TIMEOUT.getCode()};

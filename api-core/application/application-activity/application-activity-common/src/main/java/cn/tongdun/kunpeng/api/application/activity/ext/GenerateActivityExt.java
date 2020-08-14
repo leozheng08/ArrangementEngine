@@ -82,7 +82,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         result.put("eventOccurTime",context.getEventOccurTime());
         result.put("policyVersion",context.getPolicyVersion());
         result.put("requestId",context.getRequestId());
-        if(context.getChallengerTag() != null){
+        if(StringUtils.isNotBlank(context.getChallengerTag())){
             result.put("isChallenger",context.isChallenger());
             result.put("challengerTag",context.getChallengerTag());
         }
