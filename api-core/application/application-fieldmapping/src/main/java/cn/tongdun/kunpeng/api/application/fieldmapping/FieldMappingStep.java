@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.application.fieldmapping;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -15,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
