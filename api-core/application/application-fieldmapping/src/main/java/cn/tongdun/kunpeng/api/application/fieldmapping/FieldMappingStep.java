@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @date: 2020-06-12 18:01
  **/
 @Component
-@Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 1500)
+@Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 1000)
 public class FieldMappingStep implements IRiskStep {
 
     private Logger logger = LoggerFactory.getLogger(FieldMappingStep.class);

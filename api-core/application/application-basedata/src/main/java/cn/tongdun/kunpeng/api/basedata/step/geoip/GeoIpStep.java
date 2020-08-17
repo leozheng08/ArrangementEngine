@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
@@ -57,10 +58,12 @@ public class GeoIpStep implements IRiskStep {
                 String ip3 = ipSegs[0] + "." + ipSegs[1] + "." + ipSegs[2];
                 context.set("ip3", ip3);
             }
+            request.getFieldValues().put("geoIp_response", JSON.toJSONString(geoip));
             context.set("ipAddressCountry",geoip.getCounty());
             context.set("ipProvince",geoip.getProvince());
             context.set("ipAddressCity",geoip.getCity());
-            context.set("ipAddressCountryCode",geoip.getCounty());
+            context.set("ipAddressCountryCode",geoip.getCountryId());
+            logger.info("geoip的数据结果:"+JSON.toJSONString(geoip));
         }
 
         return true;

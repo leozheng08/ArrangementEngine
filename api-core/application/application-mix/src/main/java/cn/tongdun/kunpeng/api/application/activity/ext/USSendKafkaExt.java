@@ -34,7 +34,7 @@ public class USSendKafkaExt implements ISendKafkaExtPt {
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
-        IRiskResponse res = new RiskResponse();
+        RiskResponse res = new RiskResponse();
         if (response.isSuccess() &&  null != response.getPolicyDetailResult()) {
             PolicyResult policyResult = (PolicyResult) response.getPolicyDetailResult();
             res.setFinalScore(policyResult.getFinalScore());

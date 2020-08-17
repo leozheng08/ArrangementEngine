@@ -103,7 +103,7 @@ public class ResponseAdjustStep implements IRiskStep {
         }
         String param = accessParam.getAccessParam();
         // 先在context的fieldValues中找，找不到再去request中找
-        customPolicyResult.put(param, context.getFieldValues().get(accessParam.getFieldName()));
+        customPolicyResult.put(param, context.get(accessParam.getFieldName()));
         if (null == customPolicyResult.get(accessParam.getAccessParam())) {
             customPolicyResult.put(param, request.get(accessParam.getFieldName()));
         }

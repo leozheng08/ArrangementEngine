@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
+import cn.tongdun.kunpeng.client.data.impl.us.SubPolicyResult;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
@@ -72,13 +73,13 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
         policyDetailResult.setPolicyName(policyResponse.getPolicyName());
         policyDetailResult.setSeqId(context.getSeqId());
         policyDetailResult.setFinalDealType(policyResponse.getDecision());
-        policyDetailResult.setFinalDealTypeName(decisionResultTypeCache.get(policyResponse.getDecision()).getName());
-        policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision() == null ? "" :policyResponse.getDecision()));
+        DecisionResultType decisionResultType = decisionResultTypeCache.get(policyResponse.getDecision());
+        String name = decisionResultType == null ? "" : decisionResultType.getName();
+        policyDetailResult.setFinalDealTypeName(name);
+        policyDetailResult.setFinalDealTypeGrade(buildDealTypeGrade(policyResponse.getDecision() == null ? "" : policyResponse.getDecision()));
         policyDetailResult.setFlowChargeSuccessed(false);
         policyDetailResult.setEmergencySwithcOn(false);
         Map nusspecial = Maps.newHashMap();
-        nusspecial.put("emailExceptionType", context.getFieldValues().get("emailExceptionType"));
-        nusspecial.put("mobileRiskScore", context.getFieldValues().get("mobileRiskScore"));
         policyDetailResult.setNusspecialMap(nusspecial);
         // 暂时填充策略名称名称
         policyDetailResult.setPolicySetName(context.getPolicyResponse().getPolicyName());
@@ -173,6 +174,9 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
                 hitRuleList.add(buildUSHitRule(factory, ruleResponse));
             }
         });
+        if (CollectionUtils.isEmpty(hitRuleList)) {
+            return null;
+        }
         return hitRuleList;
     }
 
@@ -199,18 +203,15 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
     private List<ISubPolicyResult> buildUSPolicySets(IRiskResponse response, PolicyResponse policyResponse, AbstractFraudContext context) {
         List<ISubPolicyResult> subPolicyResults = new ArrayList<>(policyResponse.getSubPolicyResponses().size());
         for (SubPolicyResponse subPolicyResponse : policyResponse.getSubPolicyResponses()) {
-            ISubPolicyResult subPolicyResult = response.getFactory().newSubPolicyResult();
+            SubPolicyResult subPolicyResult = (SubPolicyResult) response.getFactory().newSubPolicyResult();
             // 填充子策略RiskType字段
             if (StringUtils.isNotEmpty(subPolicyResponse.getRiskType())) {
-//                DecisionResultType decisionResultType = decisionResultTypeCache.get(subPolicyResponse.getDecision());
-//                if (decisionResultType != null && decisionResultType.isRisky()) {
-                    subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
-//                }
+                subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
                 subPolicyResult.setPolicyScore(subPolicyResponse.getScore());
                 subPolicyResult.setPolicyMode(subPolicyResponse.getPolicyMode());
                 subPolicyResult.setDealType(subPolicyResponse.getDecision());
-                subPolicyResult.setSubPolicyUuid(subPolicyResponse.getSubPolicyUuid());
-                subPolicyResult.setSubPolicyName(subPolicyResponse.getSubPolicyName());
+                subPolicyResult.setPolicyName(subPolicyResponse.getSubPolicyName());
+                subPolicyResult.setPolicyUuid(subPolicyResponse.getSubPolicyUuid());
                 if (null == context.getFieldValues().get("hitRules")) {
                     subPolicyResult.setHitRules(buildUSHitRules(response.getFactory(), subPolicyResponse));
                 }

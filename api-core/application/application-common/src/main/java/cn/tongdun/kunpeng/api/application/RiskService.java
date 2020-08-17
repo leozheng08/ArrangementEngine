@@ -8,10 +8,8 @@ import cn.tongdun.kunpeng.api.application.step.ext.ICreateRiskResponseExtPt;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
-import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
 import cn.tongdun.kunpeng.api.engine.model.compare.ICompareInfoRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.api.IRiskService;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -125,7 +122,8 @@ public class RiskService implements IRiskService {
         timePartner.stop();
         printCode(riskRequest,riskResponse);
         if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode()) && riskResponse.isSuccess()) {
-            iCompareInfoRepository.insertFluid(buildCompareInfo(riskRequest, riskResponse));
+            riskResponse.getCustomPolicyResult().put("kp_request", JSON.toJSONString(riskRequest));
+            riskResponse.getCustomPolicyResult().put("ctx_fieldValues", JSON.toJSONString(context.getFieldValues()));
         }
         return riskResponse;
 
@@ -167,20 +165,4 @@ public class RiskService implements IRiskService {
         }
         return bizScenario;
     }
-
-    private CompareInfo buildCompareInfo(RiskRequest request, IRiskResponse riskResponse) {
-        CompareInfo compareInfo = new CompareInfo();
-        compareInfo.setGmtCreate(new Date());
-        compareInfo.setGmtModify(new Date());
-        compareInfo.setSeqId(request.getSeqId());
-        compareInfo.setPartnerCode(request.getPartnerCode());
-        compareInfo.setAppName(request.getAppName());
-        PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(request.getPartnerCode(), request.getAppName(), request.getEventId());
-        compareInfo.setPolicyName(policyDefinition == null ? "" : policyDefinition.getName());
-        compareInfo.setOrderCode(String.valueOf(request.getFieldValues().get("ORDERNO")));
-        compareInfo.setKpReponse(JSON.toJSONString(riskResponse));
-        compareInfo.setKpRequest(JSON.toJSONString(request));
-        return compareInfo;
-    }
-
 }
