@@ -118,7 +118,16 @@ public class UsModelService implements ModelServiceExtPt {
             case CONTEXT:
                 return fraudContext.getField(modelParam.getRightField());
             case PLATFORM_INDEX:
-                return fraudContext.getPlatformIndexByDataType(modelParam.getRightField(), modelParam.getRightDataType());
+                Object indexValue = fraudContext.getPlatformIndexByDataType(modelParam.getRightField(), modelParam.getRightDataType());
+                //北美模型适配的时候，兼容私有云
+                if (null == indexValue) {
+                    if (StringUtils.equalsIgnoreCase("double", modelParam.getRightDataType())) {
+                        return 0D;
+                    } else {
+                        return "0";
+                    }
+                }
+                return indexValue;
             case POLICY_INDEX:
                 return fraudContext.getPolicyIndex(modelParam.getRightField());
             case INPUT:

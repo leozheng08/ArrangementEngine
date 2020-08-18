@@ -192,7 +192,6 @@ public class PlatformIndexStep implements IRiskStep {
     public PlatformIndexData setPlatformIndexData(GaeaIndicatrixVal indicatrixVal, Double result) {
 
         PlatformIndexData indexData = new PlatformIndexData();
-        indexData.setValue(result == null ? 0D : result);
         indexData.setOriginalValue(indicatrixVal.getResult());
         indexData.setStringValue(indicatrixVal.getStrResult());
         indexData.setDetail(indicatrixVal.getConditionDetail());
