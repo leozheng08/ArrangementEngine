@@ -3,7 +3,6 @@ package cn.tongdun.kunpeng.api.application.mail.step;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
@@ -12,13 +11,10 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author yuanhang
@@ -55,7 +51,6 @@ public class MailStep implements IRiskStep {
             return true;
         }
 
-        context.setFieldValues(request.getFieldValues());
         context.getFieldValues().put("mailModelUrl", mailModelUrl);
         context.getFieldValues().put("mailModelRandomUrl", mailModelRandUrl);
 
