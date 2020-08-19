@@ -13,9 +13,12 @@ import cn.tongdun.kunpeng.client.data.impl.camel.HitRule;
 import cn.tongdun.kunpeng.client.data.impl.camel.RiskResponse;
 import cn.tongdun.kunpeng.client.data.impl.camel.SubPolicyResult;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
  **/
 @Extension(business = BizScenario.DEFAULT, tenant = "us", partner = "globalegrow")
 public class USSendKafkaExt implements ISendKafkaExtPt {
+
+    private static Logger logger = LoggerFactory.getLogger(USSendKafkaExt.class);
 
     @Autowired
     private ActivityStoreKafkaWorker activityStoreKafkaWorker;
@@ -73,6 +78,9 @@ public class USSendKafkaExt implements ISendKafkaExtPt {
         }
 
         QueueItem queueItem = new QueueItem(context, res, request);
+
+        // TODO ,上线前删除
+        logger.info("send to kafka, msg :{}",JSON.toJSONString(queueItem));
         if (activityStoreKafkaWorker.getFilter().test(queueItem)) {
             activityStoreKafkaWorker.onEvent(queueItem);
         }
