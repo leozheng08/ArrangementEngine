@@ -61,7 +61,7 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
         long start = System.currentTimeMillis();
         try {
             //执行匹配，包含有首次匹配、最坏匹配、权重匹配
-            executeMatch(subPolicy,context,subPolicyResponse);
+            executeMatch(subPolicy, context, subPolicyResponse);
 
             subPolicyResponse.setPolicyUuid(subPolicy.getPolicyUuid());
             subPolicyResponse.setSubPolicyUuid(subPolicy.getUuid());
@@ -69,10 +69,10 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
             subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
             subPolicyResponse.setRiskType(subPolicy.getRiskType());
             subPolicyResponse.setSuccess(true);
-        } catch (Exception e){
+        } catch (Exception e) {
             subPolicyResponse.setSuccess(false);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
-            logger.error(TraceUtils.getFormatTrace()+"SubPolicyManager execute uuid:{}, seqId:{} ",uuid,context.getSeqId(), e);
+            logger.error(TraceUtils.getFormatTrace() + "SubPolicyManager execute uuid:{}, seqId:{} ", uuid, context.getSeqId(), e);
         }
         subPolicyResponse.setCostTime(System.currentTimeMillis() - start);
         return subPolicyResponse;
@@ -90,42 +90,50 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
 
     /**
      * 执行流程控制
+     *
      * @param subPolicy
      * @param context
      * @param subPolicyResponse
-     * @param breakWhenHitfunc 在规则命中情况下，如果此函数返回true则退出。用于首次匹配模式下，命中第一个即退出。
+     * @param breakWhenHitfunc  在规则命中情况下，如果此函数返回true则退出。用于首次匹配模式下，命中第一个即退出。
      */
     protected void executePorcess(SubPolicy subPolicy, AbstractFraudContext context,
-                                SubPolicyResponse subPolicyResponse, Function<RuleResponse, Boolean> breakWhenHitfunc) {
+                                  SubPolicyResponse subPolicyResponse, Function<RuleResponse, Boolean> breakWhenHitfunc) {
         Map<String, Boolean> hitMap = new HashMap<>();
 
         for (String ruleUuid : subPolicy.getRuleUuidList()) {
             //子规则在上级规则命中情况下才能运行，
             Rule rule = ruleCache.get(ruleUuid);
-            if (StringUtils.isNotBlank(rule.getParentUuid())&&!StringUtils.equals(rule.getParentUuid(),"0")) {
+            if (StringUtils.isNotBlank(rule.getParentUuid()) && !StringUtils.equals(rule.getParentUuid(), "0")) {
                 Boolean parentHit = hitMap.get(rule.getParentUuid());
                 if (parentHit == null || !parentHit) {
                     continue;
                 }
             }
-
             //执行此规则
-            RuleResponse ruleResponse = ruleManager.execute(ruleUuid, context);
-            subPolicyResponse.addRuleResponse(ruleResponse);
-
-            //命中中断规则，则中断退出，不再运行后继规则
-            if (ruleResponse.isTerminate()) {
-                break;
-            }
-
-            if (ruleResponse.isHit()) {
-                hitMap.put(ruleUuid, true);
-                subPolicyResponse.setHit(true);
-                //如果返回true则退出。用于首次匹配模式下，命中第一个即退出。
-                if (breakWhenHitfunc.apply(ruleResponse)) {
+            try {
+                RuleResponse ruleResponse = ruleManager.execute(ruleUuid, context);
+                subPolicyResponse.addRuleResponse(ruleResponse);
+                //该规则没有执行成功，则继续执行下一条
+                if (!ruleResponse.isSuccess()) {
+                    continue;
+                }
+                //命中中断规则，则中断退出，不再运行后继规则
+                if (ruleResponse.isTerminate()) {
                     break;
                 }
+                if (ruleResponse.isHit()) {
+                    hitMap.put(ruleUuid, true);
+                    subPolicyResponse.setHit(true);
+                    //如果返回true则退出。用于首次匹配模式下，命中第一个即退出。
+                    if (breakWhenHitfunc.apply(ruleResponse)) {
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
+                logger.error(TraceUtils.getFormatTrace() + "rule execute error,ruleUuid:" + ruleUuid, e);
             }
+
         }
     }
 }

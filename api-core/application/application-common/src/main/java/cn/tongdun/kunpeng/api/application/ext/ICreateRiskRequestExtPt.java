@@ -11,5 +11,5 @@ import java.util.Map;
  */
 public interface ICreateRiskRequestExtPt extends IExtensionPoint {
 
-    RiskRequest createRiskRequest(Map<String, String> request);
+    RiskRequest createRiskRequest(Map<String, Object> request);
 }

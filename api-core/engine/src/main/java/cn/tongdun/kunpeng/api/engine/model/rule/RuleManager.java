@@ -30,40 +30,46 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
         Rule rule = ruleCache.get(uuid);
         if (rule == null || rule.getEval() == null) {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));
+            ruleResponse.setSuccess(false);
             return ruleResponse;
         }
 
         RuleResult ruleResult = rule.getEval().eval(context);
-
-        switch (ruleResult.getEvalResult()) {
-            case True:
-                ruleResponse.setHit(true);
-                ruleResponse.setDecision(rule.getDecision());
-                ruleResponse.setScore(getWeight(rule, context));
-                break;
-            case False:
-                ruleResponse.setHit(false);
-                context.removeFunctionDetail(uuid);
-                break;
-            case Terminate:
-                //subPolicy在执行时，如果某条规则返回Terminate=true，则不再执行后继规则。
-                ruleResponse.setTerminate(true);
-                context.removeFunctionDetail(uuid);
-                ruleResponse.setHit(true);
-                ruleResponse.setDecision(rule.getDecision());
-                ruleResponse.setScore(getWeight(rule, context));
-                break;
-            default:
-                context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
-                context.removeFunctionDetail(uuid);
+        if (null == ruleResult || ruleResult.getException() != null || ruleResult.getEvalResult() == null) {
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
+            context.removeFunctionDetail(uuid);
+            ruleResponse.setSuccess(false);
+        } else {
+            switch (ruleResult.getEvalResult()) {
+                case True:
+                    ruleResponse.setHit(true);
+                    ruleResponse.setDecision(rule.getDecision());
+                    ruleResponse.setScore(getWeight(rule, context));
+                    break;
+                case False:
+                    ruleResponse.setHit(false);
+                    context.removeFunctionDetail(uuid);
+                    break;
+                case Terminate:
+                    //subPolicy在执行时，如果某条规则返回Terminate=true，则不再执行后继规则。
+                    ruleResponse.setTerminate(true);
+                    context.removeFunctionDetail(uuid);
+                    ruleResponse.setHit(true);
+                    ruleResponse.setDecision(rule.getDecision());
+                    ruleResponse.setScore(getWeight(rule, context));
+                    break;
+                default:
+                    context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
+                    context.removeFunctionDetail(uuid);
+            }
+            ruleResponse.setCostTime(ruleResult.getCost());
+            ruleResponse.setSuccess(true);
         }
 
         ruleResponse.setId(rule.getRuleCustomId() != null ? rule.getRuleCustomId() : rule.getRuleId());
         ruleResponse.setName(rule.getName());
         ruleResponse.setUuid(rule.getUuid());
         ruleResponse.setParentUuid(rule.getParentUuid());
-        ruleResponse.setCostTime(ruleResult.getCost());
-        ruleResponse.setSuccess(true);
 
         return ruleResponse;
     }
