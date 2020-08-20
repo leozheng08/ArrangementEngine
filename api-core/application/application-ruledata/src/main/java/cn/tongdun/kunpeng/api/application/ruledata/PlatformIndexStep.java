@@ -118,7 +118,12 @@ public class PlatformIndexStep implements IRiskStep {
             }
             if (null != indicatrixResult && indicatrixResult.isSuccess()) {
                 for (GaeaIndicatrixVal indicatrixVal : indicatrixResult.getData()) {
-                    resolveGaeaValue(context, indicatrixVal);
+                    try {
+                        resolveGaeaValue(context, indicatrixVal);
+                    } catch (Exception e) {
+                        ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
+                        logger.error(TraceUtils.getFormatTrace() + "parse gaea value error!", e);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -130,6 +135,12 @@ public class PlatformIndexStep implements IRiskStep {
 
 
     public void resolveGaeaValue(AbstractFraudContext context, GaeaIndicatrixVal indicatrixVal) {
+
+        if (null==indicatrixVal){
+            ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
+            logger.warn(TraceUtils.getFormatTrace()+"指标读取异常,indicatrixVal值为null!");
+            return;
+        }
 
         int retCode = indicatrixVal.getRetCode();
         if (indicatrixVal.getRetCode() < 500) {
