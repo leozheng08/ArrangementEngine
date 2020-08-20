@@ -138,7 +138,7 @@ public class MailModelFunction extends AbstractFunction {
                 // 随机率判定
                 Double random = mailModelResult.getRanResult();
                 // 该参数给其他规则使用
-                context.getFieldValues().put("emailRandomRate", random);
+                context.getFieldValues().put("emailRandomRate", random == null ? 0 : random);
                 if (mailTypes.contains(MailModelTypeEnum.RANDOM.code())) {
                     if (null != random) {
                         switch (operate) {
