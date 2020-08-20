@@ -1,7 +1,10 @@
 package cn.tongdun.kunpeng.api.application.activity.common;
 
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,6 +18,8 @@ import java.util.function.Predicate;
  */
 @Component
 public class ActivityStoreKafkaWorker implements IEventWorker {
+
+    private static Logger logger = LoggerFactory.getLogger(ActivityStoreKafkaWorker.class);
 
     @Autowired
     private ExtensionExecutor extensionExecutor;
@@ -60,6 +65,8 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
 
         //发送到kafka
         sendToKafka(actitivyMsg);
+        // TODO ,上线前删除
+        logger.info("send to kafka, activity msg :{}", JSON.toJSONString(actitivyMsg));
 
     }
 

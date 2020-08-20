@@ -215,6 +215,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
                 if (null == context.getFieldValues().get("hitRules")) {
                     subPolicyResult.setHitRules(buildUSHitRules(response.getFactory(), subPolicyResponse));
                 }
+                subPolicyResult.setHitTestRules(null);
             }
             subPolicyResults.add(subPolicyResult);
         }

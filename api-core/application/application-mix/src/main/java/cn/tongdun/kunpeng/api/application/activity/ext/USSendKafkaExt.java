@@ -73,6 +73,7 @@ public class USSendKafkaExt implements ISendKafkaExtPt {
         }
 
         QueueItem queueItem = new QueueItem(context, res, request);
+
         if (activityStoreKafkaWorker.getFilter().test(queueItem)) {
             activityStoreKafkaWorker.onEvent(queueItem);
         }

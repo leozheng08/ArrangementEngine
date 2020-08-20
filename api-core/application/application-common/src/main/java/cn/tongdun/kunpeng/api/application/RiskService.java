@@ -58,7 +58,7 @@ public class RiskService implements IRiskService {
 
 
     @Override
-    public IRiskResponse riskService(Map<String, String> request) {
+    public IRiskResponse riskService(Map<String, Object> request) {
 
         BizScenario bizScenario = createBizScenario(request);
 
@@ -156,13 +156,15 @@ public class RiskService implements IRiskService {
     }
 
 
-    private BizScenario createBizScenario(Map<String, String> request) {
+    private BizScenario createBizScenario(Map<String, Object> request) {
         BizScenario bizScenario = new BizScenario();
         bizScenario.setTenant(localEnvironment.getTenant());
-        bizScenario.setPartner(request.get("partnerCode") != null ? request.get("partnerCode") : request.get("partner_code"));
+        bizScenario.setPartner(request.get("partnerCode") != null ? (String)request.get("partnerCode") : (String)request.get("partner_code"));
         if (StringUtils.isEmpty(bizScenario.getPartner())) {
-            bizScenario.setPartner(request.get("PARTNERCODE"));
+            bizScenario.setPartner(request.get("PARTNERCODE") != null ? (String)request.get("PARTNERCODE") : null);
         }
         return bizScenario;
     }
+
+
 }

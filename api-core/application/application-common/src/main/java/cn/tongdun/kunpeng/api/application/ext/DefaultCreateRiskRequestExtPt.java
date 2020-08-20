@@ -56,34 +56,34 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
 
 
     @Override
-    public RiskRequest createRiskRequest(Map<String, String> request){
+    public RiskRequest createRiskRequest(Map<String, Object> request){
         RiskRequest riskRequest = new RiskRequest();
-        riskRequest.setPartnerCode(request.get(PARTNER_CODE));
-        riskRequest.setSecretKey(request.get(SECRET_KEY));
-        riskRequest.setAppName(request.get(APP_NAME));
-        riskRequest.setBlackBox(request.get(BLACK_BOX));
-        riskRequest.setEventId(request.get(EVENT_ID));
-        riskRequest.setPolicyVersion(request.get(POLICY_VERSION));
-        riskRequest.setRecall(StringUtils.equalsIgnoreCase(request.get(RECALL), "true"));
-        riskRequest.setRecallSeqId(request.get(RECALL_SEQ_ID));
-        riskRequest.setRespDetailType(request.get(RESP_DETAIL_TYPE));
-        riskRequest.setServiceType(request.get(SERVICE_TYPE));
-        riskRequest.setSeqId(request.get(SEQ_ID));
+        riskRequest.setPartnerCode((String)request.get(PARTNER_CODE));
+        riskRequest.setSecretKey((String)request.get(SECRET_KEY));
+        riskRequest.setAppName((String)request.get(APP_NAME));
+        riskRequest.setBlackBox((String)request.get(BLACK_BOX));
+        riskRequest.setEventId((String)request.get(EVENT_ID));
+        riskRequest.setPolicyVersion((String)request.get(POLICY_VERSION));
+        riskRequest.setRecall(StringUtils.equalsIgnoreCase((String)request.get(RECALL), "true"));
+        riskRequest.setRecallSeqId((String)request.get(RECALL_SEQ_ID));
+        riskRequest.setRespDetailType((String)request.get(RESP_DETAIL_TYPE));
+        riskRequest.setServiceType((String)request.get(SERVICE_TYPE));
+        riskRequest.setSeqId((String)request.get(SEQ_ID));
         if(StringUtils.isBlank(riskRequest.getSeqId())){
-            riskRequest.setSeqId(request.get(X_SEQUENCE_ID));
+            riskRequest.setSeqId((String)request.get(X_SEQUENCE_ID));
         }
-        riskRequest.setTokenId(request.get(TOKEN_ID));
-        riskRequest.setRequestId(request.get(REQUEST_ID));
+        riskRequest.setTokenId((String)request.get(TOKEN_ID));
+        riskRequest.setRequestId((String)request.get(REQUEST_ID));
         if(StringUtils.isBlank(riskRequest.getRequestId())){
-            riskRequest.setRequestId(request.get(X_REQUEST_ID));
+            riskRequest.setRequestId((String)request.get(X_REQUEST_ID));
         }
-        riskRequest.setTestFlag(StringUtils.equalsIgnoreCase(request.get(TEST_FLAG), "true"));
-        riskRequest.setAsync(StringUtils.equalsIgnoreCase(request.get(ASYNC), "true"));
-        riskRequest.setSimulationApp(request.get(SIMULATION_APP));
-        riskRequest.setSimulationPartner(request.get(SIMULATION_PARTNER));
-        riskRequest.setSimulationUuid(request.get(SIMULATION_UUID));
-        riskRequest.setSimulationSeqId(request.get(SIMULATION_SEQ_ID));
-        riskRequest.setTdSampleDataId(request.get(TD_SAMPLE_DATA_ID));
+        riskRequest.setTestFlag(StringUtils.equalsIgnoreCase((String)request.get(TEST_FLAG), "true"));
+        riskRequest.setAsync(StringUtils.equalsIgnoreCase((String)request.get(ASYNC), "true"));
+        riskRequest.setSimulationApp((String)request.get(SIMULATION_APP));
+        riskRequest.setSimulationPartner((String)request.get(SIMULATION_PARTNER));
+        riskRequest.setSimulationUuid((String)request.get(SIMULATION_UUID));
+        riskRequest.setSimulationSeqId((String)request.get(SIMULATION_SEQ_ID));
+        riskRequest.setTdSampleDataId((String)request.get(TD_SAMPLE_DATA_ID));
 
         riskRequest.setFieldValues(createFieldValues(request));
 
@@ -91,7 +91,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     }
 
 
-    private Map<String,Object> createFieldValues(Map<String, String> request){
+    private Map<String,Object> createFieldValues(Map<String, Object> request){
         Map<String,Object> fieldValues =  new HashMap<>();
         request.forEach((key,value)->{
             if(!fieldNames.contains(key)){

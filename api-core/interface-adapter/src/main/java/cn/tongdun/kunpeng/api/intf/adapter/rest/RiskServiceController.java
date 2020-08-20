@@ -30,9 +30,8 @@ public class RiskServiceController {
 
 
     @RequestMapping(value = {"riskService","riskService/v1.1","antifraudService","antifraudService/v1.1"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-
     @ResponseBody
-    public String riskService(@RequestHeader Map<String,String> header, @RequestParam Map<String,String> request,
+    public String riskService(@RequestHeader Map<String,Object> header, @RequestParam Map<String,Object> request,
                                     HttpServletResponse response) {
 
         request.putAll(header);

@@ -8,7 +8,7 @@
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
     <name>core</name>
-    <version>1.0.2-beta-0814-01</version>
+    <version>1.0.2-beta-0819-04</version>
 
 
     <properties>

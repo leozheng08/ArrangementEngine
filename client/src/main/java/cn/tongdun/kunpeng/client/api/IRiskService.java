@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public interface IRiskService {
 
-    IRiskResponse riskService(Map<String, String> request);
+    IRiskResponse riskService(Map<String, Object> request);
 
     IRiskResponse riskService(RiskRequest request);
 }
