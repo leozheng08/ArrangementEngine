@@ -51,10 +51,7 @@ public class RuleEdgeCondition extends EdgeCondition {
     @Override
     public Boolean eval(ExecuteContext executeContext) {
         RuleResult ruleResult = rule.getEval().eval(executeContext);
-        if (ruleResult.getException() != null) {
-            return false;
-        }
-        if (ruleResult.getEvalResult() == null) {
+        if (null == ruleResult || ruleResult.getException() != null || ruleResult.getEvalResult() == null) {
             return false;
         }
         return ruleResult.getEvalResult() == EvalResult.True;

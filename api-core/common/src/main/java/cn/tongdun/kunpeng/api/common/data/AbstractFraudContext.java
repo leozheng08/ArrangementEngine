@@ -427,7 +427,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             return null;
         }
         PlatformIndexData platformIndexData = platformIndexMap.get(platformIndexId);
-        if (null == platformIndexData||Double.isNaN(platformIndexData.getValue())) {
+        if (null == platformIndexData || null == platformIndexData.getValue() || Double.isNaN(platformIndexData.getValue())) {
             return null;
         }
         return platformIndexData.getValue();
