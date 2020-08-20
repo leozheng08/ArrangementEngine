@@ -8,7 +8,7 @@ import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
  * @author: yuanhang
  * @date: 2020-08-20 18:19
  **/
-public class AssignAction implements Action {
+public class AddCustomListAction implements Action {
 
     @Override
     public void parse(ActionDesc actionDesc) {
