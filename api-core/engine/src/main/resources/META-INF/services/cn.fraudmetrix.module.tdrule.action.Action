@@ -1,1 +1,2 @@
-assignment=cn.tongdun.kunpeng.api.engine.model.rule.action.AssignmentAction
+assign=cn.tongdun.kunpeng.api.engine.model.rule.action.AssignAction
+addCustomList=cn.tongdun.kunpeng.api.engine.model.rule.action.AssignmentAction
