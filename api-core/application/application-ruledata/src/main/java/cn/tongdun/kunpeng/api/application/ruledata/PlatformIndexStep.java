@@ -205,6 +205,7 @@ public class PlatformIndexStep implements IRiskStep {
 
         PlatformIndexData indexData = new PlatformIndexData();
         indexData.setOriginalValue(indicatrixVal.getResult());
+        indexData.setValue(result);
         indexData.setStringValue(indicatrixVal.getStrResult());
         indexData.setDetail(indicatrixVal.getConditionDetail());
         return indexData;
