@@ -13,7 +13,10 @@ public enum DictionaryEnum {
 
     MailParamKey("租户传递邮箱字段key"),
 
+    SwitchOnKafkaKey("是否发送kafka数据key"),
+
     PhoneSwitch("是否调用手机号三方接口key");
+
 
     private String desc;
     DictionaryEnum(String desc){

@@ -1,6 +1,8 @@
 package cn.tongdun.kunpeng.api.application.activity.common;
 
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -26,6 +29,9 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
 
     @Autowired
     private IMsgProducer msgProducer;
+
+    @Autowired
+    DictionaryManager dictionaryManager;
 
     @Value("${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}")
     private String KUNPENG_API_RAW_ACTIVITY = "kunpeng_api_raw_activity";
@@ -63,11 +69,13 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
         //生成activity消息
         IActitivyMsg actitivyMsg = generateActivity(item);
 
-        //发送到kafka
-        sendToKafka(actitivyMsg);
-        // TODO ,上线前删除
-        logger.info("send to kafka, activity msg :{}", JSON.toJSONString(actitivyMsg));
-
+        List<Dictionary> dictionaries = dictionaryManager.getSwitchOnKafkaKey();
+        if ("1".equals(dictionaries.get(0).getValue())) {
+            //发送到kafka
+            sendToKafka(actitivyMsg);
+            // TODO ,上线前删除
+            logger.info("send to kafka, activity msg :{}", JSON.toJSONString(actitivyMsg));
+        }
     }
 
 

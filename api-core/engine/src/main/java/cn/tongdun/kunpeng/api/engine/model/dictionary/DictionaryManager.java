@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.*;
@@ -136,6 +135,20 @@ public class DictionaryManager {
             }
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "get phoneSwitch dictionary failed");
+        }
+        return dictionaries;
+    }
+
+    public List<Dictionary> getSwitchOnKafkaKey() {
+        List<Dictionary> dictionaries = null;
+        try {
+            dictionaries = dict10MinuteCache.get("switchOnKey");
+            if (null == dictionaries) {
+                loadDictionary("switchOnKey");
+                return dict10MinuteCache.get("switchOnKey");
+            }
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "get SwitchOnKafkaKey dictionary failed");
         }
         return dictionaries;
     }
