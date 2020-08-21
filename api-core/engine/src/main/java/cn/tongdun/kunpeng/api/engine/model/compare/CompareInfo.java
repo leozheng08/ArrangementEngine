@@ -2,12 +2,13 @@ package cn.tongdun.kunpeng.api.engine.model.compare;
 
 import cn.tongdun.ddd.common.domain.CommonEntity;
 
+import java.util.Date;
+
 /**
  * @author: yuanhang
  * @date: 2020-07-27 15:53
  **/
 public class CompareInfo extends CommonEntity {
-    private Long id;
 
     private String seqId;
 
@@ -28,6 +29,8 @@ public class CompareInfo extends CommonEntity {
     private String kpRequest;
 
     private String kpReponse;
+
+    private Date EventOccurTime;
 
     public String getTcRequest() {
         return tcRequest;
@@ -107,5 +110,13 @@ public class CompareInfo extends CommonEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Date getEventOccurTime() {
+        return EventOccurTime;
+    }
+
+    public void setEventOccurTime(Date eventOccurTime) {
+        EventOccurTime = eventOccurTime;
     }
 }

@@ -14,10 +14,11 @@
 		<result column="tc_reponse" jdbcType="LONGVARCHAR" property="tcReponse" />
 		<result column="kp_request" jdbcType="LONGVARCHAR" property="kpRequest" />
 		<result column="kp_reponse" jdbcType="LONGVARCHAR" property="kpReponse" />
+		<result column="event_occur_time" jdbcType="TIMESTAMP" property="eventOccurTime" />
 		<result column="description" jdbcType="LONGVARCHAR" property="description" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, seq_id, partner_code, app_name, policy_name, order_code, gmt_create, gmt_modify, tc_request, tc_reponse, kp_request, kp_reponse, description
+		id, seq_id, partner_code, app_name, policy_name, order_code, gmt_create, gmt_modify, tc_request, tc_reponse, kp_request, kp_reponse,event_occur_time, description
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
 		select
@@ -34,12 +35,12 @@
 								  app_name, policy_name, order_code,
 								  gmt_create, gmt_modify, tc_request,
 								  tc_reponse, kp_request, kp_reponse,
-								  description)
+								  event_occur_time, description)
 		values (#{id,jdbcType=BIGINT}, #{seqId,jdbcType=VARCHAR}, #{partnerCode,jdbcType=VARCHAR},
 				#{appName,jdbcType=VARCHAR}, #{policyName,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR},
 				#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP}, #{tcRequest,jdbcType=LONGVARCHAR},
 				#{tcReponse,jdbcType=LONGVARCHAR}, #{kpRequest,jdbcType=LONGVARCHAR}, #{kpReponse,jdbcType=LONGVARCHAR},
-				#{description,jdbcType=LONGVARCHAR})
+				#{eventOccurTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo">
 		insert into compare_info
