@@ -2,6 +2,9 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpen
 
 import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * @author: yuanhang
  * @date: 2020-07-27 15:52
@@ -22,5 +25,11 @@ public interface CompareInfoDAO {
     int updateByPrimaryKeyWithBLOBs(CompareInfo record);
 
     int updateByPrimaryKey(CompareInfo record);
+
+    int batchDeleteByPrimaryKey(List<Long> list);
+
+    List<CompareInfo> selectUnCompareInfo();
+
+    List<CompareInfo> selectByPolicyNameAndEventOccurTime(String policyName, Date eventOccutTime);
 
 }

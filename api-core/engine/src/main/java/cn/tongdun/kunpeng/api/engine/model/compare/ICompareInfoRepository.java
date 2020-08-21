@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.compare;
 
+import java.util.List;
+
 /**
  * @author: yuanhang
  * @date: 2020-07-27 16:38
@@ -7,4 +9,10 @@ package cn.tongdun.kunpeng.api.engine.model.compare;
 public interface ICompareInfoRepository {
 
     int insertFluid(CompareInfo compareInfo);
+
+    List<CompareInfo> selectUnComparedInfo();
+
+    int deleteCompareFailedInfos(List<CompareInfo> compareInfos);
+
+    int insert(CompareInfo compareInfo);
 }

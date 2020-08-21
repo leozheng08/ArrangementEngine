@@ -124,10 +124,12 @@ public class RiskService implements IRiskService {
         timeContext.stop();
         timePartner.stop();
         printCode(riskRequest,riskResponse);
-        if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode()) && riskResponse.isSuccess()) {
-            riskResponse.getCustomPolicyResult().put("kp_request", JSON.toJSONString(riskRequest));
-            riskResponse.getCustomPolicyResult().put("ctx_fieldValues", JSON.toJSONString(context.getFieldValues()));
-            buildCompareInfo(riskRequest, riskResponse);
+        if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode().trim()) && riskResponse.isSuccess()) {
+            if (null != riskResponse.getCustomPolicyResult()) {
+                riskResponse.getCustomPolicyResult().put("kp_request", JSON.toJSONString(riskRequest));
+                riskResponse.getCustomPolicyResult().put("ctx_fieldValues", JSON.toJSONString(context.getFieldValues()));
+            }
+            iCompareInfoRepository.insert(buildCompareInfo(riskRequest, riskResponse,context));
         }
         return riskResponse;
 
@@ -170,15 +172,16 @@ public class RiskService implements IRiskService {
         return bizScenario;
     }
 
-    private CompareInfo buildCompareInfo(RiskRequest request, IRiskResponse riskResponse) {
+    private CompareInfo buildCompareInfo(RiskRequest request, IRiskResponse riskResponse, FraudContext context) {
         CompareInfo compareInfo = new CompareInfo();
         compareInfo.setGmtCreate(new Date());
         compareInfo.setGmtModify(new Date());
-        compareInfo.setSeqId(request.getSeqId());
-        compareInfo.setEventOccurTime(request.getEventOccurTime());
+        compareInfo.setSeqId(context.getSeqId());
+        compareInfo.setEventOccurTime(context.getEventOccurTime());
         compareInfo.setPartnerCode(request.getPartnerCode());
         PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(request.getPartnerCode(), request.getAppName(), request.getEventId());
         compareInfo.setPolicyName(policyDefinition == null ? "" : policyDefinition.getName());
+        compareInfo.setAppName(request.getAppName());
         compareInfo.setKpReponse(JSON.toJSONString(riskResponse));
         compareInfo.setKpRequest(JSON.toJSONString(request));
         return compareInfo;

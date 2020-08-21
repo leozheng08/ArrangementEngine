@@ -111,8 +111,6 @@ public class ResponseAdjustStep implements IRiskStep {
         if (null == customPolicyResult.get(accessParam.getAccessParam())) {
             customPolicyResult.put(param, request.get(accessParam.getAccessParam()));
         }
-        if (customPolicyResult.size() > 0) {
-            response.setCustomPolicyResult(customPolicyResult);
-        }
+        response.setCustomPolicyResult(customPolicyResult);
     }
 }

@@ -196,4 +196,36 @@
 			gmt_modify = #{gmtModify,jdbcType=TIMESTAMP}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+
+    <delete id="batchDeleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from compare_info
+        where id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectUnCompareInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from compare_info
+        where description is null
+        order by gmt_create desc
+        limit 1000;
+    </select>
+
+    <select id="selectByPolicyNameAndEventOccurTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from compare_info
+        <where>
+            <if test="policyName != null">
+                and policy_name = #{policyName}
+            </if>
+            <if test="eventOccurTime != null">
+                and event_occur_time = #{eventOccurTime}
+            </if>
+        </where>
+    </select>
+
 </mapper>
