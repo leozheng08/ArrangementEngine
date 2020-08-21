@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
@@ -103,9 +104,15 @@ public class AssignFieldValueStep implements IRiskStep {
         context.setAsync(request.isAsync());
 
         //如果客户有传事件发生时间，为客户传的为准
-        Object eventOccurTime = context.getFieldValues().get("eventOccurTime");
-        if(eventOccurTime != null && eventOccurTime instanceof Date){
-            context.setEventOccurTime((Date)eventOccurTime);
+        try {
+            Object eventOccurTime = context.getFieldValues().get("eventOccurTime");
+            if(eventOccurTime != null && eventOccurTime instanceof String){
+                context.setEventOccurTime(DateUtil.parseDateTime(eventOccurTime.toString()));
+            } else if (eventOccurTime != null && eventOccurTime instanceof Date) {
+                context.setEventOccurTime((Date) eventOccurTime);
+            }
+        } catch (Exception e) {
+            logger.error("parse eventOccurTime raise ex:{}", e);
         }
         return true;
     }
