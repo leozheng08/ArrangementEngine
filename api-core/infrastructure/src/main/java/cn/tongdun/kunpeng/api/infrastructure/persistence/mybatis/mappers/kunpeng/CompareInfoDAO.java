@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
 import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ public interface CompareInfoDAO {
 
     List<CompareInfo> selectUnCompareInfo();
 
-    List<CompareInfo> selectByPolicyNameAndEventOccurTime(String policyName, Date eventOccutTime);
+    List<CompareInfo> selectByPolicyNameAndEventOccurTime(@Param("policyName") String policyName,
+                                                          @Param("eventOccurTime") Date eventOccutTime);
 
 }

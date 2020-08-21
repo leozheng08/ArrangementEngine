@@ -3,6 +3,8 @@ package cn.tongdun.kunpeng.api.application.check.step;
 import cn.tongdun.kunpeng.api.application.check.step.assign.*;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
@@ -10,8 +12,6 @@ import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * 设置上下文中的字段值
@@ -104,6 +106,8 @@ public class AssignFieldValueStep implements IRiskStep {
         Object eventOccurTime = context.getFieldValues().get("eventOccurTime");
         if(eventOccurTime != null && eventOccurTime instanceof Date){
             context.setEventOccurTime((Date)eventOccurTime);
+        } else if (eventOccurTime != null && eventOccurTime instanceof Long) {
+            context.setEventOccurTime(new Date((Long)eventOccurTime));
         }
         return true;
     }
