@@ -62,6 +62,8 @@ public class USSendKafkaExt implements ISendKafkaExtPt {
                         subRes.setRiskType(subPolicyResult.getRiskType());
                         subRes.setPolicyDecision(subPolicyResult.getDealType());
                         subRes.setPolicyMode(subPolicyResult.getPolicyMode());
+                        subRes.setSubPolicyUuid(subPolicyResult.getSubPolicyUuid());
+                        subRes.setSubPolicyName(subPolicyResult.getSubPolicyName());
                         subPolicies.add(subRes);
                     }
                 }
