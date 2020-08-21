@@ -106,8 +106,6 @@ public class AssignFieldValueStep implements IRiskStep {
         Object eventOccurTime = context.getFieldValues().get("eventOccurTime");
         if(eventOccurTime != null && eventOccurTime instanceof Date){
             context.setEventOccurTime((Date)eventOccurTime);
-        } else if (eventOccurTime != null && eventOccurTime instanceof Long) {
-            context.setEventOccurTime(new Date((Long)eventOccurTime));
         }
         return true;
     }
