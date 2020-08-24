@@ -44,7 +44,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
             response.setSuccess(true);
             PolicyResult policyDetailResult = new PolicyResult();
             policyDetailResult.setSuccess(false);
-            policyDetailResult.setSpendTime(System.currentTimeMillis() - context.getEventOccurTime().getTime());
+            policyDetailResult.setSpendTime(policyResponse.getCostTime());
             policyDetailResult.setSeqId(context.getSeqId());
             policyDetailResult.setFinalDealType("Accept");
             policyDetailResult.setFinalDealTypeName("通过");

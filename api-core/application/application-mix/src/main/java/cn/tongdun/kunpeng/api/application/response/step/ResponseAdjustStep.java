@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.application.response.entity.USRiskResponse;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusiness;
 import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusinessCache;
 import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessParam;
@@ -14,11 +15,13 @@ import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -103,14 +106,31 @@ public class ResponseAdjustStep implements IRiskStep {
         }
         String param = accessParam.getAccessParam();
         // 先在context的fieldValues中找，找不到再去request中找
-        customPolicyResult.put(param, context.get(accessParam.getFieldName()));
-        if (null == customPolicyResult.get(accessParam.getAccessParam())) {
-            customPolicyResult.put(param, request.get(accessParam.getFieldName()));
+        putStrValue(customPolicyResult, param, getStrFromObj(context.get(accessParam.getFieldName())));
+        if (null == customPolicyResult.get(param)) {
+            putStrValue(customPolicyResult, param, getStrFromObj(request.get(accessParam.getFieldName())));
         }
         // 使用系统字段名称找不到，则使用用户定义参数找
         if (null == customPolicyResult.get(accessParam.getAccessParam())) {
-            customPolicyResult.put(param, request.get(accessParam.getAccessParam()));
+            putStrValue(customPolicyResult,param,getStrFromObj(request.get(accessParam.getAccessParam())));
         }
         response.setCustomPolicyResult(customPolicyResult);
     }
+
+    private String getStrFromObj(Object value) {
+        if (StringUtils.isEmpty((String)value)) {
+            return null;
+        }
+        if (value instanceof Date) {
+            return DateUtil.formatDateTime(((Date) value).getTime());
+        }
+        return (String)value;
+    }
+
+    private void putStrValue(Map customPolicyResult,String param, String value) {
+        if (value != null) {
+            customPolicyResult.put(param, value);
+        }
+    }
+
 }
