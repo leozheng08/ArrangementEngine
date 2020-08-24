@@ -15,7 +15,6 @@ import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,17 +116,14 @@ public class ResponseAdjustStep implements IRiskStep {
         response.setCustomPolicyResult(customPolicyResult);
     }
 
-    private String getStrFromObj(Object value) {
-        if (StringUtils.isEmpty((String)value)) {
-            return null;
-        }
+    private Object getStrFromObj(Object value) {
         if (value instanceof Date) {
             return DateUtil.formatDateTime(((Date) value).getTime());
         }
-        return (String)value;
+        return value;
     }
 
-    private void putStrValue(Map customPolicyResult,String param, String value) {
+    private void putStrValue(Map customPolicyResult,String param, Object value) {
         if (value != null) {
             customPolicyResult.put(param, value);
         }
