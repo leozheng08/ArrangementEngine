@@ -1,10 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.policy.challenger;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
-import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyManager;
+import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +12,6 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -101,7 +98,10 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
         if(policyChallenger.getEndTime() != null && System.currentTimeMillis()>policyChallenger.getEndTime().getTime()){
             return null;
         }
-
+        //暂停、关闭等
+        if(policyChallenger.getStatus() == null || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()){
+            return null;
+        }
         List<PolicyChallenger.Config> configs = policyChallenger.getChallengerConfig();
         if (CollectionUtils.isEmpty(configs)) {
             return null;
