@@ -15,8 +15,6 @@ import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +31,6 @@ import java.util.stream.Collectors;
 @Component
 @Step(pipeline = Risk.NAME, phase = Risk.OUTPUT, order = 3500)
 public class ResponseAdjustStep implements IRiskStep {
-
-    private Logger logger = LoggerFactory.getLogger(ResponseAdjustStep.class);
 
     @Autowired
     AccessBusinessCache accessBusinessCache;
@@ -116,6 +112,11 @@ public class ResponseAdjustStep implements IRiskStep {
         response.setCustomPolicyResult(customPolicyResult);
     }
 
+    /**
+     * 日期格式特殊处理
+     * @param value
+     * @return
+     */
     private Object getStrFromObj(Object value) {
         if (value instanceof Date) {
             return DateUtil.formatDateTime(((Date) value).getTime());
@@ -123,6 +124,12 @@ public class ResponseAdjustStep implements IRiskStep {
         return value;
     }
 
+    /**
+     * 添加到输出中
+     * @param customPolicyResult
+     * @param param
+     * @param value
+     */
     private void putStrValue(Map customPolicyResult,String param, Object value) {
         if (value != null) {
             customPolicyResult.put(param, value);
