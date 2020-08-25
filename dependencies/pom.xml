@@ -7,7 +7,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2-beta-0824-03</version>
+    <version>1.0.2-beta-0825-02</version>
 
     <name>dependencies-bom</name>
 
