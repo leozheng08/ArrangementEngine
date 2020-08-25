@@ -82,7 +82,9 @@ public class RiskService implements IRiskService {
 
 
         ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
-
+        if (StringUtils.isEmpty(riskRequest.getPartnerCode())){
+            riskRequest.setPartnerCode("NULL_partnerCode");
+        }
         String[] tags = {
                 "partner_code",riskRequest.getPartnerCode()};
         ITimeContext timePartner = metrics.metricTimer("kunpeng.api.riskservice.partner.rt",tags);
@@ -90,7 +92,8 @@ public class RiskService implements IRiskService {
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
 
-        //business 依赖event_id找到对应的event_type再确认，放到GetPolicyUuidStep步骤中实现。
+        //business 依赖event_id找到对应的event_type再确认，放
+        // 到GetPolicyUuidStep步骤中实现。
         BizScenario bizScenario = BizScenario.valueOf(localEnvironment.getTenant(), BizScenario.DEFAULT, riskRequest.getPartnerCode());
         context.setBizScenario(bizScenario);
 
