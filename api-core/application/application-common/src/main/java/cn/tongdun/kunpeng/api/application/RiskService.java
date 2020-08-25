@@ -83,7 +83,7 @@ public class RiskService implements IRiskService {
 
         ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
         if (StringUtils.isEmpty(riskRequest.getPartnerCode())){
-            riskRequest.setPartnerCode("NULL_PartnerCode");
+            riskRequest.setPartnerCode("NULL_partnerCode");
         }
         String[] tags = {
                 "partner_code",riskRequest.getPartnerCode()};
