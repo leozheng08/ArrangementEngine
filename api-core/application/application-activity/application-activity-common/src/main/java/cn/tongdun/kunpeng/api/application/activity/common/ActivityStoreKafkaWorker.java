@@ -3,7 +3,6 @@ package cn.tongdun.kunpeng.api.application.activity.common;
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
-import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +72,6 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
         if ("1".equals(dictionaries.get(0).getValue())) {
             //发送到kafka
             sendToKafka(actitivyMsg);
-            // TODO ,上线前删除
-            logger.info("send to kafka, activity msg :{}", JSON.toJSONString(actitivyMsg));
         }
     }
 

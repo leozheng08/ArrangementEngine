@@ -124,13 +124,6 @@ public class RiskService implements IRiskService {
         timeContext.stop();
         timePartner.stop();
         printCode(riskRequest,riskResponse);
-        if ("globalegrow".equalsIgnoreCase(riskRequest.getPartnerCode().trim()) && riskResponse.isSuccess()) {
-            if (null != riskResponse.getCustomPolicyResult()) {
-                riskResponse.getCustomPolicyResult().put("kp_request", JSON.toJSONString(riskRequest));
-                riskResponse.getCustomPolicyResult().put("ctx_fieldValues", JSON.toJSONString(context.getFieldValues()));
-            }
-            iCompareInfoRepository.insert(buildCompareInfo(riskRequest, riskResponse,context));
-        }
         return riskResponse;
 
     }

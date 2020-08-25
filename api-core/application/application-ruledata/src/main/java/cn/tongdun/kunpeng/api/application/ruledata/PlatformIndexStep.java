@@ -104,9 +104,6 @@ public class PlatformIndexStep implements IRiskStep {
                 indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
                 timeContext.stop();
                 timePartner.stop();
-                // TODO 上线前移除
-                request.getFieldValues().put("indicatrix_result", JSON.toJSONString(indicatrixResult.getData()));
-                logger.info(TraceUtils.getFormatTrace()+"平台指标响应结果：{}", JSON.toJSONString(indicatrixResult));
             } catch (Exception e) {
                 // 临时通过LocalcachePeriod配置项做下开关
                 if (ReasonCodeUtil.isTimeout(e)) {
