@@ -96,6 +96,7 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             response.setCustomPolicyResult(external);
         }
 
+
         return true;
     }
 
@@ -151,6 +152,9 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
         } else if ("mini".equalsIgnoreCase(appType)) {
             Mini[] minis = Mini.values();
             Arrays.asList(minis).stream().forEach(r -> result.put(r.getKey(), deviceInfo.get(r.getKey())));
+        }
+        if (null != deviceInfo.get("geoIp")) {
+            result.put("geoIp", deviceInfo.get("geoIp"));
         }
         return result;
     }

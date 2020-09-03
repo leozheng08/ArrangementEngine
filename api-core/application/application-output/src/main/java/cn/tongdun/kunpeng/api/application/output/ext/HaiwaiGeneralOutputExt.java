@@ -101,9 +101,10 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
             } else {
                 external.put("deviceInfo", deviceInfo);
             }
-
-            response.setCustomPolicyResult(external);
         }
+
+        response.setCustomPolicyResult(external);
+
 
         //风险最大的子策略
 //        SubPolicyResponse finalResponse = policyResponse.getFinalSubPolicyResponse();
@@ -166,6 +167,10 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
         } else if ("mini".equalsIgnoreCase(appType)) {
             Mini[] minis = Mini.values();
             Arrays.asList(minis).stream().forEach(r -> result.put(r.getKey(), deviceInfo.get(r.getKey())));
+        }
+
+        if (null != deviceInfo.get("geoIp")) {
+            result.put("geoIp", deviceInfo.get("geoIp"));
         }
         return result;
     }
