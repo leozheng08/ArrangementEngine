@@ -90,8 +90,10 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             if (StringUtils.isNotEmpty(appOs)) {
                 Map outputDeviceInfo = postProcessDeviceInfo(appOs, deviceInfo);
                 external.put("deviceInfo", outputDeviceInfo);
-                response.setCustomPolicyResult(external);
+            } else {
+                external.put("deviceInfo", deviceInfo);
             }
+            response.setCustomPolicyResult(external);
         }
 
         return true;
