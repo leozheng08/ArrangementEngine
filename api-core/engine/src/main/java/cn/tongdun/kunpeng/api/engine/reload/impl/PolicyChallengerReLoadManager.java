@@ -109,6 +109,15 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
         return remove(eventDO);
     }
 
+    @Override
+    public boolean suspend(PolicyChallengerEventDO eventDO) {
+        return addOrUpdate(eventDO);
+    }
+
+    @Override
+    public boolean terminate(PolicyChallengerEventDO eventDO) {
+        return remove(eventDO);
+    }
 
     private boolean removeByPolicyChallenger(PolicyChallenger policyChallenger){
         if (policyChallenger == null) {

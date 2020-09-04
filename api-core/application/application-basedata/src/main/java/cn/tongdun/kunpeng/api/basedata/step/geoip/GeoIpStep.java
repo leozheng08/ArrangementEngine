@@ -58,7 +58,6 @@ public class GeoIpStep implements IRiskStep {
                 String ip3 = ipSegs[0] + "." + ipSegs[1] + "." + ipSegs[2];
                 context.set("ip3", ip3);
             }
-            request.getFieldValues().put("geoIp_response", JSON.toJSONString(geoip));
             context.set("ipAddressCountry",geoip.getCounty());
             context.set("ipProvince",geoip.getProvince());
             context.set("ipAddressCity",geoip.getCity());

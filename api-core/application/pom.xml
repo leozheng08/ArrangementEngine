@@ -5,7 +5,7 @@
     <parent>
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-beta-0825-03</version>
+        <version>1.0.2-beta-0903-08</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
