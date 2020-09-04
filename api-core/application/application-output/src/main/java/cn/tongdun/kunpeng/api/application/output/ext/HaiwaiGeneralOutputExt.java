@@ -1,5 +1,9 @@
 package cn.tongdun.kunpeng.api.application.output.ext;
 
+import cn.fraudmetrix.forseti.fp.model.constant.Android;
+import cn.fraudmetrix.forseti.fp.model.constant.Ios;
+import cn.fraudmetrix.forseti.fp.model.constant.Mini;
+import cn.fraudmetrix.forseti.fp.model.constant.Web;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
@@ -9,11 +13,14 @@ import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 import cn.tongdun.kunpeng.client.data.impl.underline.RiskResponse;
 import cn.tongdun.tdframework.core.extension.Extension;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 海外租户实现
@@ -81,6 +88,24 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
             ((RiskResponse)response).setHitRules(rules);
         }
 
+        Map external = Maps.newHashMap();
+        Map deviceInfo = context.getDeviceInfo();
+        if (deviceInfo != null){
+            String appOs = null;
+            if (null != context.getAppType()) {
+                appOs = (String)deviceInfo.get("appOs");
+            }
+            if (StringUtils.isNotEmpty(appOs)) {
+                Map outputDeviceInfo = postProcessDeviceInfo(appOs, deviceInfo);
+                external.put("deviceInfo", outputDeviceInfo);
+            } else {
+                external.put("deviceInfo", deviceInfo);
+            }
+        }
+
+        response.setCustomPolicyResult(external);
+
+
         //风险最大的子策略
 //        SubPolicyResponse finalResponse = policyResponse.getFinalSubPolicyResponse();
 //        if(finalResponse != null) {
@@ -118,5 +143,35 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
         //决策结果,如Accept、Review、Reject
         hitRule.setDecision(ruleResponse.getDecision());
         return hitRule;
+    }
+
+    /**
+     * 根据appType精简输出
+     * @param appType
+     * @param deviceInfo
+     */
+    private Map<String, Object> postProcessDeviceInfo(String appType, Map<String,Object> deviceInfo) {
+        Map<String, Object> result = Maps.newHashMap();
+        if (StringUtils.isEmpty(appType)) {
+            return deviceInfo;
+        }
+        if ("ios".equalsIgnoreCase(appType)) {
+            Ios[] ios = Ios.values();
+            Arrays.asList(ios).stream().forEach(r -> result.put(r.getKey(), deviceInfo.get(r.getKey())));
+        } else if ("web".equalsIgnoreCase(appType)) {
+            Web[] webs = Web.values();
+            Arrays.asList(webs).stream().forEach(r -> result.put(r.getKey(), deviceInfo.get(r.getKey())));
+        } else if ("android".equalsIgnoreCase(appType)) {
+            Android[] androids = Android.values();
+            Arrays.asList(androids).stream().forEach(r -> result.put(r.getKey(), deviceInfo.get(r.getKey())));
+        } else if ("mini".equalsIgnoreCase(appType)) {
+            Mini[] minis = Mini.values();
+            Arrays.asList(minis).stream().forEach(r -> result.put(r.getKey(), deviceInfo.get(r.getKey())));
+        }
+
+        if (null != deviceInfo.get("geoIp")) {
+            result.put("geoIp", deviceInfo.get("geoIp"));
+        }
+        return result;
     }
 }

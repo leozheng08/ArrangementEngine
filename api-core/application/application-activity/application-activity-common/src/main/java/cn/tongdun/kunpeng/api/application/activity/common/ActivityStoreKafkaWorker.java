@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
         IActitivyMsg actitivyMsg = generateActivity(item);
 
         List<Dictionary> dictionaries = dictionaryManager.getSwitchOnKafkaKey();
-        if ("1".equals(dictionaries.get(0).getValue())) {
+        if (CollectionUtils.isNotEmpty(dictionaries) && "1".equals(dictionaries.get(0).getValue())) {
             //发送到kafka
             sendToKafka(actitivyMsg);
         }

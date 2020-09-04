@@ -22,10 +22,10 @@ public class HttpUtils {
     private static Logger logger = LoggerFactory.getLogger(HttpUtils.class);
 
     private static final OkHttpClient client = new OkHttpClient.Builder()
-            .connectTimeout(Duration.ofMillis(50))
-            .writeTimeout(Duration.ofMillis(100))
-            .readTimeout(Duration.ofMillis(100))
-            .connectionPool(new ConnectionPool(800, 30, TimeUnit.SECONDS))
+            .connectTimeout(Duration.ofMillis(150))
+            .writeTimeout(Duration.ofMillis(150))
+            .readTimeout(Duration.ofMillis(150))
+            .connectionPool(new ConnectionPool(200, 30, TimeUnit.SECONDS))
             .build();
 
     /**
