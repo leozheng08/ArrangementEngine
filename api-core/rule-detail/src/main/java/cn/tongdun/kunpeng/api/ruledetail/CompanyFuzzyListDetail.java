@@ -17,17 +17,17 @@ public class CompanyFuzzyListDetail extends ConditionDetail {
      */
     private List<String> list;
     /**
-     * 企业名称
-     */
-    private String name;
-    /**
      * 企业注册证件号
      */
     private String no;
     /**
-     * 相似度
+     * 企业名称
      */
-    private String similarity;
+    private String name;
+    /**
+     * 企业名称相似度
+     */
+    private String nameimilarity;
 
     public CompanyFuzzyListDetail() {
         super("company_fuzzy_list");
