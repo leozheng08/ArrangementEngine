@@ -17,19 +17,31 @@ public class PersonalFuzzyListDetail extends ConditionDetail {
      */
     private List<String> list;
     /**
+     * 性别
+     */
+    private String gender;
+    /**
      * 姓名
      */
     private String name;
+    /**
+     * 姓名权重
+     */
+    private String nameWeight;
     /**
      * 生日
      */
     private String birthday;
     /**
-     * 性别
+     * 生日权重
      */
-    private String gender;
+    private String birthdayWeight;
+    /**
+     * 相似度
+     */
+    private String similarity;
 
     public PersonalFuzzyListDetail() {
-        super("custom_list");
+        super("personal_fuzzy_list");
     }
 }
