@@ -45,6 +45,7 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
         response.setFinalDecision(policyResponse.getDecision());
         response.setFinalScore(policyResponse.getScore());
         response.setPolicyName(policyResponse.getPolicyName());
+        response.setPolicyUuid(policyResponse.getPolicyUuid());
 
         if (policyResponse.getSubPolicyResponses() == null || (policyResponse.getSubPolicyResponses().isEmpty())) {
             return true;

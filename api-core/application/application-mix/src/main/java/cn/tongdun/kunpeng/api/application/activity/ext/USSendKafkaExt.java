@@ -39,6 +39,7 @@ public class USSendKafkaExt implements ISendKafkaExtPt {
             PolicyResult policyResult = (PolicyResult) response.getPolicyDetailResult();
             res.setFinalScore(policyResult.getFinalScore());
             res.setPolicyName(policyResult.getPolicyName());
+            res.setPolicyUuid(policyResult.getPolicyUuid());
             res.setSuccess(policyResult.isSuccess());
             res.setFinalScore(policyResult.getFinalScore());
             res.setFinalDecision(policyResult.getFinalDealType());
