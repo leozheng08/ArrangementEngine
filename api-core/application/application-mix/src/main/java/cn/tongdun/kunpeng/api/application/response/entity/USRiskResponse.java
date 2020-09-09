@@ -46,6 +46,12 @@ public class USRiskResponse implements IRiskResponse {
      */
     @JsonIgnore
     private String policyName;
+
+    /**
+     * 策略名称
+     */
+    @JsonIgnore
+    private String policyUuid;
     /**
      * 子策略名称
      */
@@ -264,5 +270,15 @@ public class USRiskResponse implements IRiskResponse {
 
     public void setRiskType(String riskType) {
         this.riskType = riskType;
+    }
+
+    @Override
+    public String getPolicyUuid() {
+        return policyUuid;
+    }
+
+    @Override
+    public void setPolicyUuid(String policyUuid) {
+        this.policyUuid = policyUuid;
     }
 }

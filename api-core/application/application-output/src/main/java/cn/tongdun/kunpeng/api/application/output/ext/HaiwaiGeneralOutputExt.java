@@ -45,7 +45,7 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
 
         response.setFinalDecision(policyResponse.getDecision());
         response.setFinalScore(policyResponse.getScore());
-
+        response.setPolicyUuid(policyResponse.getPolicyUuid());
         response.setPolicyName(policyResponse.getPolicyName());
 
 

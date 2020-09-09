@@ -46,6 +46,9 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @JsonProperty("risk_type")
     private String                    riskType;
 
+    @JsonProperty("policy_uuid")
+    private String                    policyUuid;
+
     @JsonIgnore
     private DecisionType decisionType        = DecisionType.POLICY_SET;
 
@@ -238,6 +241,16 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @Override
     public List getPolicyDetailResult() {
         return null;
+    }
+
+    @Override
+    public String getPolicyUuid() {
+        return policyUuid;
+    }
+
+    @Override
+    public void setPolicyUuid(String policyUuid) {
+        this.policyUuid = policyUuid;
     }
 
 

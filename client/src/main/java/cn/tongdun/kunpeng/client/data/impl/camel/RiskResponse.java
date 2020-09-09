@@ -26,6 +26,8 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     private String                    finalDecision;
     // 策略名称
     private String                    policyName;
+    // 策略uuid
+    private String                    policyUuid;
     // 命中规则列表
 //    private List<IHitRule>             hitRules;
     // 请求序列号，每个请求进来都分配一个全局唯一的id
@@ -198,5 +200,13 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
         this.factory = factory;
     }
 
+    @Override
+    public String getPolicyUuid() {
+        return policyUuid;
+    }
 
+    @Override
+    public void setPolicyUuid(String policyUuid) {
+        this.policyUuid = policyUuid;
+    }
 }

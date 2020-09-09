@@ -71,6 +71,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
         policyDetailResult.setFinalScore(policyResponse.getScore());
         policyDetailResult.setSpendTime(policyResponse.getCostTime());
         policyDetailResult.setPolicyName(policyResponse.getPolicyName());
+        policyDetailResult.setPolicyUuid(policyResponse.getPolicyUuid());
         policyDetailResult.setSeqId(context.getSeqId());
         policyDetailResult.setFinalDealType(policyResponse.getDecision());
         DecisionResultType decisionResultType = decisionResultTypeCache.get(policyResponse.getDecision());
