@@ -16,4 +16,13 @@
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:reference>
 
+    <dubbo:reference id="kpEnterPriseHolmesApi" interface="cn.fraudmetrix.kp.holmes.service.intf.IDubboHolmesApi"
+                     version="${enterprise.holmes.dubbo.version}" retries="0" timeout="${enterprise.holmes.dubbo.timeout}" check="false" connections="2" >
+        <dubbo:parameter key="threadname" value="Dubbo-enterprise-holmes-"/>
+        <dubbo:parameter key="threadpool" value="cached"/>
+        <dubbo:parameter key="corethreads" value="2" />
+        <dubbo:parameter key="threads" value="10" />
+        <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
+
 </beans>

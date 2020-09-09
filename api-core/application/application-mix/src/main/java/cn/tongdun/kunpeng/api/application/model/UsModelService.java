@@ -4,6 +4,7 @@ import cn.fraudmetrix.holmes.service.intf.IDubboHolmesApi;
 import cn.fraudmetrix.holmes.service.object.ModelCalResponse;
 import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
 import cn.tongdun.kunpeng.api.application.util.ApplicationContextProvider;
+import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -22,6 +23,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -40,6 +43,14 @@ public class UsModelService implements ModelServiceExtPt {
             name = "enterPriseHolmesApi"
     )
     private IDubboHolmesApi enterPriseHolmesApi;
+
+    @Resource(
+            name = "kpEnterPriseHolmesApi"
+    )
+    private cn.fraudmetrix.kp.holmes.service.intf.IDubboHolmesApi kpEnterPriseHolmesApi;
+
+    @Autowired
+    ILocalEnvironment environment;
 
     @Override
     public boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo configInfo) {
@@ -63,7 +74,12 @@ public class UsModelService implements ModelServiceExtPt {
                         "dubbo_qps","holmes.dubbo.IDubboHolmesApi"};
                 metrics.counter("kunpeng.api.dubbo.qps",tags);
                 ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
-                modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
+                if (environment.getEnv().equalsIgnoreCase("staging")) {
+                    cn.fraudmetrix.kp.holmes.service.object.ModelCalResponse kpModelCalResponse = kpEnterPriseHolmesApi.calculate(modelRequest);
+                    BeanUtils.copyProperties(kpModelCalResponse, modelCalResponse);
+                }else {
+                    modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
+                }
                 timeContext.stop();
             }catch (Exception e){
                 logger.error("UsModelService IDubboHolmesApi calculate error:"+e);

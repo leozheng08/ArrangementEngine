@@ -351,6 +351,11 @@
                 <artifactId>holmes-share-enterprise</artifactId>
                 <version>1.0.0-RELEASE</version>
             </dependency>
+            <dependency>
+                <groupId>cn.tongdun</groupId>
+                <artifactId>kp-holmes-share-enterprise</artifactId>
+                <version>1.0.2-SNAPSHOT</version>
+            </dependency>
 
 
             <!-- groovy -->
