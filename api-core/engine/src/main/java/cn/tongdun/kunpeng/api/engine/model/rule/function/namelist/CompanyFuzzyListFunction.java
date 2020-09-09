@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.engine.util.LevenshteinDistanceUtils;
+import cn.tongdun.kunpeng.api.ruledetail.CompanyFuzzyListDetail;
 import cn.tongdun.kunpeng.api.ruledetail.PersonalFuzzyListDetail;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -18,35 +19,33 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
- * 个人模糊匹配列表规则函数
+ * 企业模糊匹配列表规则函数
  */
-public class PersonalFuzzyListFunction extends AbstractFunction {
+public class CompanyFuzzyListFunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersonalFuzzyListFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompanyFuzzyListFunction.class);
     private static final String COMMA_SEPARATOR = ",";
     private static final String SEMICOLON_SEPARATOR = ";";
 
     private String definitionList;
     private String nameField;
-    private Double nameWeight;
-    private String birthdayField;
-    private Double birthdayWeight;
-    private Double similarity;
-    private String genderField;
+    private String registerNoField;
+    private Double nameSimilarity;
     private Boolean isMatch;
 
     private String name;
-    private String birthday;
-    private String gender;
+    private String registerNo;
 
     private CustomListValueCache customListValueCache;
 
     @Override
     public String getName() {
-        return Constant.Function.WATCHLIST_PERSONAL_FUZZY_LIST;
+        return Constant.Function.WATCHLIST_COMPANY_FUZZY_LIST;
     }
 
 
@@ -60,16 +59,10 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
                 definitionList = param.getValue();
             } else if (StringUtils.equals("name", param.getName())) {
                 nameField = param.getValue();
-            } else if (StringUtils.equals("nameWeight", param.getName())) {
-                nameWeight = Double.valueOf(param.getValue()) / 100;
-            } else if (StringUtils.equals("birthday", param.getName())) {
-                birthdayField = param.getValue();
-            } else if (StringUtils.equals("birthdayWeight", param.getName())) {
-                birthdayWeight = Double.valueOf(param.getValue()) / 100;
-            } else if (StringUtils.equals("similarity", param.getName())) {
-                similarity = Double.valueOf(param.getValue()) / 100;
-            } else if (StringUtils.equals("gender", param.getName())) {
-                genderField = param.getValue();
+            } else if (StringUtils.equals("no", param.getName())) {
+                registerNoField = param.getValue();
+            } else if (StringUtils.equals("nameSimilarity", param.getName())) {
+                nameSimilarity = Double.valueOf(param.getValue()) / 100;
             } else if (StringUtils.equals("isMatch", param.getName())) {
                 isMatch = StringUtils.equals(param.getValue(), "1");
             }
@@ -92,14 +85,13 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
      */
     @Override
     public FunctionResult run(ExecuteContext context) {
-        if (StringUtils.isAnyBlank(nameField, birthdayField)) {
+        if (StringUtils.isAnyBlank(nameField, registerNoField)) {
             return new FunctionResult(false, null);
         }
         List<String> dataList = customListValueCache.get(this.definitionList);
 
-        this.gender = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.genderField);
+        this.registerNo = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.registerNoField);
         this.name = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.nameField);
-        this.birthday = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.birthdayField);
 
         Set<String> matchList = new HashSet<>();
         for(String dataValue: dataList){
@@ -125,25 +117,27 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
 
     private boolean isMatch(AbstractFraudContext context, String data){
         String[] valueArr = data.split(COMMA_SEPARATOR);
-        String nameValue = valueArr[0];
-        String birthdayValue = valueArr[1];
-        String genderValue = valueArr[2];
-        if(StringUtils.isEmpty(this.gender) || StringUtils.equals(genderValue, this.gender)){
-            double nameSimilarity = LevenshteinDistanceUtils.editDistanceSimilary(this.name, nameValue);
-            double birthdaySimilarity = StringUtils.equals(this.birthday, birthdayValue)? 1.0:0.0;
-            double tempSimilarity = nameSimilarity * this.nameWeight + birthdaySimilarity * this.birthdayWeight;
-            if(tempSimilarity > this.similarity){
+        String registerNoValue = valueArr[0];
+        String nameValue = valueArr[1];
+        if(StringUtils.isNotBlank(this.registerNo)){
+            if(StringUtils.equals(this.registerNo, registerNoValue)){
                 return true;
+            } else {
+                return false;
             }
         }else {
-            return false;
+            double tempSimilarity = LevenshteinDistanceUtils.editDistanceSimilary(this.name, nameValue);
+            if(tempSimilarity >= this.nameSimilarity){
+                return true;
+            } else {
+                return false;
+            }
         }
-        return false;
     }
 
     private DetailCallable buildConditionDetail(AbstractFraudContext context, Set<String> matchList) {
         return () -> {
-            PersonalFuzzyListDetail detail = new PersonalFuzzyListDetail();
+            CompanyFuzzyListDetail detail = new CompanyFuzzyListDetail();
             detail.setRuleUuid(this.ruleUuid);
             detail.setConditionUuid(this.conditionUuid);
             if (CollectionUtils.isEmpty(matchList)) {
@@ -153,9 +147,8 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
             }
             detail.setDescription(description);
             detail.setName(this.name);
-            detail.setBirthday(this.birthday);
-            detail.setGender(this.gender);
-
+            detail.setNo(this.registerNo);
+            detail.setNameSimilarity(String.valueOf(this.nameSimilarity));
             return detail;
         };
     }

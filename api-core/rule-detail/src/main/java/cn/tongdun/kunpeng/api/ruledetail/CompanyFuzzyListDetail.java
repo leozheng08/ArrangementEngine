@@ -27,7 +27,7 @@ public class CompanyFuzzyListDetail extends ConditionDetail {
     /**
      * 企业名称相似度
      */
-    private String nameimilarity;
+    private String nameSimilarity;
 
     public CompanyFuzzyListDetail() {
         super("company_fuzzy_list");

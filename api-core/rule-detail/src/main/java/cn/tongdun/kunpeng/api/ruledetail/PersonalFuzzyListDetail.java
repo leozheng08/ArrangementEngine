@@ -41,6 +41,8 @@ public class PersonalFuzzyListDetail extends ConditionDetail {
      */
     private String similarity;
 
+    private Boolean isMatch;
+
     public PersonalFuzzyListDetail() {
         super("personal_fuzzy_list");
     }
