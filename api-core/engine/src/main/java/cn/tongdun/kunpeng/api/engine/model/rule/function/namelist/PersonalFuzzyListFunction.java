@@ -160,7 +160,7 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
             detail.setBirthday(this.birthday);
             detail.setBirthdayWeight(String.valueOf(this.birthdayWeight));
             detail.setGender(this.gender);
-
+            detail.setSimilarity(String.valueOf(this.similarity));
             return detail;
         };
     }
