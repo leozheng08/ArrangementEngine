@@ -7,4 +7,6 @@ pattern/functionKit=cn.tongdun.kunpeng.api.engine.model.rule.template.FunctionKi
 pattern/fourCalculation=cn.tongdun.kunpeng.api.engine.model.rule.template.FourCalculationRule
 watchlist/customList=cn.tongdun.kunpeng.api.engine.model.rule.template.CustomListRule
 watchlist/complexCustomList=cn.tongdun.kunpeng.api.engine.model.rule.template.ComplexCustomListRule
+watchlist/personalFuzzyMatching=cn.tongdun.kunpeng.api.engine.model.rule.template.PersonalFuzzyListRule
+watchlist/companyFuzzyMatching=cn.tongdun.kunpeng.api.engine.model.rule.template.CompanyFuzzyListRule
 pattern/terminated=cn.fraudmetrix.module.tdrule.rule.TerminatedRule
