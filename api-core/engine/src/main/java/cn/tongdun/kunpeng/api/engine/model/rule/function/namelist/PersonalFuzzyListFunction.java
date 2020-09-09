@@ -127,11 +127,11 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
     }
 
     private boolean isMatch(AbstractFraudContext context, String listNameUuid, String data){
-        double score = customListValueCache.getZsetScore(listNameUuid, data);
-        boolean flag = customListValueCache.isEffectiveValue(score, new Date());
-        if(!flag){
-            return false;
-        }
+//        double score = customListValueCache.getZsetScore(listNameUuid, data);
+//        boolean flag = customListValueCache.isEffectiveValue(score, new Date());
+//        if(!flag){
+//            return false;
+//        }
 
         String[] valueArr = data.split(COMMA_SEPARATOR);
         String nameValue = valueArr[0];
