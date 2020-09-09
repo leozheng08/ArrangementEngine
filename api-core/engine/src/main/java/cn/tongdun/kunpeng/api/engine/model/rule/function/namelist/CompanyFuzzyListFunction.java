@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -89,13 +90,16 @@ public class CompanyFuzzyListFunction extends AbstractFunction {
             return new FunctionResult(false, null);
         }
         List<String> dataList = customListValueCache.get(this.definitionList);
+        if(dataList == null){
+            return new FunctionResult(false, null);
+        }
 
         this.registerNo = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.registerNoField);
         this.name = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.nameField);
 
         Set<String> matchList = new HashSet<>();
         for(String dataValue: dataList){
-            boolean matchResult = isMatch((AbstractFraudContext) context, dataValue);
+            boolean matchResult = isMatch((AbstractFraudContext) context, this.definitionList, dataValue);
             if(matchResult){
                 matchList.add(dataValue);
             }
@@ -115,7 +119,13 @@ public class CompanyFuzzyListFunction extends AbstractFunction {
         }
     }
 
-    private boolean isMatch(AbstractFraudContext context, String data){
+    private boolean isMatch(AbstractFraudContext context, String listNameUuid, String data){
+        double score = customListValueCache.getZsetScore(listNameUuid, data);
+        boolean flag = customListValueCache.isEffectiveValue(score, new Date());
+        if(!flag){
+            return false;
+        }
+
         String[] valueArr = data.split(COMMA_SEPARATOR);
         String registerNoValue = valueArr[0];
         String nameValue = valueArr[1];

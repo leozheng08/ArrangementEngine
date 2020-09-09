@@ -96,6 +96,9 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
             return new FunctionResult(false, null);
         }
         List<String> dataList = customListValueCache.get(this.definitionList);
+        if(dataList == null){
+            return new FunctionResult(false, null);
+        }
 
         this.gender = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.genderField);
         this.name = (String)VelocityHelper.getDimensionValue((AbstractFraudContext) context, this.nameField);
@@ -103,7 +106,7 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
 
         Set<String> matchList = new HashSet<>();
         for(String dataValue: dataList){
-            boolean matchResult = isMatch((AbstractFraudContext) context, dataValue);
+            boolean matchResult = isMatch((AbstractFraudContext) context, this.definitionList, dataValue);
             if(matchResult){
                 matchList.add(dataValue);
             }
@@ -123,7 +126,13 @@ public class PersonalFuzzyListFunction extends AbstractFunction {
         }
     }
 
-    private boolean isMatch(AbstractFraudContext context, String data){
+    private boolean isMatch(AbstractFraudContext context, String listNameUuid, String data){
+        double score = customListValueCache.getZsetScore(listNameUuid, data);
+        boolean flag = customListValueCache.isEffectiveValue(score, new Date());
+        if(!flag){
+            return false;
+        }
+
         String[] valueArr = data.split(COMMA_SEPARATOR);
         String nameValue = valueArr[0];
         String birthdayValue = valueArr[1];
