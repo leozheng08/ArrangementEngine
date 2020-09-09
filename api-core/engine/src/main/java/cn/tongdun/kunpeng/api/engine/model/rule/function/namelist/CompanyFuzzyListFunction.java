@@ -99,7 +99,7 @@ public class CompanyFuzzyListFunction extends AbstractFunction {
 
         Set<String> matchList = new HashSet<>();
         for(String dataValue: dataList){
-            boolean matchResult = isMatch((AbstractFraudContext) context, this.definitionList, dataValue);
+            boolean matchResult = isMatch((AbstractFraudContext) context, dataValue);
             if(matchResult){
                 matchList.add(dataValue);
             }
@@ -119,13 +119,7 @@ public class CompanyFuzzyListFunction extends AbstractFunction {
         }
     }
 
-    private boolean isMatch(AbstractFraudContext context, String listNameUuid, String data){
-//        double score = customListValueCache.getZsetScore(listNameUuid, data);
-//        boolean flag = customListValueCache.isEffectiveValue(score, new Date());
-//        if(!flag){
-//            return false;
-//        }
-
+    private boolean isMatch(AbstractFraudContext context, String data){
         String[] valueArr = data.split(COMMA_SEPARATOR);
         String registerNoValue = valueArr[0];
         String nameValue = valueArr[1];
