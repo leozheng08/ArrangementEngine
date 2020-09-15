@@ -23,7 +23,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -66,7 +65,7 @@ public class UsModelService implements ModelServiceExtPt {
         modelRequest.put("version", configInfo.getModelVersion());
         modelRequest.put("seqId",fraudContext.getSeqId());
 
-        ModelCalResponse modelCalResponse = null;
+        ModelCalResponse modelCalResponse = new ModelCalResponse();
         try {
             try {
                 IMetrics metrics = (IMetrics) ApplicationContextProvider.getBean("prometheusMetricsImpl");
@@ -76,7 +75,7 @@ public class UsModelService implements ModelServiceExtPt {
                 ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
                 if (environment.getEnv().equalsIgnoreCase("staging")) {
                     cn.fraudmetrix.kp.holmes.service.object.ModelCalResponse kpModelCalResponse = kpEnterPriseHolmesApi.calculate(modelRequest);
-                    BeanUtils.copyProperties(kpModelCalResponse, modelCalResponse);
+                    modelCalResponse = JSON.parseObject(JSON.toJSONString(kpModelCalResponse),ModelCalResponse.class);
                 }else {
                     modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
                 }
