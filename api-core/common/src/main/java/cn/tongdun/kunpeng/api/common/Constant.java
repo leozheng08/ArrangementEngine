@@ -41,6 +41,9 @@ public class Constant {
         public static final String WATCHLIST_CUSTOM_LIST = "watchlist/customList";
         public static final String WATCHLIST_COMPLEX_CUSTOM_LIST = "watchlist/complexCustomList";
 
+        public static final String WATCHLIST_PERSONAL_FUZZY_LIST = "watchlist/personalFuzzyMatching";
+        public static final String WATCHLIST_COMPANY_FUZZY_LIST = "watchlist/companyFuzzyMatching";
+
 
         public static final String ANOMALY_DEVICE = "anomaly/device";
         public static final String ANOMALY_FP_EXCEPTION = "anomaly/fpException";

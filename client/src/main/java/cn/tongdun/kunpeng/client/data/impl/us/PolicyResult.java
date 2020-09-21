@@ -42,6 +42,8 @@ public class PolicyResult {
 
     private String finalDealTypeGrade;
 
+    private String policyUuid;
+
     private Map nusspecialMap;
 
     public boolean isSuccess() {
@@ -170,5 +172,13 @@ public class PolicyResult {
 
     public void setReasonCode(String reasonCode) {
         this.reasonCode = reasonCode;
+    }
+
+    public String getPolicyUuid() {
+        return policyUuid;
+    }
+
+    public void setPolicyUuid(String policyUuid) {
+        this.policyUuid = policyUuid;
     }
 }

@@ -8,3 +8,5 @@ time/timePointComparison=cn.tongdun.kunpeng.api.engine.model.rule.function.time.
 pattern/regex=cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.RegexFunction
 pattern/fourCalculation=cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.FourCalculation
 pattern/functionKit=cn.tongdun.kunpeng.api.engine.model.rule.function.pattern.FunctionKit
+watchlist/personalFuzzyMatching=cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.PersonalFuzzyListFunction
+watchlist/companyFuzzyMatching=cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CompanyFuzzyListFunction

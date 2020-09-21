@@ -106,12 +106,16 @@ public class CustomListValueRepository implements ICustomListValueRepository {
         if(null==listValueDO){
             return null;
         }
-        //列表类型，0为普通，1为复合
+        //列表类型，0为普通，1为复合，2 个人模糊匹配列表，3 企业模糊匹配列表
         int type = listValueDO.getColumnType();
         String value = null;
         if (type == 0) {
             value = listValueDO.getDataValue();
         } else if (type ==1) {
+            value = listValueDO.getColumnValues();
+        } else if (type ==2) {
+            value = listValueDO.getColumnValues();
+        } else if (type ==3) {
             value = listValueDO.getColumnValues();
         }
         long expireTime=0;

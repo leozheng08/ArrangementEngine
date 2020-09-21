@@ -7,7 +7,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2-beta-0903-08</version>
+    <version>1.0.2-beta-0915-01</version>
 
     <name>dependencies-bom</name>
 
@@ -351,7 +351,11 @@
                 <artifactId>holmes-share-enterprise</artifactId>
                 <version>1.0.0-RELEASE</version>
             </dependency>
-
+            <dependency>
+                <groupId>cn.tongdun</groupId>
+                <artifactId>kp-holmes-share-enterprise</artifactId>
+                <version>1.0.2-20200909</version>
+            </dependency>
 
             <!-- groovy -->
             <dependency>

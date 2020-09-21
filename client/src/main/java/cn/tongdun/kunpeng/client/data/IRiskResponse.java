@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.client.data;
 
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -69,4 +68,8 @@ public interface IRiskResponse extends IApiResponse {
     void setPolicyDetailResult(Object policyDetailResult);
 
     Object getPolicyDetailResult();
+
+    String getPolicyUuid();
+
+    void setPolicyUuid(String policyUuid);
 }
