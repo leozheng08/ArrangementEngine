@@ -139,16 +139,16 @@ public class DictionaryManager {
         return dictionaries;
     }
 
-    public List<Dictionary> getSwitchOnKafkaKey() {
+    public List<Dictionary> getChangeToNewModelKey() {
         List<Dictionary> dictionaries = null;
         try {
-            dictionaries = dict10MinuteCache.get("switchOnKey");
+            dictionaries = dict10MinuteCache.get("changeToNewModel");
             if (null == dictionaries) {
-                loadDictionary("switchOnKey");
-                return dict10MinuteCache.get("switchOnKey");
+                loadDictionary("changeToNewModel");
+                return dict10MinuteCache.get("changeToNewModel");
             }
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "get SwitchOnKafkaKey dictionary failed");
+            logger.error(TraceUtils.getFormatTrace() + "get changeToNewModel dictionary failed");
         }
         return dictionaries;
     }

@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelConfigInfo;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelParam;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -51,6 +52,9 @@ public class UsModelService implements ModelServiceExtPt {
     @Autowired
     ILocalEnvironment environment;
 
+    @Autowired
+    DictionaryManager dictionaryManager;
+
     @Override
     public boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo configInfo) {
 
@@ -73,7 +77,7 @@ public class UsModelService implements ModelServiceExtPt {
                         "dubbo_qps","holmes.dubbo.IDubboHolmesApi"};
                 metrics.counter("kunpeng.api.dubbo.qps",tags);
                 ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
-                if (environment.getEnv().equalsIgnoreCase("staging")) {
+                if ("new".equalsIgnoreCase(dictionaryManager.getChangeToNewModelKey().get(0).getValue()) || environment.getEnv().equalsIgnoreCase("staging")) {
                     cn.fraudmetrix.kp.holmes.service.object.ModelCalResponse kpModelCalResponse = kpEnterPriseHolmesApi.calculate(modelRequest);
                     modelCalResponse = JSON.parseObject(JSON.toJSONString(kpModelCalResponse),ModelCalResponse.class);
                 }else {
