@@ -35,7 +35,7 @@
         <common.arch.version>2.0.2</common.arch.version>
         <module.kafka.version>3.1.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
-        <fp.version>3.1.9</fp.version>
+        <fp.version>3.2.4</fp.version>
         <gaea-fact.version>1.0.6</gaea-fact.version>
 
         <lz4.version>1.7.1</lz4.version>
@@ -345,11 +345,6 @@
                         <artifactId>fastjson</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>cn.fraudmetrix</groupId>
-                <artifactId>holmes-share-enterprise</artifactId>
-                <version>1.0.0-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun</groupId>

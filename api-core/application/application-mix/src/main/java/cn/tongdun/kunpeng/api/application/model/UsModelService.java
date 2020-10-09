@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.application.model;
 
-import cn.fraudmetrix.holmes.service.intf.IDubboHolmesApi;
-import cn.fraudmetrix.holmes.service.object.ModelCalResponse;
+import cn.fraudmetrix.kp.holmes.service.object.ModelCalResponse;
 import cn.fraudmetrix.module.tdrule.constant.FieldTypeEnum;
 import cn.tongdun.kunpeng.api.application.util.ApplicationContextProvider;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
@@ -40,11 +39,6 @@ public class UsModelService implements ModelServiceExtPt {
     private static final Logger logger = LoggerFactory.getLogger(UsModelService.class);
 
     @Resource(
-            name = "enterPriseHolmesApi"
-    )
-    private IDubboHolmesApi enterPriseHolmesApi;
-
-    @Resource(
             name = "kpEnterPriseHolmesApi"
     )
     private cn.fraudmetrix.kp.holmes.service.intf.IDubboHolmesApi kpEnterPriseHolmesApi;
@@ -77,12 +71,7 @@ public class UsModelService implements ModelServiceExtPt {
                         "dubbo_qps","holmes.dubbo.IDubboHolmesApi"};
                 metrics.counter("kunpeng.api.dubbo.qps",tags);
                 ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
-                if ("new".equalsIgnoreCase(dictionaryManager.getChangeToNewModelKey().get(0).getValue()) || environment.getEnv().equalsIgnoreCase("staging")) {
-                    cn.fraudmetrix.kp.holmes.service.object.ModelCalResponse kpModelCalResponse = kpEnterPriseHolmesApi.calculate(modelRequest);
-                    modelCalResponse = JSON.parseObject(JSON.toJSONString(kpModelCalResponse),ModelCalResponse.class);
-                }else {
-                    modelCalResponse = enterPriseHolmesApi.calculate(modelRequest);
-                }
+                modelCalResponse = kpEnterPriseHolmesApi.calculate(modelRequest);
                 timeContext.stop();
             }catch (Exception e){
                 logger.error("UsModelService IDubboHolmesApi calculate error:"+e);

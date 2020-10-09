@@ -39,10 +39,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.fraudmetrix</groupId>
-            <artifactId>holmes-share-enterprise</artifactId>
-        </dependency>
-        <dependency>
             <groupId>cn.tongdun</groupId>
             <artifactId>kp-holmes-share-enterprise</artifactId>
         </dependency>
