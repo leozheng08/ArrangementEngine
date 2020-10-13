@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>starters</artifactId>
-    <version>1.0.2-beta-1009-01</version>
+    <version>1.0.2-beta-1012-01</version>
 
     <packaging>pom</packaging>
     <modules>
