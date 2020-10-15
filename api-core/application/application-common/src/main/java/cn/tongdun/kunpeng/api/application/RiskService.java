@@ -8,15 +8,10 @@ import cn.tongdun.kunpeng.api.application.step.ext.ICreateRiskResponseExtPt;
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
-import cn.tongdun.kunpeng.api.engine.model.compare.CompareInfo;
-import cn.tongdun.kunpeng.api.engine.model.compare.ICompareInfoRepository;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.api.IRiskService;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
@@ -30,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,14 +39,13 @@ public class RiskService implements IRiskService {
 
     @Autowired
     private ILocalEnvironment localEnvironment;
+
     @Autowired
     private PipelineExecutor pipelineExecutor;
+
     @Autowired
     private DecisionResultTypeCache decisionResultTypeCache;
-    @Autowired
-    ICompareInfoRepository iCompareInfoRepository;
-    @Autowired
-    private PolicyDefinitionCache policyDefinitionCache;
+
     @Autowired
     private ExtensionExecutor extensionExecutor;
 
@@ -167,21 +160,5 @@ public class RiskService implements IRiskService {
         }
         return bizScenario;
     }
-
-    private CompareInfo buildCompareInfo(RiskRequest request, IRiskResponse riskResponse, FraudContext context) {
-        CompareInfo compareInfo = new CompareInfo();
-        compareInfo.setGmtCreate(new Date());
-        compareInfo.setGmtModify(new Date());
-        compareInfo.setSeqId(context.getSeqId());
-        compareInfo.setEventOccurTime(context.getEventOccurTime());
-        compareInfo.setPartnerCode(request.getPartnerCode());
-        PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(request.getPartnerCode(), request.getAppName(), request.getEventId());
-        compareInfo.setPolicyName(policyDefinition == null ? "" : policyDefinition.getName());
-        compareInfo.setAppName(request.getAppName());
-        compareInfo.setKpReponse(JSON.toJSONString(riskResponse));
-        compareInfo.setKpRequest(JSON.toJSONString(request));
-        return compareInfo;
-    }
-
 
 }
