@@ -15,12 +15,6 @@
 
 
     <dependencies>
-
-<!--        <dependency>-->
-<!--            <groupId>cn.fraudmetrix</groupId>-->
-<!--            <artifactId>river-api</artifactId>-->
-<!--            <version>us-1.0.0-beta</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.aerospike</groupId>
             <artifactId>aerospike-client</artifactId>
