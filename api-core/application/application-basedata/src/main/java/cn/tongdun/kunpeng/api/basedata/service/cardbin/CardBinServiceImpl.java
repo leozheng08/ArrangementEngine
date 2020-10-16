@@ -60,7 +60,12 @@ public class CardBinServiceImpl implements CardBinService {
     @Autowired
     CardbinConfig cardbinConfig;
 
-    private CardBinTO getCardBinFromRedis(String id){
+    private CardBinTO getCardBinInfoFromRedis(String id){
+        // 入参校验: 校验卡号或者卡bin
+        if (!checkCardBinAll(id)) {
+            logger.error("输入参数校验失败：id=[{}]", id);
+            return null;
+        }
         String ns = cardbinConfig.getNameSpace();
         String value = null;
         String cardBin = id;
@@ -146,23 +151,11 @@ public class CardBinServiceImpl implements CardBinService {
         }
     }
 
-
-    /**is
-     * 根据银行卡或者卡bin查询卡bin信息
-     *
-     * @param id    银行卡或者卡bin
-     * @return      卡bin信息
-     */
-    @Override
-    public CardBinTO getCardBinInfoById(String id) {
+    private CardBinTO getCardBinInfoFromAsp(String id){
         // 入参校验: 校验卡号或者卡bin
         if (!checkCardBinAll(id)) {
             logger.error("输入参数校验失败：id=[{}]", id);
             return null;
-        }
-
-        if(cardbinConfig.isCardbinUsedReidsCache()){
-            return getCardBinFromRedis(id);
         }
 
         // 目前卡号全是16位，如果不足16位，则认为传入的是卡bin
@@ -195,6 +188,22 @@ public class CardBinServiceImpl implements CardBinService {
         // 拼装结果
         CardBinAll cardBinAll = packageCardBinAll(line);
         return trans2to(cardBinAll);
+    }
+
+
+    /**is
+     * 根据银行卡或者卡bin查询卡bin信息
+     *
+     * @param id    银行卡或者卡bin
+     * @return      卡bin信息
+     */
+    @Override
+    public CardBinTO getCardBinInfoById(String id) {
+        if(cardbinConfig.isCardbinUsedReidsCache()){
+            return getCardBinInfoFromRedis(id);
+        }else {
+            return getCardBinInfoFromAsp(id);
+        }
     }
 
     @Override
