@@ -8,10 +8,7 @@ import cn.fraudmetrix.forseti.fp.model.constant.Web;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.client.data.IHitRule;
-import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
-import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
+import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +32,7 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
     private DecisionResultTypeCache decisionResultTypeCache;
 
     @Override
-    public boolean generalOutput(AbstractFraudContext context, IRiskResponse response){
+    public boolean generalOutput(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
 
         PolicyResponse policyResponse = context.getPolicyResponse();
         if(policyResponse == null){
@@ -90,11 +87,13 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             }
             if (StringUtils.isNotEmpty(appOs)) {
                 Map outputDeviceInfo = postProcessDeviceInfo(appOs, deviceInfo);
+                outputDeviceInfo.put("blackBox", request.getBlackBox());
                 external.put("deviceInfo", outputDeviceInfo);
             } else {
+                deviceInfo.put("blackBox", request.getBlackBox());
                 external.put("deviceInfo", deviceInfo);
             }
-            external.put("blackBox", context.get("blackBox"));
+
             response.setCustomPolicyResult(external);
         }
 
