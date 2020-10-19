@@ -39,6 +39,8 @@ public class CardBinServiceImpl implements CardBinService {
 
     private static final String CARD_ALL_REGEX = "^(\\d{6}|\\d{7}|\\d{8}|\\d{9}|\\d{10}|\\d{11}|\\d{16})$";
 
+    private static final String SEMICOLON = ";";
+
     /**
      * 银行卡bin 类型
      */
@@ -83,7 +85,7 @@ public class CardBinServiceImpl implements CardBinService {
             value = redisHashKVRepository.hget(ns, cardBin);
         }
         if(value != null){
-            String[] columns = value.split(";");
+            String[] columns = value.split(SEMICOLON);
             CardBinTO cardBinTO = new CardBinTO();
 
             if (!columns[0].equals("")) {
