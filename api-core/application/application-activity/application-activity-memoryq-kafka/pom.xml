@@ -5,7 +5,7 @@
     <parent>
         <artifactId>application-activity</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-beta-1013-01</version>
+        <version>1.0.2-beta-1019-01</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
