@@ -94,6 +94,7 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             } else {
                 external.put("deviceInfo", deviceInfo);
             }
+            external.put("blackBox", context.get("blackBox"));
             response.setCustomPolicyResult(external);
         }
 

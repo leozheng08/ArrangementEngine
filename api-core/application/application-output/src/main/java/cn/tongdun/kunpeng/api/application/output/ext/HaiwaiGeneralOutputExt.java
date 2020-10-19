@@ -102,7 +102,7 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
                 external.put("deviceInfo", deviceInfo);
             }
         }
-
+        external.put("blackBox", context.get("blackBox"));
         response.setCustomPolicyResult(external);
 
 
