@@ -25,9 +25,6 @@ public class CardBinController {
     private Logger logger = LoggerFactory.getLogger(CardBinController.class);
 
     @Autowired
-    private AerospikeService aerospikeService;
-
-    @Autowired
     private CardBinService cardBinService;
 
 
