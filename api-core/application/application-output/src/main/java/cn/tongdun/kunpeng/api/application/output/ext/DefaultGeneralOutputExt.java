@@ -87,10 +87,8 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             }
             if (StringUtils.isNotEmpty(appOs)) {
                 Map outputDeviceInfo = postProcessDeviceInfo(appOs, deviceInfo);
-                outputDeviceInfo.put("blackBox", request.getBlackBox());
                 external.put("deviceInfo", outputDeviceInfo);
             } else {
-                deviceInfo.put("blackBox", request.getBlackBox());
                 external.put("deviceInfo", deviceInfo);
             }
 
