@@ -5,10 +5,7 @@ import java.util.Map;
 
 /**
  * 全球卡BIN服务
- * 返回参数格式不同，使用新的接口
  *
- * @author lizh
- * @date 2019/7/16
  */
 public interface CardBinService {
     /**

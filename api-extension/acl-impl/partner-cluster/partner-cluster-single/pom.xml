@@ -5,7 +5,7 @@
     <parent>
         <artifactId>partner-cluster</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-beta-1019-06</version>
+        <version>1.0.2-release-20201020-01</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
