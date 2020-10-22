@@ -1,8 +1,5 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-//import cn.fraudmetrix.api.dubbo.FraudService;
-//import cn.fraudmetrix.api.entity.CardBinTO;
-//import cn.fraudmetrix.api.result.RiverResult;
 import cn.fraudmetrix.module.riskbase.object.BinInfoDO;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinTO;
@@ -26,9 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UsBinInfoService implements BinInfoServiceExtPt{
     private static final Logger logger = LoggerFactory.getLogger(UsBinInfoService.class);
 
-//    @Autowired
-//    private FraudService fraudService;
-
     @Autowired
     private CardBinService cardBinService;
 
@@ -45,16 +39,6 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
     public boolean getBinInfo(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String cardBin = (String)context.get("cardBin");
         if (StringUtils.isNotBlank(cardBin)) {
-            // 调用river获取CardBin信息
-//            RiverResult<CardBinTO> result = null;
-//            try {
-//                result = fraudService.cardBin(cardBin);
-//            } catch (Exception e) {
-//                logger.error("调用river获取cardbin数据异常", e);
-//            }
-//            if (null != result && result.isSuccess()) {
-//                setContext(context, result.getData());
-//            }
             CardBinTO cardBinTO = null;
             try {
                 cardBinTO = cardBinService.getCardBinInfoById(cardBin);
@@ -82,36 +66,10 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
      * @param cardBinTO     卡bin信息
      */
     private void setContext(AbstractFraudContext context, CardBinTO cardBinTO) {
-//        Map<String, String> elements = context.getElements();
-//        elements.put("S_T_VB_CARDBIN", cardBinTO.getBin().toString());
-//        setValue(elements, "S_T_VB_CARDBRAND", cardBinTO.getCardBrand());
-//        setValue(elements, "S_T_VB_CARDTYPE", cardBinTO.getCardType());
-//        setValue(elements, "S_T_VB_CARDCATEGORY", cardBinTO.getCardCategory());
-//        setValue(elements, "S_T_VB_ISONAME", cardBinTO.getIsoName());
-//        setValue(elements, "S_T_VB_ISOA2", cardBinTO.getIsoA2());
-//        setValue(elements, "S_T_VB_ISOA3", cardBinTO.getIsoA3());
-//        setValue(elements, "S_T_VB_ISSUINGORG", cardBinTO.getIssuingOrg());
-//        setValue(elements, "S_T_VB_ISSUINGORGWEB", cardBinTO.getIssuingOrgWeb());
-//        setValue(elements, "S_T_VB_PANLENGTH", cardBinTO.getPanLength().toString());
-//        setValue(elements, "S_T_VB_PURPOSEFLAG", cardBinTO.getPurposeFlag());
-//        setValue(elements, "S_T_VB_REGULATED", cardBinTO.getRegulated());
-//        setValue(elements, "S_T_VB_COUNTRYNAME", cardBinTO.getCountryName());
-
-//        setValue(context, "", cardBinTO.getBin().toString());
         setValue(context, "cardBrand", cardBinTO.getCardBrand());
         setValue(context, "cardType", cardBinTO.getCardType());
         setValue(context, "cardCategory", cardBinTO.getCardCategory());
-
-//        setValue(context, "", cardBinTO.getIsoName());
-
         setValue(context, "isoa2", cardBinTO.getIsoA2());
-//        setValue(context, "", cardBinTO.getIsoA3());
-//        setValue(context, "", cardBinTO.getIssuingOrg());
-//        setValue(context, "", cardBinTO.getIssuingOrgWeb());
-
-//        setValue(context, "", cardBinTO.getPanLength().toString());
-//        setValue(context, "", cardBinTO.getPurposeFlag());
-//        setValue(context, "", cardBinTO.getRegulated());
         setValue(context, "cardBINCountry", cardBinTO.getCountryName());
         setValue(context, "cardBinCountry", cardBinTO.getCountryName());
     }
