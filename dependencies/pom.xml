@@ -29,7 +29,7 @@
         <guava-version>20.0</guava-version>
         <tdframework.version>1.0.7</tdframework.version>
         <ddd.version>1.0.5</ddd.version>
-        <tdrule.version>1.0.2-RELEASE</tdrule.version>
+        <tdrule.version>1.0.3-SNAPSHOT</tdrule.version>
         <tdflow.version>1.0.0</tdflow.version>
         <kunpeng-share.version>1.0.1-beta-0624-1</kunpeng-share.version>
         <common.arch.version>2.0.2</common.arch.version>

@@ -302,7 +302,6 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         Condition condition = new Condition();
         condition.setId(elementDTO.getId().intValue());
         condition.setConditionUuid(elementDTO.getUuid());
-        condition.setDescription(elementDTO.getDescription());
         condition.setRuleUuid(elementDTO.getBizUuid());
         //1.构造左变量
         ConditionParam left = constructLeft(elementDTO, functionDescList);

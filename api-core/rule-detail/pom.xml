@@ -23,5 +23,10 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>gaea-paas-client</artifactId>
+            <version>1.0.5</version>
+        </dependency>
     </dependencies>
 </project>

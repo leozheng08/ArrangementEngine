@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
 import lombok.Data;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 /**
  * 采样异常
  * @Author: liang.chen

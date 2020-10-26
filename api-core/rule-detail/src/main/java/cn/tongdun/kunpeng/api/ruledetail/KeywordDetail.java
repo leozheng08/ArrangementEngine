@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 /**
  * 关键词表规则详细
  * @Author: liang.chen

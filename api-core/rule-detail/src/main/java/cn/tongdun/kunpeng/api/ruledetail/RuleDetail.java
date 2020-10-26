@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 
 @Data
 public class RuleDetail implements Serializable {

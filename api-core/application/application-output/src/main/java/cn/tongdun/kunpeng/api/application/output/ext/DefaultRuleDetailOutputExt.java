@@ -1,10 +1,13 @@
 package cn.tongdun.kunpeng.api.application.output.ext;
 
 import cn.fraudmetrix.module.tdrule.model.IDetail;
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
+import cn.fraudmetrix.module.tdrule.rule.PlatformIndexDetail;
+import cn.fraudmetrix.module.tdrule.rule.PolicyIndexDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.api.ruledetail.ConditionDetail;
+import cn.tongdun.kunpeng.api.ruledetail.PlatformIndexCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -71,11 +74,24 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
             List<ConditionDetail> conditions = new ArrayList<>();
             for (Map.Entry<String, DetailCallable> conditionEntry : ruleEntry.getValue().entrySet()) {
                 IDetail iDetail = conditionEntry.getValue().call();
-                // TODO 增加指标输出内容/ 去重condition级别重复的变量
-                if (iDetail instanceof PlatformIndexDetail) {
 
+                // 处理平台指标/策略指标 相关详情输出
+                if (iDetail instanceof PlatformIndexDetail || iDetail instanceof PolicyIndexDetail) {
+                    PlatformIndexCustomDetail resultDetail = new PlatformIndexCustomDetail();
+                    String indexId = iDetail instanceof PlatformIndexDetail ? ((PlatformIndexDetail) iDetail).getIndexId() : ((PolicyIndexDetail)iDetail).getPolicyIndexId();
+                    PlatformIndexData platformIndexData = context.getPlatformIndexMap().get(indexId);
+                    cn.tongdun.gaea.paas.dto.ConditionDetail indexDataDetail = (cn.tongdun.gaea.paas.dto.ConditionDetail) platformIndexData.getDetail();
+                    if (platformIndexData != null) {
+                        resultDetail.setConditionUuid(conditionEntry.getKey());
+                        resultDetail.setIndexDesc(indexDataDetail.getDesc());
+                        resultDetail.setIndexName(indexDataDetail.getName());
+                        resultDetail.setIndexResult(indexDataDetail.getResult());
+                        resultDetail.setIndexDim(String.join(",", indexDataDetail.getMasterDimSet()));
+                    }
+                    conditions.add(resultDetail);
+                } else {
+                    conditions.add((ConditionDetail) iDetail);
                 }
-                conditions.add((ConditionDetail) iDetail);
             }
             if (!conditions.isEmpty()) {
                 ruleDetail.setConditions(conditions);

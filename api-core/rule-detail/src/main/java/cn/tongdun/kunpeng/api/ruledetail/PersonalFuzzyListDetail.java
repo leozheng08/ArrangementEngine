@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 import lombok.Data;
 
 import java.util.List;

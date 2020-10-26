@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 import lombok.Data;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * @Date: 2020/2/6 下午4:37
  */
 @Data
-public class DeviceStatusAbnormalDetail extends ConditionDetail{
+public class DeviceStatusAbnormalDetail extends ConditionDetail {
 
     /**
      * 异常状态码

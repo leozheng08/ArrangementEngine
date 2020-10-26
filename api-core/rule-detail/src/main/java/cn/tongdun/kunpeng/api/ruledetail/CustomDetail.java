@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
 import java.util.Map;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 /**
  * 自定义规则
  * @Author: liang.chen

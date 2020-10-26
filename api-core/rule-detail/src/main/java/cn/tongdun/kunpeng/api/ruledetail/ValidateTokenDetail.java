@@ -1,5 +1,8 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
+
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
+
 /**
  * 设备规则-验证码校验详情
  * @Author: liang.chen
