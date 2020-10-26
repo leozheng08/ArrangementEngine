@@ -34,4 +34,12 @@ public class QueueItem implements Serializable {
     public void setResponse(IRiskResponse response) {
         this.response = response;
     }
+
+    public RiskRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(RiskRequest request) {
+        this.request = request;
+    }
 }

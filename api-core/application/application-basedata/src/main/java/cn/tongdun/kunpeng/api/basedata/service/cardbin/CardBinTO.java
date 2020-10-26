@@ -2,10 +2,6 @@ package cn.tongdun.kunpeng.api.basedata.service.cardbin;
 
 import java.io.Serializable;
 
-/**
- * @author lizh
- * @date 2019/7/23
- */
 public class CardBinTO implements Serializable {
     private static final long serialVersionUID = -3154659039726598474L;
     /**

@@ -3,10 +3,7 @@ package cn.tongdun.kunpeng.api.application.output.ext;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.client.data.IHitRule;
-import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
-import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
+import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.kunpeng.client.data.impl.us.PolicyResult;
 import cn.tongdun.kunpeng.client.data.impl.us.SubPolicyResult;
 import cn.tongdun.tdframework.core.extension.BizScenario;
@@ -34,7 +31,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
     private DecisionResultTypeCache decisionResultTypeCache;
 
     @Override
-    public boolean generalOutput(AbstractFraudContext context, IRiskResponse response) {
+    public boolean generalOutput(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         // 对于北美的场景，考虑到规则详情已经迁移到了调用日志，保持原有的逻辑不变
         PolicyResponse policyResponse = context.getPolicyResponse();

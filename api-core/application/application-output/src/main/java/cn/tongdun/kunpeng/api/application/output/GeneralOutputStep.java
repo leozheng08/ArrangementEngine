@@ -29,7 +29,7 @@ public class GeneralOutputStep implements IRiskStep {
         //通过通用输出扩展点
         return extensionExecutor.execute(IGeneralOutputExtPt.class,
                 context.getBizScenario(),
-                extension -> extension.generalOutput(context,response)
+                extension -> extension.generalOutput(context,response,request)
         );
     }
 
