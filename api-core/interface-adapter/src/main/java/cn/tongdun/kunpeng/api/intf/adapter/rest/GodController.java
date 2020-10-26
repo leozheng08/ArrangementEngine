@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
-import cn.tongdun.kunpeng.api.basedata.service.cardbin.AerospikeService;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValueCache;
 import org.slf4j.Logger;
@@ -25,9 +24,6 @@ import java.util.Map;
 @RequestMapping("/manager_god")
 public class GodController {
     private Logger logger = LoggerFactory.getLogger(GodController.class);
-
-    @Autowired
-    private AerospikeService aerospikeService;
 
     @Autowired
     private CardBinService cardBinService;
