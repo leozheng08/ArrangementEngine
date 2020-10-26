@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application.output.ext;
 
+import cn.fraudmetrix.module.tdrule.model.IDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
@@ -16,10 +17,11 @@ import java.util.Map;
 
 /**
  * 详情输出扩展点默认实现
+ *
  * @Author: liang.chen
  * @Date: 2020/2/10 下午9:44
  */
-@Extension(tenant = BizScenario.DEFAULT,business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
+@Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
 
 
@@ -27,21 +29,21 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
     private DecisionResultTypeCache decisionResultTypeCache;
 
     @Override
-    public boolean ruleDetailOutput(AbstractFraudContext context,IRiskResponse response){
+    public boolean ruleDetailOutput(AbstractFraudContext context, IRiskResponse response) {
 
         Map<String, Map<String, DetailCallable>> functionHitDetail = context.getFunctionHitDetail();
-        if(functionHitDetail == null || functionHitDetail.isEmpty()){
+        if (functionHitDetail == null || functionHitDetail.isEmpty()) {
             return true;
         }
 
         Map<String, RuleResponse> ruleResponseMap = new HashMap<>(16);
         PolicyResponse policyResponse = context.getPolicyResponse();
         List<SubPolicyResponse> subPolicyResponseList = policyResponse.getSubPolicyResponses();
-        if(subPolicyResponseList != null){
-            for(SubPolicyResponse subPolicyResponse:subPolicyResponseList){
+        if (subPolicyResponseList != null) {
+            for (SubPolicyResponse subPolicyResponse : subPolicyResponseList) {
                 List<RuleResponse> ruleResponseList = subPolicyResponse.getRuleResponses();
-                if(ruleResponseList != null){
-                    for(RuleResponse ruleResponse:ruleResponseList){
+                if (ruleResponseList != null) {
+                    for (RuleResponse ruleResponse : ruleResponseList) {
                         ruleResponseMap.put(ruleResponse.getUuid(), ruleResponse);
                     }
                 }
@@ -50,33 +52,38 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
 
         List<RuleDetail> ruleDetailList = new ArrayList<>();
 
-        for(Map.Entry<String, Map<String, DetailCallable>> ruleEntry :functionHitDetail.entrySet()){
+        for (Map.Entry<String, Map<String, DetailCallable>> ruleEntry : functionHitDetail.entrySet()) {
             RuleDetail ruleDetail = new RuleDetail();
             String ruleUuid = ruleEntry.getKey();
             ruleDetail.setRuleUuid(ruleUuid);
             RuleResponse ruleResponse = ruleResponseMap.get(ruleUuid);
-            if(ruleResponse != null){
+            if (ruleResponse != null) {
                 //非权重模式
-                if(ruleResponse.getDecision()!=null){
+                if (ruleResponse.getDecision() != null) {
                     ruleDetail.setDecision(ruleResponse.getDecision());
                 }
                 //权重模式下取分数
-                if(ruleResponse.getScore()!=null){
-                    ruleDetail.setScore((double)ruleResponse.getScore());
+                if (ruleResponse.getScore() != null) {
+                    ruleDetail.setScore((double) ruleResponse.getScore());
                 }
                 ruleDetail.setRuleName(ruleResponse.getName());
             }
             List<ConditionDetail> conditions = new ArrayList<>();
-            for(Map.Entry<String, DetailCallable> conditionEntry: ruleEntry.getValue().entrySet()){
-                conditions.add((ConditionDetail) conditionEntry.getValue().call());
+            for (Map.Entry<String, DetailCallable> conditionEntry : ruleEntry.getValue().entrySet()) {
+                IDetail iDetail = conditionEntry.getValue().call();
+                // TODO 增加指标输出内容/ 去重condition级别重复的变量
+                if (iDetail instanceof PlatformIndexDetail) {
+
+                }
+                conditions.add((ConditionDetail) iDetail);
             }
-            if(!conditions.isEmpty()){
+            if (!conditions.isEmpty()) {
                 ruleDetail.setConditions(conditions);
             }
             ruleDetailList.add(ruleDetail);
         }
 
-        if(!ruleDetailList.isEmpty()) {
+        if (!ruleDetailList.isEmpty()) {
             response.setRuleDetails(ruleDetailList);
         }
 
