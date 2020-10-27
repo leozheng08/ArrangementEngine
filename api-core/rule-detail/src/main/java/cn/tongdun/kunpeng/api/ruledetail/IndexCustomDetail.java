@@ -7,13 +7,13 @@ import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
  * @date: 2020-10-23 10:15
  * 额外补充部分平台指标输出字段
  **/
-public class PlatformIndexCustomDetail extends ConditionDetail {
+public class IndexCustomDetail extends ConditionDetail {
 
     private String indexName;
 
     private String indexDim;
 
-    private String indexResult;
+    private Object indexResult;
 
     private String indexDesc;
 
@@ -33,11 +33,11 @@ public class PlatformIndexCustomDetail extends ConditionDetail {
         this.indexDim = indexDim;
     }
 
-    public String getIndexResult() {
+    public Object getIndexResult() {
         return indexResult;
     }
 
-    public void setIndexResult(String indexResult) {
+    public void setIndexResult(Object indexResult) {
         this.indexResult = indexResult;
     }
 

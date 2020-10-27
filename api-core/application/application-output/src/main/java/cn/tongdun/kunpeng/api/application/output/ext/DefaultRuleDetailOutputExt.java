@@ -7,10 +7,12 @@ import cn.fraudmetrix.module.tdrule.rule.PolicyIndexDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
-import cn.tongdun.kunpeng.api.ruledetail.PlatformIndexCustomDetail;
+import cn.tongdun.kunpeng.api.ruledetail.IndexCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -76,9 +78,9 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                 IDetail iDetail = conditionEntry.getValue().call();
 
                 // 处理平台指标/策略指标 相关详情输出
-                if (iDetail instanceof PlatformIndexDetail || iDetail instanceof PolicyIndexDetail) {
-                    PlatformIndexCustomDetail resultDetail = new PlatformIndexCustomDetail();
-                    String indexId = iDetail instanceof PlatformIndexDetail ? ((PlatformIndexDetail) iDetail).getIndexId() : ((PolicyIndexDetail)iDetail).getPolicyIndexId();
+                if (iDetail instanceof PlatformIndexDetail) {
+                    IndexCustomDetail resultDetail = new IndexCustomDetail();
+                    String indexId = ((PlatformIndexDetail) iDetail).getIndexId();
                     PlatformIndexData platformIndexData = context.getPlatformIndexMap().get(indexId);
                     cn.tongdun.gaea.paas.dto.ConditionDetail indexDataDetail = (cn.tongdun.gaea.paas.dto.ConditionDetail) platformIndexData.getDetail();
                     if (platformIndexData != null) {
@@ -86,8 +88,16 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                         resultDetail.setIndexDesc(indexDataDetail.getDesc());
                         resultDetail.setIndexName(indexDataDetail.getName());
                         resultDetail.setIndexResult(indexDataDetail.getResult());
-                        resultDetail.setIndexDim(String.join(",", indexDataDetail.getMasterDimSet()));
+                        if (CollectionUtils.isNotEmpty(indexDataDetail.getMasterDimSet())) {
+                            resultDetail.setIndexDim(String.join(",", indexDataDetail.getMasterDimSet()));
+                        }
                     }
+                    conditions.add(resultDetail);
+                } else if (iDetail instanceof PolicyIndexDetail) {
+                    IndexCustomDetail resultDetail = new IndexCustomDetail();
+                    String indexId = ((PolicyIndexDetail)iDetail).getPolicyIndexId();
+                    Double indexVal = context.getPolicyIndexMap().get(indexId);
+                    resultDetail.setIndexResult(indexVal);
                     conditions.add(resultDetail);
                 } else {
                     conditions.add((ConditionDetail) iDetail);
