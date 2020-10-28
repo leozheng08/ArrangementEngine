@@ -2,23 +2,20 @@ package cn.tongdun.kunpeng.api.application.output.ext;
 
 import cn.fraudmetrix.module.tdrule.model.IDetail;
 import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
+import cn.fraudmetrix.module.tdrule.rule.FieldDetail;
 import cn.fraudmetrix.module.tdrule.rule.PlatformIndexDetail;
 import cn.fraudmetrix.module.tdrule.rule.PolicyIndexDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.data.*;
-import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.api.ruledetail.IndexCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 详情输出扩展点默认实现
@@ -29,9 +26,6 @@ import java.util.Map;
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
 
-
-    @Autowired
-    private DecisionResultTypeCache decisionResultTypeCache;
 
     @Override
     public boolean ruleDetailOutput(AbstractFraudContext context, IRiskResponse response) {
@@ -73,7 +67,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                 }
                 ruleDetail.setRuleName(ruleResponse.getName());
             }
-            List<ConditionDetail> conditions = new ArrayList<>();
+            Set<ConditionDetail> conditions = new HashSet<>();
             for (Map.Entry<String, DetailCallable> conditionEntry : ruleEntry.getValue().entrySet()) {
                 IDetail iDetail = conditionEntry.getValue().call();
 
@@ -99,12 +93,23 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                     Double indexVal = context.getPolicyIndexMap().get(indexId);
                     resultDetail.setIndexResult(indexVal);
                     conditions.add(resultDetail);
+                } else if (iDetail instanceof FieldDetail){
+                    FieldDetail fieldDetail = (FieldDetail) iDetail;
+                    IFieldDefinition fieldDefinition = context.getSystemFieldMap().get(fieldDetail.getName());
+                    if (null == fieldDefinition) {
+                        fieldDefinition = context.getExtendFieldMap().get(fieldDetail.getName());
+                    }
+                    if (null != fieldDefinition) {
+                        fieldDetail.setName(fieldDefinition.getDisplayName());
+                    }
+                    conditions.add(fieldDetail);
                 } else {
                     conditions.add((ConditionDetail) iDetail);
+
                 }
             }
             if (!conditions.isEmpty()) {
-                ruleDetail.setConditions(conditions);
+                ruleDetail.setConditions(Lists.newArrayList(conditions));
             }
             ruleDetailList.add(ruleDetail);
         }
