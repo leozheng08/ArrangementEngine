@@ -11,7 +11,7 @@ public class IndexCustomDetail extends ConditionDetail {
 
     private String indexName;
 
-    private String indexDim;
+    private Object indexDim;
 
     private Object indexResult;
 
@@ -25,11 +25,11 @@ public class IndexCustomDetail extends ConditionDetail {
         this.indexName = indexName;
     }
 
-    public String getIndexDim() {
+    public Object getIndexDim() {
         return indexDim;
     }
 
-    public void setIndexDim(String indexDim) {
+    public void setIndexDim(Object indexDim) {
         this.indexDim = indexDim;
     }
 

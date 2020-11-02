@@ -82,18 +82,23 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                         resultDetail.setIndexDesc(indexDataDetail.getDesc());
                         resultDetail.setIndexName(indexDataDetail.getName());
                         resultDetail.setIndexResult(indexDataDetail.getResult());
-                        if (CollectionUtils.isNotEmpty(indexDataDetail.getMasterDimSet())) {
-                            resultDetail.setIndexDim(String.join(",", indexDataDetail.getMasterDimSet()));
+                        Set<String> dimSets = indexDataDetail.getMasterDimSet();
+                        if (CollectionUtils.isNotEmpty(dimSets)) {
+                            Set<String> dimVal = new HashSet<>(dimSets.size());
+                            for (String dim : dimSets) {
+                                dimVal.add(String.valueOf(context.get(dim)));
+                            }
+                            resultDetail.setIndexDim(String.join(",", dimVal));
                         }
                     }
                     conditions.add(resultDetail);
                 } else if (iDetail instanceof PolicyIndexDetail) {
                     IndexCustomDetail resultDetail = new IndexCustomDetail();
-                    String indexId = ((PolicyIndexDetail)iDetail).getPolicyIndexId();
+                    String indexId = ((PolicyIndexDetail) iDetail).getPolicyIndexId();
                     Double indexVal = context.getPolicyIndexMap().get(indexId);
                     resultDetail.setIndexResult(indexVal);
                     conditions.add(resultDetail);
-                } else if (iDetail instanceof FieldDetail){
+                } else if (iDetail instanceof FieldDetail) {
                     FieldDetail fieldDetail = (FieldDetail) iDetail;
                     IFieldDefinition fieldDefinition = context.getSystemFieldMap().get(fieldDetail.getName());
                     if (null == fieldDefinition) {
