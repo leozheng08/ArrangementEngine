@@ -29,10 +29,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>cn.fraudmetrix.forseti.fp</groupId>
-            <artifactId>fp-client</artifactId>
-        </dependency>
-        <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>engine</artifactId>
         </dependency>
