@@ -41,17 +41,29 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>starter-saas</artifactId>
-<!--            <version>1.0.2-beta-0624-7</version>-->
             <version>${project.version}</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>cn.tongdun.kunpeng-api</groupId>-->
+            <!--<artifactId>starter-zbx</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
 
         <!-- test start -->
         <dependency>
