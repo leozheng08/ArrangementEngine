@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
-import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValueCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
