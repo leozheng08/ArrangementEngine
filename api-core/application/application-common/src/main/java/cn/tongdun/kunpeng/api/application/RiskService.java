@@ -70,6 +70,10 @@ public class RiskService implements IRiskService {
     @Override
     public IRiskResponse riskService(RiskRequest riskRequest) {
 
+        metrics.counter("kunpeng.api.riskservice.qps");
+
+
+
         ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
         if (StringUtils.isEmpty(riskRequest.getPartnerCode())){
             riskRequest.setPartnerCode("NULL_partnerCode");
@@ -77,8 +81,6 @@ public class RiskService implements IRiskService {
         String[] tags = {
                 "partner_code",riskRequest.getPartnerCode()};
         ITimeContext timePartner = metrics.metricTimer("kunpeng.api.riskservice.partner.rt",tags);
-
-        metrics.counter("kunpeng.api.riskservice.qps", tags);
 
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
