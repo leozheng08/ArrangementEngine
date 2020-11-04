@@ -9,6 +9,8 @@ import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
  **/
 public class IndexCustomDetail extends ConditionDetail {
 
+    private String detailType = "index";
+
     private String indexName;
 
     private Object indexDim;
@@ -49,4 +51,11 @@ public class IndexCustomDetail extends ConditionDetail {
         this.indexDesc = indexDesc;
     }
 
+    public String getDetailType() {
+        return detailType;
+    }
+
+    public void setDetailType(String detailType) {
+        this.detailType = detailType;
+    }
 }
