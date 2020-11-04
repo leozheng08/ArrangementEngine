@@ -111,7 +111,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                 } else if (iDetail instanceof FieldDetail) {
                     FieldDetail fieldDetail = (FieldDetail) iDetail;
                     FieldCustomDetail fieldCustomDetail = new FieldCustomDetail();
-                    fieldCustomDetail.setName(fieldDetail.getName());
+                    fieldCustomDetail.setValue(fieldDetail.getValue());
 
                     IFieldDefinition fieldDefinition = context.getSystemFieldMap().get(fieldDetail.getName());
                     if (null == fieldDefinition) {
