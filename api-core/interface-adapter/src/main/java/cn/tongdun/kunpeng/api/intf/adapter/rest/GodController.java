@@ -26,20 +26,8 @@ public class GodController {
     private Logger logger = LoggerFactory.getLogger(GodController.class);
 
     @Autowired
-    private CardBinService cardBinService;
-
-    @Autowired
     private CustomListValueCache customListValueCache;
 
-
-
-    @GetMapping(value = "cardbin_query", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    public Object cardBinQuery(String cardbin) {
-
-        Map<String, Object> resultMap = cardBinService.getRawCardBinInfo(cardbin);
-        return resultMap;
-    }
 
     @GetMapping(value = "custom_list_cache", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
