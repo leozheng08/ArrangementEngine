@@ -7,6 +7,8 @@ import cn.fraudmetrix.module.tdrule.rule.PlatformIndexDetail;
 import cn.fraudmetrix.module.tdrule.rule.PolicyIndexDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.data.*;
+import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
+import cn.tongdun.kunpeng.api.ruledetail.FieldCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.IndexCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
@@ -14,6 +16,8 @@ import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -26,6 +30,9 @@ import java.util.*;
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
 
+
+    @Autowired
+    RuleCache ruleCache;
 
     @Override
     public boolean ruleDetailOutput(AbstractFraudContext context, IRiskResponse response) {
@@ -80,6 +87,9 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                     if (platformIndexData != null) {
                         resultDetail.setConditionUuid(conditionEntry.getKey());
                         resultDetail.setIndexDesc(indexDataDetail.getDesc());
+                        if (StringUtils.isNotEmpty(((PlatformIndexDetail) iDetail).getDescription())) {
+                            resultDetail.setIndexDesc(((PlatformIndexDetail) iDetail).getDescription());
+                        }
                         resultDetail.setIndexName(indexDataDetail.getName());
                         resultDetail.setIndexResult(indexDataDetail.getResult());
                         Set<String> dimSets = indexDataDetail.getMasterDimSet();
@@ -100,14 +110,17 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                     conditions.add(resultDetail);
                 } else if (iDetail instanceof FieldDetail) {
                     FieldDetail fieldDetail = (FieldDetail) iDetail;
+                    FieldCustomDetail fieldCustomDetail = new FieldCustomDetail();
+                    fieldCustomDetail.setName(fieldDetail.getName());
+
                     IFieldDefinition fieldDefinition = context.getSystemFieldMap().get(fieldDetail.getName());
                     if (null == fieldDefinition) {
                         fieldDefinition = context.getExtendFieldMap().get(fieldDetail.getName());
                     }
                     if (null != fieldDefinition) {
-                        fieldDetail.setName(fieldDefinition.getDisplayName());
+                        fieldCustomDetail.setName(fieldDefinition.getDisplayName());
                     }
-                    conditions.add(fieldDetail);
+                    conditions.add(fieldCustomDetail);
                 } else {
                     conditions.add((ConditionDetail) iDetail);
 
