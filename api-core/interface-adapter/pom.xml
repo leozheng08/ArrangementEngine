@@ -44,11 +44,6 @@
             <artifactId>application-runengine</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-basedata</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!--必选的应用层 end-->
 
 
