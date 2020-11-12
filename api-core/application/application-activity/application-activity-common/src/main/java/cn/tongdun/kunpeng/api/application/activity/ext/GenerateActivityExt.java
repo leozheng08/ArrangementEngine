@@ -43,13 +43,15 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         actitivy.setProduceTime(System.currentTimeMillis());
         actitivy.setSequenceId(context.getSeqId());
 
-        actitivy.setRequest(encodeRequest(queueItem.getContext()));
+        actitivy.setRequest(encodeRequest(queueItem));
         actitivy.setResponse(queueItem.getResponse());
         actitivy.setSubReasonCodes(context.getSubReasonCodes());
         actitivy.setGeoipEntity(getGeoIpInfo(queueItem.getContext()));
+
         Map deviceInfo = context.getDeviceInfo();
         deviceInfo.put("blackBox", queueItem.getRequest().getBlackBox());
         actitivy.setDeviceInfo(deviceInfo);
+
         return actitivy;
     }
 
@@ -59,10 +61,16 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
     /**
      * 提取FraudContext中所有的系统字段和扩展字段
      */
-    private Map encodeRequest(AbstractFraudContext context) {
+    private Map encodeRequest(QueueItem queueItem) {
+        AbstractFraudContext context = queueItem.getContext();
+
+        // 额外添加status
+        String status = queueItem.getResponse().getFinalDecision();
 
         //取得上下文中基础的字段
         Map result = getBaseField(context);
+        result.put("status", status);
+
 
         // 获取字段值
         Map<String, Object> fieldValues = context.getFieldValues();
