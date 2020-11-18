@@ -44,6 +44,13 @@ public class EventMsgParser {
         put("app", AdminApplication.class);
     }};
 
+    public void registerMsgEntity(String key, Class entityClass){
+        if(entityMap.get(key) != null){
+            throw new IllegalArgumentException("消息实体类型重复");
+        }
+        entityMap.put(key, entityClass);
+    }
+
 
     public DomainEvent parse(String event){
         Map map = JSON.parseObject(event,HashMap.class);
