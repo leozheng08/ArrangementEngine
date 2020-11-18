@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.ruledetail;
 import cn.fraudmetrix.module.tdrule.model.IDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import lombok.Data;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 /**
  *
  * @author yuanhang

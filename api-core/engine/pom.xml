@@ -6,7 +6,11 @@
     <parent>
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-release-20201026-02</version>
+
+        <version>1.0.2-release-20201112-1</version>
+
+
+
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -100,9 +104,9 @@
             </exclusions>
         </dependency>
 
-        <!-- ================================================= -->
+        <!--  -->
         <!-- 日志及相关依赖（用slf4j+logback代替jcl+log4j） -->
-        <!-- ================================================= -->
+        <!--  -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -234,9 +238,9 @@
 
 
 
-        <!-- ================================================= -->
+        <!--  -->
         <!--              测试相关依赖                           -->
-        <!-- ================================================= -->
+        <!--  -->
         <!-- test start -->
         <dependency>
             <groupId>junit</groupId>

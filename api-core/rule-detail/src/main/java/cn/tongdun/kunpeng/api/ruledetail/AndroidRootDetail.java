@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
 import lombok.Data;
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 
 /**
  * 安卓root命中详情

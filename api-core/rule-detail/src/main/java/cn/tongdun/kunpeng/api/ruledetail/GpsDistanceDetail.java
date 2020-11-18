@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
 import lombok.Data;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 /**
  * 位置字段的距离计算，即计算位置A到位置B的距离
  * @Author: liang.chen

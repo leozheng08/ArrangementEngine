@@ -5,7 +5,11 @@
     <parent>
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-release-20201026-02</version>
+
+        <version>1.0.2-release-20201112-1</version>
+
+
+
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -38,11 +42,6 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-runengine</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-basedata</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!--必选的应用层 end-->

@@ -68,6 +68,11 @@ public class CardBinServiceImpl implements CardBinService {
             }
         }else {
             value = redisHashKVRepository.hget(ns, cardBin);
+            //8位卡bin查不到再查下前6位
+            if(null == value && id.length() == 8){
+                cardBin = id.substring(0, 6);
+                value = redisHashKVRepository.hget(ns, cardBin);
+            }
         }
         if(value != null){
             String[] columns = value.split(SEMICOLON);

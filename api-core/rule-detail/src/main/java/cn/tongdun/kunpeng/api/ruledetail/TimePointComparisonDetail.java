@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.ruledetail;
 import lombok.Data;
 
 import java.util.Date;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 
 /**
  * 时间点比较

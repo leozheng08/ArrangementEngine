@@ -5,7 +5,11 @@
     <parent>
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-release-20201026-02</version>
+
+        <version>1.0.2-release-20201112-1</version>
+
+
+
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,6 +28,11 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix.forseti.fp</groupId>
+            <artifactId>fp-client</artifactId>
         </dependency>
 
         <dependency>

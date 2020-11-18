@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.intf.adapter.rest;
 
-import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListValueCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,20 +25,8 @@ public class GodController {
     private Logger logger = LoggerFactory.getLogger(GodController.class);
 
     @Autowired
-    private CardBinService cardBinService;
-
-    @Autowired
     private CustomListValueCache customListValueCache;
 
-
-
-    @GetMapping(value = "cardbin_query", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    public Object cardBinQuery(String cardbin) {
-
-        Map<String, Object> resultMap = cardBinService.getRawCardBinInfo(cardbin);
-        return resultMap;
-    }
 
     @GetMapping(value = "custom_list_cache", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody

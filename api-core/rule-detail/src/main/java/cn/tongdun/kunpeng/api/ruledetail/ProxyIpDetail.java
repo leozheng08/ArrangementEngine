@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
 import lombok.Data;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 
 /**
  * 判断IP是否为代理访问

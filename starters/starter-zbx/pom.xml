@@ -2,15 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
-
+    <artifactId>starter-zbx</artifactId>
     <version>1.0.2-release-20201112-1</version>
-
-
-
-    <!-- 极简版，不依赖任何外部其他应用，基件只依赖db，没有配置中心与监控-->
-    <artifactId>starter-mini</artifactId>
+    <name>starter-zbx</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,20 +35,78 @@
 
 
     <dependencies>
+        <!--<dependency>-->
+            <!--&lt;!&ndash; kunpeng-api核心包，必选 &ndash;&gt;-->
+            <!--<groupId>cn.tongdun.kunpeng-api</groupId>-->
+            <!--<artifactId>core-spring-boot-starter</artifactId>-->
+            <!--<version>${api-core.version}</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>cn.tongdun.kunpeng</groupId>-->
+            <!--<artifactId>kunpeng-share-common</artifactId>-->
+        <!--</dependency>-->
+
         <dependency>
-            <!-- kunpeng-api核心包，必选 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>core-spring-boot-starter</artifactId>
+            <artifactId>client</artifactId>
             <version>${api-core.version}</version>
         </dependency>
         <dependency>
-            <!-- 决策接口入参校验 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>dubbo-spring-boot-autoconfigure</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <!--???-->
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>kafka-spring-boot-autoconfigure</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>infrastructure</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>interface-adapter</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>rule-detail</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>engine</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <!-- core end -->
+
+
+
+
+        <dependency>
+            <!-- 决策接口入参校验 ??? -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-check</artifactId>
             <version>${api-core.version}</version>
         </dependency>
+
+
         <dependency>
-            <!-- 决策接口支持groovy脚本 -->
+            <!-- 决策接口支持groovy脚本 ??? -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-groovy</artifactId>
             <version>${api-core.version}</version>
@@ -64,42 +119,56 @@
             <artifactId>event-notify-db</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+
         <dependency>
             <!-- 没有监控统计 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>metrics-ignore</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+
         <dependency>
             <!-- 决策接口输出 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-output</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+
         <dependency>
             <!-- 无redis等缓存基件 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>kv-cache-ignore</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+
         <dependency>
             <!-- 单一集群 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>partner-cluster-single</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+
         <dependency>
             <!-- 只有一个default默认合作方 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>admin-partner-ignore</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+
         <dependency>
             <!-- 只有一个default默认应用 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>admin-application-ignore</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+
+        <dependency>
+            <!-- 没有redis等基建，默认cache空接口-->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>kv-cache-ignore</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -124,4 +193,5 @@
             <url>http://maven.fraudmetrix.cn/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
 </project>

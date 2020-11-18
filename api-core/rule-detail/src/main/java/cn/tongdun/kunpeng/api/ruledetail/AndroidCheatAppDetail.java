@@ -1,10 +1,11 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
 import cn.fraudmetrix.module.tdrule.model.IDetail;
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import lombok.Data;
 
-import java.util.*;
+import java.util.List;
 
 
 /**

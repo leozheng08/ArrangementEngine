@@ -2,7 +2,7 @@ package cn.tongdun.kunpeng.api.ruledetail;
 
 
 import lombok.Data;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 
 /**
  * 四则运算详情

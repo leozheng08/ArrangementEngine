@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.ruledetail;
 import lombok.Data;
 
 import java.util.List;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 /**
  * 函数工具箱详情
  * @Author: liang.chen

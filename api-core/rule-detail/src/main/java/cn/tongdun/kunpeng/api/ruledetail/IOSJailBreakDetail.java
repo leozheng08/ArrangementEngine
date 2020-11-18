@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.ruledetail;
 
 import lombok.Data;
-
+import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
 /**
  * ios越狱识别命中详情
  * @Author: liang.chen
