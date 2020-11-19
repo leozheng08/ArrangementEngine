@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>starter-saas</artifactId>
 
-    <version>1.0.2-release-20201112-1</version>
+    <version>1.0.2-release-20201118-03</version>
     <name>starter-saas</name>
     <groupId>cn.tongdun.kunpeng-api</groupId>
 
@@ -13,9 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <api-core.version>1.0.2-release-20201112-1</api-core.version>
-        <api-extension.version>1.0.2-release-20201112-1</api-extension.version>
-        <api-consumer.version>1.0.0-beta-20201118-1</api-consumer.version>
+        <api-core.version>1.0.2-release-20201118-03</api-core.version>
+        <api-extension.version>1.0.2-release-20201118-03</api-extension.version>
+        <api-consumer.version>1.0.0-beta-0825-1</api-consumer.version>
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <skip_maven_deploy>false</skip_maven_deploy>
@@ -79,12 +79,12 @@
             <artifactId>application-policyindex</artifactId>
             <version>${api-core.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            &lt;!&ndash; 决策接口支持策略指标&ndash;&gt;-->
-<!--            <groupId>cn.tongdun.kunpeng-api</groupId>-->
-<!--            <artifactId>application-mail</artifactId>-->
-<!--            <version>${api-core.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            &lt;!&ndash; 决策接口支持策略指标&ndash;&gt;-->
+        <!--            <groupId>cn.tongdun.kunpeng-api</groupId>-->
+        <!--            <artifactId>application-mail</artifactId>-->
+        <!--            <version>${api-core.version}</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <!-- 决策接口支持策略指标-->
@@ -100,12 +100,12 @@
             <version>${api-core.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            &lt;!&ndash; 决策接口支持策略指标&ndash;&gt;-->
-<!--            <groupId>cn.tongdun.kunpeng-api</groupId>-->
-<!--            <artifactId>application-mix</artifactId>-->
-<!--            <version>${api-core.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            &lt;!&ndash; 决策接口支持策略指标&ndash;&gt;-->
+        <!--            <groupId>cn.tongdun.kunpeng-api</groupId>-->
+        <!--            <artifactId>application-mix</artifactId>-->
+        <!--            <version>${api-core.version}</version>-->
+        <!--        </dependency>-->
         <dependency>
             <!-- 决策接口输出 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
