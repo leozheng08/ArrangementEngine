@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>starter-sea</artifactId>
-    <version>1.0.2-release-20201202-1</version>
+    <version>1.0.2-release-20201203-1</version>
     <name>starter-zbx</name>
 
     <properties>
@@ -14,8 +14,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <api-core.version>1.0.2-release-20201202-1</api-core.version>
-        <api-extension.version>1.0.2-release-20201202-1</api-extension.version>
+        <api-core.version>1.0.2-release-20201203-1</api-core.version>
+        <api-extension.version>1.0.2-release-20201203-1</api-extension.version>
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <skip_maven_deploy>false</skip_maven_deploy>
@@ -118,14 +118,19 @@
             <version>${api-core.version}</version>
         </dependency>
 
-
+        <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 start -->
         <dependency>
             <!-- 没有kafka,redis基件，消息通知采用db事件表 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>event-notify-kafka-rawevent</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>event-notify-redis</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+        <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 end -->
 
 
         <dependency>
