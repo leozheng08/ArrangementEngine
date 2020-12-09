@@ -83,7 +83,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                     IndexCustomDetail resultDetail = new IndexCustomDetail();
                     String indexId = ((PlatformIndexDetail) iDetail).getIndexId();
                     PlatformIndexData platformIndexData = context.getPlatformIndexMap().get(indexId);
-                    cn.tongdun.gaea.paas.dto.ConditionDetail indexDataDetail = (cn.tongdun.gaea.paas.dto.ConditionDetail) platformIndexData.getDetail();
+                    cn.tongdun.shenwei.dto.ConditionDetail indexDataDetail = (cn.tongdun.shenwei.dto.ConditionDetail) platformIndexData.getDetail();
                     if (platformIndexData != null) {
                         resultDetail.setConditionUuid(conditionEntry.getKey());
                         resultDetail.setIndexDesc(indexDataDetail.getDesc());

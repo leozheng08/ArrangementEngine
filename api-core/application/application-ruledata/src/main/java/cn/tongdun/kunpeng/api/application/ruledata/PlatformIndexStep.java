@@ -1,10 +1,6 @@
 package cn.tongdun.kunpeng.api.application.ruledata;
 
 import cn.tongdun.gaea.client.common.IndicatrixRetCode;
-import cn.tongdun.gaea.paas.api.GaeaApi;
-import cn.tongdun.gaea.paas.dto.GaeaIndicatrixVal;
-import cn.tongdun.gaea.paas.dto.IndicatrixValQuery;
-import cn.tongdun.gaea.paas.dto.PaasResult;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -18,6 +14,10 @@ import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import cn.tongdun.shenwei.client.ShenWeiUsApi;
+import cn.tongdun.shenwei.dto.ShenWeiIndicatrixQuery;
+import cn.tongdun.shenwei.dto.ShenWeiIndicatrixVal;
+import cn.tongdun.shenwei.dto.ShenWeiResult;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import cn.tongdun.tdframework.core.pipeline.Step;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class PlatformIndexStep implements IRiskStep {
 
     @Autowired
-    private GaeaApi gaeaApi;
+    private ShenWeiUsApi shenWeiUsApi;
 
     @Autowired
     private PlatformIndexCache policyIndicatrixItemCache;
@@ -78,7 +78,7 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         try {
-            IndicatrixValQuery indicatrixValQuery = new IndicatrixValQuery();
+            ShenWeiIndicatrixQuery indicatrixValQuery = new ShenWeiIndicatrixQuery();
             indicatrixValQuery.setBizId(context.getSeqId());
             indicatrixValQuery.setPartnerCode(context.getPartnerCode());
             indicatrixValQuery.setEventType(context.getEventType());
@@ -89,7 +89,7 @@ public class PlatformIndexStep implements IRiskStep {
             indicatrixValQuery.setIndicatrixIds(indicatrixsParam);
             indicatrixValQuery.setNeedDetail(true);
 
-            PaasResult<List<GaeaIndicatrixVal>> indicatrixResult = null;
+            ShenWeiResult<List<ShenWeiIndicatrixVal>> indicatrixResult = null;
             try {
                 // 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
                 String[] tags = {
@@ -101,7 +101,7 @@ public class PlatformIndexStep implements IRiskStep {
                         "partner_code",request.getPartnerCode()};
                 ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt",partnerTags);
 
-                indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
+                indicatrixResult = shenWeiUsApi.calcMulti(indicatrixValQuery);
                 timeContext.stop();
                 timePartner.stop();
             } catch (Exception e) {
@@ -114,7 +114,7 @@ public class PlatformIndexStep implements IRiskStep {
                 logger.error(TraceUtils.getFormatTrace()+"Error occurred when {} indicatrix result for {}.", context.getSeqId(), JSON.toJSONString(indicatrixsParam), e);
             }
             if (null != indicatrixResult && indicatrixResult.isSuccess()) {
-                for (GaeaIndicatrixVal indicatrixVal : indicatrixResult.getData()) {
+                for (ShenWeiIndicatrixVal indicatrixVal : indicatrixResult.getData()) {
                     try {
                         resolveGaeaValue(context, indicatrixVal);
                     } catch (Exception e) {
@@ -131,7 +131,7 @@ public class PlatformIndexStep implements IRiskStep {
     }
 
 
-    public void resolveGaeaValue(AbstractFraudContext context, GaeaIndicatrixVal indicatrixVal) {
+    public void resolveGaeaValue(AbstractFraudContext context, ShenWeiIndicatrixVal indicatrixVal) {
 
         if (null==indicatrixVal){
             ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
@@ -198,7 +198,7 @@ public class PlatformIndexStep implements IRiskStep {
         }
     }
 
-    public PlatformIndexData setPlatformIndexData(GaeaIndicatrixVal indicatrixVal, Double result) {
+    public PlatformIndexData setPlatformIndexData(ShenWeiIndicatrixVal indicatrixVal, Double result) {
 
         PlatformIndexData indexData = new PlatformIndexData();
         indexData.setOriginalValue(indicatrixVal.getResult());
