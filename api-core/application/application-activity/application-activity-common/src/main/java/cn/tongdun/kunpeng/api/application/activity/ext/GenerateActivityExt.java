@@ -71,12 +71,11 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         //取得上下文中基础的字段
         Map result = getBaseField(context);
         result.put("status", status);
-        result.put("eventRealTime",new Date());
 
         // 获取字段值
         Map<String, Object> fieldValues = context.getFieldValues();
         putAllIfNotExists(result, fieldValues);
-
+        result.put("eventRealTime",new Date());
 
         return result;
     }
