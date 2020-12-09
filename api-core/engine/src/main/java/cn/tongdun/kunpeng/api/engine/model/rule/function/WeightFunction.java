@@ -80,7 +80,7 @@ public class WeightFunction extends AbstractCalculateFunction {
                     if(StringUtils.isBlank(functionParam.getType())||StringUtils.isBlank(functionParam.getValue())){
                         weightProperty = new Literal(0D);
                     } else {
-                        weightProperty = buildVariable(functionParam, null);
+                        weightProperty = buildVariable(functionParam, "Double");
                     }
                     break;
                 default:
