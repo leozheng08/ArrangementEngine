@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +71,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         //取得上下文中基础的字段
         Map result = getBaseField(context);
         result.put("status", status);
-
+        result.put("eventRealTime",new Date());
 
         // 获取字段值
         Map<String, Object> fieldValues = context.getFieldValues();
