@@ -12,12 +12,12 @@ import cn.tongdun.kunpeng.api.ruledetail.FieldCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.IndexCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.shenwei.dto.ShenWeiConditionDetail;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -84,9 +84,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                     IndexCustomDetail resultDetail = new IndexCustomDetail();
                     String indexId = ((PlatformIndexDetail) iDetail).getIndexId();
                     PlatformIndexData platformIndexData = context.getPlatformIndexMap().get(indexId);
-                    cn.tongdun.shenwei.dto.ConditionDetail indexDataDetail = new cn.tongdun.shenwei.dto.ConditionDetail();
-                    BeanUtils.copyProperties(platformIndexData.getDetail(), indexDataDetail);
-//                    cn.tongdun.shenwei.dto.ConditionDetail indexDataDetail = (cn.tongdun.shenwei.dto.ConditionDetail) platformIndexData.getDetail();
+                    ShenWeiConditionDetail indexDataDetail = (ShenWeiConditionDetail) platformIndexData.getDetail();
                     if (platformIndexData != null) {
                         resultDetail.setConditionUuid(conditionEntry.getKey());
                         resultDetail.setIndexDesc(indexDataDetail.getDesc());
