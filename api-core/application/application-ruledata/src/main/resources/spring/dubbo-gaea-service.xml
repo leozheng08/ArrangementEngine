@@ -7,8 +7,8 @@
 						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
        default-autowire="byName">
 
-    <dubbo:reference id="shenWeiApi" interface="cn.tongdun.shenwei.client.ShenWeiUsApi"
-                     version="${shenwei.paas.dubbo.version}" retries="0" timeout="${gaea.paas.dubbo.timeout}" connections="2" >
+    <dubbo:reference id="shenWeiUsApi" interface="cn.tongdun.shenwei.client.ShenWeiUsApi"
+                     version="${shenwei.paas.dubbo.version}" retries="0" timeout="${shenwei.paas.dubbo.timeout}" connections="2" >
         <dubbo:parameter key="threadname" value="Dubbo-shenWei-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
         <dubbo:parameter key="corethreads" value="2" />
