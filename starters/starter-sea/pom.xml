@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
-    <artifactId>starter-zbx</artifactId>
+    <artifactId>starter-sea</artifactId>
     <version>1.0.2-release-20201208-1</version>
     <name>starter-zbx</name>
 
@@ -35,17 +35,6 @@
 
 
     <dependencies>
-        <!--<dependency>-->
-            <!--&lt;!&ndash; kunpeng-api核心包，必选 &ndash;&gt;-->
-            <!--<groupId>cn.tongdun.kunpeng-api</groupId>-->
-            <!--<artifactId>core-spring-boot-starter</artifactId>-->
-            <!--<version>${api-core.version}</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>cn.tongdun.kunpeng</groupId>-->
-            <!--<artifactId>kunpeng-share-common</artifactId>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
@@ -92,13 +81,30 @@
             <version>${api-core.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-auth</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-policyindex</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
         <!-- core end -->
 
-
+        <dependency>
+            <!-- 决策接口支持策略指标-->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-fieldmapping</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
 
 
         <dependency>
-            <!-- 决策接口入参校验 ??? -->
+            <!-- 决策接口入参校验 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-check</artifactId>
             <version>${api-core.version}</version>
@@ -106,22 +112,29 @@
 
 
         <dependency>
-            <!-- 决策接口支持groovy脚本 ??? -->
+            <!-- 决策接口支持groovy脚本 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-groovy</artifactId>
             <version>${api-core.version}</version>
         </dependency>
 
-
+        <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 start -->
         <dependency>
             <!-- 没有kafka,redis基件，消息通知采用db事件表 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>event-notify-db</artifactId>
+            <artifactId>event-notify-kafka-rawevent</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>event-notify-redis</artifactId>
+            <version>${api-extension.version}</version>
+        </dependency>
+        <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 end -->
+
 
         <dependency>
-            <!-- 没有监控统计 -->
+            <!-- 没有监控统计 TODO 直接接入监控精灵监控 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>metrics-ignore</artifactId>
             <version>${api-extension.version}</version>
@@ -137,35 +150,28 @@
         <dependency>
             <!-- 无redis等缓存基件 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>kv-cache-ignore</artifactId>
+            <artifactId>kv-cache-redis</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
 
         <dependency>
-            <!-- 单一集群 -->
+            <!-- 按多集群部署，不同集群分别加载不同的合作列表 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>partner-cluster-single</artifactId>
+            <artifactId>partner-cluster-multi</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
 
         <dependency>
             <!-- 只有一个default默认合作方 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>admin-partner-ignore</artifactId>
+            <artifactId>admin-partner-db</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
 
         <dependency>
             <!-- 只有一个default默认应用 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>admin-application-ignore</artifactId>
-            <version>${api-extension.version}</version>
-        </dependency>
-
-        <dependency>
-            <!-- 没有redis等基建，默认cache空接口-->
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>kv-cache-ignore</artifactId>
+            <artifactId>admin-application-db</artifactId>
             <version>${api-extension.version}</version>
         </dependency>
 
