@@ -188,22 +188,6 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
     }
 
     /**
-     * 组装上下文平台指标结构数据
-     * @param indicatrixVal
-     * @param result
-     * @return
-     */
-    private PlatformIndexData setPlatformIndexData(PlatformIndexData indicatrixVal, Double result) {
-        // TODO delete
-        PlatformIndexData indexData = new PlatformIndexData();
-        indexData.setOriginalValue(result);
-        indexData.setValue(result);
-        indexData.setStringValue(indicatrixVal.getStringValue());
-        indexData.setDetail(indicatrixVal.getDetail());
-        return indexData;
-    }
-
-    /**
      * 组装指标平台参数
      * @param context
      * @return
