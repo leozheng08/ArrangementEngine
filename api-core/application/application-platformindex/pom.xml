@@ -5,44 +5,33 @@
     <parent>
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-
         <version>1.0.2-release-20201208-1</version>
-
-
-
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>application-ruledata</artifactId>
+    <artifactId>application-platformindex</artifactId>
     <packaging>jar</packaging>
-    <name>ruledata</name>
-
+    <name>platformindex</name>
 
     <dependencies>
-
-        <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-common</artifactId>
         </dependency>
-
+        
+        <!--指标平台接口-->
         <dependency>
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-platformindex</artifactId>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>gaea-paas-client</artifactId>
+            <version>1.0.5</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>cn.tongdun.gaea</groupId>
+            <artifactId>gaea-api-client</artifactId>
+            <version>3.2.7</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
-
 </project>

@@ -117,6 +117,12 @@
 
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-platformindex</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>application-groovy</artifactId>
                 <version>${project.version}</version>
             </dependency>
