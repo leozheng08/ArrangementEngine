@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.ruledetail.FieldCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.IndexCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.shenwei.dto.ShenWeiConditionDetail;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
@@ -83,7 +84,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                     IndexCustomDetail resultDetail = new IndexCustomDetail();
                     String indexId = ((PlatformIndexDetail) iDetail).getIndexId();
                     PlatformIndexData platformIndexData = context.getPlatformIndexMap().get(indexId);
-                    cn.tongdun.gaea.paas.dto.ConditionDetail indexDataDetail = (cn.tongdun.gaea.paas.dto.ConditionDetail) platformIndexData.getDetail();
+                    ShenWeiConditionDetail indexDataDetail = (ShenWeiConditionDetail) platformIndexData.getDetail();
                     if (platformIndexData != null) {
                         resultDetail.setConditionUuid(conditionEntry.getKey());
                         resultDetail.setIndexDesc(indexDataDetail.getDesc());
