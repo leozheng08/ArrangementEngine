@@ -14,10 +14,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +55,7 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
         // 先填充deviceInfo信息，responseAdjust中填充业务对接中的映射
         Map customPolicyResult = Maps.newHashMap();
         customPolicyResult.put("deviceInfo", context.getDeviceInfo());
+        customPolicyResult.put("geoIpInfo", context.getExternalReturnObj().get("geoipEntity"));
         response.setCustomPolicyResult(customPolicyResult);
         // 流控相关，默认false
         response.setIgnoreReq(false);
