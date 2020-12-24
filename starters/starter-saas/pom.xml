@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>starter-saas</artifactId>
 
-    <version>1.0.2-release-20201118-03</version>
+    <version>1.0.2-release-20201223-1-SNAPSHOT</version>
     <name>starter-saas</name>
     <groupId>cn.tongdun.kunpeng-api</groupId>
 
