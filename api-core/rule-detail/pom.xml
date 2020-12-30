@@ -29,8 +29,9 @@
         </dependency>
         <dependency>
             <groupId>cn.tongdun.client</groupId>
-            <artifactId>gaea-paas-client</artifactId>
-            <version>1.0.5</version>
+            <artifactId>shenwei-client</artifactId>
+            <version>1.0.1</version>
         </dependency>
+
     </dependencies>
 </project>

@@ -23,7 +23,7 @@ public class UsIndicatrixServiceExtPt implements IndicatrixServiceExtPt {
 
     private static final Logger logger = LoggerFactory.getLogger(UsIndicatrixServiceExtPt.class);
 
-    @Resource(name = "gaeaPaasService")
+    @Resource(name = "shenweiService")
     private KpIndicatrixService kpIndicatrixService;
 
     @Override

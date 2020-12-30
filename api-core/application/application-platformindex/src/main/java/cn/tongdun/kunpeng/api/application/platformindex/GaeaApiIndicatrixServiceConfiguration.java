@@ -16,14 +16,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 指标平台对接dubbo引用服务条件暴露
+ * gaea-api指标平台对接dubbo引用服务条件暴露
  * @author jie
  * @date 2020/12/16
  */
@@ -50,10 +49,6 @@ public class GaeaApiIndicatrixServiceConfiguration {
     @Autowired
     private RegistryConfig registryConfig;
 
-    @Autowired
-    private Environment environment;
-
-    @ConditionalOnClass(name = "cn.tongdun.gaea.api.client.IndicatrixApi")
     @ConditionalOnProperty(name = {"gaea.client.dubbo.version","gaea.client.dubbo.retries","gaea.client.credit.dubbo.timeout","gaea.client.antifraud.dubbo.timeout"})
     @Bean
     public IndicatrixApi indicatrixApi(){

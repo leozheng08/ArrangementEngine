@@ -9,16 +9,19 @@ import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +43,9 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     @Autowired
     private IMetrics metrics;
+
+    @Autowired
+    private PlatformIndexCache policyIndicatrixItemCache;
 
     @Override
     public IndicatrixApiResult<List<PlatformIndexData>> calculateByIdsAndSetContext(AbstractFraudContext context) {
@@ -192,7 +198,47 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
      * @param context
      * @return
      */
-    protected abstract IndicatrixRequest generateIndicatrixRequest(AbstractFraudContext context);
+    protected IndicatrixRequest generateIndicatrixRequest(AbstractFraudContext context){
+        // 1.取实时解析的gaea缓存
+        List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
+
+        if(indicatrixs == null || indicatrixs.isEmpty()){
+            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
+            return null;
+        }
+
+        Map<String, Object> activityParam = getGaeaFields(context);
+
+        List<Long> indicatrixsParam = new ArrayList<>();
+        for (String key : indicatrixs) {
+            if (StringUtils.isNotBlank(key)) {
+                try {
+                    indicatrixsParam.add(Long.valueOf(key));
+                } catch (Exception e) {
+                    logger.error(TraceUtils.getFormatTrace() + "PlatformIndexStep param parse error,key:" + key, e);
+                    continue;
+                }
+            }
+        }
+
+        if(indicatrixsParam.isEmpty()){
+            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
+            return null;
+        }
+
+        IndicatrixRequest indicatrixRequest = new IndicatrixRequest();
+        indicatrixRequest.setBizId(context.getSeqId());
+        indicatrixRequest.setPartnerCode(context.getPartnerCode());
+        indicatrixRequest.setEventType(context.getEventType());
+        indicatrixRequest.setEventId(context.getEventId());
+        indicatrixRequest.setAppName(context.getAppName());
+        indicatrixRequest.setActivity(activityParam);
+        indicatrixRequest.setEventOccurTime(context.getEventOccurTime().getTime());
+        indicatrixRequest.setIndicatrixIds(indicatrixsParam);
+        indicatrixRequest.setNeedDetail(true);
+
+        return indicatrixRequest;
+    }
 
     /**
      * 指标平台接口返回转换成统一结果对象

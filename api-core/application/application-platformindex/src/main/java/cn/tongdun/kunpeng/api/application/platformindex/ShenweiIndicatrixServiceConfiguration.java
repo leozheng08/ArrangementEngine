@@ -1,8 +1,7 @@
 package cn.tongdun.kunpeng.api.application.platformindex;
 
-import cn.tongdun.gaea.paas.api.GaeaApi;
-import cn.tongdun.kunpeng.api.application.platformindex.impl.GaeaPaasServiceImpl;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
+import cn.tongdun.kunpeng.api.application.platformindex.impl.ShenweiServiceImpl;
+import cn.tongdun.shenwei.client.ShenWeiUsApi;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ConsumerConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
@@ -15,22 +14,22 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import java.util.Map;
 
 /**
- * gaea-paas指标平台对接dubbo引用服务条件暴露
+ * shenwei指标平台对接dubbo引用服务条件暴露
  * @author jie
  * @date 2020/12/16
  */
 @Configuration
-@ConditionalOnClass(name = {"cn.tongdun.gaea.paas.api.GaeaApi"})
-public class GaeaPaasIndicatrixServiceConfiguration {
+@ConditionalOnClass(name = {"cn.tongdun.shenwei.client.ShenWeiUsApi"})
+@ConditionalOnProperty(name = {"shenwei.paas.dubbo.version","shenwei.paas.dubbo.timeout"})
+public class ShenweiIndicatrixServiceConfiguration {
 
-    @Value("${gaea.paas.dubbo.version}")
+    @Value("${shenwei.paas.dubbo.version}")
     private String gaeaPaasVersion;
-    @Value("${gaea.paas.dubbo.timeout}")
+    @Value("${shenwei.paas.dubbo.timeout}")
     private Integer gaeaPaasTimeout;
 
     @Autowired
@@ -40,18 +39,13 @@ public class GaeaPaasIndicatrixServiceConfiguration {
     @Autowired
     private RegistryConfig registryConfig;
 
-    @Autowired
-    private Environment environment;
-
-    @ConditionalOnClass(name = "cn.tongdun.gaea.paas.api.GaeaApi")
-    @ConditionalOnProperty(name = {"gaea.paas.dubbo.version","gaea.paas.dubbo.timeout"})
     @Bean
-    public GaeaApi gaeaApi(){
-        ReferenceConfig<GaeaApi> newReferenceConfig = new ReferenceConfig<>();
+    public ShenWeiUsApi shenWeiUsApi(){
+        ReferenceConfig<ShenWeiUsApi> newReferenceConfig = new ReferenceConfig<>();
         newReferenceConfig.setApplication(applicationConfig);
         newReferenceConfig.setConsumer(consumerConfig);
         newReferenceConfig.setRegistry(registryConfig);
-        newReferenceConfig.setInterface(GaeaApi.class);
+        newReferenceConfig.setInterface(ShenWeiUsApi.class);
         newReferenceConfig.setVersion(gaeaPaasVersion);
         newReferenceConfig.setTimeout(gaeaPaasTimeout);
         newReferenceConfig.setConnections(2);
@@ -59,7 +53,7 @@ public class GaeaPaasIndicatrixServiceConfiguration {
         newReferenceConfig.setRetries(0);
 
         Map<String, String> parameters = Maps.newHashMapWithExpectedSize(5);
-        parameters.put("threadname", "Dubbo-gaea-paas-");
+        parameters.put("threadname", "Dubbo-shenwei-");
         parameters.put("threadpool", "cached");
         parameters.put("corethreads", "2");
         parameters.put("threads", "10");
@@ -70,9 +64,9 @@ public class GaeaPaasIndicatrixServiceConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(name = "gaeaApi",value = GaeaApi.class)
-    public KpIndicatrixService gaeaPaasService(GaeaApi gaeaApi){
-        GaeaPaasServiceImpl paasGaeaService = new GaeaPaasServiceImpl(gaeaApi);
-        return paasGaeaService;
+    @ConditionalOnBean(name = "shenWeiUsApi",value = ShenWeiUsApi.class)
+    public KpIndicatrixService shenweiService(ShenWeiUsApi shenWeiUsApi){
+        ShenweiServiceImpl shenweiService = new ShenweiServiceImpl(shenWeiUsApi);
+        return shenweiService;
     }
 }

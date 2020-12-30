@@ -11,6 +11,7 @@ import java.util.List;
  * 指标接口对接适配接口
  *     @Resource name引用根据场景使用以下不同实现
  *     paasGaeaService: gaea-paas-client 对接方式（北美）
+ *     shenweiService: shenwei-client 对接方式（北美 新）
  *     gaeaApiAbnormalService: gaea-api-cliet 对接方式（国内、印尼）异常敏感型、信贷场景
  *     gaeaApiLatencyService: gaea-api-client 对接方式（国内、印尼）rt敏感型、信贷场景
  * @author jie

@@ -33,5 +33,11 @@
             <version>3.2.7</version>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>shenwei-client</artifactId>
+            <version>1.0.1</version>
+        </dependency>
     </dependencies>
 </project>

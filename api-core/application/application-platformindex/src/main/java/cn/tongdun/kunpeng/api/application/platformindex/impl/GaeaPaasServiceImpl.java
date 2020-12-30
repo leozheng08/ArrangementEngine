@@ -6,18 +6,14 @@ import cn.tongdun.gaea.paas.dto.IndicatrixValQuery;
 import cn.tongdun.gaea.paas.dto.PaasResult;
 import cn.tongdun.kunpeng.api.application.platformindex.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.application.platformindex.pojo.IndicatrixRequest;
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 北美指标平台对接
@@ -30,11 +26,8 @@ public class GaeaPaasServiceImpl extends AbstractKpIndicatrixService<PaasResult<
 
     private GaeaApi gaeaApi;
 
-    private PlatformIndexCache policyIndicatrixItemCache;
-
-    public GaeaPaasServiceImpl(GaeaApi gaeaApi, PlatformIndexCache policyIndicatrixItemCache) {
+    public GaeaPaasServiceImpl(GaeaApi gaeaApi) {
         this.gaeaApi = gaeaApi;
-        this.policyIndicatrixItemCache = policyIndicatrixItemCache;
     }
 
     @Override
@@ -55,49 +48,6 @@ public class GaeaPaasServiceImpl extends AbstractKpIndicatrixService<PaasResult<
         indicatrixResult = gaeaApi.calcMulti(indicatrixValQuery);
 
         return convertApiResult(indicatrixResult);
-    }
-
-    @Override
-    protected IndicatrixRequest generateIndicatrixRequest(AbstractFraudContext context) {
-        // 1.取实时解析的gaea缓存
-        List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
-
-        if(indicatrixs == null || indicatrixs.isEmpty()){
-            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
-            return null;
-        }
-
-        Map<String, Object> activityParam = getGaeaFields(context);
-
-        List<Long> indicatrixsParam = new ArrayList<>();
-        for (String key : indicatrixs) {
-            if (StringUtils.isNotBlank(key)) {
-                try {
-                    indicatrixsParam.add(Long.valueOf(key));
-                } catch (Exception e) {
-                    logger.error(TraceUtils.getFormatTrace() + "PlatformIndexStep param parse error,key:" + key, e);
-                    continue;
-                }
-            }
-        }
-
-        if(indicatrixsParam.isEmpty()){
-            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
-            return null;
-        }
-
-        IndicatrixRequest indicatrixRequest = new IndicatrixRequest();
-        indicatrixRequest.setBizId(context.getSeqId());
-        indicatrixRequest.setPartnerCode(context.getPartnerCode());
-        indicatrixRequest.setEventType(context.getEventType());
-        indicatrixRequest.setEventId(context.getEventId());
-        indicatrixRequest.setAppName(context.getAppName());
-        indicatrixRequest.setActivity(activityParam);
-        indicatrixRequest.setEventOccurTime(context.getEventOccurTime().getTime());
-        indicatrixRequest.setIndicatrixIds(indicatrixsParam);
-        indicatrixRequest.setNeedDetail(true);
-
-        return indicatrixRequest;
     }
 
     @Override
