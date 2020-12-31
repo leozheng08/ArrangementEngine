@@ -14,10 +14,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 海外租户实现
@@ -98,6 +95,9 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
             } else {
                 external.put("deviceInfo", deviceInfo);
             }
+        }
+        if (Objects.nonNull(context.getExternalReturnObj().get("geoipEntity"))) {
+            external.put("geoIpInfo", context.getExternalReturnObj().get("geoipEntity"));
         }
         response.setCustomPolicyResult(external);
 
