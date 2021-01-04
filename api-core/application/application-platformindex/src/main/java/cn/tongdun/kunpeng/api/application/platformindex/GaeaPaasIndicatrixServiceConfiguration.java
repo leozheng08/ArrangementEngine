@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.application.platformindex;
 
 import cn.tongdun.gaea.paas.api.GaeaApi;
 import cn.tongdun.kunpeng.api.application.platformindex.impl.GaeaPaasServiceImpl;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ConsumerConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
@@ -15,7 +14,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import java.util.Map;
 
@@ -40,8 +38,6 @@ public class GaeaPaasIndicatrixServiceConfiguration {
     @Autowired
     private RegistryConfig registryConfig;
 
-    @Autowired
-    private Environment environment;
 
     @ConditionalOnClass(name = "cn.tongdun.gaea.paas.api.GaeaApi")
     @ConditionalOnProperty(name = {"gaea.paas.dubbo.version","gaea.paas.dubbo.timeout"})
