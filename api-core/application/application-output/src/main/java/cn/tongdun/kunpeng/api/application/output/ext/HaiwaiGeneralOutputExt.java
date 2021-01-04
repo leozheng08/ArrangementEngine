@@ -24,7 +24,7 @@ import java.util.Map;
  * @Author: liang.chen
  * @Date: 2020/2/10 下午9:44
  */
-@Extension(tenant = "haiwai",business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
+@Extension(tenant = "sea",business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
 public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
 
 

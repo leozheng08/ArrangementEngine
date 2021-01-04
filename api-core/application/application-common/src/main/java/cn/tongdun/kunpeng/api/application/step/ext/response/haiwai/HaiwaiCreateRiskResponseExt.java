@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Author: liang.chen
  * @Date: 2020/3/2 上午2:44
  */
-@Extension(business = BizScenario.DEFAULT,tenant = "haiwai",partner = BizScenario.DEFAULT)
+@Extension(business = BizScenario.DEFAULT,tenant = "sea",partner = BizScenario.DEFAULT)
 public class HaiwaiCreateRiskResponseExt implements ICreateRiskResponseExtPt{
 
     @Autowired

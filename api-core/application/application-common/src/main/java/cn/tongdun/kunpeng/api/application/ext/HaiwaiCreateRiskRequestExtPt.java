@@ -15,7 +15,7 @@ import java.util.Set;
  * @Author: liang.chen
  * @Date: 2020/3/2 下午5:16
  */
-@Extension(business = BizScenario.DEFAULT,tenant = "haiwai",partner = BizScenario.DEFAULT)
+@Extension(business = BizScenario.DEFAULT,tenant = "sea",partner = BizScenario.DEFAULT)
 public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
 
     private static final Field[] fields = HaiwaiCreateRiskRequestExtPt.class.getDeclaredFields();
