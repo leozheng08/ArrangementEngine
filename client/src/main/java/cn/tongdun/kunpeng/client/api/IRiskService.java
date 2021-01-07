@@ -13,4 +13,8 @@ public interface IRiskService {
     IRiskResponse riskService(Map<String, Object> request);
 
     IRiskResponse riskService(RiskRequest request);
+
+    IRiskResponse riskService(Map<String, Object> request, String bizName);
+
+    IRiskResponse riskService(RiskRequest request, String bizName);
 }
