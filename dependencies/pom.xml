@@ -8,7 +8,7 @@
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
 
-    <version>1.0.2-release-20201211-03</version>
+    <version>1.0.2-release-20201211-04</version>
 
 
 
@@ -32,7 +32,7 @@
 
         <guava-version>20.0</guava-version>
         <tdframework.version>1.0.7</tdframework.version>
-        <ddd.version>1.0.5</ddd.version>
+        <ddd.version>1.0.6</ddd.version>
         <tdrule.version>1.0.5</tdrule.version>
         <tdflow.version>1.0.2</tdflow.version>
         <kunpeng-share.version>1.0.1-beta-0624-1</kunpeng-share.version>

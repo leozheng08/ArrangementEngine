@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class RedisHashBinaryKVRepository extends RedisBinaryKVRepository impleme
     public List<IValue<byte[],byte[]>> hscan(final byte[] prefix, final Cursor cursor, final int count) {
         ScanParams params = new ScanParams().count(count);
         ScanResult<Map.Entry<byte[], byte[]>> scanResult = kunPengRedisClient.hscan(prefix,
-                cursor.getStringCursor().getBytes(), params);
+                cursor.getStringCursor().getBytes(Charset.defaultCharset()), params);
         if (scanResult != null) {
             cursor.setStringCursor(scanResult.getStringCursor());
             List<Map.Entry<byte[], byte[]>> results = scanResult.getResult();
