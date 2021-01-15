@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.config.ConsumerConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
+import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.rpc.service.GenericService;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -67,6 +68,9 @@ public class DefaultGenericServiceManager implements GenericServiceManager {
     @Resource(name = "referenceConfig")
     private ReferenceConfig<GenericService> parentReferenceConfig;
 
+    @Autowired
+    private RegistryConfig registryConfig;
+
     /**
      * ConsumerConfig
      */
@@ -129,6 +133,7 @@ public class DefaultGenericServiceManager implements GenericServiceManager {
         ReferenceConfig<GenericService> newReferenceConfig = new ReferenceConfig<>();
         newReferenceConfig.setApplication(parentReferenceConfig.getApplication());
         newReferenceConfig.setConsumer(consumerConfig);
+        newReferenceConfig.setRegistry(registryConfig);
         newReferenceConfig.setInterface(interfaceDefinition.getServiceName());
         newReferenceConfig.setVersion(interfaceDefinition.getVersion());
         newReferenceConfig.setTimeout(Math.min(interfaceDefinition.getTimeout(), KUNTA_MAX_EXECUTE_TIME));

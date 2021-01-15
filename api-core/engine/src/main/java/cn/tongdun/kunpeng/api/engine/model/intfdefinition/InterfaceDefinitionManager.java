@@ -9,8 +9,12 @@ import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +26,8 @@ import java.util.stream.Collectors;
  * @Date: 2020/2/11 下午3:10
  */
 public class InterfaceDefinitionManager extends AbstractBizNode {
+
+    private static final Logger logger = LoggerFactory.getLogger(InterfaceDefinitionManager.class);
 
     /**
      * 接口的详细配置
@@ -66,6 +72,7 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
             genericDubboCaller = (IGenericDubboCaller)SpringContextHolder.getBean("genericDubboCaller");
             genericDubboCaller.call((AbstractFraudContext) executeContext, decisionFlowInterface);
         } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "ruleInterface run error,interfaceUuid:" + decisionFlowInterface.getUuid(), e);
         }
         nodeResult.putOneResult("Thread", Thread.currentThread().getName());
         return nodeResult;
@@ -78,20 +85,12 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
      */
     private List<InterfaceDefinitionParamInfo> buildParaInfo(List<Map> array) {
         if (null != array) {
+            // TODO cn/fraudmetrix/forseti/biz/ruleengine/dubbocaller/GenericDubboCaller.java:620  透传seqId的逻辑等，包括三方模型服务
             List<InterfaceDefinitionParamInfo> list = Lists.newArrayList();
             array.stream().forEach(json -> {
                 InterfaceDefinitionParamInfo paramInfo = new InterfaceDefinitionParamInfo();
                 paramInfo.setInterfaceField(JsonUtil.getString(json,"interface_field"));
                 paramInfo.setInterfaceType(JsonUtil.getString(json,"interface_type"));
-
-                boolean isNecessary = false;
-                if (json.containsKey("necessary")) {
-                    isNecessary = JsonUtil.getBoolean(json,"necessary");
-                }
-                boolean isArray = false;
-                if (json.containsKey("isArray")) {
-                    isArray = JsonUtil.getBoolean(json,"isArray");
-                }
 
                 if (json.containsKey("type")) {
                     paramInfo.setType(JsonUtil.getString(json,"type"));
@@ -102,8 +101,8 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
                 }
 
                 paramInfo.setRuleField(JsonUtil.getString(json,"rule_field"));
-                paramInfo.setNecessary(isNecessary);
-                paramInfo.setArray(isArray);
+                paramInfo.setNecessary(BooleanUtils.toBoolean(JsonUtil.getBoolean(json,"necessary")));
+                paramInfo.setArray(BooleanUtils.toBoolean(JsonUtil.getBoolean(json,"isArray")));
 
                 list.add(paramInfo);
             });

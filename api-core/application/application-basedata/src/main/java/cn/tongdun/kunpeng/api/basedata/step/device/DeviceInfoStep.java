@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.api.basedata.constant.FpReasonCodeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.RespDetailTypeEnum;
 import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.util.FpReasonUtils;
+import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
@@ -208,9 +209,9 @@ public class DeviceInfoStep implements IRiskStep {
         logger.info("deviceInfoQuery.query params :{}", JSON.toJSONString(params));
         try {
             String[] tags = {
-                    "dubbo_qps","fp.dubbo.DeviceInfoQuery"};
-            metrics.counter("kunpeng.api.dubbo.qps",tags);
-            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+                    MetricsConstant.METRICS_TAG_API_QPS_KEY,"fp.dubbo.DeviceInfoQuery"};
+            metrics.counter(MetricsConstant.METRICS_API_QPS_KEY,tags);
+            ITimeContext timeContext = metrics.metricTimer(MetricsConstant.METRICS_API_RT_KEY,tags);
             baseResult = deviceInfoQuery.query(params);
             timeContext.stop();
             if (null == baseResult) {
