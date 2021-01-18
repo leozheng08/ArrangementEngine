@@ -37,7 +37,7 @@ public class ContentRisk {
 
     // required = true 如果前面各个阶段中断运行后，output仍需要运行
 //    @Phase(parallel = false, order = 7000, required = true)
-    @ReferencePhase(originPipeline = Risk.NAME, originPhase = Risk.OUTPUT, order = 7000)
+    @ReferencePhase(originPipeline = Risk.NAME, originPhase = Risk.OUTPUT, required = true, order = 7000)
     public final static String OUTPUT = "output";
 
 }
