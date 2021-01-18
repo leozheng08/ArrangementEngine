@@ -5,9 +5,11 @@ import cn.tongdun.ddd.common.exception.BizException;
 import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
@@ -17,6 +19,7 @@ import com.alibaba.dubbo.rpc.service.GenericService;
 import com.alibaba.fastjson.JSONPath;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +39,15 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
     private static final Logger logger = LoggerFactory.getLogger(GenericDubboCaller.class);
 
-    private String CONFIG_KEY_TYPE = "type";
-    private String CONFIG_KEY_NAME = "name";
+    private static String CONFIG_KEY_TYPE = "type";
+    private static String CONFIG_KEY_NAME = "name";
+
+    /**
+     * 三方地址服务服务名
+     */
+    private static final Set<String> SPECIAL_THIRD_INTERFACE = Sets.newHashSet("cn.fraudmetrix.fuzzy.Service.intf.IAddressService", "cn.fraudmetrix.fuzzy.Service.intf.ICommunityService");
+    private final String WATSON = "watson";
+    private final String KUNTA = "kunta";
 
     @Autowired
     private InterfaceDefinitionCache interfaceDefinitionCache;
@@ -47,6 +57,9 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
     @Autowired
     private IMetrics prometheusMetricsImpl;
+
+    @Autowired
+    private DictionaryManager dictionaryManager;
 
     @Override
     public boolean call(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
@@ -138,33 +151,29 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             if (!BooleanUtils.toBoolean(JsonUtil.getBoolean(resultMap,"success"))) {
                 if (result == APIResult.DUBBO_API_RESULT_TIMEOUT
                     || result == APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR) {
-                    if (StringUtils.equals(serviceName, "cn.fraudmetrix.fuzzy.Service.intf.IAddressService")
-                        || StringUtils.equals(serviceName, "cn.fraudmetrix.fuzzy.Service.intf.ICommunityService")) {
-                        ReasonCodeUtil.add(fraudContext, ReasonCode.ADDRESS_SERVICE_CALL_TIMEOUT, "watson");
+                    if (SPECIAL_THIRD_INTERFACE.contains(serviceName)) {
+                        ReasonCodeUtil.add(fraudContext, ReasonCode.ADDRESS_SERVICE_CALL_TIMEOUT, WATSON);
                         logger.info(TraceUtils.getFormatTrace() + "地址服务调用超时:{}-{} timeout:{} 50718",
                                     interfaceDefinition.getName(), interfaceDefinition.getMethodName());
                     } else {
-                        ReasonCodeUtil.add(fraudContext, ReasonCode.THIRD_SERVICE_CALL_TIMEOUT, "kunta");
+                        ReasonCodeUtil.add(fraudContext, ReasonCode.THIRD_SERVICE_CALL_TIMEOUT, KUNTA);
                         logger.info(TraceUtils.getFormatTrace() + "三方调用超时:{}-{} timeout:{} 50707",
                                     interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
                                     interfaceDefinition.getTimeout());
                     }
                 } else {
-                    /* TODO SubReasonCode subReasonCodeObj = null;
+                    SubReasonCode subReasonCodeObj = null;
                     // 决策流里融合了地址服务的接口，子状态码和三方子状态码区别开来
-                    if (StringUtils.equals(serviceName, "cn.fraudmetrix.fuzzy.Service.intf.IAddressService")
-                        || StringUtils.equals(serviceName, "cn.fraudmetrix.fuzzy.Service.intf.ICommunityService")) {
-                        subReasonCodeObj = ReasonCodeUtil.addWatson(fraudContext, subReasonCodeCache, resultMap,
-                                                                    interfaceName);
+                    if (SPECIAL_THIRD_INTERFACE.contains(serviceName)) {
+                        subReasonCodeObj = addSubServiceCode(fraudContext, WATSON, resultMap, serviceName);
                     } else {
-                        subReasonCodeObj = ReasonCodeUtil.addKunta(fraudContext, subReasonCodeCache, resultMap,
-                                                                   interfaceName);
+                        subReasonCodeObj = addSubServiceCode(fraudContext, KUNTA, resultMap, serviceName);
                     }
 
                     if (subReasonCodeObj != null && subReasonCodeObj.getSub_code() != null
                         && subReasonCodeObj.getSub_code().startsWith("507")) {
                         prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_BIZ_ERROR_KEY, tags);
-                    }*/
+                    }
                 }
             }
             // 输入写入到Context,继而到activity
@@ -391,8 +400,11 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 value = fraudContext.get(paramInfo.getRuleField());
                 //对于seqId字段直接从context中取值
                 String[] temp = paramInfo.getInterfaceField().split("\\.");
-                if (temp[temp.length - 1].equals("seqId")) {
+                if (temp[temp.length - 1].equals("sequenceId")) {
                     value = fraudContext.getSeqId();
+                }
+                if (temp[temp.length - 1].equals("appName")) {
+                    value = fraudContext.getAppName();
                 }
             }
 
@@ -419,7 +431,6 @@ public class GenericDubboCaller implements IGenericDubboCaller{
     private String getJointFields(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
         String fieldValueStr;
         String fields = Optional.ofNullable(decisionFlowInterface.getFields()).orElse("");
-        // TODO 这逻辑理一理
         if (fields.endsWith(",")) {
             fields += " ";
         }
@@ -448,7 +459,6 @@ public class GenericDubboCaller implements IGenericDubboCaller{
     private String getJointIndexs(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
         String indexUuids = Optional.ofNullable(decisionFlowInterface.getIndexUuids()).orElse("");
 
-        // TODO 如果以逗号结尾进行split时会少一个，所以加上一个空格
         if (indexUuids.endsWith(",")) {
             indexUuids += " ";
         }
@@ -471,5 +481,27 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             }
         }
         return indexTempList.toString();
+    }
+
+
+    /**
+     * watson异常，处理三方
+     * @param context
+     * @param resultMap
+     * @param interfaceName
+     * @return
+     */
+    public SubReasonCode addSubServiceCode(AbstractFraudContext context,String subService, Map<String, Object> resultMap, String interfaceName){
+        String extReasonCode = (String) resultMap.get("reasonCode");
+        String extReasonMessage = (String) resultMap.get("reasonDesc");
+        if(extReasonCode != null && extReasonMessage != null){
+            String subReasonCode = dictionaryManager.getReasonCode(subService,extReasonCode);
+            if(StringUtils.isBlank(subReasonCode)){
+                return null;
+            }
+            String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
+            return ReasonCodeUtil.addExtCode(context, subReasonCode, subReasonCodeMessage, subService, interfaceName, extReasonCode, extReasonMessage);
+        }
+        return null;
     }
 }
