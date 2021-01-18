@@ -66,10 +66,17 @@ public class GenericDubboCaller implements IGenericDubboCaller{
         // 1. 缓存获取接口配置信息
         long beginTime = System.currentTimeMillis();
         InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(decisionFlowInterface.getUuid());
-        if (null == interfaceDefinition) {// TODO isValid()
-            logger.warn("decisionFlowInterface call of uuid:{} interface cache is null",
-                        decisionFlowInterface.getUuid());
+        if (null == interfaceDefinition || !interfaceDefinition.isValid()) {
+            logger.warn("decisionFlowInterface call of uuid:{} interface:{} cache is null or unValid",
+                    decisionFlowInterface.getUuid(), JSON.toJSONString(interfaceDefinition));
             return false;
+        }
+
+        //测试调用不调用三方接口，则屏蔽接口
+        if (fraudContext.isTestFlag()) {
+            logger.warn("decisionFlowInterface call of uuid:{} interface testFlag is true",
+                    decisionFlowInterface.getUuid());
+            return true;
         }
 
         Object result = null;
