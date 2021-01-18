@@ -31,7 +31,7 @@
         <janino-version>3.0.6</janino-version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.1.0</tdframework.version>
+        <tdframework.version>1.1.2</tdframework.version>
         <ddd.version>1.0.5</ddd.version>
         <tdrule.version>1.0.5</tdrule.version>
         <tdflow.version>1.0.2</tdflow.version>
@@ -434,7 +434,8 @@
             <dependency>
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>module-elasticsearch</artifactId>
-                <version>6.0.26</version>
+                <!--<version>6.0.26</version>-->
+                <version>6.2.20.3</version>
                 <exclusions>
                     <exclusion>
                         <groupId>cn.fraudmetrix</groupId>
