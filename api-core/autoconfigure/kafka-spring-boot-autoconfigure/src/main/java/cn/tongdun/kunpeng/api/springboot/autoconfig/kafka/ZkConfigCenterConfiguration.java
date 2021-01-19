@@ -25,13 +25,13 @@ public class ZkConfigCenterConfiguration implements ImportBeanDefinitionRegistra
 //        <property name="businessUnit" value="${business.unit}"/>
 //    </bean>
 
-        RootBeanDefinition beanDefinition = new RootBeanDefinition(ZKConfigCenter.class);
-        beanDefinition.setInitMethodName("init");
-        beanDefinition.setDestroyMethodName("close");
-        beanDefinition.getPropertyValues().add("zkserver", "${configcenter.endpoint}");
-        beanDefinition.getPropertyValues().add("businessUnit", "${business.unit}");
-        registry.registerBeanDefinition("zkConfigCenter", beanDefinition);
-
-        log.info("kunpeng api Register ZKConfigCenter success");
+//        RootBeanDefinition beanDefinition = new RootBeanDefinition(ZKConfigCenter.class);
+//        beanDefinition.setInitMethodName("init");
+//        beanDefinition.setDestroyMethodName("close");
+//        beanDefinition.getPropertyValues().add("zkserver", "${configcenter.endpoint}");
+//        beanDefinition.getPropertyValues().add("businessUnit", "${business.unit}");
+//        registry.registerBeanDefinition("zkConfigCenter", beanDefinition);
+//
+//        log.info("kunpeng api Register ZKConfigCenter success");
     }
 }
