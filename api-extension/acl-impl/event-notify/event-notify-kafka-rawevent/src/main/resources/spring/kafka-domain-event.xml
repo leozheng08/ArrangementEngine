@@ -7,16 +7,28 @@
 
     <!-- 引用公共zk配置中心,对应shutter文件为zookeeper.properties -->
     <!-- business.unit 为管理员分配值，请将这个配置放在应用自己的shutter配置文件中 -->
-    <bean id="zkConfigCenter-domainEvent" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">
-        <property name="zkserver" value="${configcenter.endpoint}"/>
-        <property name="businessUnit" value="${business.unit}"/>
+    <!--<bean id="zkConfigCenter-domainEvent" class="cn.fraudmetrix.module.kafka.util.ZKConfigCenter" init-method="init" destroy-method="close">-->
+        <!--<property name="zkserver" value="${configcenter.endpoint}"/>-->
+        <!--<property name="businessUnit" value="${business.unit}"/>-->
+    <!--</bean>-->
+
+    <bean id="domainEventNaiveConfigCenter" class="cn.fraudmetrix.module.kafka.util.NaiveConfigCenter" init-method="init" destroy-method="close">
+        <property name="bootstrap" value="${configcenter.endpoint}"/>
+        <!--influxdb监控集群名，可为空或不配置，不配置则客户端监控不可用-->
+        <property name="influx" value=""/>
+        <!-- 以下内容一般不需要启用，特殊情况请联系管理员商议 -->
+        <!-- <property name="dc" value="若不是通过CICD发布的则需要显式设置机房 "/> -->
+        <!-- <property name="zookeeper" value="注意，若业务使用到了广播消息请增加这个配置 "/> -->
+        <!-- <property name="retries" value="若业务对数据一致性要求较高请增大错误重试次数 "/> -->
+        <!-- <property name="buffSize" value="若业务消息发送量较大需要增大缓冲区 "/> -->
+        <!-- <property name="maxPollRecords" value="单批次拉取的消息数量限制 "/> -->
     </bean>
 
 
 
     <!-- domainEvent消费者-->
     <bean id="domainEventPoller" class="cn.fraudmetrix.module.kafka.consumer.ConcurrentPoller" init-method="init" destroy-method="close">
-        <property name="configCenter" ref="zkConfigCenter-domainEvent"/>
+        <property name="configCenter" ref="domainEventNaiveConfigCenter"/>
         <property name="consumerName" value="${kafka.kunpeng.event.consumer.name:kunpeng_api_domain_event_consumer}" />
         <property name="mode" value="standard" />
         <property name="bizConsumers">
@@ -40,6 +52,6 @@
                 <value>"${kafka.kunpeng.event.topic:kunpeng_admin_event}</value>
             </list>
         </property>
-        <property name="configCenter" ref="zkConfigCenter-domainEvent"/>
+        <property name="configCenter" ref="domainEventNaiveConfigCenter"/>
     </bean>
 </beans>
