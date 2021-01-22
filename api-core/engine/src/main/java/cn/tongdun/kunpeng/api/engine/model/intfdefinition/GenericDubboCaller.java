@@ -403,7 +403,6 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             } else if ("input".equalsIgnoreCase(paramInfo.getType())) {
                 value = paramInfo.getRuleField();
             } else {
-                // TODO 确认是否获取到字段
                 value = fraudContext.get(paramInfo.getRuleField());
                 //对于seqId字段直接从context中取值
                 String[] temp = paramInfo.getInterfaceField().split("\\.");

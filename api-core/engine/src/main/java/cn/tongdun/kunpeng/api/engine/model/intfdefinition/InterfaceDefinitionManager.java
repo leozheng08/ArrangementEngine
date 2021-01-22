@@ -85,7 +85,6 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
      */
     private List<InterfaceDefinitionParamInfo> buildParaInfo(List<Map> array) {
         if (null != array) {
-            // TODO cn/fraudmetrix/forseti/biz/ruleengine/dubbocaller/GenericDubboCaller.java:620  透传seqId的逻辑等，包括三方模型服务
             List<InterfaceDefinitionParamInfo> list = Lists.newArrayList();
             array.stream().forEach(json -> {
                 InterfaceDefinitionParamInfo paramInfo = new InterfaceDefinitionParamInfo();
