@@ -36,6 +36,14 @@
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:reference>
 
+    <bean id="idInfoQueryService"
+          class="cn.fraudmetrix.module.riskbase.service.impl.IdInfoQueryServiceImpl"
+          init-method="init" />
+
+    <bean id="binInfoQueryService"
+          class="cn.fraudmetrix.module.riskbase.service.impl.BinInfoQueryServiceImpl"
+          init-method="init" />
+
 <!--    <dubbo:reference id="fraudService" interface="cn.fraudmetrix.api.dubbo.FraudService"-->
 <!--                     version="${cardbin.query.dubbo.version}" retries="0" timeout="${cardbin.query.dubbo.timeout}" check="false" connections="2" >-->
 <!--        <dubbo:parameter key="threadname" value="cardbin-query-"/>-->

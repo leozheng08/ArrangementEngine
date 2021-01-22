@@ -118,4 +118,64 @@ public class JsonUtil {
         return result;
     }
 
+    public static Object getJsonValue(Object json, String key) {
+        String[] keys = key.split("\\.");
+        for (int j = 0; j < keys.length; j++) {
+            if (json == null) return null;
+            String k = keys[j];
+            if (json instanceof Map) {
+                json = ((Map) json).get(k);
+            } else {
+                return null;
+            }
+        }
+        return json;
+    }
+
+    public static void setJsonValue(Map<String, Object> json, String key, Object value) {
+        String[] keys = key.split("\\.");
+        for (int i = 0; i < keys.length - 1; i++) {
+            String k = keys[i];
+            if (!json.containsKey(k)) json.put(k, new HashMap());
+            json = (Map) json.get(k);
+        }
+        String lastKey = keys[keys.length - 1];
+        if (value == null) {
+            json.remove(lastKey);
+        } else {
+            json.put(lastKey, value);
+        }
+    }
+
+    /**
+     * 消除key中的点号，比如：
+     * <code>
+     * {
+     *     "a.b.c": "123",
+     *     "a.b.d": "222"
+     * }
+     * </code>
+     * 转换之后就变成：
+     * <code>
+     * {
+     *     "a": {
+     *         "b": {
+     *             "c": "123",
+     *             "d": "222"
+     *         }
+     *     }
+     * }
+     * </code>
+     */
+    public static Map<String, Object> parsePath(Map<String, Object> list) {
+        Map<String, Object> result = new HashMap<>(list.size());
+        for (String key : list.keySet()) {
+            Object o = list.get(key);
+            if(o instanceof Map) {
+                o = parsePath((Map) o);
+            }
+            setJsonValue(result, key, o);
+        }
+        return result;
+    }
 }

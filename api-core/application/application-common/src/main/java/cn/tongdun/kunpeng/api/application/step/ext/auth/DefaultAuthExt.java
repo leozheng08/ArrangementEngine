@@ -37,7 +37,7 @@ public class DefaultAuthExt implements IAuthExtPt {
             response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
             return false;
         }
-        context.setAppName(adminApplication.getCode());
+        context.setAppName(adminApplication.getAppName());
 
         context.setPartnerCode(partnerCode);
         context.setSecretKey(secretKey);

@@ -1,16 +1,27 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
+import cn.tongdun.ddd.common.exception.BasicErrorCode;
+import cn.tongdun.ddd.common.exception.BizException;
+import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.service.GenericService;
+import com.alibaba.fastjson.JSONPath;
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +29,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * @author jie
+ * @date 2021/1/13
+ */
 @Service("genericDubboCaller")
-public class GenericDubboCaller implements IGenericDubboCaller {
+public class GenericDubboCaller implements IGenericDubboCaller{
 
-    // 程序执行日志
-    private final static Logger logger = LoggerFactory.getLogger(GenericDubboCaller.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenericDubboCaller.class);
+
+    private static String CONFIG_KEY_TYPE = "type";
+    private static String CONFIG_KEY_NAME = "name";
+
+    /**
+     * 三方地址服务服务名
+     */
+    private static final Set<String> SPECIAL_THIRD_INTERFACE = Sets.newHashSet("cn.fraudmetrix.fuzzy.Service.intf.IAddressService", "cn.fraudmetrix.fuzzy.Service.intf.ICommunityService");
+    private final String WATSON = "watson";
+    private final String KUNTA = "kunta";
 
     @Autowired
     private InterfaceDefinitionCache interfaceDefinitionCache;
@@ -32,110 +55,418 @@ public class GenericDubboCaller implements IGenericDubboCaller {
     @Autowired
     private GenericServiceManager genericServiceManager;
 
+    @Autowired
+    private IMetrics prometheusMetricsImpl;
+
+    @Autowired
+    private DictionaryManager dictionaryManager;
+
     @Override
     public boolean call(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
+        // 1. 缓存获取接口配置信息
         long beginTime = System.currentTimeMillis();
-        String uuid = decisionFlowInterface.getUuid();
-        InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(uuid);
-        if (null == interfaceDefinition) {
+        InterfaceDefinition interfaceDefinition = interfaceDefinitionCache.get(decisionFlowInterface.getUuid());
+        if (null == interfaceDefinition || !interfaceDefinition.isValid()) {
+            logger.warn("decisionFlowInterface call of uuid:{} interface:{} cache is null or unValid",
+                    decisionFlowInterface.getUuid(), JSON.toJSONString(interfaceDefinition));
             return false;
         }
-        APIResult callResult;                                                  //dubbo api的调用结果
-        Object result = null;                                                  //dubbo api的业务返回结果
-        Map<String, Object> ruleParams = Collections.emptyMap();
+
+        //测试调用不调用三方接口，则屏蔽接口
+        if (fraudContext.isTestFlag()) {
+            logger.warn("decisionFlowInterface call of uuid:{} interface testFlag is true",
+                    decisionFlowInterface.getUuid());
+            return true;
+        }
+
+        Object result = null;
+        String providerHost = StringUtils.defaultIfBlank(RpcContext.getContext().getRemoteHost(), "-");
+        ITimeContext timeContext = null;
+        String[] tags = {
+                MetricsConstant.METRICS_TAG_API_QPS_KEY, interfaceDefinition.getServiceName() + "." + interfaceDefinition.getMethodName()};
         try {
+            // 2. 根据决策流配置信息解析入参映射并设置规则字段值,并做必填校验
+            Map<String, Object> mappingParamAndValue = assignInputParamValue(fraudContext, decisionFlowInterface);
 
-            //封装dubbo调用输入参数
-            Map.Entry<APIResult, List<InterfaceDefinitionParamInfo>> paramsMap = encapsulateParams(fraudContext, decisionFlowInterface);
-
-            callResult = paramsMap.getKey();
-            //参数缺失,无需调用
-            if (callResult == APIResult.DUBBO_API_RESULT_MISSING_PARAMETER) {
-                result = callResult;
-                return false;
-            }
-
-            ruleParams = Maps.newHashMapWithExpectedSize(decisionFlowInterface.getInputParams().size());
-            for (InterfaceDefinitionParamInfo paramInfo : decisionFlowInterface.getInputParams()) {
-                if (paramInfo.getRuleField().equals("")) {
-                    continue;
-                }
-                ruleParams.put(paramInfo.getRuleField(), paramInfo.getValue());
-            }
-
+            // 3. 解析三方接口的参数类型数组及值对象数组
+            DecisionFlowInterfaceCallInfo interfaceCallInfo = encapsulateDubboCallParam(mappingParamAndValue,
+                                                                                        interfaceDefinition);
+            // 4. 发起泛化调用
             final GenericService genericService = genericServiceManager.getGenericService(interfaceDefinition);
 
-            //获取dubbo调用输入参数类型列表
-            List<String> typeList = Lists.newArrayList();
-            List<Object> valueList = Lists.newArrayList();
-            generateTypeAndValue(decisionFlowInterface, typeList, valueList);
-            String[] keys = typeList.stream().toArray(String[]::new);
-            Object[] values = valueList.stream().toArray(Object[]::new);
+            // 5. 监控打点
+            prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_QPS_KEY, tags);
+            timeContext = prometheusMetricsImpl.metricTimer(MetricsConstant.METRICS_API_RT_KEY, tags);
 
-            logger.info(TraceUtils.getFormatTrace()+"dubbo泛化调用执行入参 interface_method:" + interfaceDefinition.getName() + "-" + interfaceDefinition.getMethodName() +
-                    "interfaceParamInfos" + Arrays.toString(decisionFlowInterface.getInputParams().toArray()) + "parametersType" +
-                    Arrays.toString(keys) + "methodValues" + Arrays.toString(values));
+            logger.info(TraceUtils.getFormatTrace()
+                            + "dubbo泛化调用开始 interface_method:{}-{},interfaceParamInfos:{} , DecisionFlowInterfaceCallInfo:{}",
+                    interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                    Arrays.toString(decisionFlowInterface.getInputParams().toArray()), interfaceCallInfo);
+            result = genericService.$invoke(interfaceDefinition.getMethodName(), interfaceCallInfo.getInputParamType(),
+                                            interfaceCallInfo.getInputParamValue());
+            timeContext.stop();
 
-            result = genericService.$invoke(interfaceDefinition.getMethodName(), keys, values);
-
+            logger.info(TraceUtils.getFormatTrace()
+                            + "dubbo泛化调用结束 interface_method:{}-{},interfaceParamInfos:{} , DecisionFlowInterfaceCallInfo:{}",
+                    interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                    Arrays.toString(decisionFlowInterface.getInputParams().toArray()), interfaceCallInfo);
+        } catch (BizException e) {
+            logger.warn(TraceUtils.getFormatTrace() + "generic dubbo call method:{}, provider:{} bizExcption", interfaceDefinition.getName(), providerHost, e);
+            result = APIResult.DUBBO_API_RESULT_MISSING_PARAMETER;
+            return false;
         } catch (Exception e) {
-            String providerHost = StringUtils.defaultIfBlank(RpcContext.getContext().getRemoteHost(), "-");
-            if (ReasonCodeUtil.isTimeout(e)) {          //哎呦, 超时了
+            if (ReasonCodeUtil.isTimeout(e)) {
+                prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_TIMEOUT_KEY,tags);
                 result = APIResult.DUBBO_API_RESULT_TIMEOUT;
-            } else if (e.getClass() == com.alibaba.dubbo.rpc.RpcException.class) {             //哎呦, dubbo调用失败了，例如服务提供者未注册之类的错误
+            } else if (e.getClass() == com.alibaba.dubbo.rpc.RpcException.class) {
+                prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_CALL_ERROR_KEY,tags);
                 result = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR;
             } else {
-                result = APIResult.DUBBO_API_RESULT_INTERNAL_ERROR;                         //哎呦，我TMD也不知道发生什么错误了!
+                prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_INTERNAL_ERROR_KEY,tags);
+                result = APIResult.DUBBO_API_RESULT_INTERNAL_ERROR;
             }
-            logger.warn(TraceUtils.getFormatTrace()+"generic dubbo call " + interfaceDefinition.getName() + " catch exception result:" + JSON.toJSONString(result), e);
+            logger.warn(TraceUtils.getFormatTrace() + "generic dubbo call method:{}, provider:{} catch exception result:{}", interfaceDefinition.getName(), providerHost, JSON.toJSONString(result), e);
+            return false;
         } finally {
-            try {
-                //如果dubbo返回的类是QuickJSONResult,有可能是信贷云那边卡住了
-                if (result.getClass().getSimpleName().equalsIgnoreCase("QuickJSONResult")) {
-                    //缓存移除,因为某些不同的外部接口可能会调用同一个dubbo服务(即ReferenceConfig),所以这里全部移除
-                    logger.error(TraceUtils.getFormatTrace()+"dubbo泛化调用stop异常 call generic dubbo interface(stop)");
-                }
-
-                Map<String, Object> resultMap = wrapResult(fraudContext, result);
-                //输入写入到Context,继而到activity
-                fillDataToFraudContext(fraudContext, interfaceDefinition, ruleParams, resultMap, beginTime);
-
-                serializeOutParamsToRuleEngine(fraudContext, decisionFlowInterface.isRiskServiceOutput(), decisionFlowInterface, interfaceDefinition, resultMap);
-
-            } catch (Exception e) {
-                logger.error(TraceUtils.getFormatTrace()+"dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
-            }
+            // 6. 解析结果并处理异常
+            handleResult(fraudContext, result, interfaceDefinition, decisionFlowInterface, tags);
+            logger.info(TraceUtils.getFormatTrace()
+                            + "dubbo泛化调用:{}-{},interfaceParamInfos:{} , end cost:{}",
+                    interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                    Arrays.toString(decisionFlowInterface.getInputParams().toArray()), (System.currentTimeMillis() - beginTime));
         }
         return true;
     }
 
     /**
-     * 封装dubbo调用所需的参数信息
+     * 集中处理dubbo返回结果
+     * @param fraudContext
+     * @param result
+     * @param interfaceDefinition
+     * @param decisionFlowInterface
+     * @param tags
+     */
+    private void handleResult(AbstractFraudContext fraudContext, Object result, InterfaceDefinition interfaceDefinition,
+                              DecisionFlowInterface decisionFlowInterface, String[] tags) {
+        try {
+            // 包装转换结果
+            Map<String, Object> resultMap = wrapResult(result);
+
+            // 三方地址服务状态码处理
+            String serviceName = interfaceDefinition.getServiceName();
+
+            if (!BooleanUtils.toBoolean(JsonUtil.getBoolean(resultMap,"success"))) {
+                if (result == APIResult.DUBBO_API_RESULT_TIMEOUT
+                    || result == APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR) {
+                    if (SPECIAL_THIRD_INTERFACE.contains(serviceName)) {
+                        ReasonCodeUtil.add(fraudContext, ReasonCode.ADDRESS_SERVICE_CALL_TIMEOUT, WATSON);
+                        logger.info(TraceUtils.getFormatTrace() + "地址服务调用超时:{}-{} timeout:{} 50718",
+                                    interfaceDefinition.getName(), interfaceDefinition.getMethodName());
+                    } else {
+                        ReasonCodeUtil.add(fraudContext, ReasonCode.THIRD_SERVICE_CALL_TIMEOUT, KUNTA);
+                        logger.info(TraceUtils.getFormatTrace() + "三方调用超时:{}-{} timeout:{} 50707",
+                                    interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                                    interfaceDefinition.getTimeout());
+                    }
+                } else {
+                    SubReasonCode subReasonCodeObj = null;
+                    // 决策流里融合了地址服务的接口，子状态码和三方子状态码区别开来
+                    if (SPECIAL_THIRD_INTERFACE.contains(serviceName)) {
+                        subReasonCodeObj = addSubServiceCode(fraudContext, WATSON, resultMap, serviceName);
+                    } else {
+                        subReasonCodeObj = addSubServiceCode(fraudContext, KUNTA, resultMap, serviceName);
+                    }
+
+                    if (subReasonCodeObj != null && subReasonCodeObj.getSub_code() != null
+                        && subReasonCodeObj.getSub_code().startsWith("507")) {
+                        prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_BIZ_ERROR_KEY, tags);
+                    }
+                }
+            }
+            // 输入写入到Context,继而到activity
+            fillDataToFraudContext(fraudContext, interfaceDefinition, decisionFlowInterface, resultMap);
+
+            // 三方接口结果按照配置映射输出到上下文字段中
+            serializeOutParamsToRuleEngine(fraudContext, decisionFlowInterface, interfaceDefinition, result);
+        } catch (Exception e) {
+            prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_OTHER_ERROR_KEY, tags);
+            logger.error(TraceUtils.getFormatTrace()
+                         + "dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
+        }
+    }
+
+    /**
+     * 根据出参配置将调用结果填装到上下文
+     * @param fraudContext
+     * @param decisionFlowInterface
+     * @param interfaceDefinition
+     * @param result
+     */
+    public void serializeOutParamsToRuleEngine(AbstractFraudContext fraudContext,
+                                               DecisionFlowInterface decisionFlowInterface, InterfaceDefinition interfaceDefinition, Object result) {
+        if (!(result instanceof Map)) {
+            return;
+        }
+
+        Map<String, Object> resultMap = (HashMap<String, Object>) result;
+        Map<String, Object> resultMapOutput = Maps.newHashMapWithExpectedSize(resultMap.size());
+
+        try {
+            for (InterfaceDefinitionParamInfo paramInfo : decisionFlowInterface.getOutputParams()) {
+                String ruleParam = paramInfo.getRuleField();
+                String interfaceParam = paramInfo.getInterfaceField();
+                // 以下两部判断是为了兼容规则引擎定义的下划线形式的字段和kunta返回的驼峰形式
+                if ("reason_code".equalsIgnoreCase(interfaceParam)) {
+                    interfaceParam = "reasonCode";
+                }
+                if ("reason_desc".equalsIgnoreCase(interfaceParam)) {
+                    interfaceParam = "reasonDesc";
+                }
+                // 直接拍平路径获取json值
+                Object mappingValue = JSONPath.eval(result,interfaceParam);
+                resultMapOutput.put(KunpengStringUtils.camel2underline(ruleParam), mappingValue);
+
+                if (mappingValue instanceof Map) {
+                    fraudContext.setObject(true);
+                }
+                fraudContext.setField(ruleParam, mappingValue);
+            }
+
+            // 决策流三方接口纯数据输出
+            if (decisionFlowInterface.isRiskServiceOutput()) {
+                if (StringUtils.isBlank(interfaceDefinition.getInterfaceId())) {
+                    resultMapOutput.put("policy_set_output_service", decisionFlowInterface.getUuid());
+                } else {
+                    resultMapOutput.put("policy_set_output_service", interfaceDefinition.getInterfaceId());
+                }
+                fraudContext.appendInterfaceOutputFields(resultMapOutput);
+            }
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace()+"dubbo泛化调用异常 接口调用的结果赋值给规则引擎字段异常", e);
+        }
+    }
+
+    /**
+     * dubbo 返回结果包装
+     * @param result
+     * @return
+     */
+    private Map<String, Object> wrapResult(Object result) {
+        Map<String, Object> resultMap = Maps.newHashMap();
+        if (result == null) {
+            return resultMap;
+        }
+        if ((result instanceof HashMap)) {
+            Map<String, Object> map = (Map) result;
+            map.remove("class");
+            resultMap.putAll((Map) result);
+        } else if (result instanceof APIResult) {
+            resultMap = ((APIResult) result).toMap();
+        } else if (result instanceof Collections || result.getClass().isArray()) {
+            //不支持其它集合或者数组类型
+            return resultMap;
+        } else if (result instanceof java.lang.String
+                || result instanceof java.lang.Integer
+                || result instanceof java.lang.Boolean
+                || result instanceof java.lang.Double
+                || result instanceof java.lang.Float) {
+            resultMap.put("result", result);
+        } else {        
+            //其它dubbo异常情况产生的返回值一律处理成外部服务器错误501
+            resultMap = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR.toMap();
+            logger.info(TraceUtils.getFormatTrace() + "dubbo泛化调用返回501错误");
+        }
+        //以下两部判断是为了兼容规则引擎定义的下划线形式的字段和kunta返回的驼峰形式
+        Object reasonCode = resultMap.remove("reason_code");
+        Object reasonDesc = resultMap.remove("reason_desc");
+        if (null != reasonCode && null != reasonDesc) {
+            resultMap.put("reasonCode", reasonCode);
+            resultMap.put("reasonDesc", reasonDesc);
+        }
+        return resultMap;
+    }
+
+    /***
+     * 封装dubbo调用结果,并写入到activity
      *
+     * @param fraudContext
+     * @param interfaceDefinition
+     * @param decisionFlowInterface
+     * @param resultMap
+     */
+    private void fillDataToFraudContext(AbstractFraudContext fraudContext,
+                                        InterfaceDefinition interfaceDefinition,
+                                        DecisionFlowInterface decisionFlowInterface,
+                                        Map<String, Object> resultMap) {
+        Object object = fraudContext.getDubboCallResult();
+        if (object == null) {
+            object = new CallResult();
+            fraudContext.setDubboCallResult(object);
+        }
+        //本次调用的dubbo调用结果
+        CallResult callResult = (CallResult) object;
+
+        //应用结果
+        ApplicationResult applicationResult = callResult.getDubboApplicationResult(interfaceDefinition.getApplication());
+
+        //接口结果
+        InterfaceResult interfaceResult = applicationResult.getDubboInterfaceResult(interfaceDefinition.getName());
+
+        //输入/输出参数
+        InterfaceParams interfaceParams = new InterfaceParams();
+
+        //输入参数
+        Map jsonObject = new HashMap(decisionFlowInterface.getInputParams().size());
+        for (InterfaceDefinitionParamInfo paramInfo : decisionFlowInterface.getInputParams()) {
+            if ("".equals(paramInfo.getRuleField())) {
+                continue;
+            }
+            jsonObject.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, paramInfo.getRuleField()), paramInfo.getValue());
+        }
+        interfaceParams.setInputParams(jsonObject);
+
+        //输出参数
+        interfaceParams.setOutputParams(resultMap);
+        interfaceResult.addInterfaceParams(interfaceDefinition.getMethodName(), interfaceParams);
+   }
+
+    /**
+     * 通过三方接口定义及映射入参值，组装泛化调用参数
+     * @param mappingParamValue
+     * @param interfaceDefinition
+     * @return
+     */
+    private DecisionFlowInterfaceCallInfo encapsulateDubboCallParam(Map<String,Object> mappingParamValue,InterfaceDefinition interfaceDefinition) throws BizException{
+
+        if(StringUtils.isEmpty(interfaceDefinition.getInputParam())){
+            throw BizException.create(BasicErrorCode.PARAMS_ERROR);
+        }
+        // DB接口配置中的参数顺序列表
+        List<Map> configParamList = JSON.parseArray(interfaceDefinition.getInputParam(),Map.class);
+
+        DecisionFlowInterfaceCallInfo interfaceCallInfo = new DecisionFlowInterfaceCallInfo();
+        if (CollectionUtils.isEmpty(configParamList)) {
+            return interfaceCallInfo;
+        }
+
+        int paramCount = configParamList.size();
+        String[] inputParamType = new String[paramCount];
+        Object[] inputParamValue = new Object[paramCount];
+
+        try {
+            // 将映射字段值，按照层级结构转成json嵌套
+            Map<String, Object> jsonTypeParamValue = JsonUtil.parsePath(mappingParamValue);
+            for (int i = 0; i < paramCount; i++) {
+                Map param = configParamList.get(i);
+                inputParamValue[i] = jsonTypeParamValue.get(param.get(CONFIG_KEY_NAME));
+
+                Object type = param.get(CONFIG_KEY_TYPE);
+                if(type instanceof Map){
+                    inputParamType[i] = (String) ((Map) type).get(CONFIG_KEY_TYPE);
+                }else{
+                    inputParamType[i] = (String) type;
+                }
+            }
+
+            interfaceCallInfo.setInputParamType(inputParamType);
+            interfaceCallInfo.setInputParamValue(inputParamValue);
+        } catch (Exception e) {
+            logger.error("encapsulateDubboCallParam of interfaceUuid:{}, error", interfaceDefinition.getUuid(), e);
+            throw BizException.create(BasicErrorCode.PARAMS_ERROR, "接口参数配置类型抽取异常", e);
+        }
+
+        return interfaceCallInfo;
+    }
+
+    /**
+     * 解析决策流三方接口入参映射并赋值
+     * @param fraudContext
+     * @param decisionFlowInterface
+     * @return key:interface_field,value:真实值
+     */
+    private Map<String,Object> assignInputParamValue(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
+        List<InterfaceDefinitionParamInfo> inputParams = decisionFlowInterface.getInputParams();
+        Map<String,Object> mappingParamValue = new HashMap<>(inputParams.size());
+
+        // 拼接指标值组装
+        String indexValueStr = getJointIndexs(fraudContext, decisionFlowInterface);
+
+        // 拼接字段值组装
+        String fieldValueStr = getJointFields(fraudContext, decisionFlowInterface);
+
+        for (InterfaceDefinitionParamInfo paramInfo : inputParams) {
+            Object value = null;
+            if ("indexJoint".equalsIgnoreCase(paramInfo.getType())) {
+                value = indexValueStr;
+            } else if ("fieldsJoint".equalsIgnoreCase(paramInfo.getType())) {
+                value = fieldValueStr;
+            } else if ("input".equalsIgnoreCase(paramInfo.getType())) {
+                value = paramInfo.getRuleField();
+            } else {
+                value = fraudContext.get(paramInfo.getRuleField());
+                //对于seqId字段直接从context中取值
+                String[] temp = paramInfo.getInterfaceField().split("\\.");
+                if (temp[temp.length - 1].equals("sequenceId")) {
+                    value = fraudContext.getSeqId();
+                }
+                if (temp[temp.length - 1].equals("appName")) {
+                    value = fraudContext.getAppName();
+                }
+            }
+
+            paramInfo.setValue(value);
+            mappingParamValue.put(paramInfo.getInterfaceField(), value);
+
+            // 必填校验
+            if (paramInfo.isNecessary() && value == null) {
+                logger.warn(TraceUtils.getFormatTrace() + "call generic dubbo interface:{} param:{} 不能为空", decisionFlowInterface.getName(), paramInfo.getRuleField());
+                throw BizException.create(BasicErrorCode.PARAMS_ERROR, "必填参数["+paramInfo.getRuleField()+"]缺失");
+            }
+        }
+
+        decisionFlowInterface.setInputParams(inputParams);
+        return mappingParamValue;
+    }
+
+    /**
+     * 拼接字段  值组装
      * @param fraudContext
      * @param decisionFlowInterface
      * @return
      */
-    private Map.Entry<APIResult, List<InterfaceDefinitionParamInfo>> encapsulateParams(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
-        List<InterfaceDefinitionParamInfo> inputParams = decisionFlowInterface.getInputParams();
-        if (null == inputParams) {
-            return new AbstractMap.SimpleEntry(APIResult.DUBBO_API_RESULT_MISSING_PARAMETER, Collections.EMPTY_MAP);
-        }
-        String indexValueStr, fieldValueStr;
-        String indexUuids = decisionFlowInterface.getIndexUuids();
-        String fields = decisionFlowInterface.getFields();
-        if (null == indexUuids) {
-            indexUuids = "";
-        }
-        if (null == fields) {
-            fields = "";
-        }
-        //如果以逗号结尾进行split时会少一个，所以加上一个空格
-        if (indexUuids.endsWith(",")) {
-            indexUuids += " ";
-        }
+    private String getJointFields(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
+        String fieldValueStr;
+        String fields = Optional.ofNullable(decisionFlowInterface.getFields()).orElse("");
         if (fields.endsWith(",")) {
             fields += " ";
+        }
+
+        String[] fieldArray = fields.split(",");
+        List<String> fieldTempList = new ArrayList<>(fieldArray.length);
+        for (String field : fieldArray) {
+            String fieldTemp;
+            if (StringUtils.isNotBlank(field)) {
+                fieldTemp = String.valueOf(fraudContext.get(field) == null ? "" : fraudContext.get(field));
+                fieldTempList.add(fieldTemp);
+            } else {
+                fieldTempList.add("");
+            }
+        }
+        fieldValueStr = JSON.toJSONString(fieldTempList);
+        return fieldValueStr;
+    }
+
+    /**
+     * 指标拼接字段 值组装
+     * @param fraudContext
+     * @param decisionFlowInterface
+     * @return
+     */
+    private String getJointIndexs(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
+        String indexUuids = Optional.ofNullable(decisionFlowInterface.getIndexUuids()).orElse("");
+
+        if (indexUuids.endsWith(",")) {
+            indexUuids += " ";
         }
 
         String[] indexUuidArray = indexUuids.split(",");
@@ -155,455 +486,28 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                 indexTempList.add(Double.NaN);
             }
         }
-        indexValueStr = indexTempList.toString();
-
-        String[] fieldArray = fields.split(",");
-        List<String> fieldTempList = new ArrayList<>(fieldArray.length);
-        for (String field : fieldArray) {
-            String fieldTemp;
-            if (StringUtils.isNotBlank(field)) {
-                fieldTemp = String.valueOf(fraudContext.get(field) == null ? "" : fraudContext.get(field));
-                fieldTempList.add(fieldTemp);
-            } else {
-                fieldTempList.add("");
-            }
-        }
-        fieldValueStr = JSON.toJSONString(fieldTempList);
-        List<JsonElement> jsonElLists = Lists.newArrayList();
-        Map<String, String> interfaceToType = Maps.newHashMap();
-        try {
-            for (InterfaceDefinitionParamInfo paramInfo : inputParams) {
-                Object value = null;
-                if (paramInfo.getType().equalsIgnoreCase("indexJoint")) {
-                    value = indexValueStr;
-                } else if (paramInfo.getType().equalsIgnoreCase("fieldsJoint")) {
-                    value = fieldValueStr;
-                } else if (paramInfo.getType().equalsIgnoreCase("input")) {
-                    value = paramInfo.getRuleField();
-                } else {
-                    value = fraudContext.get(paramInfo.getRuleField());
-                    //对于seqId字段直接从context中取值
-                    String[] temp = paramInfo.getInterfaceField().split("\\.");
-                    if (temp[temp.length - 1].equals("seqId")) {
-                        value = fraudContext.getSeqId();
-                    } else if (temp[temp.length - 1].equals("appName")) {
-                        value = fraudContext.getAppName();
-                    }
-                }
-                boolean isNecessary = paramInfo.isNecessary();
-
-                if (paramInfo.getInterfaceField().indexOf(".") == -1) {
-                    paramInfo.setValue(value);
-                } else {
-                    JsonElement jsonElement = new JsonElement();
-                    String iPN = paramInfo.getInterfaceField();
-                    jsonElement.setPath(iPN);
-                    jsonElement.setValue(value);
-                    interfaceToType.put(iPN.substring(0, iPN.indexOf(".")), paramInfo.getInterfaceType());
-                    jsonElLists.add(jsonElement);
-                    paramInfo.setValue(value);
-                }
-
-                if (isNecessary && value == null) {
-                    logger.warn(TraceUtils.getFormatTrace()+"generic dubbo call missing necessary params : {}, rulefield : {} ", paramInfo.getInterfaceField(), paramInfo.getRuleField());
-                    return new AbstractMap.SimpleEntry(APIResult.DUBBO_API_RESULT_MISSING_PARAMETER, Collections.EMPTY_MAP);
-                }
-            }
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"call generic dubbo interface error", e);
-        }
-        decisionFlowInterface.setInputParams(inputParams);
-        return new AbstractMap.SimpleEntry(APIResult.DUBBO_API_RESULT_SUCCESS, inputParams);
+        return indexTempList.toString();
     }
 
-    /***
-     * 获取接口的参数值
-     *
-     * @param decisionFlowInterface
-     * @param valueList
-     * @return
-     */
-    private void generateTypeAndValue(DecisionFlowInterface decisionFlowInterface, List<String> typeList, List<Object> valueList) {
-        List<InterfaceDefinitionParamInfo> inputParams = decisionFlowInterface.getInputParams();
-
-        Map<String, Map<String, Object>> map = Maps.newHashMap();
-        for (InterfaceDefinitionParamInfo paramInfo : inputParams) {
-            String interfaceType = paramInfo.getInterfaceType();
-            String interfaceField = paramInfo.getInterfaceField();
-            Object value = paramInfo.getValue();
-            if (interfaceField.indexOf(".") != -1) {
-                String[] temp = interfaceField.split("\\.");
-                String key = temp[0];
-                Map<String, Object> objMap;
-                if (map.containsKey(key)) {
-                    objMap = map.get(key);
-                } else {
-                    objMap = Maps.newHashMap();
-                }
-                objMap.put(temp[1], value);
-                map.put(interfaceType, objMap);
-            }
-        }
-        for (InterfaceDefinitionParamInfo paramInfo : inputParams) {
-            String interfaceType = paramInfo.getInterfaceType();
-            Object value = paramInfo.getValue();
-            if (!map.containsKey(interfaceType)) {
-                typeList.add(interfaceType);
-                valueList.add(value);
-            }
-        }
-        map.keySet().forEach(key -> {
-            typeList.add(key);
-            valueList.add(map.get(key));
-        });
-    }
-
-    private Map<String, Object> wrapResult(AbstractFraudContext context, Object result) {
-        Map<String, Object> resultMap = Maps.newHashMap();
-        if (result == null) {
-            return resultMap;
-        }
-        if ((result instanceof HashMap)) {       //接口方法返回的是一个Map
-            Map<String, Object> map = (Map) result;
-            map.remove("class");
-            resultMap.putAll((Map) result);
-        } else if (result instanceof APIResult) {
-            resultMap = ((APIResult) result).toMap();
-        } else if (result instanceof Collections || result.getClass().isArray()) { //不支持其它集合或者数组类型
-            return resultMap;
-        } else if (result instanceof java.lang.String
-                || result instanceof java.lang.Integer
-                || result instanceof java.lang.Boolean
-                || result instanceof java.lang.Double
-                || result instanceof java.lang.Float) {
-            resultMap.put("result", result);
-        } else {        //其它dubbo异常情况产生的返回值一律处理成外部服务器错误501
-            resultMap = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR.toMap();
-            logger.info(TraceUtils.getFormatTrace()+"dubbo泛化调用返回501错误 errorMessage incorrect generic dubbo result");
-        }
-        //以下两部判断是为了兼容规则引擎定义的下划线形式的字段和kunta返回的驼峰形式
-        Object reasonCode = resultMap.remove("reason_code");
-        Object reasonDesc = resultMap.remove("reason_desc");
-        if (null != reasonCode && null != reasonDesc) {
-            resultMap.put("reasonCode", reasonCode);
-            resultMap.put("reasonDesc", reasonDesc);
-        }
-        return resultMap;
-    }
-
-    /***
-     * 封装dubbo调用结果,并写入到activity
-     *
-     * @param fraudContext
-     * @param interfaceDefinition
-     * @param inputParamsMap
-     * @param resultMap
-     */
-    private void fillDataToFraudContext(AbstractFraudContext fraudContext,
-                                        InterfaceDefinition interfaceDefinition,
-                                        Map<String, Object> inputParamsMap,
-                                        Map<String, Object> resultMap,
-                                        long beginTime) {
-        Object object = fraudContext.getDubboCallResult();
-        if (object == null) {
-            object = new CallResult();
-            fraudContext.setDubboCallResult(object);
-        }
-        //本次调用的dubbo调用结果
-        CallResult callResult = (CallResult) object;
-
-        //应用结果
-        ApplicationResult applicationResult = callResult.getDubboApplicationResult(interfaceDefinition.getApplication());
-
-        //接口结果
-        InterfaceResult interfaceResult = applicationResult.getDubboInterfaceResult(interfaceDefinition.getName());
-
-        //输入/输出参数
-        InterfaceParams interfaceParams = new InterfaceParams();
-
-        //输入参数
-        Map jsonObject = new HashMap(inputParamsMap.size());
-        for (Map.Entry<String, Object> entry : inputParamsMap.entrySet()) {
-            jsonObject.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entry.getKey()), entry.getValue());
-        }
-        interfaceParams.setInputParams(jsonObject);
-
-        //输出参数
-        interfaceParams.setOutputParams(resultMap);
-        interfaceResult.addInterfaceParams(interfaceDefinition.getMethodName(), interfaceParams);
-
-
-        logger.info(TraceUtils.getFormatTrace()+"封装泛化dubbo调用结果 resultMap:" + JSON.toJSONString(resultMap));
-
-        //记录调用业务日志
-        writeBusinessLog(fraudContext.getSeqId(), interfaceDefinition.getServiceName(), interfaceDefinition.getMethodName(), interfaceParams.toString(), beginTime);
-    }
-
-    public void serializeOutParamsToRuleEngine(AbstractFraudContext fraudContext, boolean isRiskServiceOutput,
-                                               DecisionFlowInterface decisionFlowInterface, InterfaceDefinition interfaceDefinition, Object result) {
-        if (!(result instanceof Map)) {
-            return;
-        }
-
-        Map<String, Object> resultMap = (HashMap<String, Object>) result;
-        Map<String, Object> resultMapOutput = Maps.newHashMapWithExpectedSize(resultMap.size());
-        List<InterfaceDefinitionParamInfo> paramInfoList = getOutParams(decisionFlowInterface);
-
-        Map<String, Object> outputMap = Maps.newHashMapWithExpectedSize(paramInfoList.size());
-        try {
-            for (InterfaceDefinitionParamInfo paramInfo : paramInfoList) {
-                String ruleParam = paramInfo.getRuleField();
-                String interfaceParam = paramInfo.getInterfaceField();
-                String[] interfaceParams = interfaceParam.split("\\.");
-                // 以下两部判断是为了兼容规则引擎定义的下划线形式的字段和kunta返回的驼峰形式
-                if ("reason_code".equalsIgnoreCase(interfaceParam)) {
-                    interfaceParam = "reasonCode";
-                }
-                if ("reason_desc".equalsIgnoreCase(interfaceParam)) {
-                    interfaceParam = "reasonDesc";
-                }
-                if (interfaceParams.length == 1) {
-                    outputMap.put(ruleParam, resultMap.get(interfaceParam));
-                    resultMapOutput.put(KunpengStringUtils.camel2underline(ruleParam), resultMap.get(interfaceParam));
-                } else {
-                    Object interfaceResult = resultMap.get(interfaceParams[0]);
-                    if (null == interfaceResult) {
-                        continue;
-                    }
-                    try {
-                        interfaceResult = JSON.parseObject(JSON.toJSONString(interfaceResult),HashMap.class);
-                    } catch (Exception e) {
-                        logger.error(TraceUtils.getFormatTrace()+"dubbo泛化调用异常 序列化结果异常", e);
-                    }
-
-                    Map resultObjectOutput = resultMapOutput.get(interfaceParams[0]) == null ? (Map)interfaceResult : (Map) resultMapOutput.get(interfaceParams[0]);
-                    if (paramInfo.isArray()) {
-                        logger.info(TraceUtils.getFormatTrace()+"三方调用有数组返回 " + paramInfo.getInterfaceField() + " partnerCode:" + fraudContext.getPartnerCode());
-                        boolean firstSet = true;
-                        int i = 1;
-                        for (; i < interfaceParams.length - 1; i++) {
-                            if (interfaceResult instanceof Map) {
-                                if (firstSet) {
-                                    interfaceResult = resultObjectOutput.get(interfaceParams[i]);
-                                    firstSet = false;
-                                } else {
-                                    interfaceResult = ((Map) interfaceResult).get(interfaceParams[i]);
-                                }
-
-                            }
-                        }
-                        Object[] resultArray = null;
-                        if (interfaceResult instanceof List) {
-                            List array = (List) interfaceResult;
-                            resultArray = new Object[array.size()];
-                            for (int j = 0; j < array.size(); j++) {
-                                String value = JsonUtil.getString((Map) array.get(j),interfaceParams[i]);
-                                resultArray[j] = value;
-                                if (!KunpengStringUtils.camel2underline(ruleParam).equals(interfaceParams[i])) {
-                                    ((Map) array.get(j)).put(KunpengStringUtils.camel2underline(ruleParam), value);
-                                    ((Map) array.get(j)).remove(interfaceParams[i]);
-                                }
-
-                            }
-                            resultMapOutput.put(interfaceParams[0], resultObjectOutput);
-                        }
-                        if (resultArray != null) {
-                            outputMap.put(ruleParam, resultArray);
-                        }
-                    } else {
-                        Map resultObject = (Map) interfaceResult;
-                        int i = 1;
-                        for (; i < interfaceParams.length - 1; i++) {
-                            if (i == 1) {
-                                resultObject = (Map)resultObjectOutput.get(interfaceParams[i]);
-                            } else {
-                                resultObject = (Map)resultObject.get(interfaceParams[i]);
-                            }
-
-                        }
-                        if (resultObject != null) {
-                            outputMap.put(ruleParam, resultObject.get(interfaceParams[i]));
-                            if (!KunpengStringUtils.camel2underline(ruleParam).equals(interfaceParams[i])) {
-                                resultObject.put(KunpengStringUtils.camel2underline(ruleParam),
-                                        resultObject.get(interfaceParams[i]));
-                                resultObject.remove(interfaceParams[i]);
-                            }
-
-                        }
-                        resultMapOutput.put(interfaceParams[0], resultObjectOutput);
-                    }
-                }
-            }
-            if (isRiskServiceOutput) {// 决策流三方接口纯数据输出
-                if (StringUtils.isBlank(interfaceDefinition.getInterfaceId())) {
-                    resultMapOutput.put("policy_set_output_service", decisionFlowInterface.getUuid());
-                } else {
-                    resultMapOutput.put("policy_set_output_service", interfaceDefinition.getInterfaceId());
-                }
-                fraudContext.appendInterfaceOutputFields(resultMapOutput);
-            }
-            Map<String, Object> reflectOutputMap = reflect(outputMap);
-            String outputJson = JSON.toJSONString(reflectOutputMap);
-            Map<String, Object> flattened3rdRslt = JsonUtil.getFlatteneInfoNoLowCase(outputJson);
-            for (Map.Entry<String, Object> entry : flattened3rdRslt.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-                if (value != null && !(value instanceof Map)) {
-                    fraudContext.setField(key, value);
-                }
-                String[] interfaceParams = key.split("\\.");
-
-                if (interfaceParams.length > 1) {
-                    fraudContext.setObject(true);
-
-                    Object bomObj = reflectOutputMap.get(interfaceParams[0]);
-                    fraudContext.setField(interfaceParams[0], bomObj);
-                }
-            }
-
-            // for logging purpose only
-            if (logger.isDebugEnabled()) {
-                Map resultObject = new HashMap();
-                for (Map.Entry<String, Object> entry : fraudContext.getFieldValues().entrySet()) {
-                    resultObject.put(entry.getKey(), entry.getValue());
-                }
-            }
-
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"dubbo泛化调用异常 接口调用的结果赋值给规则引擎字段异常", e);
-        }
-    }
-
-
-    /***
-     * 获取接口输入输出参数
-     *
-     * @param interfaceInfo
-     * @return
-     */
-    private List<InterfaceDefinitionParamInfo> getOutParams(DecisionFlowInterface interfaceInfo) {
-        List<InterfaceDefinitionParamInfo> paramInfoList = new CopyOnWriteArrayList<>();
-        try {
-            for (InterfaceDefinitionParamInfo paramInfo : interfaceInfo.getOutputParams()) {
-                String ruleParamName = paramInfo.getRuleField();
-                String interfaceParamName = paramInfo.getInterfaceField();
-                boolean isArray = paramInfo.isArray();
-                InterfaceDefinitionParamInfo outputParamInfo = new InterfaceDefinitionParamInfo();
-                outputParamInfo.setRuleField(ruleParamName);
-                outputParamInfo.setInterfaceField(interfaceParamName);
-                outputParamInfo.setArray(isArray);
-                paramInfoList.add(outputParamInfo);
-            }
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"dubbo泛化调用异常 获取接口输入输出参数异常", e);
-        }
-        return paramInfoList;
-    }
-
-    public static Map<String, Object> reflect(Map<String, Object> vals) {
-
-        Map<String, Object> result = new HashMap<String, Object>();
-        for (String key : vals.keySet()) {
-            //Object value = vals.get(key);
-            for (int i = 1; i <= getPathLength(key); i++) {
-                String mkey = getPaths(key, i);
-                Object item = get(result, mkey);
-
-                Object val = vals.get(mkey);
-                if (item == null && val == null) {
-                    set(result, mkey, new HashMap<String, Object>());
-                } else if (item != null && val == null) {
-//                    set(result, mkey, item);
-//                    System.out.println("已经存在不用重新赋值:" + mkey);
-                    logger.warn(TraceUtils.getFormatTrace()+"已经存在不用重新赋值:" + mkey);
-                } else if (item != null && val != null) {
-//                    System.out.println("数据有问题");
-                    logger.warn(TraceUtils.getFormatTrace()+"数据有问题");
-                } else if (item == null && val != null) {
-                    set(result, mkey, val);
-                }
-            }
-        }
-
-        return result;
-
-    }
-
-    public static int getPathLength(String path) {
-        String[] as = path.split("\\.");
-        return as.length;
-    }
-
-    public static String getPaths(String path, int index) {
-        String[] as = path.split("\\.");
-        StringBuilder sbf = new StringBuilder();
-        int i = 0;
-        while (i < index) {
-            sbf.append(as[i]);
-            sbf.append(".");
-            i++;
-        }
-        sbf.deleteCharAt(sbf.length() - 1);
-        return sbf.toString();
-    }
-
-    public static Object get(Map<String, Object> item, String path) {
-        if (item == null) {
-            return null;
-        }
-        String[] paths = path.split("\\.");
-        int i = 0;
-        while (i < paths.length) {
-            Object v = item.get(paths[i]);
-            if (v == null) {
-                return null;
-            } else if (v instanceof Map) {
-                item = (Map<String, Object>) v;
-            }
-            i++;
-        }
-        return item;
-    }
 
     /**
-     * 组装成JsonObject
-     *
+     * watson异常，处理三方
+     * @param context
+     * @param resultMap
+     * @param interfaceName
      * @return
      */
-
-    public static void set(Map<String, Object> obj, String path, Object value) {
-        String[] paths = path.split("\\.");
-
-        int i = 0;
-        boolean end = false;
-        while (i < paths.length) {
-            Object item = obj.get(paths[i]);
-            if (item instanceof Map) {
-                obj = (Map<String, Object>) item;
-            } else {
-                end = true;
+    public SubReasonCode addSubServiceCode(AbstractFraudContext context,String subService, Map<String, Object> resultMap, String interfaceName){
+        String extReasonCode = (String) resultMap.get("reasonCode");
+        String extReasonMessage = (String) resultMap.get("reasonDesc");
+        if(extReasonCode != null && extReasonMessage != null){
+            String subReasonCode = dictionaryManager.getReasonCode(subService,extReasonCode);
+            if(StringUtils.isBlank(subReasonCode)){
+                return null;
             }
-            if (end) {
-                break;
-            }
-            i++;
+            String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
+            return ReasonCodeUtil.addExtCode(context, subReasonCode, subReasonCodeMessage, subService, interfaceName, extReasonCode, extReasonMessage);
         }
-        if (i != paths.length - 1) {
-            //path有问题
-//            System.out.println(path + " path有问题");
-            logger.warn(TraceUtils.getFormatTrace()+path + " path有问题");
-        } else {
-            obj.put(paths[i], value);
-        }
+        return null;
     }
-
-    private void writeBusinessLog(String seqId, String service, String method, String params, long beginTime) {
-        Map jsonObject = new HashMap(4);
-        jsonObject.put("service_name", service);
-        jsonObject.put("method_name", method);
-        jsonObject.put("params", params);
-        jsonObject.put("cost", System.currentTimeMillis() - beginTime);
-        logger.info(TraceUtils.getFormatTrace()+"泛化dubbo调用业务日志" + jsonObject);
-    }
-
 }

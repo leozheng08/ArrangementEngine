@@ -4,6 +4,7 @@ import cn.tongdun.gaea.client.common.IndicatrixRetCode;
 import cn.tongdun.kunpeng.api.application.platformindex.KpIndicatrixService;
 import cn.tongdun.kunpeng.api.application.platformindex.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.application.platformindex.pojo.IndicatrixRequest;
+import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
@@ -35,10 +36,10 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractKpIndicatrixService.class);
 
-    protected static final String METRICS_TAG_API_QPS_KEY = "dubbo_qps";
+    protected static final String METRICS_TAG_API_QPS_KEY = MetricsConstant.METRICS_TAG_API_QPS_KEY;
     protected static final String METRICS_TAG_PARTNER_KEY = "partner_code";
-    protected static final String METRICS_API_QPS_KEY = "kunpeng.api.dubbo.qps";
-    protected static final String METRICS_API_RT_KEY = "kunpeng.api.dubbo.rt";
+    protected static final String METRICS_API_QPS_KEY = MetricsConstant.METRICS_API_QPS_KEY;
+    protected static final String METRICS_API_RT_KEY = MetricsConstant.METRICS_API_RT_KEY;
     protected static final String METRICS_API_PARTNER_RT_KEY = "kunpeng.api.dubbo.partner.rt";
 
     @Autowired

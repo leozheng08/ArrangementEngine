@@ -1,14 +1,30 @@
 package cn.tongdun.kunpeng.api.engine.model.application;
 
+import cn.tongdun.kunpeng.api.acl.engine.model.application.AdminApplicationDTO;
+import cn.tongdun.kunpeng.api.acl.engine.model.application.IAdminApplicationRepository;
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 应用信息缓存 appName -> AdminApplication
@@ -17,32 +33,84 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplication> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminApplicationCache.class);
+
     //patnerCode.appName -> AdminApplication
-    private Map<String,AdminApplication> adminApplicationMap = new ConcurrentHashMap<>();
+    private LoadingCache<String, AdminApplication> adminApplicationTimingCache;
 
     //patnerCode.appName -> secretkey
     private BiMap<String,String> appNameToSecretKey = HashBiMap.create();
     //secretkey -> patnerCode.appName
     private BiMap<String,String> secretKeyToAppName =  appNameToSecretKey.inverse();
 
+    @Autowired
+    private IAdminApplicationRepository iAdminApplicationRepository;
+
     @PostConstruct
     public void init(){
         register(AdminApplication.class);
+
+        final CacheLoader<String,AdminApplication> loader = new CacheLoader<String, AdminApplication>() {
+            @Override
+            public AdminApplication load(String key) throws Exception {
+                return loadByKey(key);
+            }
+        };
+
+        RemovalListener<String,AdminApplication> removalListener = new RemovalListener<String,AdminApplication>(){
+
+            @Override
+            public void onRemoval(RemovalNotification<String,AdminApplication> notification) {
+                AdminApplication value = notification.getValue();
+                if(null != value){
+                    appNameToSecretKey.remove(value.getAppName());
+                    secretKeyToAppName.remove(value.getSecretKey());
+                }
+            }
+        };
+
+        adminApplicationTimingCache = CacheBuilder.newBuilder().refreshAfterWrite(4, TimeUnit.HOURS).removalListener(removalListener).build(loader);
+    }
+
+    private AdminApplication loadByKey(String key) {
+        String[] values = StringUtils.split(key, ".");
+        if(values != null && values.length == 2){
+            AdminApplicationDTO adminApplicationDTO = iAdminApplicationRepository.selectApplicationByPartnerAppName(values[0], values[1]);
+            AdminApplication adminApplication = new AdminApplication();
+            BeanUtils.copyProperties(adminApplicationDTO,adminApplication);
+        }
+        return null;
     }
 
     @Override
     public AdminApplication get(String key){
-        return adminApplicationMap.get(key);
+        try {
+            return adminApplicationTimingCache.get(key);
+        } catch (ExecutionException e) {
+            logger.error(TraceUtils.getFormatTrace() + "adminApplicationTimingCache.get error", e);
+            return null;
+        }
     }
 
     public AdminApplication get(String partnerCode, String appName){
-        return adminApplicationMap.get(generateKey(partnerCode,appName));
+        try {
+            return adminApplicationTimingCache.get(generateKey(partnerCode,appName));
+        } catch (ExecutionException e) {
+            logger.error(TraceUtils.getFormatTrace() + "adminApplicationTimingCache.get error", e);
+            return null;
+        }
     }
 
     @Override
     public void put(String key, AdminApplication adminApplication){
-        adminApplicationMap.put(key,adminApplication);
+        adminApplicationTimingCache.put(key,adminApplication);
         appNameToSecretKey.forcePut(key,adminApplication.getSecretKey());
+    }
+
+    @Override
+    public AdminApplication remove(String uuid) {
+        return null;
     }
 
 
@@ -50,16 +118,6 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
         put(generateKey(partnerCode,appName),adminApplication);
     }
 
-
-
-    @Override
-    public AdminApplication remove(String key){
-        return adminApplicationMap.remove(key);
-    }
-
-    public AdminApplication remove(String partnerCode, String appName){
-        return remove(generateKey(partnerCode,appName));
-    }
 
 
 
@@ -70,16 +128,16 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
 
 
     public AdminApplication getBySecretKey(String secretKey){
-        String appName = secretKeyToAppName.get(secretKey);
-        if(appName == null){
+        String partnerCodeAppName = secretKeyToAppName.get(secretKey);
+        if(partnerCodeAppName == null){
             return null;
         }
-        return adminApplicationMap.get(appName);
+        return get(partnerCodeAppName);
     }
 
 
     public void addAdminApplication(AdminApplication adminApplication){
-        String key = generateKey(adminApplication.getPartnerCode(),adminApplication.getCode());
+        String key = generateKey(adminApplication.getPartnerCode(),adminApplication.getAppName());
         put(key,adminApplication);
     }
 }

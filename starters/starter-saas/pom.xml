@@ -113,6 +113,13 @@
             <version>${api-core.version}</version>
         </dependency>
 
+        <dependency>
+            <!-- 平台指标对接-->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-platformindex</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
         <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 start-->
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
