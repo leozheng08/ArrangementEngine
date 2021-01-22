@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>application</artifactId>
+        <groupId>cn.tongdun.kunpeng-api</groupId>
+
+        <version>1.0.2-release-20210122-1-SNAPSHOT</version>
+
+
+
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <artifactId>application-indicatrix</artifactId>
+
+    <modules>
+        <module>application-indicatrix-shenwei</module>
+        <module>application-indicatrix-gaeapaas</module>
+        <module>application-indicatrix-gaeaserviceapi</module>
+        <module>application-indicatrix-ignore</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-common</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--指标平台接口-->
+            <dependency>
+                <groupId>cn.tongdun.client</groupId>
+                <artifactId>gaea-paas-client</artifactId>
+                <version>1.0.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.gaea</groupId>
+                <artifactId>gaea-api-client</artifactId>
+                <version>3.2.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.client</groupId>
+                <artifactId>shenwei-client</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

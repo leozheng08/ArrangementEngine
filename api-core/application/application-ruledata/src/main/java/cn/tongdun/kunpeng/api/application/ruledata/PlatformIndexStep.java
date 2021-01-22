@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.ruledata;
 
-import cn.tongdun.kunpeng.api.application.platformindex.IndicatrixServiceExtPt;
+import cn.tongdun.kunpeng.api.application.intf.IndicatrixServiceExtPt;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;

@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>starter-sea</artifactId>
-    <version>1.0.2-release-20210122-1</version>
+    <version>1.0.2-release-20210122-1-SNAPSHOT</version>
     <name>starter-sea</name>
 
     <properties>
@@ -14,8 +14,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <api-core.version>1.0.2-release-20210122-1</api-core.version>
-        <api-extension.version>1.0.2-release-20210122-1</api-extension.version>
+        <api-core.version>1.0.2-release-20210122-1-SNAPSHOT</api-core.version>
+        <api-extension.version>1.0.2-release-20210122-1-SNAPSHOT</api-extension.version>
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <skip_maven_deploy>false</skip_maven_deploy>
@@ -121,7 +121,7 @@
         <dependency>
             <!-- 平台指标对接-->
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-platformindex</artifactId>
+            <artifactId>application-indicatrix-gaeaserviceapi</artifactId>
             <version>${api-core.version}</version>
         </dependency>
 
