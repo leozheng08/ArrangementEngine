@@ -103,6 +103,12 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng</groupId>
             <artifactId>kunpeng-share-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>ddd-common</artifactId>
+                    <groupId>cn.tongdun.ddd</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng</groupId>
