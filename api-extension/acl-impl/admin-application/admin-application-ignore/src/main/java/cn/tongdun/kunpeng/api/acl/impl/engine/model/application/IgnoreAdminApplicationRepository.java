@@ -32,7 +32,7 @@ public class IgnoreAdminApplicationRepository implements IAdminApplicationReposi
     @Override
     public AdminApplicationDTO selectApplicationByUuid(String uuid) {
         AdminApplicationDTO applicationDTO = new AdminApplicationDTO();
-        applicationDTO.setCode(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setAppName(Constant.DEFAULT_APP_NAME);
         applicationDTO.setSecretKey(Constant.DEFAULT_APP_NAME);
         applicationDTO.setUuid(Constant.DEFAULT_APP_NAME);
         applicationDTO.setDisplayName(Constant.DEFAULT_APP_NAME);
@@ -43,7 +43,7 @@ public class IgnoreAdminApplicationRepository implements IAdminApplicationReposi
 
     private static AdminApplicationDTO createDefaultApplication(){
         AdminApplicationDTO applicationDTO = new AdminApplicationDTO();
-        applicationDTO.setCode(Constant.DEFAULT_APP_NAME);
+        applicationDTO.setAppName(Constant.DEFAULT_APP_NAME);
         applicationDTO.setSecretKey(Constant.DEFAULT_APP_NAME);
         applicationDTO.setUuid(Constant.DEFAULT_APP_NAME);
         applicationDTO.setDisplayName(Constant.DEFAULT_APP_NAME);

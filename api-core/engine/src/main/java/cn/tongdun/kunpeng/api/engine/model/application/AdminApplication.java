@@ -10,14 +10,15 @@ import lombok.Data;
 @Data
 public class AdminApplication extends EventDO {
 
-    // 应用标识
-    private String code;
     // uuid
     private String uuid;
     // 应用名称
     private String displayName;
     // 合作方名称
     private String partnerCode;
+
+    private String appName;
+    private String appType;
     // 密钥
     private String secretKey;
     // 描述

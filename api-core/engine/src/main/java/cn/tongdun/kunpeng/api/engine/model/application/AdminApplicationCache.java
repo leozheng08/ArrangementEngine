@@ -79,7 +79,7 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
 
 
     public void addAdminApplication(AdminApplication adminApplication){
-        String key = generateKey(adminApplication.getPartnerCode(),adminApplication.getCode());
+        String key = generateKey(adminApplication.getPartnerCode(),adminApplication.getAppName());
         put(key,adminApplication);
     }
 }

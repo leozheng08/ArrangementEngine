@@ -18,6 +18,7 @@
     <modules>
         <module>admin-application-ignore</module>
         <module>admin-application-db</module>
+        <module>admin-application-chassis</module>
     </modules>
 
 
