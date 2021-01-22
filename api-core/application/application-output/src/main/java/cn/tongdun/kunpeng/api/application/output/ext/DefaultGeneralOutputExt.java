@@ -14,17 +14,15 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 标准输出扩展点默认实现
+ *
  * @Author: liang.chen
  * @Date: 2020/2/10 下午9:44
  */
-@Extension(tenant = BizScenario.DEFAULT,business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
+@Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
 
 
@@ -32,10 +30,10 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
     private DecisionResultTypeCache decisionResultTypeCache;
 
     @Override
-    public boolean generalOutput(AbstractFraudContext context, IRiskResponse response, RiskRequest request){
+    public boolean generalOutput(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         PolicyResponse policyResponse = context.getPolicyResponse();
-        if(policyResponse == null){
+        if (policyResponse == null) {
             return true;
         }
         response.setSuccess(policyResponse.isSuccess());
@@ -55,7 +53,7 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             if (StringUtils.isNotBlank(subPolicyResponse.getRiskType())) {
                 DecisionResultType decisionResultTyp = decisionResultTypeCache.get(subPolicyResponse.getDecision());
 
-                if(decisionResultTyp != null && decisionResultTyp.isRisky()){
+                if (decisionResultTyp != null && decisionResultTyp.isRisky()) {
                     if (riskTypeBuilder.length() > 0) {
                         riskTypeBuilder.append(",");
                     }
@@ -70,8 +68,8 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             subPolicyResult.setRiskType(subPolicyResponse.getRiskType());
             subPolicyResult.setPolicyDecision(subPolicyResponse.getDecision());
 
-            List<IHitRule> hitRuleList = getHitRules(response.getFactory(),subPolicyResponse);
-            if(hitRuleList != null && !hitRuleList.isEmpty()) {
+            List<IHitRule> hitRuleList = getHitRules(response.getFactory(), subPolicyResponse);
+            if (hitRuleList != null && !hitRuleList.isEmpty()) {
                 subPolicyResult.setHitRules(hitRuleList);
             }
             policyResults.add(subPolicyResult);
@@ -80,10 +78,10 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
         // 添加deviceInfo信息
         Map external = Maps.newHashMap();
         Map deviceInfo = context.getDeviceInfo();
-        if (deviceInfo != null){
+        if (deviceInfo != null) {
             String appOs = null;
             if (null != context.getAppType()) {
-                appOs = (String)deviceInfo.get("appOs");
+                appOs = (String) deviceInfo.get("appOs");
             }
             if (StringUtils.isNotEmpty(appOs)) {
                 Map outputDeviceInfo = postProcessDeviceInfo(appOs, deviceInfo);
@@ -91,8 +89,12 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             } else {
                 external.put("deviceInfo", deviceInfo);
             }
+            if (Objects.nonNull(context.getExternalReturnObj().get("geoipEntity"))) {
+                external.put("geoIpInfo", context.getExternalReturnObj().get("geoipEntity"));
+            }
 
             response.setCustomPolicyResult(external);
+
         }
 
 
@@ -100,16 +102,16 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
     }
 
 
-    private List<IHitRule> getHitRules(IRiskResponseFactory factory,SubPolicyResponse subPolicyResponse){
+    private List<IHitRule> getHitRules(IRiskResponseFactory factory, SubPolicyResponse subPolicyResponse) {
         List<RuleResponse> ruleResponseList = subPolicyResponse.getRuleResponses();
-        if(ruleResponseList == null || ruleResponseList.isEmpty()){
+        if (ruleResponseList == null || ruleResponseList.isEmpty()) {
             return null;
         }
 
         List<IHitRule> hitRuleList = new ArrayList<>();
-        for(RuleResponse ruleResponse:ruleResponseList){
+        for (RuleResponse ruleResponse : ruleResponseList) {
             if (ruleResponse.isHit()) {
-                IHitRule hitRule = createHitRule(factory,ruleResponse);
+                IHitRule hitRule = createHitRule(factory, ruleResponse);
                 hitRuleList.add(hitRule);
             }
         }
@@ -117,7 +119,7 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
         return hitRuleList;
     }
 
-    private IHitRule createHitRule(IRiskResponseFactory factory,RuleResponse ruleResponse){
+    private IHitRule createHitRule(IRiskResponseFactory factory, RuleResponse ruleResponse) {
         IHitRule hitRule = factory.newHitRule();
         hitRule.setId(ruleResponse.getId());
         hitRule.setName(ruleResponse.getName());
@@ -131,10 +133,11 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
 
     /**
      * 根据appType精简输出
+     *
      * @param appType
      * @param deviceInfo
      */
-    private Map<String, Object> postProcessDeviceInfo(String appType, Map<String,Object> deviceInfo) {
+    private Map<String, Object> postProcessDeviceInfo(String appType, Map<String, Object> deviceInfo) {
         Map<String, Object> result = Maps.newHashMap();
         if (StringUtils.isEmpty(appType)) {
             return deviceInfo;

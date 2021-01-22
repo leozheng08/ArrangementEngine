@@ -182,6 +182,6 @@ public class CustomListFunction extends AbstractFunction {
 
     public static void main(String[] args) {
         double score=1.597291199E12;
-        System.out.println(score >= new Date().getTime());
+        System.out.println(score >= System.currentTimeMillis());
     }
 }
