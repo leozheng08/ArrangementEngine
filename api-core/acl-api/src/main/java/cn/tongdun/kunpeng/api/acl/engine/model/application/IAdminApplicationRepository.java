@@ -12,5 +12,5 @@ public interface IAdminApplicationRepository {
     //查询应用信息列表
     List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners);
 
-    AdminApplicationDTO selectApplicationByUuid(String uuid);
+    AdminApplicationDTO selectApplicationByPartnerAppName(String partnerCode,String appName);
 }
