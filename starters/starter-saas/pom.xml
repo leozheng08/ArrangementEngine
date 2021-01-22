@@ -185,12 +185,12 @@
             <artifactId>consumer-es</artifactId>
             <version>${api-consumer.version}</version>
         </dependency>
-        <dependency>
-            <!-- kunpeng-api consume将activity消息保存到mongoDB -->
-            <groupId>cn.tongdun.kunpeng-consumer</groupId>
-            <artifactId>consumer-mongo</artifactId>
-            <version>${api-consumer.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--&lt;!&ndash; kunpeng-api consume将activity消息保存到mongoDB &ndash;&gt;-->
+            <!--<groupId>cn.tongdun.kunpeng-consumer</groupId>-->
+            <!--<artifactId>consumer-mongo</artifactId>-->
+            <!--<version>${api-consumer.version}</version>-->
+        <!--</dependency>-->
     </dependencies>
 
 

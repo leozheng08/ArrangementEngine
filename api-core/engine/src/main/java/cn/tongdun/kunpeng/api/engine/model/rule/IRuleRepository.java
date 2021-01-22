@@ -36,4 +36,12 @@ public interface IRuleRepository {
      * @return
      */
     List<RuleDTO> queryBySubPolicyUuid(String subPolicyUuid);
+
+    /**
+     * 根据业务类型和业务编码查询规则
+     * @param bizType
+     * @param BizUuid
+     * @return
+     */
+    List<RuleDTO> queryByBizTypeAndBizUuid(String bizType, String BizUuid);
 }

@@ -35,4 +35,15 @@
     <include refid="Base_Column_List" />
     from decision_custom_output where uuid = #{uuid}
   </select>
+
+  <select id="selectAvailableByPartners" parameterType="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from decision_custom_output
+    where partner_code in
+    <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
+      #{partner}
+    </foreach>
+  </select>
+
 </mapper>

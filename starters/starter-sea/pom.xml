@@ -7,7 +7,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>starter-sea</artifactId>
     <version>1.0.2-release-20201223-1-SNAPSHOT</version>
-    <name>starter-zbx</name>
+    <name>starter-sea</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

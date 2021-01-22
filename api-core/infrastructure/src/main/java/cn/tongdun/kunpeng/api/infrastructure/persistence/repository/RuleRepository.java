@@ -1,14 +1,14 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
-import cn.tongdun.kunpeng.client.dto.RuleActionElementDTO;
-import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
-import cn.tongdun.kunpeng.client.dto.RuleDTO;
-import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
+import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleActionElementDAO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleConditionElementDAO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.RuleDAO;
-import cn.tongdun.kunpeng.api.common.util.JsonUtil;
+import cn.tongdun.kunpeng.client.dto.RuleActionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
+import cn.tongdun.kunpeng.client.dto.WeightedRiskConfigDTO;
 import cn.tongdun.kunpeng.share.dataobject.RuleActionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleConditionElementDO;
 import cn.tongdun.kunpeng.share.dataobject.RuleDO;
@@ -182,6 +182,27 @@ public class RuleRepository implements IRuleRepository {
 
         return ruleDTO;
     }
+
+    /**
+     * 根据业务类型和业务编码
+     * @param bizType
+     * @param bizUuid
+     * @return
+     */
+    @Override
+    public List<RuleDTO> queryByBizTypeAndBizUuid(String bizType, String bizUuid) {
+        List<RuleDO> ruleDO = ruleruleDAO.selectByBizTypeBizUuid(bizType, bizUuid);
+        List<RuleDTO> ruleDTOS = ruleDO.stream().map(r -> {
+            RuleDTO ruleDTO = new RuleDTO();
+            BeanUtils.copyProperties(r, ruleDTO);
+            parseRiskConfig(ruleDTO,r.getRiskConfig());
+            ruleDTO.setRuleConditionElements(queryRuleConditionElementDTOByRuleUuid(r.getUuid()));
+            ruleDTO.setRuleActionElements(queryRuleActionElementDTOByRuleUuid(r.getUuid()));
+            return ruleDTO;
+        }).collect(Collectors.toList());
+        return ruleDTOS;
+    }
+
 
     private void setRuleModifiedVersion(RuleDTO ruleDTO){
         //取得最后更新时间，rule,ruleActionElement,ruleConditionElements 做为整体来刷新
