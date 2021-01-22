@@ -77,4 +77,9 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
             return adminApplication;
         }).get();
     }
+
+    @Override
+    public AdminApplicationDTO selectApplicationByUuid(String uuid) {
+        return null;
+    }
 }

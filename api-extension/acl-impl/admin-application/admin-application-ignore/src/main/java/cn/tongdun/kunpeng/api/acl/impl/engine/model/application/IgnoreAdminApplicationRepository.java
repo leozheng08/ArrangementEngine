@@ -34,6 +34,11 @@ public class IgnoreAdminApplicationRepository implements IAdminApplicationReposi
         return createDefaultApplication();
     }
 
+    @Override
+    public AdminApplicationDTO selectApplicationByUuid(String uuid) {
+        return createDefaultApplication();
+    }
+
     private static AdminApplicationDTO createDefaultApplication(){
         AdminApplicationDTO applicationDTO = new AdminApplicationDTO();
         applicationDTO.setAppName(Constant.DEFAULT_APP_NAME);

@@ -43,6 +43,17 @@ public class DbAdminApplicationRepository implements IAdminApplicationRepository
     }
 
     @Override
+    public AdminApplicationDTO selectApplicationByUuid(String uuid) {
+        AdminApplicationDO adminApplicationDO = adminApplicationDAO.queryByUuid(uuid);
+        if (null == adminApplicationDO) {
+            return null;
+        }
+        AdminApplicationDTO adminApplicationDTO = new AdminApplicationDTO();
+        BeanUtils.copyProperties(adminApplicationDO,adminApplicationDTO);
+        return adminApplicationDTO;
+    }
+
+    @Override
     public AdminApplicationDTO selectApplicationByPartnerAppName(String partnerCode, String appName) {
         return null;
     }
