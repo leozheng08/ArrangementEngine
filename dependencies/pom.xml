@@ -37,7 +37,7 @@
         <tdflow.version>1.0.2</tdflow.version>
         <kunpeng-share.version>1.0.1-beta-0624-1</kunpeng-share.version>
         <common.arch.version>2.0.2</common.arch.version>
-        <module.kafka.version>3.1.0</module.kafka.version>
+        <module.kafka.version>3.2.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
         <fp.version>3.2.5</fp.version>
         <gaea-fact.version>1.0.6</gaea-fact.version>
