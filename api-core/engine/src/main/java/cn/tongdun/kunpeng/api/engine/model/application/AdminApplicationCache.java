@@ -70,7 +70,7 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
             }
         };
 
-        adminApplicationTimingCache = CacheBuilder.newBuilder().refreshAfterWrite(30, TimeUnit.MINUTES).removalListener(removalListener).build(loader);
+        adminApplicationTimingCache = CacheBuilder.newBuilder().refreshAfterWrite(4, TimeUnit.HOURS).removalListener(removalListener).build(loader);
     }
 
     private AdminApplication loadByKey(String key) {
