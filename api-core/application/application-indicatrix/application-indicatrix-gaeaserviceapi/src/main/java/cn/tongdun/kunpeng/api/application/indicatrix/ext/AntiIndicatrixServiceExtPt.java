@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application.indicatrix.ext;
 
+
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,16 +17,16 @@ import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.tdframework.core.extension.Extension;
 
 /**
- * 国内/印尼版 信贷场景 指标平台扩展点
+ * 国内/印尼版 反欺诈场景(延时敏感) 指标平台扩展点
  * @author jie
  * @date 2020/12/14
  */
-@Extension(tenant = "sea",business = "credit",partner = BizScenario.DEFAULT)
-public class SeaCreditIndicatrixServiceExtPt implements IndicatrixServiceExtPt {
+@Extension(tenant = BizScenario.DEFAULT,business = "anti_fraud",partner = BizScenario.DEFAULT)
+public class AntiIndicatrixServiceExtPt implements IndicatrixServiceExtPt {
 
-    private static final Logger logger = LoggerFactory.getLogger(SeaCreditIndicatrixServiceExtPt.class);
+    private static final Logger logger = LoggerFactory.getLogger(AntiIndicatrixServiceExtPt.class);
 
-    @Resource(name = "gaeaApiAbnormalService")
+    @Resource(name = "gaeaApiLatencyService")
     private KpIndicatrixService kpIndicatrixService;
 
     @Override
@@ -33,11 +34,11 @@ public class SeaCreditIndicatrixServiceExtPt implements IndicatrixServiceExtPt {
         IndicatrixApiResult<List<PlatformIndexData>> apiResult = kpIndicatrixService.calculateByIdsAndSetContext(fraudContext);
 
         if (null == apiResult) {
-            logger.warn("SaasIndicatrixCreditServiceExtPt calculate result is null");
+            logger.warn("SaasIndicatrixAntiServiceExtPt calculate result is null");
             return false;
         }
 
-        logger.info("SaasIndicatrixCreditServiceExtPt calculate result:{},code:{}", apiResult.isSuccess(), apiResult.getCode());
+        logger.info("SaasIndicatrixAntiServiceExtPt calculate result:{},code:{}", apiResult.isSuccess(), apiResult.getCode());
         return apiResult.isSuccess();
     }
 }
