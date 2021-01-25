@@ -8,7 +8,7 @@
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
 
-    <version>1.1.0-release-20210119-01</version>
+    <version>1.0.2-release-20210125-03</version>
 
 
 
@@ -31,13 +31,13 @@
         <janino-version>3.0.6</janino-version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.7</tdframework.version>
+        <tdframework.version>1.1.2</tdframework.version>
         <ddd.version>1.0.6</ddd.version>
         <tdrule.version>1.0.5</tdrule.version>
         <tdflow.version>1.0.2</tdflow.version>
         <kunpeng-share.version>1.0.1-beta-0624-1</kunpeng-share.version>
         <common.arch.version>2.0.2</common.arch.version>
-        <module.kafka.version>3.1.0</module.kafka.version>
+        <module.kafka.version>3.2.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
         <fp.version>3.2.5</fp.version>
         <gaea-fact.version>1.0.6</gaea-fact.version>
@@ -434,7 +434,8 @@
             <dependency>
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>module-elasticsearch</artifactId>
-                <version>6.0.26</version>
+                <!--<version>6.0.26</version>-->
+                <version>6.2.20.3</version>
                 <exclusions>
                     <exclusion>
                         <groupId>cn.fraudmetrix</groupId>
