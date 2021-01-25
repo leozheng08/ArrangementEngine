@@ -52,10 +52,8 @@ public class RiskService implements IRiskService {
     @Autowired
     private IMetrics metrics;
 
-
     @Override
-    public IRiskResponse riskService(Map<String, Object> request) {
-
+    public IRiskResponse riskService(Map<String, Object> request, String bizName) {
         BizScenario bizScenario = createBizScenario(request);
 
         RiskRequest riskRequest = extensionExecutor.execute(ICreateRiskRequestExtPt.class,
@@ -63,13 +61,11 @@ public class RiskService implements IRiskService {
                 extension -> extension.createRiskRequest(request));
 
 
-        return riskService(riskRequest);
+        return riskService(riskRequest, bizName);
     }
 
-
     @Override
-    public IRiskResponse riskService(RiskRequest riskRequest) {
-
+    public IRiskResponse riskService(RiskRequest riskRequest, String bizName) {
         metrics.counter("kunpeng.api.riskservice.qps");
 
 
@@ -102,7 +98,7 @@ public class RiskService implements IRiskService {
             riskResponse.setFinalDecision(decisionResultTypeCache.getDefaultType().getCode());
 
             final IRiskResponse finalRiskResponse = riskResponse;
-            Response result = pipelineExecutor.execute(Risk.NAME, IRiskStep.class,
+            Response result = pipelineExecutor.execute(bizName, IRiskStep.class,
                     step -> step.invoke(context, finalRiskResponse, riskRequest), (isSuccess, e) ->
                     {
 
@@ -121,6 +117,17 @@ public class RiskService implements IRiskService {
         timePartner.stop();
         printCode(riskRequest,riskResponse);
         return riskResponse;
+    }
+
+    @Override
+    public IRiskResponse riskService(Map<String, Object> request) {
+        return riskService(request, Risk.NAME);
+    }
+
+
+    @Override
+    public IRiskResponse riskService(RiskRequest riskRequest) {
+        return riskService(riskRequest, Risk.NAME);
 
     }
 

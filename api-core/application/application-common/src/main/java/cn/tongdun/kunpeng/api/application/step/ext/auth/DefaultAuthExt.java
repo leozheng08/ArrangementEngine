@@ -26,19 +26,20 @@ public class DefaultAuthExt implements IAuthExtPt {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String partnerCode = request.getPartnerCode();
         String secretKey = request.getSecretKey();
-        if(StringUtils.isAnyBlank(partnerCode,secretKey)){
-            response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
-            return false;
-        }
+//        if(StringUtils.isAnyBlank(partnerCode,secretKey)){
+//            response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
+//            return false;
+//        }
+//
+//        AdminApplication adminApplication = adminApplicationCache.getBySecretKey(secretKey);
+//
+//        if(adminApplication == null){
+//            response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
+//            return false;
+//        }
+//        context.setAppName(adminApplication.getCode());
 
-        AdminApplication adminApplication = adminApplicationCache.getBySecretKey(secretKey);
-
-        if(adminApplication == null){
-            response.setReasonCode(ReasonCode.AUTH_FAILED.toString());
-            return false;
-        }
-        context.setAppName(adminApplication.getAppName());
-
+        context.setAppName(request.getAppName());
         context.setPartnerCode(partnerCode);
         context.setSecretKey(secretKey);
         return true;
