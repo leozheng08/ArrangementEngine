@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
  * @Author: liang.chen
  * @Date: 2020/2/11 下午3:10
  */
-public class InterfaceDefinitionManager extends AbstractBizNode {
+public class InterfaceDefinitionNode extends AbstractBizNode {
 
-    private static final Logger logger = LoggerFactory.getLogger(InterfaceDefinitionManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(InterfaceDefinitionNode.class);
 
     /**
      * 接口的详细配置
@@ -61,7 +61,7 @@ public class InterfaceDefinitionManager extends AbstractBizNode {
 
     @Override
     public int getRunCost() {
-        return 0;
+        return 30;
     }
 
     @Override
