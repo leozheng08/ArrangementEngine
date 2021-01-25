@@ -36,7 +36,7 @@
     from decision_custom_output where uuid = #{uuid}
   </select>
 
-  <select id="selectAvailableByPartners" parameterType="list" resultMap="BaseResultMap">
+  <select id="selectAvailableByPartners" parameterType="java.util.Set" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
     from decision_custom_output

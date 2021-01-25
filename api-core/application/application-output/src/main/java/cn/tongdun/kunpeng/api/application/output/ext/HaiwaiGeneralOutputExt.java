@@ -8,7 +8,6 @@ import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.client.data.*;
-import cn.tongdun.kunpeng.client.data.impl.underline.RiskResponse;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +20,7 @@ import java.util.*;
  * @Author: liang.chen
  * @Date: 2020/2/10 下午9:44
  */
-@Extension(tenant = "sea",business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
+@Extension(tenant = "haiwai",business = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
 public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
 
 
@@ -79,7 +78,7 @@ public class HaiwaiGeneralOutputExt implements IGeneralOutputExtPt {
         }
         response.setSubPolicys(policyResults);
         if (rules.size() > 0) {
-            ((RiskResponse)response).setHitRules(rules);
+            response.setHitRules(rules);
         }
 
         Map external = Maps.newHashMap();
