@@ -42,6 +42,7 @@ public class EventMsgParser {
         put("custom_list_value",CustomListValueEventDO.class);
         put("access", AccessBusiness.class);
         put("app", AdminApplication.class);
+        put("audit_rule", AuditRuleEventDO.class);
     }};
 
     public void registerMsgEntity(String key, Class entityClass){
