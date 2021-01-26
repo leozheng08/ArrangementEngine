@@ -31,8 +31,8 @@
         <janino-version>3.0.6</janino-version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.0.7</tdframework.version>
-        <ddd.version>1.0.5</ddd.version>
+        <tdframework.version>1.1.2</tdframework.version>
+        <ddd.version>1.0.6</ddd.version>
         <tdrule.version>1.0.5</tdrule.version>
         <tdflow.version>1.0.2</tdflow.version>
         <kunpeng-share.version>1.0.1-beta-0624-1</kunpeng-share.version>
@@ -95,6 +95,7 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>1.2.70</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- 设备指纹 fp -->
@@ -439,7 +440,8 @@
             <dependency>
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>module-elasticsearch</artifactId>
-                <version>6.0.26</version>
+                <!--<version>6.0.26</version>-->
+                <version>6.2.20.3</version>
                 <exclusions>
                     <exclusion>
                         <groupId>cn.fraudmetrix</groupId>
