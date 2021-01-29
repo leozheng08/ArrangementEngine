@@ -69,21 +69,24 @@ public class RiskService implements IRiskService {
         metrics.counter("kunpeng.api.riskservice.qps");
 
 
-
         ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
-        if (StringUtils.isEmpty(riskRequest.getPartnerCode())){
+        if (StringUtils.isEmpty(riskRequest.getPartnerCode())) {
             riskRequest.setPartnerCode("NULL_partnerCode");
         }
         String[] tags = {
-                "partner_code",riskRequest.getPartnerCode()};
-        ITimeContext timePartner = metrics.metricTimer("kunpeng.api.riskservice.partner.rt",tags);
+                "partner_code", riskRequest.getPartnerCode()};
+        ITimeContext timePartner = metrics.metricTimer("kunpeng.api.riskservice.partner.rt", tags);
 
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
 
         //business 依赖event_id找到对应的event_type再确认，放
         // 到GetPolicyUuidStep步骤中实现。
-        BizScenario bizScenario = BizScenario.valueOf(localEnvironment.getTenant(), BizScenario.DEFAULT, riskRequest.getPartnerCode());
+        String partnerCode = riskRequest.getPartnerCode();
+        if (StringUtils.isNotEmpty(partnerCode) && "derica".equals(partnerCode)) {
+            partnerCode = "globalegrow";
+        }
+        BizScenario bizScenario = BizScenario.valueOf(localEnvironment.getTenant(), BizScenario.DEFAULT, partnerCode);
         context.setBizScenario(bizScenario);
 
         IRiskResponse riskResponse = null;
@@ -115,7 +118,7 @@ public class RiskService implements IRiskService {
         }
         timeContext.stop();
         timePartner.stop();
-        printCode(riskRequest,riskResponse);
+        printCode(riskRequest, riskResponse);
         return riskResponse;
     }
 
@@ -132,28 +135,29 @@ public class RiskService implements IRiskService {
     }
 
     /**
-     *  printCode
-     *  riskRequest
+     * printCode
+     * riskRequest
+     *
      * @param riskResponse
      */
-    private void  printCode(RiskRequest riskRequest,IRiskResponse riskResponse){
-        if (Objects.nonNull(riskResponse.getReasonCode())){
+    private void printCode(RiskRequest riskRequest, IRiskResponse riskResponse) {
+        if (Objects.nonNull(riskResponse.getReasonCode())) {
             String[] tags = {
-                    "reason_code",riskResponse.getReasonCode()};
-            metrics.counter("kunpeng.api.reasonCode",tags);
+                    "reason_code", riskResponse.getReasonCode()};
+            metrics.counter("kunpeng.api.reasonCode", tags);
         }
-        if (Objects.nonNull(riskResponse.getSubReasonCodes())){
+        if (Objects.nonNull(riskResponse.getSubReasonCodes())) {
             String[] tags = {
-                    "sub_reason_code",riskResponse.getSubReasonCodes()};
-            metrics.counter("kunpeng.api.subReasonCode",tags);
+                    "sub_reason_code", riskResponse.getSubReasonCodes()};
+            metrics.counter("kunpeng.api.subReasonCode", tags);
         }
         /**
          * 按照合作方异常打点
          */
-        if (Objects.nonNull(riskRequest.getPartnerCode())&&Objects.nonNull(riskResponse.getSubReasonCodes())){
+        if (Objects.nonNull(riskRequest.getPartnerCode()) && Objects.nonNull(riskResponse.getSubReasonCodes())) {
             String[] tags = {
-                    "partner_code",riskRequest.getPartnerCode()};
-            metrics.counter("kunpeng.api.partner.code",tags);
+                    "partner_code", riskRequest.getPartnerCode()};
+            metrics.counter("kunpeng.api.partner.code", tags);
         }
     }
 
@@ -161,9 +165,12 @@ public class RiskService implements IRiskService {
     private BizScenario createBizScenario(Map<String, Object> request) {
         BizScenario bizScenario = new BizScenario();
         bizScenario.setTenant(localEnvironment.getTenant());
-        bizScenario.setPartner(request.get("partnerCode") != null ? (String)request.get("partnerCode") : (String)request.get("partner_code"));
+        bizScenario.setPartner(request.get("partnerCode") != null ? (String) request.get("partnerCode") : (String) request.get("partner_code"));
         if (StringUtils.isEmpty(bizScenario.getPartner())) {
-            bizScenario.setPartner(request.get("PARTNERCODE") != null ? (String)request.get("PARTNERCODE") : null);
+            bizScenario.setPartner(request.get("PARTNERCODE") != null ? (String) request.get("PARTNERCODE") : null);
+        }
+        if (StringUtils.isNotEmpty(bizScenario.getPartner()) && "derica".equals(bizScenario.getPartner())) {
+            bizScenario.setPartner("globalegrow");
         }
         return bizScenario;
     }
