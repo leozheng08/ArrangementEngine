@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>starter-saas</artifactId>
 
-    <version>1.0.2-release-20210125-03</version>
+    <version>1.0.2-release-20210129-02</version>
     <name>starter-saas</name>
     <groupId>cn.tongdun.kunpeng-api</groupId>
 
@@ -13,8 +13,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <api-core.version>1.0.2-release-20210125-03</api-core.version>
-        <api-extension.version>1.0.2-release-20210125-03</api-extension.version>
+        <api-core.version>1.0.2-release-20210129-02</api-core.version>
+        <api-extension.version>1.0.2-release-20210129-02</api-extension.version>
         <api-consumer.version>1.0.1-release-20210125-01</api-consumer.version>
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
