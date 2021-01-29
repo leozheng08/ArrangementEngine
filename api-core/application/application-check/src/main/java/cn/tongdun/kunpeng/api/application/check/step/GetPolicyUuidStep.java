@@ -161,6 +161,9 @@ public class GetPolicyUuidStep implements IRiskStep {
         BizScenario bizScenario = new BizScenario();
         bizScenario.setTenant(localEnvironment.getTenant());
         bizScenario.setPartner(context.getPartnerCode());
+        if (StringUtils.isNotEmpty(bizScenario.getPartner()) && "derica".equals(bizScenario.getPartner())) {
+            bizScenario.setPartner("globalegrow");
+        }
         //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
         String businessType = baseConfig.getBusinessByEventType(context.getEventType());
         bizScenario.setBusiness(businessType);
