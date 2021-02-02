@@ -9,6 +9,7 @@ import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -269,6 +270,12 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 设备指纹信息
      */
     private Map<String, Object> deviceInfo = new HashMap<String, Object>();
+
+    /**
+     * 关键词匹配结果
+     */
+    private List<Object> keywordResultModels = new ArrayList<>();
+
     /*************外部接口返回结果 end******************/
 
 

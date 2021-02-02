@@ -3,6 +3,8 @@ package cn.tongdun.kunpeng.api.engine.convertor.impl;
 
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilder;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.CustomRuleBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.FunctionRuleBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.RuleBuilder;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Author: liang.chen
@@ -56,7 +59,13 @@ public class RuleConvertor implements IConvertor<RuleDTO, Rule> {
             } else {
                 ruleBuilder = new FunctionRuleBuilder();
             }
-            return ruleBuilder.build(dto);
+            Rule rule = ruleBuilder.build(dto);
+
+            //处理需要批量远程调用的数据   增删改均需要经过当前方法，入口唯一
+            BatchRemoteCallDataBuilder builder = BatchRemoteCallDataBuilderFactory.getBuilder(dto.getTemplate());
+            rule = null == builder ? rule : builder.appendBatchRemoteCallData(dto,rule);
+
+            return rule;
         } catch (Exception e){
             logger.error(TraceUtils.getFormatTrace()+"RuleConvertor error, ruleUuid:{}",
                     dto.getUuid(),

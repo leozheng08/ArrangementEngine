@@ -30,6 +30,7 @@
 <!--        <module>application-mix</module>-->
         <module>application-fieldmapping</module>
         <module>application-model</module>
+        <module>application-keyword</module>
     </modules>
 
 
