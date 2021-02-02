@@ -42,6 +42,7 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
     @Autowired
     private AGeoipInfoQueryService aGeoipInfoQueryService;
 
+
     @Override
     public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
         if (StringUtils.isBlank(ip)) {
