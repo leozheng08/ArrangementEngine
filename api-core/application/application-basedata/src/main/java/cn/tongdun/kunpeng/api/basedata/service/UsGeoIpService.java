@@ -9,6 +9,9 @@ import cn.tongdun.gaea.dubbo.GpsQueryService;
 import cn.tongdun.gaea.factservice.domain.GpsInfoDTO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
@@ -39,6 +42,7 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
     @Autowired
     private AGeoipInfoQueryService aGeoipInfoQueryService;
 
+
     @Override
     public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
         if (StringUtils.isBlank(ip)) {
@@ -52,11 +56,31 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
             geoipQueryDTO.setSource("jcyqus");
             geoipQueryDTO.setSeqId(context.getSeqId());
             result = aGeoipInfoQueryService.queryGeoipInfo(geoipQueryDTO);
+            logger.info("aGeoipInfoQueryService.queryGeoipInfo:{}", JSON.toJSONString(result));
         } catch (Exception e) {
+            ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoIp-us");
             logger.error(TraceUtils.getFormatTrace() + "UsGeoIpService gpsQueryService.queryGps error,ip:" + ip, e);
         }
-        if (Objects.isNull(result)||!result.isSuccess()||Objects.isNull(result.getData())){
+        if (Objects.isNull(result)) {
             return null;
+        }
+        if (!result.isSuccess()) {
+            switch (result.getCode()) {
+                case "100":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_PARAM_ERROR, "geoIp-us");
+                    return null;
+                case "102":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_ILLEGAL_ERROR, "geoIp-us");
+                    return null;
+                case "403":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_PERNISSION_ERROR, "geoIp-us");
+                    return null;
+                case "500":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERRVER_ERROR, "geoIp-us");
+                    return null;
+                default:
+                    return null;
+            }
         }
 
         return fromDTO2EntityV2(result.getData());
