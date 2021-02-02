@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -175,12 +176,14 @@ public class DeviceInfoStep implements IRiskStep {
         if (StringUtils.isNotEmpty(trueIp)) {
             GeoipEntity geoip = null;
             try {
-                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp,context));
-                context.set("trueIpAddressCountry",geoip.getCounty());
-                context.set("trueIpAddressProvince",geoip.getProvince());
-                context.set("trueIpAddressCity",geoip.getCity());
-                context.set("trueIpAddressCountryCode",geoip.getCountryId());
-                logger.info("真实geoip的数据结果:"+JSON.toJSONString(geoip));
+                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp, context));
+                if (Objects.nonNull(geoip)) {
+                    context.set("trueIpAddressCountry", geoip.getCounty());
+                    context.set("trueIpAddressProvince", geoip.getProvince());
+                    context.set("trueIpAddressCity", geoip.getCity());
+                    context.set("trueIpAddressCountryCode", geoip.getCountryId());
+                    logger.info("真实geoip的数据结果:" + JSON.toJSONString(geoip));
+                }
             } catch (Exception e) {
                 logger.warn(TraceUtils.getFormatTrace() + "GeoIp查询 IP查询错误", e);
             }
@@ -208,9 +211,9 @@ public class DeviceInfoStep implements IRiskStep {
         logger.info("deviceInfoQuery.query params :{}", JSON.toJSONString(params));
         try {
             String[] tags = {
-                    "dubbo_qps","fp.dubbo.DeviceInfoQuery"};
-            metrics.counter("kunpeng.api.dubbo.qps",tags);
-            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+                    "dubbo_qps", "fp.dubbo.DeviceInfoQuery"};
+            metrics.counter("kunpeng.api.dubbo.qps", tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
             baseResult = deviceInfoQuery.query(params);
             timeContext.stop();
             if (null == baseResult) {
