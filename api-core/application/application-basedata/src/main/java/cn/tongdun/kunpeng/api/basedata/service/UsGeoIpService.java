@@ -53,8 +53,9 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
             AGeoipQueryDTO geoipQueryDTO = new AGeoipQueryDTO();
             geoipQueryDTO.setIp(ip);
             geoipQueryDTO.setPartnerCode(context.getPartnerCode());
-            geoipQueryDTO.setSource("jcyqus");
+            geoipQueryDTO.setSource("evan-us");
             geoipQueryDTO.setSeqId(context.getSeqId());
+            logger.info("aGeoipInfoQueryService.queryGeoipInfo入参:{}", JSON.toJSONString(geoipQueryDTO));
             result = aGeoipInfoQueryService.queryGeoipInfo(geoipQueryDTO);
             logger.info("aGeoipInfoQueryService.queryGeoipInfo:{}", JSON.toJSONString(result));
         } catch (Exception e) {
