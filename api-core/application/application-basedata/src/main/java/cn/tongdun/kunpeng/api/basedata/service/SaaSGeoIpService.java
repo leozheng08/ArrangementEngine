@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.basedata.service;
 
 import cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService;
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -28,7 +29,7 @@ public class SaaSGeoIpService implements GeoIpServiceExtPt {
     private BaseDataQueryService baseDataQueryService;
 
     @Override
-    public GeoipEntity getIpInfo(String ip) {
+    public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
         try {
             if (StringUtils.isBlank(ip)) {
                 logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get geoentity from elfin with params null");

@@ -44,7 +44,7 @@ public class GeoIpStep implements IRiskStep {
             GeoipEntity geoip = null;
             try {
                 final String finalIp = ip;
-                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp));
+                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp,context));
             } catch (Exception e) {
                 ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoip");
                 logger.error(TraceUtils.getFormatTrace() + "GeoIp query error!ip:" + ip, e);
