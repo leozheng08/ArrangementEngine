@@ -178,7 +178,7 @@ public class DeviceInfoStep implements IRiskStep {
             try {
                 geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp, context));
                 if (Objects.nonNull(geoip)) {
-                    context.set("trueIpAddressCountry", geoip.getCounty());
+                    context.set("trueIpAddressCountry", geoip.getCountry());
                     context.set("trueIpAddressProvince", geoip.getProvince());
                     context.set("trueIpAddressCity", geoip.getCity());
                     context.set("trueIpAddressCountryCode", geoip.getCountryId());

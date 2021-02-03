@@ -61,7 +61,7 @@ public class GeoIpStep implements IRiskStep {
                 context.set("ip3", ip3);
             }
             if (Objects.nonNull(geoip)) {
-                context.set("ipAddressCountry", geoip.getCounty());
+                context.set("ipAddressCountry", geoip.getCountry());
                 context.set("ipProvince", geoip.getProvince());
                 context.set("ipAddressCity", geoip.getCity());
                 context.set("ipAddressCountryCode", geoip.getCountryId());
