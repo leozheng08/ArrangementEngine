@@ -59,8 +59,8 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
             result = aGeoipInfoQueryService.queryGeoipInfo(geoipQueryDTO);
             logger.info("aGeoipInfoQueryService.queryGeoipInfo:{}", JSON.toJSONString(result));
         } catch (Exception e) {
-            ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoIp-us");
             logger.error(TraceUtils.getFormatTrace() + "UsGeoIpService gpsQueryService.queryGps error,ip:" + ip, e);
+            ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoIp-us");
         }
         if (Objects.isNull(result)) {
             return null;
