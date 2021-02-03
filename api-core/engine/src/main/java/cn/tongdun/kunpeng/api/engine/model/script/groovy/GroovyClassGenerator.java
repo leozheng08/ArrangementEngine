@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
-import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -109,7 +108,7 @@ public class GroovyClassGenerator {
      * @param methodBody
      * @return 追加方法代码后的完整代码
      */
-    String appendMethod(String methodName, String methodBody) {
+    public String appendMethod(String methodName, String methodBody) {
         int insertPos = source.lastIndexOf(GROOVY_CLASS_TAIL);
         StringBuilder method = new StringBuilder();
         method.append("static ").append(methodName)

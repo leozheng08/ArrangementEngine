@@ -2,11 +2,10 @@ package cn.tongdun.kunpeng.api.engine.load;
 
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.exception.SysException;
+import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import cn.tongdun.tdframework.core.pipeline.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -55,9 +54,10 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
         });
 
         if(!result.isSuccess()){
+            logger.info(TraceUtils.getFormatTrace()+"LoadManager load result:"+result);
             throw new SysException("启动加载失败");
         }
-        logger.info(TraceUtils.getFormatTrace()+"LoadManager load result:"+result);
+
 
         //根据单个合作方加载数据，暂放在这调用，供测试。后面去除
 //        Response result2 = pipelineExecutor.execute(LoadByPartnerPipeline.NAME, ILoadByPartner.class, step -> step.loadByPartner("demo"),(isLoad, e)->{
@@ -67,7 +67,7 @@ public class LoadProcessor implements ApplicationListener<ContextRefreshedEvent>
 //        if(!result2.isSuccess()){
 //            throw new SysException("按合作方加载失败");
 //        }
-        logger.info(TraceUtils.getFormatTrace()+"LoadByPartnerManager load result:"+result);
+//        logger.info(TraceUtils.getFormatTrace()+"LoadByPartnerManager load result:"+result);
     }
 
 }
