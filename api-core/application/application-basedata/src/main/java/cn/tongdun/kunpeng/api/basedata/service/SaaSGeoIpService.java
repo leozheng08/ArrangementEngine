@@ -45,6 +45,9 @@ public class SaaSGeoIpService implements GeoIpServiceExtPt {
     private GeoipEntity copyGeoipEntityProperties(cn.fraudmetrix.elfin.biz.entity.GeoipEntity geoipEntity) {
         //springbeanutils反射有性能问题
         GeoipEntity oldGeoipEntity = new GeoipEntity();
+        if (geoipEntity == null) {
+            return null;
+        }
         oldGeoipEntity.setIsp(geoipEntity.getIsp());
         oldGeoipEntity.setCity(geoipEntity.getCity());
         oldGeoipEntity.setProvince(geoipEntity.getProvince());
