@@ -118,6 +118,13 @@
             <version>${api-core.version}</version>
         </dependency>
 
+        <dependency>
+            <!-- 关键词 -->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-keyword</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
         <!-- 基于kafka事件通知,消费kafak将近几分钟的变更列表放到redis中 start -->
         <dependency>
             <!-- 没有kafka,redis基件，消息通知采用db事件表 -->
