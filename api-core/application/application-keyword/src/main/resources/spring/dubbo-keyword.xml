@@ -8,7 +8,7 @@
        default-autowire="byName">
 
     <dubbo:reference id="wordSearchDubboService" interface="cn.fraudmetrix.nlas.dubbo.service.word.WordSearchDubboService"
-                     version="${nlas.dubbo.version}" retries="${nlas.dubbo.word.retries}" connections="2" stub="${WordSearchDubboService.stub}">
+                     version="${nlas.dubbo.version}" retries="${nlas.dubbo.word.retries}" connections="2">
         <dubbo:method name="searchList" timeout="${nlas.dubbo.word.searchList.timeout}" />
         <dubbo:method name="search" timeout="${nlas.dubbo.word.search.timeout}" />
         <dubbo:parameter key="threadname" value="Dubbo-wordSearch-"/>

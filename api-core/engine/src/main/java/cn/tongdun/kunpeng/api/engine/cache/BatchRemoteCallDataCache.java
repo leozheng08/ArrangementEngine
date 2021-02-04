@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.cache;
 
 import cn.tongdun.kunpeng.api.engine.convertor.batch.AbstractBatchRemoteCallData;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: zhongxiang.wang
  * @date: 2021-01-28 17:06
  */
-public class BatchRemoteCallDataCache extends AbstractLocalCache<String, Map<String,List<Object>>> {
+@Component
+public class BatchRemoteCallDataCache implements ILocalCache<String, Map<String,List<Object>>> {
 
     /**
      * 数据结构
