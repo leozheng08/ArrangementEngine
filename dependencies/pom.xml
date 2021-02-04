@@ -8,7 +8,7 @@
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
 
-    <version>1.0.2-release-20210122-1-SNAPSHOT</version>
+    <version>1.0.2-release-20210129-02</version>
 
 
 
@@ -215,12 +215,6 @@
                 <groupId>cn.tongdun.ddd</groupId>
                 <artifactId>ddd-core</artifactId>
                 <version>${ddd.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cn.tongdun.ddd</groupId>
-                        <artifactId>ddd-common</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
