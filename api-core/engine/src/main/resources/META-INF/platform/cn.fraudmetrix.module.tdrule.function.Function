@@ -1,4 +1,5 @@
 location/gpsDistance=cn.tongdun.kunpeng.api.engine.model.rule.function.location.GpsDistanceFunction
+location/proxy=cn.tongdun.kunpeng.api.basedata.rule.function.location.ProxyFunction
 ruleWeight=cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction
 watchlist/complexCustomList=cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.ComplexCustomListFunction
 watchlist/customList=cn.tongdun.kunpeng.api.engine.model.rule.function.namelist.CustomListFunction

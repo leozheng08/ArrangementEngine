@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.client.data.impl.underline;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.kunpeng.share.json.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -69,6 +70,18 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
      */
     private Map customPolicyResult;
 
+    // 纯数据输出-决策流三方接口输出变量
+    @JsonProperty("output_services")
+    private List<Map<String, Object>> output_services;
+
+    // 纯数据输出-决策流模型输出变量
+    @JsonProperty("output_services")
+    private List<Map<String, Object>> output_models;
+
+    // 纯数据输出-指标
+    @JsonProperty("output_indicatrixes")
+    private Map<String, Double>       output_indicatrixes;
+
     @JsonIgnore
     private transient IRiskResponseFactory      factory;
 
@@ -103,22 +116,42 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     public void setPolicyName(String policyName) {
         this.policyName = policyName;
     }
-
+    @Override
     public String getSubPolicyName() {
         return subPolicyName;
     }
-
+    @Override
     public void setSubPolicyName(String subPolicyName) {
         this.subPolicyName = subPolicyName;
     }
 
-
+    @Override
     public List<IHitRule> getHitRules() {
         return hitRules;
     }
-
+    @Override
     public void setHitRules(List<IHitRule> hitRules) {
         this.hitRules = hitRules;
+    }
+
+    @Override
+    public String getApplicationId() {
+        return null;
+    }
+
+    @Override
+    public void setApplicationId(String applicationId) {
+
+    }
+
+    @Override
+    public JSONObject getCreditCloud() {
+        return null;
+    }
+
+    @Override
+    public void setCreditCloud(JSONObject creditCloud) {
+
     }
 
     @Override
@@ -150,21 +183,71 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     public void setSubPolicys(List<ISubPolicyResult> subPolicys) {
         this.subPolicys = subPolicys;
     }
-
+    @Override
     public String getRiskType() {
         return riskType;
     }
-
+    @Override
     public void setRiskType(String riskType) {
         this.riskType = riskType;
     }
 
+    @Override
+    public Boolean getFlowChargeSuccessed() {
+        return null;
+    }
 
+    @Override
+    public void setFlowChargeSuccessed(Boolean flowChargeSuccessed) {
+
+    }
+
+    @Override
+    public boolean isContainApplicationId() {
+        return false;
+    }
+
+    @Override
+    public void setContainApplicationId(boolean containApplicationId) {
+
+    }
+
+    @Override
+    public Boolean getEmergencySwithcOn() {
+        return null;
+    }
+
+    @Override
+    public void setEmergencySwithcOn(Boolean emergencySwithcOn) {
+
+    }
+
+    @Override
+    public List<String> getExecutedRuleIds() {
+        return null;
+    }
+
+    @Override
+    public void setExecutedRuleIds(List<String> executedRuleIds) {
+
+    }
+
+    @Override
+    public List<String> getHitRuleIds() {
+        return null;
+    }
+
+    @Override
+    public void setHitRuleIds(List<String> hitRuleIds) {
+
+    }
+
+    @Override
     public DecisionType getDecisionType() {
         return decisionType;
     }
 
-
+    @Override
     public void setDecisionType(DecisionType decisionType) {
         this.decisionType = decisionType;
     }
@@ -251,6 +334,96 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @Override
     public void setPolicyUuid(String policyUuid) {
         this.policyUuid = policyUuid;
+    }
+
+    @Override
+    public Map<String, String> getGeoipInfo() {
+        return null;
+    }
+
+    @Override
+    public void setGeoipInfo(Map<String, String> geoipInfo) {
+
+    }
+
+    @Override
+    public Map<String, Object> getDeviceInfo() {
+        return null;
+    }
+
+    @Override
+    public void setDeviceInfo(Map<String, Object> deviceInfo) {
+
+    }
+
+    @Override
+    public Map<String, String> getAttribution() {
+        return null;
+    }
+
+    @Override
+    public void setAttribution(Map<String, String> attribution) {
+
+    }
+
+    @Override
+    public Map<String, Double> getOutputIndicatrixes() {
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getOutputModels() {
+        return null;
+    }
+
+    @Override
+    public void setOutputModels(List<Map<String, Object>> outputModels) {
+
+    }
+
+    @Override
+    public List<Map<String, Object>> getOutputServices() {
+        return null;
+    }
+
+    @Override
+    public void setOutput_services(List<Map<String, Object>> outputServices) {
+
+    }
+
+    @Override
+    public void setOutputIndicatrixes(Map<String, Double> outputIndicatrixes) {
+
+    }
+
+    @Override
+    public Map<String, Object> getCreditScore() {
+        return null;
+    }
+
+    @Override
+    public void setCreditScore(Map<String, Object> creditScore) {
+
+    }
+
+    @Override
+    public Map<String, Object> getHitRuleDetailInfo() {
+        return null;
+    }
+
+    @Override
+    public void setHitRuleDetailInfo(Map<String, Object> hitRuleDetailInfo) {
+
+    }
+
+    @Override
+    public Map<String, Object> getHitRuleDetailV3Info() {
+        return null;
+    }
+
+    @Override
+    public void setHitRuleDetailV3Info(Map<String, Object> hitRuleDetailV3Info) {
+
     }
 
 

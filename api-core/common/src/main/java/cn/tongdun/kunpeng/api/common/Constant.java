@@ -7,8 +7,8 @@ package cn.tongdun.kunpeng.api.common;
 public class Constant {
 
     public static final String BUSINESS_DEFAULT = "default";
-//    public static final String BUSINESS_ANTI_FRAUD = "anti_fraud";
-//    public static final String BUSINESS_CREDIT = "credit";
+    public static final String BUSINESS_ANTI_FRAUD = "anti_fraud";
+    public static final String BUSINESS_CREDIT = "credit";
 
     public static final double EARTH_RADIUS = 6378137.0;
 

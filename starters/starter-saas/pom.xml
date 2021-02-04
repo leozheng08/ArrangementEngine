@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>starter-saas</artifactId>
 
-    <version>1.0.2-release-20210203-01-SNAPSHOT</version>
+    <version>1.0.2-release-20210122-1-SNAPSHOT</version>
     <name>starter-saas</name>
     <groupId>cn.tongdun.kunpeng-api</groupId>
 
@@ -13,9 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <api-core.version>1.0.2-release-20210203-01-SNAPSHOT</api-core.version>
-        <api-extension.version>1.0.2-release-20210203-01-SNAPSHOT</api-extension.version>
-        <api-consumer.version>1.0.1-release-20210125-01</api-consumer.version>
+        <api-core.version>1.0.2-release-20210122-1-SNAPSHOT</api-core.version>
+        <api-extension.version>1.0.2-release-20210122-1-SNAPSHOT</api-extension.version>
+        <api-consumer.version>1.0.0-beta-20201118-1</api-consumer.version>
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <skip_maven_deploy>false</skip_maven_deploy>
@@ -61,14 +61,6 @@
             <artifactId>application-groovy</artifactId>
             <version>${api-core.version}</version>
         </dependency>
-
-        <dependency>
-            <!-- 决策接口入参校验 -->
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-keyword</artifactId>
-            <version>${api-core.version}</version>
-        </dependency>
-
         <dependency>
             <!-- 决策接口支持ruledata,主要平台指标 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
@@ -118,6 +110,13 @@
             <!-- 决策接口输出 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-output</artifactId>
+            <version>${api-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- 平台指标对接-->
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-indicatrix-shenwei</artifactId>
             <version>${api-core.version}</version>
         </dependency>
 
@@ -193,24 +192,12 @@
             <artifactId>consumer-es</artifactId>
             <version>${api-consumer.version}</version>
         </dependency>
-        <dependency>
-            <!-- kunpeng-api consume将activity消息保存到mongoDB -->
-            <groupId>cn.tongdun.kunpeng-consumer</groupId>
-            <artifactId>consumer-mongo</artifactId>
-            <version>${api-consumer.version}</version>
-        </dependency>
-        <dependency>
-            <!-- kunpeng-api consume将activity消息保存到mongoDB -->
-            <groupId>cn.tongdun.kunpeng-consumer</groupId>
-            <artifactId>consumer-audit-task</artifactId>
-            <version>${api-consumer.version}</version>
-        </dependency>
-        <dependency>
-            <!-- kunpeng-api consume将activity消息保存到cassandra -->
-            <groupId>cn.tongdun.kunpeng-consumer</groupId>
-            <artifactId>consumer-cassandra</artifactId>
-            <version>${api-consumer.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--&lt;!&ndash; kunpeng-api consume将activity消息保存到mongoDB &ndash;&gt;-->
+            <!--<groupId>cn.tongdun.kunpeng-consumer</groupId>-->
+            <!--<artifactId>consumer-mongo</artifactId>-->
+            <!--<version>${api-consumer.version}</version>-->
+        <!--</dependency>-->
     </dependencies>
 
 

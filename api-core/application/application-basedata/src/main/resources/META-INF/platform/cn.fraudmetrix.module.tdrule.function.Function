@@ -20,4 +20,3 @@ android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.function.andro
 android/deviceAnomaly=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidDeviceLostFunction
 android/fpException=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidFpFetchExceptionFunction
 location/addressMatch=cn.tongdun.kunpeng.api.basedata.rule.function.location.AddressMatchFunction
-mail/model=cn.tongdun.kunpeng.api.application.mail.function.MailModelFunction

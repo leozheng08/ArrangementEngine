@@ -6,7 +6,7 @@
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.2-release-20210203-01-SNAPSHOT</version>
+        <version>1.0.2-release-20210122-1-SNAPSHOT</version>
 
 
 
@@ -103,6 +103,12 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng</groupId>
             <artifactId>kunpeng-share-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>ddd-common</artifactId>
+                    <groupId>cn.tongdun.ddd</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng</groupId>

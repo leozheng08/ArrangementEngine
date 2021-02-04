@@ -13,4 +13,6 @@ public interface IAdminApplicationRepository {
     List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners);
 
     AdminApplicationDTO selectApplicationByUuid(String uuid);
+
+    AdminApplicationDTO selectApplicationByPartnerAppName(String partnerCode,String appName);
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+       default-autowire="byName">
+
+    <dubbo:reference id="indicatrixApi" interface="cn.tongdun.gaea.api.client.IndicatrixApi"
+                     version="${gaea.api.client.dubbo.version}" retries="0" timeout="${gaea.api.client.dubbo.timeout}" connections="2" >
+        <dubbo:parameter key="threadname" value="Dubbo-gaea-service-api-"/>
+        <dubbo:parameter key="threadpool" value="cached"/>
+        <dubbo:parameter key="corethreads" value="2" />
+        <dubbo:parameter key="threads" value="10" />
+        <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
+
+</beans>

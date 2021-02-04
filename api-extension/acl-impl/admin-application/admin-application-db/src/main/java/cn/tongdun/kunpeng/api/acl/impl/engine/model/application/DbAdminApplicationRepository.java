@@ -52,4 +52,9 @@ public class DbAdminApplicationRepository implements IAdminApplicationRepository
         BeanUtils.copyProperties(adminApplicationDO,adminApplicationDTO);
         return adminApplicationDTO;
     }
+
+    @Override
+    public AdminApplicationDTO selectApplicationByPartnerAppName(String partnerCode, String appName) {
+        return null;
+    }
 }

@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.2-release-20210203-01-SNAPSHOT</version>
+        <version>1.0.2-release-20210122-1-SNAPSHOT</version>
 
 
 
@@ -38,18 +38,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>cn.tongdun.client</groupId>-->
-<!--            <artifactId>gaea-paas-client</artifactId>-->
-<!--            <version>1.0.5</version>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>cn.tongdun.client</groupId>
-            <artifactId>shenwei-client</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
     </dependencies>
 
 </project>

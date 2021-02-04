@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.2-release-20210203-01-SNAPSHOT</version>
+        <version>1.0.2-release-20210122-1-SNAPSHOT</version>
 
 
 
@@ -91,14 +91,6 @@
                 <exclusion>
                     <groupId>com.alibaba</groupId>
                     <artifactId>fastjson</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mybatis</groupId>
-                    <artifactId>mybatis</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mybatis</groupId>
-                    <artifactId>mybatis-spring</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
