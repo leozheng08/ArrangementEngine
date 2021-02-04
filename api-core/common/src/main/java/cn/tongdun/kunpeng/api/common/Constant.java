@@ -63,6 +63,7 @@ public class Constant {
 
         public static final String ANDROID_EMULATOR = "android/emulator";
         public static final String ANDROID_IS_CHEAT_V2 = "android/isCheatV2";
+        public static final String ANDROID_CHEAT_APP = "android/cheatApp";
         public static final String ANDROID_VPN = "android/vpn";
         public static final String ANDROID_HTTP = "android/http";
         public static final String ANDROID_NOT_OFFICIAL_APP = "android/notOfficialApp";
