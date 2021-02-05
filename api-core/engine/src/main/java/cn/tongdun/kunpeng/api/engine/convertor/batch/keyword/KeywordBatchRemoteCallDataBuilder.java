@@ -11,7 +11,6 @@ import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.json.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import java.util.List;
  * @author: zhongxiang.wang
  * @date: 2021-01-28 14:37
  */
-@Component
 public class KeywordBatchRemoteCallDataBuilder implements BatchRemoteCallDataBuilder {
 
     @Autowired
