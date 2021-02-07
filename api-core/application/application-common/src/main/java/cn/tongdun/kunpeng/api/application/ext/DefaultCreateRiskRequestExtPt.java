@@ -87,6 +87,7 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
 
         riskRequest.setFieldValues(createFieldValues(request));
 
+
         return riskRequest;
     }
 
@@ -94,7 +95,8 @@ public class DefaultCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     private Map<String,Object> createFieldValues(Map<String, Object> request){
         Map<String,Object> fieldValues =  new HashMap<>();
         request.forEach((key,value)->{
-            if(!fieldNames.contains(key)){
+            //blackBox特殊处理下，不然注入不到context
+            if(!fieldNames.contains(key) || StringUtils.equals(key, BLACK_BOX)){
                 fieldValues.put(key,value);
             }
         });
