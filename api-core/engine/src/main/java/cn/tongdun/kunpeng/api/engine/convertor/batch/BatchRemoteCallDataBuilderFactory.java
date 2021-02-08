@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.convertor.batch;
 
+import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.keyword.KeywordBatchRemoteCallDataBuilder;
 
@@ -14,7 +15,7 @@ public class BatchRemoteCallDataBuilderFactory {
         BatchRemoteCallDataBuilder batchDataBuilder;
         switch (template){
             case Constant.Function.KEYWORD_WORDLIST:
-                batchDataBuilder = new KeywordBatchRemoteCallDataBuilder();
+                batchDataBuilder = (KeywordBatchRemoteCallDataBuilder)SpringContextHolder.getBean("keywordBatchRemoteCallDataBuilder");
                 break;
             default:
                 batchDataBuilder = null;
