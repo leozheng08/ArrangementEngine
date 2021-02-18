@@ -18,7 +18,6 @@
     <modules>
         <module>admin-partner-db</module>
         <module>admin-partner-ignore</module>
-        <module>admin-partner-chassis</module>
     </modules>
 
     <dependencies>

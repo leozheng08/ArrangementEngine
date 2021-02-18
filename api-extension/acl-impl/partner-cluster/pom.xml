@@ -18,6 +18,7 @@
     <modules>
         <module>partner-cluster-multi</module>
         <module>partner-cluster-single</module>
+        <module>partner-cluster-chassis</module>
     </modules>
 
 

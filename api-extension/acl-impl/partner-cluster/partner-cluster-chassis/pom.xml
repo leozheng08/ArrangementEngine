@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>admin-partner</artifactId>
+        <artifactId>partner-cluster</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
         <version>1.0.2-release-20210122-1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>admin-partner-chassis</artifactId>
+    <artifactId>partner-cluster-chassis</artifactId>
 
     <dependencies>
         <dependency>
