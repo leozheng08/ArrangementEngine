@@ -1,6 +1,11 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
+import cn.hutool.core.map.MapUtil;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilder;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.RuleEventDO;
@@ -11,10 +16,7 @@ import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.RuleDO;
-import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +54,9 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
 
     @Autowired
     private RuleConvertor ruleConvertor;
+
+    @Autowired
+    private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
 
     @PostConstruct
@@ -198,6 +202,10 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
 
             Rule newRule = ruleConvertor.convert(ruleDTO);
             ruleCache.put(uuid,newRule);
+
+            //处理需要批量远程调用的数据   增删改均需要经过当前方法，入口唯一
+            List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO);
+            batchRemoteCallDataCache.put(ruleDTO.getPolicyUuid(), MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchRemoteCallDatas));
 
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());

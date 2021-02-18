@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.convertor.batch.keyword;
 
+import cn.hutool.core.map.MapUtil;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilder;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @description:
@@ -62,8 +64,12 @@ public class KeywordBatchRemoteCallDataBuilderTest {
         dto.setRuleConditionElements(Arrays.asList(elementDTO));
         Rule rule = new Rule();
 
-        Rule ruleNew = builder.appendBatchRemoteCallData(dto, rule);
-        assignPrivate(builder,"cache",cache);
+        List<Object> batchDataDTOS = builder.build(dto);
+        rule.setBatchRemoteCallData(MapUtil.of(policyUuid, MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchDataDTOS)));
+        //待优化，cache.put应该在具体的xxxReloadManager中设置，cache从builder中转移到了xxxReloadManager中了
+        cache.put(policyUuid,MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchDataDTOS));
+        Rule ruleNew = rule;
+        //assignPrivate(builder,"cache",cache);
 
         Assert.assertNotNull(cache.get(dto.getPolicyUuid()));
         Assert.assertNotNull(ruleNew.getBatchRemoteCallData());

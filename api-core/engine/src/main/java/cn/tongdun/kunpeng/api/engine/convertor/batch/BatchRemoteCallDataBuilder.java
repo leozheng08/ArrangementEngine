@@ -1,7 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.convertor.batch;
 
-import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
+
+import java.util.List;
 
 /**
  * @description: 批量数据组装
@@ -10,10 +11,9 @@ import cn.tongdun.kunpeng.client.dto.RuleDTO;
  */
 public interface BatchRemoteCallDataBuilder {
     /**
-     * 从RuleDTO中获取需要批量处理的相关数据，写入Rule和对应的缓存当中
+     * 从RuleDTO中获取需要批量处理的相关数据进行组装
      * @param dto
-     * @param rule
      * @return
      */
-    Rule appendBatchRemoteCallData(RuleDTO dto,Rule rule);
+    List<Object> build(RuleDTO dto);
 }
