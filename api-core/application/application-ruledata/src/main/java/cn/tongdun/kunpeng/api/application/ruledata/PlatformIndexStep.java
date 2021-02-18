@@ -25,10 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Step(pipeline = Risk.NAME,phase = Risk.RULE_DATA,order = 1100)
@@ -58,7 +55,9 @@ public class PlatformIndexStep implements IRiskStep {
         }
 
         Map<String, Object> activityParam = getGaeaFields(context);
-
+        if (Objects.nonNull(request.get("blackBox"))){
+            activityParam.put("blackBox",request.get("blackBox"));
+        }
         List<Long> indicatrixsParam = new ArrayList<>();
         for (String key : indicatrixs) {
             if (StringUtils.isBlank(key)) {
