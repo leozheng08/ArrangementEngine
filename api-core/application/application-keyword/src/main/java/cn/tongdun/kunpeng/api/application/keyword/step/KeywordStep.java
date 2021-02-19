@@ -32,7 +32,7 @@ import java.util.Map;
  * @date: 2021-01-28 13:53
  */
 @Component
-@Step(pipeline = Risk.NAME,phase = Risk.BASIC_DATA)
+@Step(pipeline = Risk.NAME,phase = Risk.RULE_DATA)
 public class KeywordStep implements IRiskStep {
 
     private static final Logger logger = LoggerFactory.getLogger(KeywordStep.class);
