@@ -1,8 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.load.step;
 
+import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDecisionModeDTO;
@@ -46,16 +48,19 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private PlatformIndexCache policyIndicatrixItemCache;
 
+    private BatchRemoteCallDataCache batchRemoteCallDataCache;
+
 
 
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
-                          IPlatformIndexRepository policyIndicatrixItemRepository, PlatformIndexCache policyIndicatrixItemCache){
+                          IPlatformIndexRepository policyIndicatrixItemRepository, PlatformIndexCache policyIndicatrixItemCache,BatchRemoteCallDataCache batchRemoteCallDataCache){
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
         this.policyRepository = policyRepository;
         this.policyIndicatrixItemRepository = policyIndicatrixItemRepository;
         this.policyIndicatrixItemCache = policyIndicatrixItemCache;
+        this.batchRemoteCallDataCache = batchRemoteCallDataCache;
     }
 
     /**
@@ -87,6 +92,10 @@ public class PolicyLoadTask implements Callable<Boolean> {
                             Rule rule = ruleConvertor.convert(ruleDO);
                             //缓存规则
                             localCacheService.put(Rule.class,rule.getUuid(),rule);
+
+                            //缓存规则中批量远程调用相关的数据
+                            List<Object> objects = BatchRemoteCallDataManager.buildData(policyUuid, subPolicy.getUuid(), ruleDO);
+                            batchRemoteCallDataCache.addOrUpdate(policyUuid,ruleDO.getTemplate(),ruleDO.getUuid(),objects);
                         }
                     }
                     //缓存子策略

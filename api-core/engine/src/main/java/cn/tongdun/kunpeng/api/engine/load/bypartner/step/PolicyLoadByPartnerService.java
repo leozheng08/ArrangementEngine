@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.load.bypartner.step;
 
+import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
@@ -59,6 +60,8 @@ public class PolicyLoadByPartnerService {
     @Autowired
     private IPlatformIndexRepository policyIndicatrixItemRepository;
 
+    @Autowired
+    private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
     @PostConstruct
     public void init() {
@@ -96,7 +99,7 @@ public class PolicyLoadByPartnerService {
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache,batchRemoteCallDataCache);
             tasks.add(task);
         }
 
