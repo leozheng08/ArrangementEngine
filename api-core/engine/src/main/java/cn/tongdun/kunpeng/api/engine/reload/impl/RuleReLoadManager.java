@@ -205,7 +205,9 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             //处理需要批量远程调用的数据
             String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
             List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
-            batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+            if(null != batchRemoteCallDatas){
+                batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+            }
 
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
@@ -254,7 +256,9 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 //处理需要批量远程调用的数据
                 String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
                 List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
-                batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+                if(null != batchRemoteCallDatas){
+                    batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+                }
             }
 
             for(String bizType : hashMultimap.keySet()){

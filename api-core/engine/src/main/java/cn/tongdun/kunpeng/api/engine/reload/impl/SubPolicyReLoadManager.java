@@ -114,7 +114,9 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
         if(!CollectionUtils.isEmpty(ruleDTOS)){
             ruleDTOS.stream().forEach(ruleDTO -> {
                 List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(subPolicy.getPolicyUuid(), subPolicyUuid, ruleDTO);
-                batchRemoteCallDataCache.addOrUpdate(subPolicy.getPolicyUuid(),ruleDTO.getTemplate(),ruleDTO.getUuid(),batchRemoteCallDatas);
+                if(null != batchRemoteCallDatas){
+                    batchRemoteCallDataCache.addOrUpdate(subPolicy.getPolicyUuid(),ruleDTO.getTemplate(),ruleDTO.getUuid(),batchRemoteCallDatas);
+                }
             });
         }
 
