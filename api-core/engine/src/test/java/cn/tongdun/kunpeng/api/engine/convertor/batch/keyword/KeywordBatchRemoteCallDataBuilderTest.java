@@ -17,9 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description:
@@ -69,24 +67,17 @@ public class KeywordBatchRemoteCallDataBuilderTest {
         Rule rule = new Rule();
 
         List<Object> batchDataDTOS = builder.build(policyUuid,subPolicyUuid,dto);
-        rule.setBatchRemoteCallData(MapUtil.of(policyUuid, MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchDataDTOS)));
         //待优化，cache.put应该在具体的xxxReloadManager中设置，cache从builder中转移到了xxxReloadManager中了
         cache.put(policyUuid,MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchDataDTOS));
         Rule ruleNew = rule;
         //assignPrivate(builder,"cache",cache);
 
         Assert.assertNotNull(cache.get(dto.getPolicyUuid()));
-        Assert.assertNotNull(ruleNew.getBatchRemoteCallData());
 
         //缓存是否写入
         Assert.assertEquals(Constant.Function.KEYWORD_WORDLIST,((KeywordBatchRemoteCallData)cache.get(dto.getPolicyUuid()).get(Constant.Function.KEYWORD_WORDLIST).get(0)).getTemplate());
         Assert.assertEquals(calcField,((KeywordBatchRemoteCallData)cache.get(dto.getPolicyUuid()).get(Constant.Function.KEYWORD_WORDLIST).get(0)).getCalcField());
         Assert.assertEquals(definitionList,((KeywordBatchRemoteCallData)cache.get(dto.getPolicyUuid()).get(Constant.Function.KEYWORD_WORDLIST).get(0)).getDefinitionList());
-
-        //rule是否写入
-        Assert.assertEquals(Constant.Function.KEYWORD_WORDLIST,((KeywordBatchRemoteCallData)ruleNew.getBatchRemoteCallData().get(dto.getPolicyUuid()).get(Constant.Function.KEYWORD_WORDLIST).get(0)).getTemplate());
-        Assert.assertEquals(calcField,((KeywordBatchRemoteCallData)ruleNew.getBatchRemoteCallData().get(dto.getPolicyUuid()).get(Constant.Function.KEYWORD_WORDLIST).get(0)).getCalcField());
-        Assert.assertEquals(definitionList,((KeywordBatchRemoteCallData)ruleNew.getBatchRemoteCallData().get(dto.getPolicyUuid()).get(Constant.Function.KEYWORD_WORDLIST).get(0)).getDefinitionList());
 
         Assert.assertTrue(builder instanceof BatchRemoteCallDataBuilder);
     }
