@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -31,6 +33,7 @@ public class KeywordBatchRemoteCallDataBuilderTest {
     private String calcField = "partnerCode";
     private String definitionList = "sdgjcb";
     private String policyUuid = "uuid123";
+    private String ruleUuid = "ruleuuid123";
 
     @Injectable
     private BatchRemoteCallDataCache cache;
@@ -48,7 +51,7 @@ public class KeywordBatchRemoteCallDataBuilderTest {
     public void test_createRemoteCallData(){
         RuleConditionElementDTO elementDTO = new RuleConditionElementDTO();
         elementDTO.setParams(params);
-        KeywordBatchRemoteCallData remoteCallData = builder.createRemoteCallData(elementDTO);
+        KeywordBatchRemoteCallData remoteCallData = builder.createRemoteCallData(ruleUuid,elementDTO);
 
         Assert.assertEquals(Constant.Function.KEYWORD_WORDLIST,remoteCallData.getTemplate());
         Assert.assertEquals(calcField,remoteCallData.getCalcField());

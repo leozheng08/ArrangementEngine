@@ -14,4 +14,9 @@ public class AbstractBatchRemoteCallData {
      * @see cn.tongdun.kunpeng.api.common.Constant.Function
      */
     private String template;
+
+    /**
+     * 规则id
+     */
+    private String ruleUuid;
 }

@@ -1,10 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.hutool.core.map.MapUtil;
-import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
-import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilder;
-import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
@@ -203,9 +199,9 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             Rule newRule = ruleConvertor.convert(ruleDTO);
             ruleCache.put(uuid,newRule);
 
-            //处理需要批量远程调用的数据   增删改均需要经过当前方法，入口唯一
+            //处理需要批量远程调用的数据
             List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO);
-            batchRemoteCallDataCache.put(ruleDTO.getPolicyUuid(), MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchRemoteCallDatas));
+            batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
 
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
@@ -250,6 +246,10 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 Rule newRule = ruleConvertor.convert(ruleDTO);
                 ruleCache.put(uuid,newRule);
                 hashMultimap.put(ruleDTO.getBizType(),ruleDTO.getBizUuid());
+
+                //处理需要批量远程调用的数据
+                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO);
+                batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
             }
 
             for(String bizType : hashMultimap.keySet()){
@@ -288,6 +288,11 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             }
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
+
+            //移除远程批量调用相关缓存
+            RuleDTO ruleDTO = ruleRepository.queryFullByUuid(eventDO.getUuid());//TODO 优化只查询需要的属性，实体太大
+            String policyUuid = ruleDTO.getPolicyUuid();
+            batchRemoteCallDataCache.remove(policyUuid, ruleDTO.getTemplate(), eventDO.getUuid());
         } catch (Exception e){
             logger.error(TraceUtils.getFormatTrace()+"Rule remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;
