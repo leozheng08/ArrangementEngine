@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.keyword.KeywordBatchRemoteCallData;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -91,7 +92,7 @@ public class KeywordStep implements IRiskStep {
         try {
             wordResultModels = wordSearchDubboService.searchList(context.getSeqId(), context.getPartnerCode(), context.getAppName(), wordModels);
         } catch (Exception ex) {
-            logger.error("关键词规则dubbo远程批量调用出错,{}",ex.getMessage(),ex);
+            logger.error(TraceUtils.getTrace() + "关键词规则dubbo远程批量调用出错,policyUuid = {},{}",policyUuid,ex.getMessage(),ex);
         }
 
         //4.远程调用结果转换，存入上下文中
