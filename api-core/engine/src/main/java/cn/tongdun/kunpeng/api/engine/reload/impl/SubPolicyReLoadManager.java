@@ -1,8 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
-import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
@@ -11,11 +12,13 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.SubPolicyEventDO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -46,6 +49,9 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
 
     @Autowired
     private PolicyIndicatrixItemReloadManager policyIndicatrixItemReloadManager;
+
+    @Autowired
+    private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
     @PostConstruct
     public void init(){
@@ -92,9 +98,9 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     }
 
     public void reloadByUuid(String subPolicyUuid){
-        SubPolicyDTO subPolicyDTO = subPolicyRepository.queryByUuid(subPolicyUuid);
+        SubPolicyDTO subPolicyDTO = subPolicyRepository.queryFullByUuid(subPolicyUuid);
 
-        //如果失效则删除缓存
+        //如果失效则删除缓存 及 该子策略下相关规则的批量远程调用数据
         if(subPolicyDTO == null || !subPolicyDTO.isValid()){
             removeSubPolicy(subPolicyUuid);
             return;
@@ -102,6 +108,15 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
 
         SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDTO);
         subPolicyCache.put(subPolicyUuid,subPolicy);
+
+        //新增/更新该子策略下相关规则的批量远程调用数据
+        List<RuleDTO> ruleDTOS = subPolicyDTO.getRules();
+        if(!CollectionUtils.isEmpty(ruleDTOS)){
+            ruleDTOS.stream().forEach(ruleDTO -> {
+                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(subPolicy.getPolicyUuid(), subPolicyUuid, ruleDTO);
+                batchRemoteCallDataCache.addOrUpdate(subPolicy.getPolicyUuid(),ruleDTO.getTemplate(),ruleDTO.getUuid(),batchRemoteCallDatas);
+            });
+        }
 
         //刷新引用到的平台指标
         policyIndicatrixItemReloadManager.reload(subPolicyDTO.getPolicyUuid());
@@ -148,6 +163,8 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
         for(Rule rule:ruleList) {
             //删除规则
             ruleCache.remove(rule.getUuid());
+            //删除该规则批量远程调用数据
+            batchRemoteCallDataCache.remove(subPolicy.getPolicyUuid(),rule.getTemplate(),rule.getUuid());
         }
         return true;
     }

@@ -77,7 +77,7 @@ public class BatchRemoteCallDataCache implements ILocalCache<String, Map<String,
 
     /**
      * 删除缓存
-     * 删除改策略下，该模版类型下，该规则的批量远程调用数据缓存
+     * 删除该策略下，该模版类型下，该规则的批量远程调用数据缓存
      * @param policyUuid 策略uuid
      * @param template 模版类型
      * @param ruleUuid 规则uuid
