@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.RuleEventDO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
@@ -54,6 +55,8 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
+    @Autowired
+    private SubPolicyCache subPolicyCache;
 
     @PostConstruct
     public void init(){
@@ -284,17 +287,20 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
     @Override
     public boolean remove(RuleEventDO eventDO){
         try {
+            //移除远程批量调用相关缓存   在最前面移除，如果其他缓存先移除，就无法从缓存中获取信息了
+            String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(eventDO.getUuid());
+            String policyUuid = subPolicyCache.getPolicyUuidBySubPolicyUuid(subPolicyUuid);
+            Rule cacheRule = ruleCache.get(eventDO.getUuid());
+            if(cacheRule != null){
+                batchRemoteCallDataCache.remove(policyUuid, cacheRule.getTemplate(), eventDO.getUuid());
+            }
+
             Rule rule = ruleCache.remove(eventDO.getUuid());
             if(rule == null){
                 return true;
             }
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
-
-            //移除远程批量调用相关缓存
-            RuleDTO ruleDTO = ruleRepository.queryFullByUuid(eventDO.getUuid());//TODO 优化只查询需要的属性，实体太大
-            String policyUuid = ruleDTO.getPolicyUuid();
-            batchRemoteCallDataCache.remove(policyUuid, ruleDTO.getTemplate(), eventDO.getUuid());
         } catch (Exception e){
             logger.error(TraceUtils.getFormatTrace()+"Rule remove failed, uuid:{}",eventDO.getUuid(),e);
             return false;

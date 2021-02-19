@@ -30,6 +30,18 @@ public class SubPolicyCache extends AbstractLocalCache<String,SubPolicy> {
         register(SubPolicy.class);
     }
 
+    public String getPolicyUuidBySubPolicyUuid(String subPolicyUuid){
+        String policyUuid = null;
+        for(String key : policyUuidToSubPolicyMap.keySet()){
+            Set<String> set = policyUuidToSubPolicyMap.get(key);
+            if(set.contains(subPolicyUuid)){
+                policyUuid = key;
+                break;
+            }
+        }
+        return policyUuid;
+    }
+
     @Override
     public SubPolicy get(String uuid){
         return subPolicyMap.get(uuid);
