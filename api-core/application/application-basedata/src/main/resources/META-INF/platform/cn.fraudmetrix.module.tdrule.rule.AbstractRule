@@ -19,3 +19,4 @@ android/notOfficialApp=cn.tongdun.kunpeng.api.basedata.rule.template.android.And
 android/root=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidRootRule
 android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidDeviceStatusAbnormalRule
 android/fpException=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidFpExceptionRule
+keyword/wordList=cn.tongdun.kunpeng.api.application.keyword.rule.KeywordRule
