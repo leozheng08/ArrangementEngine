@@ -12,8 +12,10 @@ import java.util.List;
 public interface BatchRemoteCallDataBuilder {
     /**
      * 从RuleDTO中获取需要批量处理的相关数据进行组装
+     * @param policyUuid
+     * @param subPolicyUuid
      * @param dto
      * @return
      */
-    List<Object> build(RuleDTO dto);
+    List<Object> build(String policyUuid,String subPolicyUuid,RuleDTO dto);
 }

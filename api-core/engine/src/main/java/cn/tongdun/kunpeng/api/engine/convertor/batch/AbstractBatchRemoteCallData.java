@@ -16,6 +16,16 @@ public class AbstractBatchRemoteCallData {
     private String template;
 
     /**
+     * 策略uuid
+     */
+    private String policyUuid;
+
+    /**
+     * 子策略uuid
+     */
+    private String subPolicyUuid;
+
+    /**
      * 规则id
      */
     private String ruleUuid;

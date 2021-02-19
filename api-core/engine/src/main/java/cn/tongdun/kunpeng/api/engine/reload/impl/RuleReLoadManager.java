@@ -200,7 +200,8 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             ruleCache.put(uuid,newRule);
 
             //处理需要批量远程调用的数据
-            List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO);
+            String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
+            List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
             batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
 
             //刷新子策略下规则的执行顺序
@@ -248,7 +249,8 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 hashMultimap.put(ruleDTO.getBizType(),ruleDTO.getBizUuid());
 
                 //处理需要批量远程调用的数据
-                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO);
+                String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
+                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
                 batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
             }
 

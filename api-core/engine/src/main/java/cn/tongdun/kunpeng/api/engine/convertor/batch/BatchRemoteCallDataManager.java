@@ -13,12 +13,14 @@ public class BatchRemoteCallDataManager {
 
     /**
      * 组装数据
+     * @param policyUuid
+     * @param subPolicyUuid
      * @param dto
      * @return List<AbstractBatchRemoteCallData>
      * @see AbstractBatchRemoteCallData
      */
-    public static List<Object> buildData(RuleDTO dto){
+    public static List<Object> buildData(String policyUuid,String subPolicyUuid,RuleDTO dto){
         BatchRemoteCallDataBuilder builder = BatchRemoteCallDataBuilderFactory.getBuilder(dto.getTemplate());
-        return null == builder ? null : builder.build(dto);
+        return null == builder ? null : builder.build(policyUuid,subPolicyUuid,dto);
     }
 }

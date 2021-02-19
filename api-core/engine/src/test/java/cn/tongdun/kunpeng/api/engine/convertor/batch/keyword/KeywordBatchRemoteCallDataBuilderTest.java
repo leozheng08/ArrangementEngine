@@ -34,6 +34,7 @@ public class KeywordBatchRemoteCallDataBuilderTest {
     private String definitionList = "sdgjcb";
     private String policyUuid = "uuid123";
     private String ruleUuid = "ruleuuid123";
+    private String subPolicyUuid = "subPolicyuuid123";
 
     @Injectable
     private BatchRemoteCallDataCache cache;
@@ -51,7 +52,7 @@ public class KeywordBatchRemoteCallDataBuilderTest {
     public void test_createRemoteCallData(){
         RuleConditionElementDTO elementDTO = new RuleConditionElementDTO();
         elementDTO.setParams(params);
-        KeywordBatchRemoteCallData remoteCallData = builder.createRemoteCallData(ruleUuid,elementDTO);
+        KeywordBatchRemoteCallData remoteCallData = builder.createRemoteCallData(policyUuid,subPolicyUuid,ruleUuid,elementDTO);
 
         Assert.assertEquals(Constant.Function.KEYWORD_WORDLIST,remoteCallData.getTemplate());
         Assert.assertEquals(calcField,remoteCallData.getCalcField());
@@ -67,7 +68,7 @@ public class KeywordBatchRemoteCallDataBuilderTest {
         dto.setRuleConditionElements(Arrays.asList(elementDTO));
         Rule rule = new Rule();
 
-        List<Object> batchDataDTOS = builder.build(dto);
+        List<Object> batchDataDTOS = builder.build(policyUuid,subPolicyUuid,dto);
         rule.setBatchRemoteCallData(MapUtil.of(policyUuid, MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchDataDTOS)));
         //待优化，cache.put应该在具体的xxxReloadManager中设置，cache从builder中转移到了xxxReloadManager中了
         cache.put(policyUuid,MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchDataDTOS));
