@@ -8,13 +8,13 @@ import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderF
 import cn.tongdun.kunpeng.api.engine.convertor.rule.CustomRuleBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.FunctionRuleBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.rule.RuleBuilder;
-import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;

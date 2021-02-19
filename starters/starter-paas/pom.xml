@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
 
-    <version>1.0.2-release-20210203-01-SNAPSHOT</version>
+    <version>1.0.2-release-20210122-1-SNAPSHOT</version>
 
 
 
@@ -17,8 +17,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
 
-        <api-core.version>1.0.2-release-20210203-01-SNAPSHOT</api-core.version>
-        <api-extension.version>1.0.2-release-20210203-01-SNAPSHOT</api-extension.version>
+        <api-core.version>1.0.2-release-20210122-1-SNAPSHOT</api-core.version>
+        <api-extension.version>1.0.2-release-20210122-1-SNAPSHOT</api-extension.version>
 
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
@@ -63,12 +63,6 @@
             <!-- 决策接口支持groovy脚本 -->
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-groovy</artifactId>
-            <version>${api-core.version}</version>
-        </dependency>
-        <dependency>
-            <!-- 平台指标 -->
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>application-indicatrix-ignore</artifactId>
             <version>${api-core.version}</version>
         </dependency>
         <dependency>

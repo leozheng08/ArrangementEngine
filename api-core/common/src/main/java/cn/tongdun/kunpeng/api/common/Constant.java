@@ -26,6 +26,7 @@ public class Constant {
     public class Function {
         public static final String TIME_TIME_DIFFER = "time/timediffer";
         public static final String TIME_TIME_POINT_COMPARISON = "time/timePointComparison";
+        public static final String TIME_EVENT_TIME_DF = "time/eventTimeDf";
 
         public static final String MAIL_MODEL = "mail/model";
 
@@ -36,6 +37,7 @@ public class Constant {
         public static final String PATTERN_REGEX = "pattern/regex";
         public static final String PATTERN_FUNCTION_KIT = "pattern/functionKit";
         public static final String PATTERN_FOUR_CALCULATION = "pattern/fourCalculation";
+        public static final String PATTERN_COUNT = "pattern/count";
 
 
         public static final String WATCHLIST_CUSTOM_LIST = "watchlist/customList";
