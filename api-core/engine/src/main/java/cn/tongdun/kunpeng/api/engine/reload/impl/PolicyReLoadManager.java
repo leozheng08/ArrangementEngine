@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
+import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
@@ -62,6 +63,9 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
 
     @Autowired
     private PolicyDecisionModeReLoadManager policyDecisionModeReLoadManager;
+
+    @Autowired
+    private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
     @PostConstruct
     public void init(){
@@ -195,6 +199,9 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
         decisionModeCache.remove(policyUuid);
 
         policyIndexCache.removeList(policyUuid);
+
+        //删除策略下相关规则的批量远程调用数据
+        batchRemoteCallDataCache.remove(policyUuid);
 
         List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
         if(subPolicyList == null) {
