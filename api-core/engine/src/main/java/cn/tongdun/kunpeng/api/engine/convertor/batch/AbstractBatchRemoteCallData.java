@@ -11,6 +11,7 @@ import lombok.Data;
 public class AbstractBatchRemoteCallData {
     /**
      * 策略类型
+     *
      * @see cn.tongdun.kunpeng.api.common.Constant.Function
      */
     private String template;

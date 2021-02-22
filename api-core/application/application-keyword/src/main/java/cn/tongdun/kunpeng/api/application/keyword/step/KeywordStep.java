@@ -33,7 +33,7 @@ import java.util.Map;
  * @date: 2021-01-28 13:53
  */
 @Component
-@Step(pipeline = Risk.NAME,phase = Risk.RULE_DATA)
+@Step(pipeline = Risk.NAME, phase = Risk.RULE_DATA)
 public class KeywordStep implements IRiskStep {
 
     private static final Logger logger = LoggerFactory.getLogger(KeywordStep.class);
@@ -45,6 +45,7 @@ public class KeywordStep implements IRiskStep {
 
     /**
      * 用缓存中的规则数据，调用dubbo批量接口，获取匹配结果，存入上下文中
+     *
      * @param context
      * @param response
      * @param request
@@ -56,33 +57,33 @@ public class KeywordStep implements IRiskStep {
         //1.缓存数据获取及校验
         Map<String, List<Object>> batchDataObjectsMap = batchRemoteCallDataCache.get(policyUuid);
         List<Object> batchDataObjects = null;
-        if(CollectionUtils.isEmpty(batchDataObjectsMap) ||
-                CollectionUtils.isEmpty(batchDataObjects = batchDataObjectsMap.get(Constant.Function.KEYWORD_WORDLIST))){
-            if(logger.isDebugEnabled()){
-                logger.debug("从缓存中未查询到关键词相关批量远程调用数据，policyUuid = {}",policyUuid);
+        if (CollectionUtils.isEmpty(batchDataObjectsMap) ||
+                CollectionUtils.isEmpty(batchDataObjects = batchDataObjectsMap.get(Constant.Function.KEYWORD_WORDLIST))) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("从缓存中未查询到关键词相关批量远程调用数据，policyUuid = {}", policyUuid);
             }
             return true;
         }
 
         List<WordModel> wordModels = new ArrayList<>();
-        for(Object obj : batchDataObjects){
+        for (Object obj : batchDataObjects) {
             KeywordBatchRemoteCallData callData = (KeywordBatchRemoteCallData) obj;
             String calcField = callData.getCalcField();
             String definitionList = callData.getDefinitionList();
-            if(StringUtils.isEmpty(calcField) || StringUtils.isEmpty(definitionList)){
+            if (StringUtils.isEmpty(calcField) || StringUtils.isEmpty(definitionList)) {
                 continue;
             }
             //2.组装远程调用参数
             String dimValuesStr = context.get(calcField).toString();
             List<String> dimValues = dimValuesStr.contains(KeywordConstant.SPLIT) ?
                     Arrays.asList(dimValuesStr.split(KeywordConstant.SPLIT)) : Arrays.asList(dimValuesStr);
-            for(String dimValue : dimValues){
-                this.handleWordModel(wordModels,dimValue,definitionList);
+            for (String dimValue : dimValues) {
+                this.handleWordModel(wordModels, dimValue, definitionList);
             }
         }
-        if(CollectionUtils.isEmpty(wordModels)){
-            if(logger.isDebugEnabled()){
-                logger.debug("未查询到缓存中有关键词规则数据配置，policyUuid = {}",policyUuid);
+        if (CollectionUtils.isEmpty(wordModels)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("未查询到缓存中有关键词规则数据配置，policyUuid = {}", policyUuid);
             }
             return true;
         }
@@ -92,13 +93,13 @@ public class KeywordStep implements IRiskStep {
         try {
             wordResultModels = wordSearchDubboService.searchList(context.getSeqId(), context.getPartnerCode(), context.getAppName(), wordModels);
         } catch (Exception ex) {
-            logger.error(TraceUtils.getTrace() + "关键词规则dubbo远程批量调用出错,policyUuid = {},{}",policyUuid,ex.getMessage(),ex);
+            logger.error(TraceUtils.getTrace() + "关键词规则dubbo远程批量调用出错,policyUuid = {},{}", policyUuid, ex.getMessage(), ex);
         }
 
         //4.远程调用结果转换，存入上下文中
-        if(CollectionUtils.isEmpty(wordResultModels)){
-            if (logger.isDebugEnabled()){
-                logger.debug("关键词规则dubbo远程批量调用返回结果为空，policyUuid = {}",policyUuid);
+        if (CollectionUtils.isEmpty(wordResultModels)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("关键词规则dubbo远程批量调用返回结果为空，policyUuid = {}", policyUuid);
             }
         } else {
             List<Object> result = new ArrayList<>();
@@ -110,18 +111,19 @@ public class KeywordStep implements IRiskStep {
 
     /**
      * 准备dubbo调用参数
+     *
      * @param wordModels
      * @param dimValue
      * @param definitionList
      */
     private void handleWordModel(List<WordModel> wordModels, String dimValue, String definitionList) {
         WordModel existWordModel = null;
-        for(WordModel wordModel : wordModels){
-            if(dimValue.equals(wordModel.getValue())){
+        for (WordModel wordModel : wordModels) {
+            if (dimValue.equals(wordModel.getValue())) {
                 existWordModel = wordModel;
             }
         }
-        if(null == existWordModel) {
+        if (null == existWordModel) {
             WordModel wordModel = new WordModel();
             wordModel.setValue(dimValue);
             wordModel.setWordListCodes(Lists.newArrayList(definitionList));

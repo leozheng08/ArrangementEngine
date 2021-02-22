@@ -9,7 +9,7 @@ import java.io.Serializable;
  * 关键词属性表达式
  */
 @Data
-public class AttrExp implements Serializable{
+public class AttrExp implements Serializable {
 
     private String left;
 
@@ -43,7 +43,7 @@ public class AttrExp implements Serializable{
                 '}';
     }
 
-    public enum OperateEnum{
+    public enum OperateEnum {
         /**
          * 大于
          */
@@ -80,7 +80,7 @@ public class AttrExp implements Serializable{
 
         String value;
 
-        OperateEnum(String value){
+        OperateEnum(String value) {
             this.value = value;
         }
 
@@ -93,7 +93,7 @@ public class AttrExp implements Serializable{
         }
     }
 
-    public enum RightTypeEnum{
+    public enum RightTypeEnum {
         /**
          * 输入值
          */
@@ -104,7 +104,7 @@ public class AttrExp implements Serializable{
         context
     }
 
-    public enum AndOrEnum{
+    public enum AndOrEnum {
         /**
          * 且
          */

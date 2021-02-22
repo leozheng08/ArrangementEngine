@@ -18,19 +18,19 @@ import java.util.Map;
 @Slf4j
 public class BatchRemoteCallDataBuilderFactory {
 
-    private static final Map<String,BatchRemoteCallDataBuilder> builders = new HashMap<>(4);
+    private static final Map<String, BatchRemoteCallDataBuilder> builders = new HashMap<>(4);
 
     static {
-        builders.put(Constant.Function.KEYWORD_WORDLIST,new KeywordBatchRemoteCallDataBuilder());
+        builders.put(Constant.Function.KEYWORD_WORDLIST, new KeywordBatchRemoteCallDataBuilder());
     }
 
     public static BatchRemoteCallDataBuilder getBuilder(String template) {
-        if(StringUtils.isBlank(template)){
+        if (StringUtils.isBlank(template)) {
             log.error(TraceUtils.getTrace() + "规则模版template参数为空，请确认数据是否正确。");
         }
         BatchRemoteCallDataBuilder batchRemoteCallDataBuilder = builders.get(template);
-        if(null == batchRemoteCallDataBuilder){
-            throw new RuntimeException("未查找到template="+template+"的BatchRemoteCallDataBuilder，请确认是否添加初始化");
+        if (null == batchRemoteCallDataBuilder) {
+            throw new RuntimeException("未查找到template=" + template + "的BatchRemoteCallDataBuilder，请确认是否添加初始化");
         }
         return batchRemoteCallDataBuilder;
     }
