@@ -1,9 +1,17 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService;
+import cn.tongdun.evan.client.entity.AGeoipEntity;
+import cn.tongdun.evan.client.entity.AGeoipQueryDTO;
+import cn.tongdun.evan.client.lang.Result;
 import cn.tongdun.gaea.dubbo.GpsQueryService;
 import cn.tongdun.gaea.factservice.domain.GpsInfoDTO;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Lists;
@@ -18,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author: liuq
@@ -30,22 +39,82 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
 
     @Autowired
     private GpsQueryService gpsQueryService;
+    @Autowired
+    private AGeoipInfoQueryService aGeoipInfoQueryService;
+
 
     @Override
-    public GeoipEntity getIpInfo(String ip) {
+    public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
         if (StringUtils.isBlank(ip)) {
             return null;
         }
-        Map<String, GpsInfoDTO> gpsInfoDTOMap = null;
+        Result<AGeoipEntity> result = null;
         try {
-            gpsInfoDTOMap = gpsQueryService.batchQueryGps(Lists.newArrayList(ip));
+            AGeoipQueryDTO geoipQueryDTO = new AGeoipQueryDTO();
+            geoipQueryDTO.setIp(ip);
+            geoipQueryDTO.setPartnerCode(context.getPartnerCode());
+            geoipQueryDTO.setSource("evan-us");
+            geoipQueryDTO.setSeqId(context.getSeqId());
+            logger.info("aGeoipInfoQueryService.queryGeoipInfo入参:{}", JSON.toJSONString(geoipQueryDTO));
+            result = aGeoipInfoQueryService.queryGeoipInfo(geoipQueryDTO);
+            logger.info("aGeoipInfoQueryService.queryGeoipInfo:{}", JSON.toJSONString(result));
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "UsGeoIpService gpsQueryService.queryGps error,ip:" + ip, e);
+            ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoIp-us");
         }
-        if (MapUtils.isEmpty(gpsInfoDTOMap)) {
+        if (Objects.isNull(result)) {
             return null;
         }
-        return fromDTO2Entity(gpsInfoDTOMap.get(ip));
+        if (!result.isSuccess()) {
+            switch (result.getCode()) {
+                case "100":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_PARAM_ERROR, "geoIp-us");
+                    return null;
+                case "102":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_ILLEGAL_ERROR, "geoIp-us");
+                    return null;
+                case "403":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_PERNISSION_ERROR, "geoIp-us");
+                    return null;
+                case "500":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERRVER_ERROR, "geoIp-us");
+                    return null;
+                default:
+                    return null;
+            }
+        }
+
+        return fromDTO2EntityV2(result.getData());
+    }
+
+    private GeoipEntity fromDTO2EntityV2(AGeoipEntity aGeoipEntity) {
+        if (null == aGeoipEntity) {
+            return null;
+        }
+        GeoipEntity geoipEntity = new GeoipEntity();
+        geoipEntity.setLongitude(Float.parseFloat(aGeoipEntity.getLngwgs()));
+        geoipEntity.setLatitude(Float.parseFloat(aGeoipEntity.getLatwgs()));
+        geoipEntity.setCountry(aGeoipEntity.getCountry());
+        geoipEntity.setCity(aGeoipEntity.getCity());
+        geoipEntity.setAddress("");
+        geoipEntity.setArea("");
+        geoipEntity.setAreaId("");
+        geoipEntity.setCityId(aGeoipEntity.getAdcode());
+        geoipEntity.setCountryId(aGeoipEntity.getAreacode());
+        geoipEntity.setCounty("");
+        geoipEntity.setCountyId(aGeoipEntity.getAdcode());
+        geoipEntity.setDesc("");
+        geoipEntity.setExtra1(aGeoipEntity.getSource());
+        geoipEntity.setExtra2(aGeoipEntity.getOwner());
+        geoipEntity.setIp(aGeoipEntity.getIp());
+        geoipEntity.setIsp(aGeoipEntity.getIsp());
+        geoipEntity.setIspId("");
+        geoipEntity.setLip(0L);
+        geoipEntity.setProvince(aGeoipEntity.getProvince());
+        geoipEntity.setProvinceId(aGeoipEntity.getAdcode());
+        geoipEntity.setType("");
+
+        return geoipEntity;
     }
 
     private GeoipEntity fromDTO2Entity(GpsInfoDTO gpsInfoDTO) {

@@ -163,8 +163,12 @@ public enum ReasonCode {
 
     USBIN_ERROR_OTHER("50746","查询cardbin数据异常"),
     USBIN_ERROR_TIMEOUT("50747","查询不到cardbin信息超时"),
-    ;
 
+    GEOIP_ILLEGAL_ERROR("50748","查询geoip-us非法参数"),
+    GEOIP_PARAM_ERROR("50749","查询geoip-us必要参数为空"),
+    GEOIP_PERNISSION_ERROR("50750","查询geoip-us权限不足"),
+    GEOIP_SERRVER_ERROR("50751","查询geoip-us内部服务错误"),
+    ;
 
     private String code;
     private String description;

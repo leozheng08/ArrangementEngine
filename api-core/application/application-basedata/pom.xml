@@ -6,8 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.2-release-20210207-01</version>
-
+        <version>1.0.2-release-20210218-01</version>
 
 
     </parent>
@@ -57,6 +56,11 @@
         <dependency>
             <groupId>cn.tongdun.gaea</groupId>
             <artifactId>gaea-factservice-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>evan-client</artifactId>
         </dependency>
 
         <dependency>

@@ -25,6 +25,16 @@
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:reference>
 
+
+    <dubbo:reference id="aGeoipInfoQueryService" interface="cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService"
+                     version="${geoip.dubbo.version}" retries="0" timeout="${geoip.dubbo.timeout}" check="false" connections="2" >
+        <dubbo:parameter key="threadname" value="aGeo-query-"/>
+        <dubbo:parameter key="threadpool" value="cached"/>
+        <dubbo:parameter key="corethreads" value="1" />
+        <dubbo:parameter key="threads" value="10" />
+        <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
+
     <dubbo:reference id="baseDataQueryService" interface="cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService"
                      version="${elfin.dubbo.version}"
                      timeout="${elfin.dubbo.timeout}"
