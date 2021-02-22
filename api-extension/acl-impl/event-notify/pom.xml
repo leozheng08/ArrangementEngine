@@ -19,6 +19,7 @@
         <module>event-notify-redis</module>
         <module>event-notify-kafka-rawevent</module>
         <module>event-notify-db</module>
+        <module>event-notify-eunomia</module>
     </modules>
 
 
