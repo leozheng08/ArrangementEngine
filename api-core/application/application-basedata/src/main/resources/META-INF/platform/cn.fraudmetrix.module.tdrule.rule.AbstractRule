@@ -20,3 +20,4 @@ android/root=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidRootRu
 android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidDeviceStatusAbnormalRule
 android/fpException=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidFpExceptionRule
 keyword/wordList=cn.tongdun.kunpeng.api.application.keyword.rule.KeywordRule
+content/image=cn.tongdun.kunpeng.api.application.content.rule.image.ImageRule
