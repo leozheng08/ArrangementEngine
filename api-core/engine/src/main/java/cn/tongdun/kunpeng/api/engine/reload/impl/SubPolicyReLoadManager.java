@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
@@ -113,9 +114,11 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
         List<RuleDTO> ruleDTOS = subPolicyDTO.getRules();
         if(!CollectionUtils.isEmpty(ruleDTOS)){
             ruleDTOS.stream().forEach(ruleDTO -> {
-                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(subPolicy.getPolicyUuid(), subPolicyUuid, ruleDTO);
-                if(null != batchRemoteCallDatas){
-                    batchRemoteCallDataCache.addOrUpdate(subPolicy.getPolicyUuid(),ruleDTO.getTemplate(),ruleDTO.getUuid(),batchRemoteCallDatas);
+                if (BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDTO.getTemplate())) {
+                    List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(subPolicy.getPolicyUuid(), subPolicyUuid, ruleDTO);
+                    if(null != batchRemoteCallDatas){
+                        batchRemoteCallDataCache.addOrUpdate(subPolicy.getPolicyUuid(),ruleDTO.getTemplate(),ruleDTO.getUuid(),batchRemoteCallDatas);
+                    }
                 }
             });
         }

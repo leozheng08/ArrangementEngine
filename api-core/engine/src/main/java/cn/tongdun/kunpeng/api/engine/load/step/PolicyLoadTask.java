@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
@@ -94,8 +95,10 @@ public class PolicyLoadTask implements Callable<Boolean> {
                             localCacheService.put(Rule.class,rule.getUuid(),rule);
 
                             //缓存规则中批量远程调用相关的数据
-                            List<Object> objects = BatchRemoteCallDataManager.buildData(policyUuid, subPolicy.getUuid(), ruleDO);
-                            batchRemoteCallDataCache.addOrUpdate(policyUuid,ruleDO.getTemplate(),ruleDO.getUuid(),objects);
+                            if(BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDO.getTemplate())){
+                                List<Object> objects = BatchRemoteCallDataManager.buildData(policyUuid, subPolicy.getUuid(), ruleDO);
+                                batchRemoteCallDataCache.addOrUpdate(policyUuid,ruleDO.getTemplate(),ruleDO.getUuid(),objects);
+                            }
                         }
                     }
                     //缓存子策略

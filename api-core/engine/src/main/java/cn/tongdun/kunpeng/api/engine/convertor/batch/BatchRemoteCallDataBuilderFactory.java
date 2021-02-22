@@ -3,11 +3,13 @@ package cn.tongdun.kunpeng.api.engine.convertor.batch;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.keyword.KeywordBatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +20,10 @@ import java.util.Map;
 @Slf4j
 public class BatchRemoteCallDataBuilderFactory {
 
+    /**
+     * key:{@link Constant.Function} 规则模版类型
+     * value: BatchRemoteCallDataBuilder
+     */
     private static final Map<String, BatchRemoteCallDataBuilder> builders = new HashMap<>(4);
 
     static {
@@ -33,6 +39,18 @@ public class BatchRemoteCallDataBuilderFactory {
             throw new RuntimeException("未查找到template=" + template + "的BatchRemoteCallDataBuilder，请确认是否添加初始化");
         }
         return batchRemoteCallDataBuilder;
+    }
+
+    /**
+     * 是否支持批量远程调用
+     * @param template 规则模版类型
+     * @return
+     */
+    public static boolean supportBatchRemoteCall(String template){
+        if(CollectionUtils.isEmpty(builders) || StringUtils.isEmpty(template)){
+            return false;
+        }
+        return builders.keySet().contains(template);
     }
 
 }
