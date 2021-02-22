@@ -1,19 +1,17 @@
 package cn.tongdun.kunpeng.api.acl.impl.event.notify.eunomia;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.google.common.collect.Maps;
-
 import cn.fraudmetrix.eunomia.client.listener.EunomiaListener;
 import cn.fraudmetrix.eunomia.client.message.RowData;
 import cn.fraudmetrix.eunomia.recipes.message.Row;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.kv.IScoreKVRepository;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liupei on 2021/2/18.
@@ -35,6 +33,8 @@ public class DomainEventListener implements EunomiaListener {
 
     @Override
     public boolean onEvent(RowData rowData) throws Exception {
+
+        log.error("DomainEventListener start.................................");
 
         if (rowData == null) {
             log.error("eunomia(DomainEventListener) client rowData not allowed null");
@@ -61,13 +61,13 @@ public class DomainEventListener implements EunomiaListener {
         }
 
         //{"eventType":"deactivate","data":[{"uuid":"7d6ef5a5a3b946129691af608916f225"}],"occurredTime":1586433141469,"entity":"policy_definition"}
-        String eventData = getRowValue(row, "eventData");
+        String eventData = getRowValue(row, "event_data");
         Map<String, Object> messageMap = JSON.parseObject(eventData, Map.class);
         long occurredTime = getLong(messageMap, "occurredTime");
         List<Map> jsonArray = (List<Map>) messageMap.get("data");
 
         Map redisMsg = Maps.newHashMap();
-        redisMsg.put("eventType", getRowValue(row, "eventType"));
+        redisMsg.put("eventType", getRowValue(row, "event_type"));
         redisMsg.put("entity", getRowValue(row, "entity"));
         redisMsg.put("occurredTime", occurredTime);
         redisMsg.put("data", jsonArray);
@@ -99,9 +99,9 @@ public class DomainEventListener implements EunomiaListener {
                 row.getReader().getField(key).getBeforeValue();
     }
 
-    public static Long getLong(Map map,String key){
+    public static Long getLong(Map map, String key) {
         Object value = map.get(key);
-        if(value == null){
+        if (value == null) {
             return null;
         }
         return Double.valueOf(value.toString()).longValue();
