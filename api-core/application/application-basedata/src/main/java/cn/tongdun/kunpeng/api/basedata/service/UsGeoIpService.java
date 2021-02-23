@@ -39,7 +39,7 @@ import java.util.Objects;
 @Extension(tenant = "us", business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class UsGeoIpService implements GeoIpServiceExtPt {
 
-    private static final Logger logger = LoggerFactory.getLogger(SaaSGeoIpService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UsGeoIpService.class);
 
     @Autowired
     private GpsQueryService gpsQueryService;
