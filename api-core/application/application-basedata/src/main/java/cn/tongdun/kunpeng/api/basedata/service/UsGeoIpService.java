@@ -16,6 +16,8 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
@@ -44,6 +46,9 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
     @Autowired
     private AGeoipInfoQueryService aGeoipInfoQueryService;
 
+    @Autowired
+    private IMetrics metrics;
+
 
     @Override
     public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
@@ -57,7 +62,19 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
         geoipQueryDTO.setSource("evan-us");
         geoipQueryDTO.setSeqId(context.getSeqId());
         try {
+            String[] tags = {
+                    "dubbo_qps","paas.api.geoip"};
+            metrics.counter("kunpeng.api.dubbo.qps",tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+
+            String[] partnerTags = {
+                    "partner_code",context.getPartnerCode()};
+            ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt",partnerTags);
+
             result = aGeoipInfoQueryService.queryGeoipInfo(geoipQueryDTO);
+            timeContext.stop();
+            timePartner.stop();
+
         } catch (Exception e) {
             if (ReasonCodeUtil.isTimeout(e)) {
                 ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_TIMEOUT, "geoIp-us");
