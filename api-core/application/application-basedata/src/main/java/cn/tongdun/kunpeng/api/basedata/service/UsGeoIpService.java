@@ -7,6 +7,8 @@ import cn.tongdun.evan.client.entity.AGeoipQueryDTO;
 import cn.tongdun.evan.client.lang.Result;
 import cn.tongdun.gaea.dubbo.GpsQueryService;
 import cn.tongdun.gaea.factservice.domain.GpsInfoDTO;
+import cn.tongdun.kunpeng.api.basedata.constant.FpReasonCodeEnum;
+import cn.tongdun.kunpeng.api.basedata.util.FpReasonUtils;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -14,6 +16,8 @@ import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
+import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,12 +39,15 @@ import java.util.Objects;
 @Extension(tenant = "us", business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class UsGeoIpService implements GeoIpServiceExtPt {
 
-    private static final Logger logger = LoggerFactory.getLogger(SaaSGeoIpService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UsGeoIpService.class);
 
     @Autowired
     private GpsQueryService gpsQueryService;
     @Autowired
     private AGeoipInfoQueryService aGeoipInfoQueryService;
+
+    @Autowired
+    private IMetrics metrics;
 
 
     @Override
@@ -49,34 +56,55 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
             return null;
         }
         Result<AGeoipEntity> result = null;
+        AGeoipQueryDTO geoipQueryDTO = new AGeoipQueryDTO();
+        geoipQueryDTO.setIp(ip);
+        geoipQueryDTO.setPartnerCode(context.getPartnerCode());
+        geoipQueryDTO.setSource("evan-us");
+        geoipQueryDTO.setSeqId(context.getSeqId());
         try {
-            AGeoipQueryDTO geoipQueryDTO = new AGeoipQueryDTO();
-            geoipQueryDTO.setIp(ip);
-            geoipQueryDTO.setPartnerCode(context.getPartnerCode());
-            geoipQueryDTO.setSource("evan-us");
-            geoipQueryDTO.setSeqId(context.getSeqId());
-            logger.info("aGeoipInfoQueryService.queryGeoipInfo入参:{}", JSON.toJSONString(geoipQueryDTO));
+            String[] tags = {
+                    "dubbo_qps","paas.api.geoip"};
+            metrics.counter("kunpeng.api.dubbo.qps",tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+
+            String[] partnerTags = {
+                    "partner_code",context.getPartnerCode()};
+            ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt",partnerTags);
+
             result = aGeoipInfoQueryService.queryGeoipInfo(geoipQueryDTO);
-            logger.info("aGeoipInfoQueryService.queryGeoipInfo:{}", JSON.toJSONString(result));
+            timeContext.stop();
+            timePartner.stop();
+
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "UsGeoIpService gpsQueryService.queryGps error,ip:" + ip, e);
-            ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoIp-us");
+            if (ReasonCodeUtil.isTimeout(e)) {
+                ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_TIMEOUT, "geoIp-us");
+                logger.error(TraceUtils.getFormatTrace() + "UsGeoIpService gpsQueryService.queryGps error:" + JSON.toJSONString(result), e);
+            } else {
+                ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoIp-us");
+                logger.error(TraceUtils.getFormatTrace() + "UsGeoIpService gpsQueryService.queryGps error:" + JSON.toJSONString(result), e);
+            }
+
         }
         if (Objects.isNull(result)) {
             return null;
         }
         if (!result.isSuccess()) {
+            logger.info("aGeoipInfoQueryService.queryGeoipInfo:{}", JSON.toJSONString(result));
             switch (result.getCode()) {
                 case "100":
+                    logger.info("GEOIP_PARAM_ERROR入参:{}", JSON.toJSONString(geoipQueryDTO));
                     ReasonCodeUtil.add(context, ReasonCode.GEOIP_PARAM_ERROR, "geoIp-us");
                     return null;
                 case "102":
+                    logger.info("GEOIP_ILLEGAL_ERROR入参:{}", JSON.toJSONString(geoipQueryDTO));
                     ReasonCodeUtil.add(context, ReasonCode.GEOIP_ILLEGAL_ERROR, "geoIp-us");
                     return null;
                 case "403":
+                    logger.info("GEOIP_PERNISSION_ERROR入参:{}", JSON.toJSONString(geoipQueryDTO));
                     ReasonCodeUtil.add(context, ReasonCode.GEOIP_PERNISSION_ERROR, "geoIp-us");
                     return null;
                 case "500":
+                    logger.info("GEOIP_SERRVER_ERROR入参:{}", JSON.toJSONString(geoipQueryDTO));
                     ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERRVER_ERROR, "geoIp-us");
                     return null;
                 default:

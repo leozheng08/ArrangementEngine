@@ -172,8 +172,9 @@ public class DeviceInfoStep implements IRiskStep {
 
     private void dealWithTrueIp(AbstractFraudContext context, Map<String, Object> deviceMap) {
         // 处理geoIp
-        String trueIp = deviceMap.get("trueIp") + "";
-        if (StringUtils.isNotEmpty(trueIp)) {
+        Object object=deviceMap.get("trueIp");
+        if (Objects.nonNull(object)) {
+            String trueIp = object.toString();
             GeoipEntity geoip = null;
             try {
                 geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp, context));
