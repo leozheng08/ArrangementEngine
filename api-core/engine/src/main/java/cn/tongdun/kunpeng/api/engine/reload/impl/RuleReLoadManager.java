@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
@@ -203,11 +204,14 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             ruleCache.put(uuid,newRule);
 
             //处理需要批量远程调用的数据
-            String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
-            List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
-            if(null != batchRemoteCallDatas){
-                batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+            if(BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDTO.getTemplate())){
+                String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
+                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
+                if(null != batchRemoteCallDatas){
+                    batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+                }
             }
+
 
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
@@ -254,10 +258,12 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 hashMultimap.put(ruleDTO.getBizType(),ruleDTO.getBizUuid());
 
                 //处理需要批量远程调用的数据
-                String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
-                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
-                if(null != batchRemoteCallDatas){
-                    batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+                if (BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDTO.getTemplate())) {
+                    String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
+                    List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
+                    if(null != batchRemoteCallDatas){
+                        batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
+                    }
                 }
             }
 
