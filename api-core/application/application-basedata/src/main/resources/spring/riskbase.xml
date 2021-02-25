@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+       default-autowire="byName">
+
+
+    <bean id="proxyIpService" class="cn.fraudmetrix.module.riskbase.service.impl.ProxyIpServiceImpl" lazy-init="true"/>
+
+    <!-- 使用下方redisClientbean，直接申请shutter的redis，redis.proxyip.properties文件权限即可 -->
+    <bean id="proxyIpRedisClient" class="cn.fraudmetrix.module.riskbase.client.RedisClient" init-method="init"
+          lazy-init="true">
+        <property name="masterServer" value="${redis.proxyip.master.server}"/>
+        <property name="slaveServer" value="${redis.proxyip.slave.server}"/>
+    </bean>
+
+
+</beans>
