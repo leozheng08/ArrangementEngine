@@ -216,7 +216,7 @@ public class DeviceInfoStep implements IRiskStep {
             metrics.counter("kunpeng.api.dubbo.qps", tags);
             ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
             if (Objects.nonNull(checkoutToken)) {
-                baseResult = deviceInfoQuery.query(params.getPartnerCode(),"web",checkoutToken.toString());
+                baseResult = deviceInfoQuery.query("shopify","web",checkoutToken.toString());
                 if (null == baseResult) {
                     logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,checkoutToken:" + checkoutToken);
                     FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
