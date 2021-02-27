@@ -195,7 +195,7 @@ public class DeviceInfoStep implements IRiskStep {
     }
 
     private Map<String, Object> invokeFingerPrint(AbstractFraudContext context, String partnerCode, String appName, String tokenId, String blackBox, String respDetailType) {
-
+        Object checkoutToken = context.getFieldValues().get("checkoutToken");
         Map<String, Object> result = new HashMap<>();
         String paramDetailType = getDetailType(respDetailType);
         QueryParams params = new QueryParams();
@@ -215,7 +215,16 @@ public class DeviceInfoStep implements IRiskStep {
                     "dubbo_qps", "fp.dubbo.DeviceInfoQuery"};
             metrics.counter("kunpeng.api.dubbo.qps", tags);
             ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
-            baseResult = deviceInfoQuery.query(params);
+            if (Objects.nonNull(checkoutToken)) {
+                baseResult = deviceInfoQuery.query("shopify","web",checkoutToken.toString());
+                if (null == baseResult) {
+                    logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,checkoutToken:" + checkoutToken);
+                    FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
+                    return result;
+                }
+            }else {
+                baseResult = deviceInfoQuery.query(params);
+            }
             timeContext.stop();
             if (null == baseResult) {
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,blackBox:" + blackBox);
