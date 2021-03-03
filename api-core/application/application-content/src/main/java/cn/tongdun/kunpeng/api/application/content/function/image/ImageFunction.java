@@ -35,7 +35,7 @@ public class ImageFunction extends AbstractFunction {
 
     public static final String PARAM_KEY_CONDITIONS = "conditions";
     public static final String PARAM_KEY_LOGICOPERATOR = "logicOperator";
-    public static final String PARAM_KEY_IMAGE_LOGO_MODEL_RESULT = "image_logo_model_result";
+    public static final String PARAM_KEY_IMAGE_LOGO_MODEL_RESULT = "imageLogoModelResult";
 
     private String conditions;
     private String logicOperator;
@@ -43,7 +43,8 @@ public class ImageFunction extends AbstractFunction {
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
         FunctionResult functionResult = new FunctionResult(false, null);
-        String logoModelResult = ((AbstractFraudContext) executeContext).getRequestParamsMap().get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT);
+        AbstractFraudContext context = (AbstractFraudContext) executeContext;
+        String logoModelResult = null == context.get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT) ? null : context.get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT).toString();
         if (hasNullData(logoModelResult, conditions, logicOperator)) {
             return functionResult;
         }
@@ -131,7 +132,7 @@ public class ImageFunction extends AbstractFunction {
      */
     private boolean hasNullData(String logoModelResult, String conditions, String logicOperator) {
         if (StringUtils.isEmpty(logoModelResult)) {
-            logger.warn("The image_logo_model_result is empty!");
+            logger.warn("The imageLogoModelResult is empty!");
             return true;
         }
         if (StringUtils.isEmpty(conditions)) {
