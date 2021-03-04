@@ -13,6 +13,7 @@
                      retries="${chassis.dubbo.retries}"
                      check="${chassis.dubbo.check}"
                      version="${chassis.dubbo.version}"
+                     timeout="${chassis.dubbo.timeout}"
                      protocol="dubbo"/>
 
 </beans>
