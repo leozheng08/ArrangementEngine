@@ -1,20 +1,8 @@
 package cn.tongdun.kunpeng.api.application.intf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import cn.tongdun.gaea.client.common.IndicatrixRetCode;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixRequest;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import cn.tongdun.gaea.client.common.IndicatrixRetCode;
 import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
@@ -26,6 +14,17 @@ import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author jie
@@ -229,6 +228,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
         IndicatrixRequest indicatrixRequest = new IndicatrixRequest();
         indicatrixRequest.setBizId(context.getSeqId());
+        indicatrixRequest.setBizName("kunpeng-sea-api");
         indicatrixRequest.setPartnerCode(context.getPartnerCode());
         indicatrixRequest.setEventType(context.getEventType());
         indicatrixRequest.setEventId(context.getEventId());

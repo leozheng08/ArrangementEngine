@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
+import cn.tongdun.kunpeng.api.engine.model.application.AdminApplicationCache;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -42,6 +43,8 @@ public class GetPolicyUuidStep implements IRiskStep {
     @Autowired
     private PolicyCache policyCache;
 
+    @Autowired
+    private AdminApplicationCache adminApplicationCache;
 
     @Autowired
     private IBaseConfig baseConfig;
@@ -58,6 +61,21 @@ public class GetPolicyUuidStep implements IRiskStep {
         String appName = context.getAppName();
         String eventId = request.getEventId();
         String policyVersion = request.getPolicyVersion();
+        try {
+            String partnerCodeAppName = adminApplicationCache.getPartnerCodeAppNameBySecretKey(request.getSecretKey());
+            if (StringUtils.isNotEmpty(partnerCodeAppName)) {
+                logger.info("adminApplicationCache get partnerCode:{}, appName:{}, partnerCodeAppName :{}",partnerCode, appName, partnerCodeAppName);
+                appName = partnerCodeAppName.split("\\.")[1];
+                // 特殊处理Shopee_id和Shopee_th
+                if (!"Shopee_id".equalsIgnoreCase(partnerCode) && !"Shopee_th".equalsIgnoreCase(partnerCode)) {
+                    appName = appName.replace("__","_");
+                }
+                context.setAppName(appName);
+                request.setAppName(appName);
+            }
+        } catch (Exception e) {
+            logger.error("adapter adminApplication from cache not existed for partnerCode:{}, appName :{}", partnerCode, appName);
+        }
 
         if(StringUtils.isBlank(eventId)){
             response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString()+":"+"eventId值为空");

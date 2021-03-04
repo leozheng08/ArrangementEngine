@@ -2,14 +2,16 @@ package cn.tongdun.kunpeng.api.common.data;
 
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.client.data.IOutputField;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.client.data.impl.underline.OutputField;
 import cn.tongdun.tdframework.core.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -278,6 +280,9 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
     /*************外部接口返回结果 end******************/
 
+    private List<IOutputField> outputFields = Lists.newArrayList();
+
+    private List<Map<String, Object>> outputIndicatrixes = Lists.newArrayList();
 
     /**
      * 添加异常子码及对应外部系统的原因码
@@ -597,6 +602,19 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             }
         }
         return null;
+    }
+
+    public void appendOutputFields(OutputField outputField) {
+        //如果包含则覆盖,否则就追加
+        int i = outputFields.indexOf(outputField);
+        if (i > -1) {
+            IOutputField exists = outputFields.get(i);
+            exists.setValue(outputField.getValue());
+            exists.setType(outputField.getType());
+            exists.setDesc(outputField.getDesc());
+        } else {
+            outputFields.add(outputField);
+        }
     }
 
 }

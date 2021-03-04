@@ -3,13 +3,8 @@ package cn.tongdun.kunpeng.api.engine.model.application;
 import cn.tongdun.kunpeng.api.acl.engine.model.application.AdminApplicationDTO;
 import cn.tongdun.kunpeng.api.acl.engine.model.application.IAdminApplicationRepository;
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
-import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
+import com.google.common.cache.*;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -133,6 +125,11 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
             return null;
         }
         return get(partnerCodeAppName);
+    }
+
+    public String getPartnerCodeAppNameBySecretKey(String secretKey) {
+        String partnerCodeAppName = secretKeyToAppName.get(secretKey);
+        return partnerCodeAppName;
     }
 
 
