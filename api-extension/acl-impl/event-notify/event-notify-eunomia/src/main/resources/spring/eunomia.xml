@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+       default-autowire="byName">
+
+    <bean id="eunomiaClient" class="cn.fraudmetrix.eunomia.client.EunomiaKafkaClient">
+        <!-- 由应用负责人申请，在wiki上备案 -->
+        <property name="groupId" value="${eunomia.client.group}"/>
+        <!-- 启动消费的线程数，理论上：应用机器*threadCount与消息管道数一致最佳，默认只有一个消费线程 -->
+        <property name="threadCount" value="1"/>
+        <!-- 升级数据总线到kafka1.1，添加该配置 -->
+        <property name="brokers" value="${eunomia.client.brokers}"/>
+    </bean>
+
+    <bean id="domainEventListener" class="cn.tongdun.kunpeng.api.acl.impl.event.notify.eunomia.DomainEventListener"/>
+
+
+    <bean class="cn.fraudmetrix.eunomia.recipes.EunomiaListenerRegistry">
+        <property name="client" ref="eunomiaClient"/>
+        <property name="listeners">
+            <map>
+                <entry key="${kunpeng.eunomia.domain_event}" value-ref="domainEventListener"/>
+            </map>
+        </property>
+    </bean>
+</beans>

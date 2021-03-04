@@ -1,20 +1,19 @@
 package cn.tongdun.kunpeng.api.infrastructure.config;
 
-import cn.tongdun.kunpeng.api.common.Constant;
-import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
-import cn.tongdun.kunpeng.share.config.IConfigRepository;
-import cn.tongdun.kunpeng.share.json.JSON;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
+import cn.tongdun.kunpeng.share.json.JSON;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 
 /**
  * @Author: liang.chen
@@ -30,9 +29,6 @@ public class BaseConfig implements IBaseConfig{
     private String businessEventTypeJson;
     //eventType->businussType
     private Map<String,String> eventType2BusinussMap = new HashMap<>();
-
-    @Autowired
-    private IConfigRepository dynamicConfig;
 
     //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
     @Override
