@@ -53,7 +53,7 @@ public class ChallengerStep implements IRiskStep {
         PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
         //策略定义不存在
         if(policyDefinition == null){
-            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}", ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+            logger.warn(TraceUtils.getFormatTrace()+",policyDefinition is null,{},partnerCode:{},eventId:{}", ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
             return false;
         }
@@ -67,7 +67,7 @@ public class ChallengerStep implements IRiskStep {
 
         Policy policy = policyCache.get(policyUuid);
         if(policy == null){
-            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+            logger.warn(TraceUtils.getFormatTrace()+",policy is null,{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
             return false;
         }
