@@ -59,7 +59,7 @@ public class AdminApplicationLoadManager implements ILoad {
             adminApplicationCache.addAdminApplication(adminApplication);
         }
 
-        logger.info(TraceUtils.getFormatTrace()+"AdminApplicationLoadManager success, cost:{}, size:",
+        logger.info(TraceUtils.getFormatTrace()+"AdminApplicationLoadManager success, cost:{}, size:{}",
                 System.currentTimeMillis() - beginTime, adminApplicationList.size());
         return true;
     }

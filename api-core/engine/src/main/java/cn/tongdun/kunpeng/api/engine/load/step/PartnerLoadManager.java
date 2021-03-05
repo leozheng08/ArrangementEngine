@@ -58,6 +58,8 @@ public class PartnerLoadManager implements ILoad {
 
         for(Partner partner:partnerList){
             partnerCache.put(partner.getPartnerCode(),partner);
+            //TODO 待删除，排查问题使用
+            logger.info(TraceUtils.getFormatTrace()+"，PartnerLoadManager加载了合作方partnerCode={},详情={}",partner.getPartnerCode(),partner.toString());
         }
 
         logger.info(TraceUtils.getFormatTrace()+"PartnerLoadManager success, cost:{}, size:{}",
