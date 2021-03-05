@@ -24,6 +24,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module.riskbase</artifactId>
+        </dependency>
+        <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>client</artifactId>
         </dependency>

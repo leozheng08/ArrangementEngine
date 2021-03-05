@@ -23,8 +23,8 @@ import java.util.Map;
  * @Author: liang.chen
  * @Date: 2020/3/4 下午4:00
  */
-@Extension(business = BizScenario.DEFAULT,tenant = BizScenario.DEFAULT,partner = BizScenario.DEFAULT)
-public class GenerateActivityExt implements IGenerateActivityExtPt{
+@Extension(business = BizScenario.DEFAULT, tenant = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
+public class GenerateActivityExt implements IGenerateActivityExtPt {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateActivityExt.class);
 
@@ -33,11 +33,12 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
 
     /**
      * 根据出入参、上下文生成Activity消息
+     *
      * @param queueItem
      * @return
      */
     @Override
-    public IActitivyMsg generateActivity(QueueItem queueItem){
+    public IActitivyMsg generateActivity(QueueItem queueItem) {
         AbstractFraudContext context = queueItem.getContext();
 
         ActitivyMsg actitivy = new ActitivyMsg();
@@ -53,10 +54,10 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         deviceInfo.put("blackBox", queueItem.getRequest().getBlackBox());
         actitivy.setDeviceInfo(deviceInfo);
 
+        logger.info("GenerateActivityExt....................seqId={}", context.getSeqId());
+
         return actitivy;
     }
-
-
 
 
     /**
@@ -75,33 +76,33 @@ public class GenerateActivityExt implements IGenerateActivityExtPt{
         // 获取字段值
         Map<String, Object> fieldValues = context.getFieldValues();
         putAllIfNotExists(result, fieldValues);
-        result.put("eventRealTime",new Date());
+        result.put("eventRealTime", new Date());
 
         return result;
     }
 
-    private Map getBaseField(AbstractFraudContext context){
+    private Map getBaseField(AbstractFraudContext context) {
         Map result = new HashMap();
-        result.put("partnerCode",context.getPartnerCode());
-        result.put("sequenceId",context.getSeqId());
-        result.put("appName",context.getAppName());
-        result.put("appType",context.getAppType());
-        result.put("eventId",context.getEventId());
-        result.put("eventType",context.getEventType());
-        result.put("policyUuid",context.getPolicyUuid());
-        result.put("eventOccurTime",context.getEventOccurTime());
-        result.put("policyVersion",context.getPolicyVersion());
-        result.put("requestId",context.getRequestId());
-        if(StringUtils.isNotBlank(context.getChallengerTag())){
-            result.put("isChallenger",context.isChallenger());
-            result.put("challengerTag",context.getChallengerTag());
+        result.put("partnerCode", context.getPartnerCode());
+        result.put("sequenceId", context.getSeqId());
+        result.put("appName", context.getAppName());
+        result.put("appType", context.getAppType());
+        result.put("eventId", context.getEventId());
+        result.put("eventType", context.getEventType());
+        result.put("policyUuid", context.getPolicyUuid());
+        result.put("eventOccurTime", context.getEventOccurTime());
+        result.put("policyVersion", context.getPolicyVersion());
+        result.put("requestId", context.getRequestId());
+        if (StringUtils.isNotBlank(context.getChallengerTag())) {
+            result.put("isChallenger", context.isChallenger());
+            result.put("challengerTag", context.getChallengerTag());
         }
         return result;
     }
 
-    private GeoipInfo getGeoIpInfo(AbstractFraudContext context){
+    private GeoipInfo getGeoIpInfo(AbstractFraudContext context) {
         GeoipEntity geoipEntity = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, GeoipEntity.class);
-        if(geoipEntity != null){
+        if (geoipEntity != null) {
             GeoipInfo geoipInfo = new GeoipInfo();
             String country = geoipEntity.getCountry();
             try {

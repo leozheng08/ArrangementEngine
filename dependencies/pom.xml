@@ -63,6 +63,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>module.riskbase</artifactId>
+                <version>1.4.7</version>
+            </dependency>
+            <dependency>
                 <groupId>cn.tongdun</groupId>
                 <artifactId>tdframework-core</artifactId>
                 <version>${tdframework.version}</version>
@@ -95,7 +100,6 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>1.2.70</version>
-                <scope>runtime</scope>
             </dependency>
 
             <!-- 设备指纹 fp -->

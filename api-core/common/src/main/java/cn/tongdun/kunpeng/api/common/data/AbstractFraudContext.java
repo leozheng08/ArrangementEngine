@@ -1,15 +1,15 @@
 package cn.tongdun.kunpeng.api.common.data;
 
+import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.tdframework.core.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -269,7 +269,16 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 设备指纹信息
      */
-    private Map<String, Object> deviceInfo = new HashMap<String, Object>();
+    private Map<String, Object> deviceInfo = new HashMap<>();
+
+    /**
+     * 用于设备指纹判断黑白名单
+     */
+    private Map<String, Object> deviceInfoFp = new HashMap<>();
+    /**
+     * 通过geoIp获得的访问ip对应的相关地理位置信息
+     */
+    private GeoipEntity geoipEntity;
 
     /**
      * 关键词匹配结果
