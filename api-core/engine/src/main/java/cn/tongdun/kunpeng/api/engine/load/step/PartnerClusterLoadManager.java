@@ -44,7 +44,13 @@ public class PartnerClusterLoadManager implements ILoad {
         Set<String> partners = null;
 
         //则取所有合作方，暂不按集群加载
-        partners = partnerClusterRepository.queryPartnerByCluster(localEnvironment.getCluster());
+        try{
+            partners = partnerClusterRepository.queryPartnerByCluster(localEnvironment.getCluster());
+        }catch (Throwable e){
+            logger.error("PartnerClusterLoadManager queryPartnerByCluster error!",e);
+            throw e;
+        }
+
 
         partnerClusterCache.setPartners(partners);
 
