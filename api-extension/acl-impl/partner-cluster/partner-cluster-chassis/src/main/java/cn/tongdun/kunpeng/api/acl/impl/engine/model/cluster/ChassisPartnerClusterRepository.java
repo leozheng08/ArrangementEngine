@@ -34,7 +34,7 @@ public class ChassisPartnerClusterRepository implements IPartnerClusterRepositor
     public Set<String> queryPartnerByCluster(String cluster){
         Set<String> partners = Sets.newHashSet();
         long beginTime = System.currentTimeMillis();
-        int start = 0, end = 100, length = 100;
+        int start = 0, end = 1000, length = 1000;
         ApiResult<PartnerResultDTO> responseVo = partnerQueryService.queryAllPartner(start, end);
         log.info("partnerQueryService.queryAllPartner start:{},end:{}",start,end);
         if (responseVo == null || responseVo.getCode() != 200) {
