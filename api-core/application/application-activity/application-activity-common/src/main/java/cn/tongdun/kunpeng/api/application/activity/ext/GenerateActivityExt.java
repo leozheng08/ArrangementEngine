@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.tdframework.core.extension.Extension;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt {
         deviceInfo.put("blackBox", queueItem.getRequest().getBlackBox());
         actitivy.setDeviceInfo(deviceInfo);
 
-        logger.info("GenerateActivityExt....................seqId={}", context.getSeqId());
+        logger.info("GenerateActivityExt....................seqId={}, actitivy={}", context.getSeqId(), JSON.toJSONString(actitivy));
 
         return actitivy;
     }
