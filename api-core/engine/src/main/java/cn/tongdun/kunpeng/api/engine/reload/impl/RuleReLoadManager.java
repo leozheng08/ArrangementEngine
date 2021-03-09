@@ -16,6 +16,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.HashMultimap;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -301,8 +302,13 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(eventDO.getUuid());
             String policyUuid = subPolicyCache.getPolicyUuidBySubPolicyUuid(subPolicyUuid);
             Rule cacheRule = ruleCache.get(eventDO.getUuid());
-            if(cacheRule != null){
+            if (cacheRule != null && StringUtils.isNotBlank(subPolicyUuid) && StringUtils.isNotBlank(policyUuid)) {
                 batchRemoteCallDataCache.remove(policyUuid, cacheRule.getTemplate(), eventDO.getUuid());
+            } else {
+                //理论上，子策略都删除了，应该不会发生规则的删除事件了
+                //同理，如果策略都删除了，应该不会发生子策略的删除事件了
+                //所以如果此方法代码被调用，但是上面的subPolicyUuid，policyUuid却为null，则需要排查原因
+                logger.error("防御性日志，如果大量出现，需要检查代码：subPolicyUuid = {},policyUuid = {}",subPolicyUuid,policyUuid);
             }
 
             Rule rule = ruleCache.remove(eventDO.getUuid());
