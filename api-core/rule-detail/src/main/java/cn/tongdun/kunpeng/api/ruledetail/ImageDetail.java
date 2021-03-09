@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 public class ImageDetail extends ConditionDetail {
-    private List<List<FilterConditionDO>> hitConditions;
+    private List<String> hitConditions;
     public ImageDetail(){super("image");}
 
 }

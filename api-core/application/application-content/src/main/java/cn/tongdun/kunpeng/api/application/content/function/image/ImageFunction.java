@@ -11,7 +11,6 @@ import cn.hutool.json.JSONUtil;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.CompareUtils;
-import cn.tongdun.kunpeng.api.ruledetail.FilterConditionDO;
 import cn.tongdun.kunpeng.api.ruledetail.ImageDetail;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
@@ -36,6 +35,7 @@ public class ImageFunction extends AbstractFunction {
     public static final String PARAM_KEY_CONDITIONS = "conditions";
     public static final String PARAM_KEY_LOGICOPERATOR = "logicOperator";
     public static final String PARAM_KEY_IMAGE_LOGO_MODEL_RESULT = "imageLogoModelResult";
+    public static final String PARAM_KEY_IMAGE_LOGO_MODEL_RESULT2 = "image_logo_model_result";
 
     private String conditions;
     private String logicOperator;
@@ -44,7 +44,10 @@ public class ImageFunction extends AbstractFunction {
     protected FunctionResult run(ExecuteContext executeContext) {
         FunctionResult functionResult = new FunctionResult(false, null);
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
-        String logoModelResult = null == context.get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT) ? null : context.get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT).toString();
+        Object result = null == context.get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT) ?
+                context.get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT2) : context.get(PARAM_KEY_IMAGE_LOGO_MODEL_RESULT);
+        String logoModelResult = null == result ? null : result.toString();
+
         if (hasNullData(logoModelResult, conditions, logicOperator)) {
             return functionResult;
         }
@@ -255,7 +258,23 @@ public class ImageFunction extends AbstractFunction {
             detail.setRuleUuid(this.ruleUuid);
             detail.setConditionUuid(this.conditionUuid);
             detail.setDescription(description);
-            detail.setHitConditions(hitFilters);
+            List<String> conditions = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(hitFilters)) {
+                hitFilters.stream().forEach(hitFilter ->{
+                    StringBuilder builder = new StringBuilder();
+                    FilterConditionDO logoName = hitFilter.get(0);
+                    FilterConditionDO logoScore = hitFilter.get(1);
+                    String condition = builder.append(logoName.getLeftPropertyName()).append(" ")
+                            .append(logoName.getOperator()).append(" ")
+                            .append(logoName.getRightValue()).append(",")
+                            .append(logoScore.getLeftPropertyName()).append(" ")
+                            .append(logoScore.getOperator()).append(" ")
+                            .append(logoScore.getRightValue())
+                            .toString();
+                    conditions.add(condition);
+                });
+            }
+            detail.setHitConditions(conditions);
             return detail;
         };
     }

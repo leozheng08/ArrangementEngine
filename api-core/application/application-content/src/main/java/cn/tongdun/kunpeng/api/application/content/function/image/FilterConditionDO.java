@@ -5,7 +5,7 @@
  * use it only in accordance with the terms of the license agreement you entered
  * into with FraudMetrix.cn.
  */
-package cn.tongdun.kunpeng.api.ruledetail;
+package cn.tongdun.kunpeng.api.application.content.function.image;
 
 import lombok.Data;
 
