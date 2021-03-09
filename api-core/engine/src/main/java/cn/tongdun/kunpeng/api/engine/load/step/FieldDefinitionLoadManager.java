@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
+import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 加载系统字段，扩展字段，依赖EventType的加载
@@ -56,6 +58,9 @@ public class FieldDefinitionLoadManager implements ILoad {
 
         logger.info(TraceUtils.getFormatTrace()+"FieldDefinitionLoadManager success, cost:{}, systemFieldMap size:{}, extendFieldMap size:{}",
                 System.currentTimeMillis() - beginTime, ruleFieldCacheRepository.getSystemFieldMap().size(),ruleFieldCacheRepository.getExtendFieldMap().size());
+
+        logger.info("ruleFieldCacheRepository.getSystemFieldMap().size():"+ruleFieldCacheRepository.getSystemFieldMap().size());
+        logger.info("ruleFieldCacheRepository.getSystemFieldMap():"+ JSON.toJSONString(ruleFieldCacheRepository.getSystemFieldMap()));
         return true;
     }
 }
