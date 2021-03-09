@@ -10,6 +10,9 @@ import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -20,6 +23,7 @@ import java.util.function.Supplier;
 
 @Data
 public abstract class AbstractFraudContext implements Serializable, ExecuteContext {
+    private static Logger logger = LoggerFactory.getLogger(AbstractFraudContext.class);
 
     private static final long serialVersionUID = -3320502733559293390L;
     private static final Field[] classFields = AbstractFraudContext.class.getDeclaredFields();
@@ -40,7 +44,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     Method method = RiskRequest.class.getMethod(getMethodName);
                     fieldGetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
-                    // ignore
+                    logger.error("AbstractFraudContext异常位置1,{}",e.getMessage(),e);
                 }
 
                 String setMethodName = "set" + KunpengStringUtils.upperCaseFirstChar(field.getName());
@@ -48,10 +52,19 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     Method method = RiskRequest.class.getMethod(setMethodName);
                     fieldSetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
-                    // ignore
+                    logger.error("AbstractFraudContext异常位置2,{}",e.getMessage(),e);
                 }
             }
         }
+
+        if(!CollectionUtils.isEmpty(fieldGetMethodMap)){
+            Set<Map.Entry<String, Method>> entries = fieldGetMethodMap.entrySet();
+            entries.stream().forEach(methodEntry -> {
+                logger.info("AbstractFraudContext.fieldGetMethodMap值为，key={},value={}",methodEntry.getKey(),methodEntry.getValue().getName());
+            });
+
+        }
+
     }
 
 
@@ -334,7 +347,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             try {
                 setMethod.invoke(this, o);
             } catch (Exception ex) {
-                // 没有找到系统字段
+                logger.error("AbstractFraudContext异常位置3,{}",ex.getMessage(),ex);
             }
         }
 
@@ -379,7 +392,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     return value;
                 }
             } catch (Exception e) {
-                // ignore
+                logger.error("AbstractFraudContext异常位置4,{}",e.getMessage(),e);
             }
         }
 
