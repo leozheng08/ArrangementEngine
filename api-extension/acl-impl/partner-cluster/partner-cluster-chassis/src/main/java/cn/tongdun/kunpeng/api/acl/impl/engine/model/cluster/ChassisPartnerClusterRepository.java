@@ -34,8 +34,9 @@ public class ChassisPartnerClusterRepository implements IPartnerClusterRepositor
     public Set<String> queryPartnerByCluster(String cluster){
         Set<String> partners = Sets.newHashSet();
         long beginTime = System.currentTimeMillis();
-        int start = 0, end = 100, length = 100;
+        int start = 0, end = 1000, length = 1000;
         ApiResult<PartnerResultDTO> responseVo = partnerQueryService.queryAllPartner(start, end);
+        log.info("partnerQueryService.queryAllPartner start:{},end:{}",start,end);
         if (responseVo == null || responseVo.getCode() != 200) {
             log.error("get partner responseVo error! responseVo :{}", responseVo);
             return partners;
@@ -43,11 +44,13 @@ public class ChassisPartnerClusterRepository implements IPartnerClusterRepositor
         List<PartnerDTO> partnerDTOs = responseVo.getData().getPartnerDTOs();
         partnerDTOs.forEach(r -> partners.add(r.getPartnerCode()));
         int total = responseVo.getData().getTotal();
+        log.info("partnerQueryService.queryAllPartner total:{}",total);
         if (total > length) {
             do {
                 start += length;
                 end = start + length;
                 ApiResult<PartnerResultDTO> result = partnerQueryService.queryAllPartner(start, end);
+                log.info("partnerQueryService.queryAllPartner start:{},end:{}",start,end);
                 if (responseVo == null || responseVo.getCode() != 200) {
                     log.error("get partner responseVo error! result :{}", result);
                     return partners;
