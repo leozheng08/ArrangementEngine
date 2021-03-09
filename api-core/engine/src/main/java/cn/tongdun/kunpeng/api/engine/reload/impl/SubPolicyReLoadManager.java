@@ -168,8 +168,10 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
         for(Rule rule:ruleList) {
             //删除规则
             ruleCache.remove(rule.getUuid());
-            //删除该规则批量远程调用数据
-            batchRemoteCallDataCache.remove(subPolicy.getPolicyUuid(),rule.getTemplate(),rule.getUuid());
+            if (BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(rule.getTemplate())) {
+                //删除该规则批量远程调用数据
+                batchRemoteCallDataCache.remove(subPolicy.getPolicyUuid(),rule.getTemplate(),rule.getUuid());
+            }
         }
         return true;
     }
