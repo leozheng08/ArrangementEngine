@@ -16,7 +16,6 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.ruledetail.KeywordDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.alibaba.dubbo.common.json.JSONObject;
 import com.google.common.collect.Lists;
@@ -181,7 +180,7 @@ public class KeywordFunction extends AbstractFunction {
         String[] array = attrInfo.split("\\|");
         List<AttrExp> attrExps = new ArrayList<>(array.length);
         for (String str : array) {
-            JSONObject jsonObject = JSON.parseObject(str, JSONObject.class);
+            JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(str, JSONObject.class);
             AttrExp attrExp = new AttrExp();
             attrExp.setAndOr(jsonObject.getString("andOr"));
             attrExp.setLeft(jsonObject.getString("left"));
