@@ -47,8 +47,7 @@ public class FieldDefinitionLoadManager implements ILoad {
         long beginTime = System.currentTimeMillis();
 
         List<FieldDefinition> list = ruleFieldRepository.queryAllSystemField();
-        logger.info("FieldDefinitionCache.eventTypeCache:"+ JSON.toJSONString(ruleFieldCacheRepository.getEventTypeCache()));
-        logger.info("ruleFieldRepository.queryAllSystemField():"+ JSON.toJSONString(list));
+        logger.info("ruleFieldRepository.queryAllSystemField() size:"+ list.size());
         for(FieldDefinition ruleField:list){
             ruleFieldCacheRepository.put(ruleField.getUuid(),ruleField);
         }
@@ -62,7 +61,6 @@ public class FieldDefinitionLoadManager implements ILoad {
                 System.currentTimeMillis() - beginTime, ruleFieldCacheRepository.getSystemFieldMap().size(),ruleFieldCacheRepository.getExtendFieldMap().size());
 
         logger.info("ruleFieldCacheRepository.getSystemFieldMap().size():"+ruleFieldCacheRepository.getSystemFieldMap().size());
-        logger.info("ruleFieldCacheRepository.getSystemFieldMap():"+ JSON.toJSONString(ruleFieldCacheRepository.getSystemFieldMap()));
         return true;
     }
 }
