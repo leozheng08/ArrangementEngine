@@ -18,6 +18,7 @@
     <modules>
         <module>kv-cache-redis</module>
         <module>kv-cache-ignore</module>
+        <module>kv-cache-redis-jcache</module>
     </modules>
 
 
