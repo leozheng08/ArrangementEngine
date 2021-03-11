@@ -55,7 +55,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt {
         deviceInfo.put("blackBox", queueItem.getRequest().getBlackBox());
         actitivy.setDeviceInfo(deviceInfo);
 
-        logger.info("GenerateActivityExt....................seqId={}, actitivy={}", context.getSeqId(), JSON.toJSONString(actitivy));
+//        logger.info("GenerateActivityExt....................seqId={}, actitivy={}", context.getSeqId(), JSON.toJSONString(actitivy));
 
         return actitivy;
     }

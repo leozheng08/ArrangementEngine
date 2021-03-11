@@ -5,17 +5,13 @@ import cn.fraudmetrix.eunomia.client.message.RowData;
 import cn.fraudmetrix.eunomia.recipes.message.Row;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.kv.IScoreKVRepository;
-import cn.tongdun.kunpeng.share.kv.IScoreValue;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by liupei on 2021/2/18.
@@ -38,7 +34,7 @@ public class DomainEventListener implements EunomiaListener {
     @Override
     public boolean onEvent(RowData rowData) throws Exception {
 
-        log.info("DomainEventListener start.................................");
+//        log.info("DomainEventListener start.................................");
 
         if (rowData == null) {
             log.error("eunomia(DomainEventListener) client rowData not allowed null");
@@ -86,27 +82,27 @@ public class DomainEventListener implements EunomiaListener {
      */
     private void putEventMsgToRemoteCache(String eventMsg, Long occurredTime) {
         String currentKey = DateUtil.getYYYYMMDDHHMMStr();
-        log.info("DomainEventListener start...............write redis. currentKey={}, occurredTime={}, eventMsg={}", currentKey, occurredTime, eventMsg);
+//        log.info("DomainEventListener start...............write redis. currentKey={}, occurredTime={}, eventMsg={}", currentKey, occurredTime, eventMsg);
         scoreKVRepository.zadd(currentKey, occurredTime, eventMsg);
         scoreKVRepository.setTtl(currentKey, EXPIRE_TIME);
-        //临时注释
-        Set<IScoreValue> scoreValueSet = new LinkedHashSet<>();
-        try {
-            for (int i = LAST_MINUTES - 1; i >= 0; i--) {
-                String lastKey = DateUtil.getLastMinuteStr(i);
-                Set<IScoreValue> scoreValueSetTmp = scoreKVRepository.zrangeByScoreWithScores(lastKey, 0, Long.MAX_VALUE);
-                if (scoreValueSetTmp.isEmpty()) {
-                    continue;
-                }
-
-                scoreValueSet.addAll(scoreValueSetTmp);
-            }
-
-            log.info("DomainEventListener start...............write redis end. currentKey={}, scoreValueSet={}", currentKey, JSON.toJSONString(scoreValueSet));
-        } catch (Exception e) {
-            log.error(TraceUtils.getFormatTrace() + "update rule form redis error!", e);
-        }
-        //临时注释 end
+//        //临时注释
+//        Set<IScoreValue> scoreValueSet = new LinkedHashSet<>();
+//        try {
+//            for (int i = LAST_MINUTES - 1; i >= 0; i--) {
+//                String lastKey = DateUtil.getLastMinuteStr(i);
+//                Set<IScoreValue> scoreValueSetTmp = scoreKVRepository.zrangeByScoreWithScores(lastKey, 0, Long.MAX_VALUE);
+//                if (scoreValueSetTmp.isEmpty()) {
+//                    continue;
+//                }
+//
+//                scoreValueSet.addAll(scoreValueSetTmp);
+//            }
+//
+//            log.info("DomainEventListener start...............write redis end. currentKey={}, scoreValueSet={}", currentKey, JSON.toJSONString(scoreValueSet));
+//        } catch (Exception e) {
+//            log.error(TraceUtils.getFormatTrace() + "update rule form redis error!", e);
+//        }
+//        //临时注释 end
 
 
     }

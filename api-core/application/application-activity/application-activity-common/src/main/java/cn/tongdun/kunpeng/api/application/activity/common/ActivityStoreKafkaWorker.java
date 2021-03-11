@@ -79,7 +79,7 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
     private void sendToKafka(IActitivyMsg actitivyMsg) {
-        logger.info("GenerateActivityExt....................msgKey={}", actitivyMsg.getMessageKey());
+//        logger.info("GenerateActivityExt....................msgKey={}", actitivyMsg.getMessageKey());
         msgProducer.produce(KUNPENG_API_RAW_ACTIVITY, actitivyMsg.getMessageKey(), actitivyMsg.toJsonString());
     }
 }
