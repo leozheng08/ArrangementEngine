@@ -68,7 +68,6 @@ public class CustomListValueCache {
     }
 
     public boolean isEffectiveValue(double expire, Date now) {
-        logger.info("isEffectiveValue"+"now.getTime()"+now.getTime()+"---"+expire);
         return expire == 0 || expire >= now.getTime();
     }
 
