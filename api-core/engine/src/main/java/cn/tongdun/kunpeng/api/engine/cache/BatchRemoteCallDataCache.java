@@ -89,8 +89,16 @@ public class BatchRemoteCallDataCache implements ILocalCache<String, Map<String,
             if(!CollectionUtils.isEmpty(datas)){
                 //由于AbstractBatchRemoteCallData的实现类属性不同，这里无法使用remove方法，因为属性不确定，无法重写通用equals/hashcode，所以直接覆盖写，而不是remove
                 List<Object> result = datas.stream().filter(obj -> !ruleUuid.equals(((AbstractBatchRemoteCallData) obj).getRuleUuid())).collect(Collectors.toList());
-                batchDatas.put(template,result);
+                if (CollectionUtils.isEmpty(result)) {
+                    //筛选后此模版下没有数据了
+                    batchDatas.remove(template);
+                } else {
+                    batchDatas.put(template,result);
+                }
                 cache.put(policyUuid,batchDatas);
+            }
+            if (CollectionUtils.isEmpty(cache.get(policyUuid))) {
+                cache.remove(policyUuid);
             }
         }
     }

@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.model.subpolicy;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,12 +26,19 @@ public class SubPolicyCache extends AbstractLocalCache<String,SubPolicy> {
     //policyUuid -> Set<subPolicyUuid>
     private Map<String,Set<String>>  policyUuidToSubPolicyMap = new ConcurrentHashMap<>(1000);
 
+    private static final String SUB_POLICY_PREFIX = "sub_policy^^";
+
     @PostConstruct
     public void init(){
         register(SubPolicy.class);
     }
 
     public String getPolicyUuidBySubPolicyUuid(String subPolicyUuid){
+        if (StringUtils.isBlank(subPolicyUuid)) {
+            return null;
+        }
+        //入参数的子策略uuid带有前缀，policyUuidToSubPolicyMap中没有这个前缀，需要去掉才能匹配
+        subPolicyUuid = subPolicyUuid.replace(SUB_POLICY_PREFIX, "");
         String policyUuid = null;
         for(String key : policyUuidToSubPolicyMap.keySet()){
             Set<String> set = policyUuidToSubPolicyMap.get(key);

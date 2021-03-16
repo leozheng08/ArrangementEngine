@@ -70,7 +70,7 @@ public class KeywordStep implements IRiskStep {
             KeywordBatchRemoteCallData callData = (KeywordBatchRemoteCallData) obj;
             String calcField = callData.getCalcField();
             String definitionList = callData.getDefinitionList();
-            if (StringUtils.isEmpty(calcField) || StringUtils.isEmpty(definitionList)) {
+            if (StringUtils.isEmpty(calcField) || StringUtils.isEmpty(definitionList) || null == context.get(calcField)) {
                 continue;
             }
             //2.组装远程调用参数

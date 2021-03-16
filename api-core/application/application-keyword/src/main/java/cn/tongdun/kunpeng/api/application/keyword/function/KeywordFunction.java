@@ -69,6 +69,9 @@ public class KeywordFunction extends AbstractFunction {
      */
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
+        if (null == ((AbstractFraudContext) executeContext).get(calcField)){
+            return new FunctionResult(false, null);
+        }
         String dimValuesStr = ((AbstractFraudContext) executeContext).get(calcField).toString();
         List<String> dimValues = dimValuesStr.contains(KeywordConstant.SPLIT) ? Arrays.asList(dimValuesStr.split(KeywordConstant.SPLIT)) : Arrays.asList(dimValuesStr);
         if (hasNullData(calcField, definitionList, matchMode, dimValues)) {
