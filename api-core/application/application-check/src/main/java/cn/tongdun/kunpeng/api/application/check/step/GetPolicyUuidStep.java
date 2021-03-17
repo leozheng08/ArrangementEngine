@@ -184,7 +184,11 @@ public class GetPolicyUuidStep implements IRiskStep {
         }
         //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
         String businessType = baseConfig.getBusinessByEventType(context.getEventType());
-        bizScenario.setBusiness(businessType);
+        if (context.getFieldValues().get("bodyguard_id") != null) {
+            bizScenario.setBusiness(Constant.BUSINESS_CREDIT);
+        } else {
+            bizScenario.setBusiness(businessType);
+        }
         return bizScenario;
     }
 }

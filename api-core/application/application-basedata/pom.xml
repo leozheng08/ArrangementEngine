@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.2-release-20210122-1-SNAPSHOT</version>
+        <version>1.0.2-release-20210317-1-SNAPSHOT</version>
 
 
 
@@ -24,6 +24,12 @@
             <artifactId>aerospike-client</artifactId>
             <version>4.1.11</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>cn.tongdun.client</groupId>-->
+            <!--<artifactId>evan-client</artifactId>-->
+            <!--<version>1.0.4</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
