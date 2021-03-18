@@ -39,7 +39,7 @@ public class CustomListValueCache {
                 }
             } else {
                 if (count != null && count >= MAX_LIST_SIZE) {
-                    logger.error(TraceUtils.getFormatTrace()+"list data is too long! listUuid: {}", listUuid);
+                    logger.error(TraceUtils.getFormatTrace() + "list data is too long! listUuid: {}", listUuid);
                 }
             }
         }
@@ -57,7 +57,7 @@ public class CustomListValueCache {
             Set<IScoreValue<String>> tmp = redisScoreKVRepository.zscan(listUuid, cursor, count);
             results = new HashSet<>(tmp.size());
             if (CollectionUtils.isNotEmpty(tmp)) {
-                for (IScoreValue<String> scoreValue:tmp){
+                for (IScoreValue<String> scoreValue : tmp) {
                     if (scoreValue != null && scoreValue.getScore() != null && isEffectiveValue(scoreValue.getScore(), now)) {
                         results.add(scoreValue);
                     }
@@ -85,4 +85,16 @@ public class CustomListValueCache {
         }
         return score;
     }
+
+    public boolean zadd(String customListUuid, long expireTime, String value) {
+        return redisScoreKVRepository.zadd(customListUuid, (double) expireTime, value);
+
+    }
+
+    public boolean zrem(String customListUuid, String value) {
+        return redisScoreKVRepository.zrem(customListUuid, value);
+
+    }
+
+
 }
