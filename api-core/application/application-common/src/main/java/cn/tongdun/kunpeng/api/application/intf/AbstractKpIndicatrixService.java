@@ -14,6 +14,8 @@ import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,10 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author jie
@@ -209,7 +208,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
         Map<String, Object> activityParam = getGaeaFields(context);
 
-        List<Long> indicatrixsParam = new ArrayList<>();
+        Set<Long> indicatrixsParam = Sets.newHashSet();
         for (String key : indicatrixs) {
             if (StringUtils.isNotBlank(key)) {
                 try {
@@ -235,7 +234,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         indicatrixRequest.setAppName(context.getAppName());
         indicatrixRequest.setActivity(activityParam);
         indicatrixRequest.setEventOccurTime(context.getEventOccurTime().getTime());
-        indicatrixRequest.setIndicatrixIds(indicatrixsParam);
+        indicatrixRequest.setIndicatrixIds(Lists.newArrayList(indicatrixsParam));
         indicatrixRequest.setNeedDetail(true);
 
         return indicatrixRequest;

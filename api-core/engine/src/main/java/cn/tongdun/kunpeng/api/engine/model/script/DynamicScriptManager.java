@@ -228,7 +228,7 @@ public class DynamicScriptManager {
             }
             context.setField(fieldName, value);
         } catch (Throwable ex) {
-            logger.error(TraceUtils.getFormatTrace() + "动态脚本执行失败, fieldName :{}, methodName :{}", fieldName, methodName);
+//            logger.error(TraceUtils.getFormatTrace() + "动态脚本执行失败, fieldName :{}, methodName :{}", fieldName, methodName);
             return false;
         }
 
