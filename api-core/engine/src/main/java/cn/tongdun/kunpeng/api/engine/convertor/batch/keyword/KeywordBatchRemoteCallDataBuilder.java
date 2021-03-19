@@ -1,15 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.convertor.batch.keyword;
 
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.AbstractBatchRemoteCallData;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.api.engine.dto.RuleParamDTO;
 import cn.tongdun.kunpeng.api.engine.util.RuleParamUtil;
 import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
-import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.json.JSON;
-import org.springframework.util.CollectionUtils;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,16 +17,9 @@ import java.util.List;
 public class KeywordBatchRemoteCallDataBuilder implements BatchRemoteCallDataBuilder {
 
     @Override
-    public List<Object> build(String policyUuid, String subPolicyUuid, RuleDTO dto) {
-        List<RuleConditionElementDTO> elements = dto.getRuleConditionElements();
-        if (CollectionUtils.isEmpty(elements)) {
-            return null;
-        }
-        List<Object> batchDataDTOS = new ArrayList<>();
-        for (RuleConditionElementDTO elementDTO : elements) {
-            batchDataDTOS.add(this.createRemoteCallData(policyUuid, subPolicyUuid, dto.getUuid(), elementDTO));
-        }
-        return batchDataDTOS;
+    public AbstractBatchRemoteCallData build(String policyUuid, String subPolicyUuid, String ruleUuid, RuleConditionElementDTO elementDTO) {
+        KeywordBatchRemoteCallData remoteCallData = this.createRemoteCallData(policyUuid, subPolicyUuid, ruleUuid, elementDTO);
+        return remoteCallData;
     }
 
     /**

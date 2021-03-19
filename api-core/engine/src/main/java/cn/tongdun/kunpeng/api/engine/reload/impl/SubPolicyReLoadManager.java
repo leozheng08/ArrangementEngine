@@ -23,6 +23,8 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: liang.chen
@@ -111,21 +113,11 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
         subPolicyCache.put(subPolicyUuid,subPolicy);
 
         //新增/更新该子策略下相关规则的批量远程调用数据
-        List<RuleDTO> ruleDTOS = subPolicyDTO.getRules();
-        if(!CollectionUtils.isEmpty(ruleDTOS)){
-            ruleDTOS.stream().forEach(ruleDTO -> {
-                if (BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDTO.getTemplate())) {
-                    List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(subPolicy.getPolicyUuid(), subPolicyUuid, ruleDTO);
-                    if(null != batchRemoteCallDatas){
-                        batchRemoteCallDataCache.addOrUpdate(subPolicy.getPolicyUuid(),ruleDTO.getTemplate(),ruleDTO.getUuid(),batchRemoteCallDatas);
-                    }
-                }
-            });
-        }
-
+        this.addBatchRemoteCallDataToCache(subPolicy.getPolicyUuid(),subPolicyUuid,subPolicyDTO);
         //刷新引用到的平台指标
         policyIndicatrixItemReloadManager.reload(subPolicyDTO.getPolicyUuid());
     }
+
 
 
     /**
@@ -186,4 +178,26 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     public boolean sort(List<SubPolicyEventDO> list){
         return true;
     }
+
+    /**
+     * 添加/更新批量调用数据到cache
+     * @param policyUuid
+     * @param subPolicyUuid
+     * @param subPolicyDTO
+     */
+    private void addBatchRemoteCallDataToCache(String policyUuid, String subPolicyUuid, SubPolicyDTO subPolicyDTO) {
+        List<RuleDTO> ruleDTOS = subPolicyDTO.getRules();
+        if (!CollectionUtils.isEmpty(ruleDTOS)) {
+            for (RuleDTO ruleDTO : ruleDTOS) {
+                Map<String, List<Object>> batchdatas = BatchRemoteCallDataManager.buildData(policyUuid, subPolicyUuid, ruleDTO);
+                if (!CollectionUtils.isEmpty(batchdatas)) {
+                    Set<Map.Entry<String, List<Object>>> entries = batchdatas.entrySet();
+                    for (Map.Entry<String, List<Object>> entry : entries) {
+                        batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());
+                    }
+                }
+            }
+        }
+    }
+
 }

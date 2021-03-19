@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.engine.convertor.batch.keyword;
 import cn.hutool.core.map.MapUtil;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.AbstractBatchRemoteCallData;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
@@ -66,9 +67,9 @@ public class KeywordBatchRemoteCallDataBuilderTest {
         dto.setRuleConditionElements(Arrays.asList(elementDTO));
         Rule rule = new Rule();
 
-        List<Object> batchDataDTOS = builder.build(policyUuid,subPolicyUuid,dto);
+        AbstractBatchRemoteCallData data = builder.build(policyUuid, subPolicyUuid, ruleUuid, elementDTO);
         //待优化，cache.put应该在具体的xxxReloadManager中设置，cache从builder中转移到了xxxReloadManager中了
-        cache.put(policyUuid,MapUtil.of(Constant.Function.KEYWORD_WORDLIST,batchDataDTOS));
+        cache.put(policyUuid,MapUtil.of(Constant.Function.KEYWORD_WORDLIST,Arrays.asList(data)));
         Rule ruleNew = rule;
         //assignPrivate(builder,"cache",cache);
 

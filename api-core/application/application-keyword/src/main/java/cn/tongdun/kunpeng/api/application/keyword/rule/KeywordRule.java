@@ -20,7 +20,7 @@ public class KeywordRule extends AbstractRule {
 
     @Override
     public EvalResult run(ExecuteContext executeContext) {
-        Object ret = this.function.eval(executeContext);
+        Object ret = function.eval(executeContext);
         return EvalResult.valueOf(ret);
     }
 
@@ -30,7 +30,7 @@ public class KeywordRule extends AbstractRule {
             if (rawRule.getFunctionDescList().size() > 1) {
                 throw new ParseException("KeywordRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
             } else {
-                this.function = (KeywordFunction) FunctionLoader.getFunction((FunctionDesc) rawRule.getFunctionDescList().get(0));
+                function = (KeywordFunction) FunctionLoader.getFunction((FunctionDesc) rawRule.getFunctionDescList().get(0));
             }
         } else {
             throw new ParseException("KeywordRule parse error!null == rawRule or rawRule.getFunctionDescList is blank!");

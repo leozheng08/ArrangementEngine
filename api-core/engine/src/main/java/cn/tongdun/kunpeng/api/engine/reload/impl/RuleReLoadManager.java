@@ -21,11 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author: liang.chen
@@ -205,13 +204,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             ruleCache.put(uuid,newRule);
 
             //处理需要批量远程调用的数据
-            if(BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDTO.getTemplate())){
-                String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
-                List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
-                if(null != batchRemoteCallDatas){
-                    batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
-                }
-            }
+            this.addBatchRemoteCallDataToCache(ruleDTO.getPolicyUuid(), ruleCache.getSubPolicyUuidByRuleUuid(uuid),ruleDTO);
 
 
             //刷新子策略下规则的执行顺序
@@ -259,13 +252,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                 hashMultimap.put(ruleDTO.getBizType(),ruleDTO.getBizUuid());
 
                 //处理需要批量远程调用的数据
-                if (BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDTO.getTemplate())) {
-                    String subPolicyUuid = ruleCache.getSubPolicyUuidByRuleUuid(uuid);
-                    List<Object> batchRemoteCallDatas = BatchRemoteCallDataManager.buildData(ruleDTO.getPolicyUuid(),subPolicyUuid,ruleDTO);
-                    if(null != batchRemoteCallDatas){
-                        batchRemoteCallDataCache.addOrUpdate(ruleDTO.getPolicyUuid(),ruleDTO.getTemplate(),uuid,batchRemoteCallDatas);
-                    }
-                }
+                this.addBatchRemoteCallDataToCache(ruleDTO.getPolicyUuid(), ruleCache.getSubPolicyUuidByRuleUuid(uuid),ruleDTO);
             }
 
             for(String bizType : hashMultimap.keySet()){
@@ -339,7 +326,20 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
         return remove(eventDO);
     }
 
-
-
+    /**
+     * 添加/更新批量调用数据到cache
+     * @param policyUuid
+     * @param subPolicyUuid
+     * @param ruleDTO
+     */
+    private void addBatchRemoteCallDataToCache(String policyUuid, String subPolicyUuid, RuleDTO ruleDTO) {
+        Map<String, List<Object>> batchdatas = BatchRemoteCallDataManager.buildData(policyUuid, subPolicyUuid, ruleDTO);
+        if (!CollectionUtils.isEmpty(batchdatas)) {
+            Set<Map.Entry<String, List<Object>>> entries = batchdatas.entrySet();
+            for (Map.Entry<String, List<Object>> entry : entries) {
+                batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());
+            }
+        }
+    }
 
 }

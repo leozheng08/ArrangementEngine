@@ -4,7 +4,6 @@ import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
-import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.dto.IndexDefinitionDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
@@ -28,8 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -93,12 +91,8 @@ public class PolicyLoadTask implements Callable<Boolean> {
                             Rule rule = ruleConvertor.convert(ruleDO);
                             //缓存规则
                             localCacheService.put(Rule.class,rule.getUuid(),rule);
-
                             //缓存规则中批量远程调用相关的数据
-                            if(BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(ruleDO.getTemplate())){
-                                List<Object> objects = BatchRemoteCallDataManager.buildData(policyUuid, subPolicy.getUuid(), ruleDO);
-                                batchRemoteCallDataCache.addOrUpdate(policyUuid,ruleDO.getTemplate(),ruleDO.getUuid(),objects);
-                            }
+                            this.addBatchRemoteCallDataToCache(subPolicy.getUuid(),ruleDO);
                         }
                     }
                     //缓存子策略
@@ -154,5 +148,20 @@ public class PolicyLoadTask implements Callable<Boolean> {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 添加/更新批量调用数据到cache
+     * @param subPolicyUuid
+     * @param ruleDTO
+     */
+    private void addBatchRemoteCallDataToCache(String subPolicyUuid, RuleDTO ruleDTO) {
+        Map<String, List<Object>> batchdatas = BatchRemoteCallDataManager.buildData(policyUuid, subPolicyUuid, ruleDTO);
+        if (!CollectionUtils.isEmpty(batchdatas)) {
+            Set<Map.Entry<String, List<Object>>> entries = batchdatas.entrySet();
+            for (Map.Entry<String, List<Object>> entry : entries) {
+                batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());
+            }
+        }
     }
 }
