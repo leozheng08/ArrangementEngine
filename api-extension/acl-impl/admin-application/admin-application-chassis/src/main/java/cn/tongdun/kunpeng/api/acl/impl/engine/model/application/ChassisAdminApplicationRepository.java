@@ -52,6 +52,7 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
         return appList.stream().filter(x -> partners.contains(x.getPartnerCode())).map(appProductDTO -> {
             AdminApplicationDTO adminApplication = new AdminApplicationDTO();
             BeanUtils.copyProperties(appProductDTO, adminApplication);
+            adminApplication.setDisplayName(appProductDTO.getAppDisplayName());
             return adminApplication;
         }).collect(Collectors.toList());
     }
@@ -78,6 +79,7 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
         return appList.stream().findFirst().map(appProductDTO -> {
             AdminApplicationDTO adminApplication = new AdminApplicationDTO();
             BeanUtils.copyProperties(appProductDTO, adminApplication);
+            adminApplication.setDisplayName(appProductDTO.getAppDisplayName());
             return adminApplication;
         }).get();
     }
