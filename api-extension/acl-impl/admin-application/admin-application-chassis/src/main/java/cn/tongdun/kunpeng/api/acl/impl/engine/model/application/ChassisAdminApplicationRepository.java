@@ -67,7 +67,7 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
         if(appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
             appList = appProductList.getData();
         } else {
-            logger.warn("chassis selectApplicationByPartnerAppName result is error:{}", appProductList.getMsg());
+            logger.warn("chassis selectApplicationByPartnerAppName result is error:{}", appProductList);
             return null;
         }
 

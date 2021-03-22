@@ -10,4 +10,8 @@ import lombok.Data;
 @Data
 public class FraudContext extends AbstractFraudContext {
 
+    private String status;
+
+    private long riskStartTime;
+
 }
