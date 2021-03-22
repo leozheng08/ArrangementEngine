@@ -8,7 +8,7 @@
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
 
-    <version>1.0.8-api</version>
+    <version>1.0.9-api</version>
 
 
 
@@ -49,7 +49,7 @@
         <skip_maven_deploy>false</skip_maven_deploy>
         <elfin.version>1.3.1</elfin.version>
         <module.ruledetail.version>3.4.15</module.ruledetail.version>
-        <cargo-service-share-version>1.0.8-api</cargo-service-share-version>
+        <cargo-service-share-version>1.0.9-api</cargo-service-share-version>
         <httpclient-version>4.5.5</httpclient-version>
         <curator.version>2.9.0</curator.version>
         <zookeeper.version>3.4.8</zookeeper.version>
