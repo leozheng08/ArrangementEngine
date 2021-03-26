@@ -25,6 +25,10 @@ import java.util.stream.Collectors;
  * @Author: liang.chen
  * @Date: 2020/2/11 下午3:10
  */
+/**
+ * @author: yuanhang
+ * @date: 2021-02-23 13:52
+ **/
 public class InterfaceDefinitionNode extends AbstractBizNode {
 
     private static final Logger logger = LoggerFactory.getLogger(InterfaceDefinitionNode.class);
@@ -33,6 +37,26 @@ public class InterfaceDefinitionNode extends AbstractBizNode {
      * 接口的详细配置
      */
     private DecisionFlowInterface decisionFlowInterface;
+
+
+    @Override
+    protected NodeResult run(ExecuteContext executeContext) {
+        NodeResult nodeResult = new NodeResult();
+        IGenericDubboCaller genericDubboCaller;
+        try {
+            genericDubboCaller = (IGenericDubboCaller) SpringContextHolder.getBean("genericDubboCaller");
+            genericDubboCaller.call((AbstractFraudContext) executeContext, decisionFlowInterface);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "ruleInterface run error,interfaceUuid:" + decisionFlowInterface.getUuid(), e);
+        }
+        nodeResult.putOneResult("Thread", Thread.currentThread().getName());
+        return nodeResult;
+    }
+
+    @Override
+    public int getRunCost() {
+        return 30;
+    }
 
     @Override
     public void parse(NodeDesc nodeDesc) {
@@ -53,29 +77,10 @@ public class InterfaceDefinitionNode extends AbstractBizNode {
             decisionFlowInterface.setFields(fields);
             decisionFlowInterface.setInputParams(buildParaInfo((List<Map>)json.get("inputs")));
             decisionFlowInterface.setOutputParams(buildParaInfo((List<Map>)json.get("outputs")));
-            decisionFlowInterface.setRiskServiceOutput(JsonUtil.getBoolean(json,"isRiskServiceOutput"));
+            decisionFlowInterface.setRiskServiceOutput(JsonUtil.getBoolean(json,"isRiskServiceOutput") == null ? false : JsonUtil.getBoolean(json,"isRiskServiceOutput"));
         } catch (Exception e) {
             throw new ParseException("interfaceTaskConfig parse json error, interfaceTaskConfig : " + interfaceTaskConfig);
         }
-    }
-
-    @Override
-    public int getRunCost() {
-        return 30;
-    }
-
-    @Override
-    protected NodeResult run(ExecuteContext executeContext) {
-        NodeResult nodeResult = new NodeResult();
-        IGenericDubboCaller genericDubboCaller;
-        try {
-            genericDubboCaller = (IGenericDubboCaller)SpringContextHolder.getBean("genericDubboCaller");
-            genericDubboCaller.call((AbstractFraudContext) executeContext, decisionFlowInterface);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "ruleInterface run error,interfaceUuid:" + decisionFlowInterface.getUuid(), e);
-        }
-        nodeResult.putOneResult("Thread", Thread.currentThread().getName());
-        return nodeResult;
     }
 
     /**
