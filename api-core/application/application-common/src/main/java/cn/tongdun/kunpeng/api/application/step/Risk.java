@@ -15,7 +15,7 @@ public class Risk {
     @Phase(parallel = false, order = 1000)
     public final static String CHECK = "check";
 
-    @Phase(parallel = true, timeOut = 200, poolSize = 100, order = 2000)
+    @Phase(parallel = true, timeOut = 210, poolSize = 100, order = 2000)
     public final static String BASIC_DATA = "baseData";
 
     @Phase(parallel = true, timeOut = 200, poolSize = 100, order = 3000)

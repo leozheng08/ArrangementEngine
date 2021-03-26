@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class RiskServiceController {
     @RequestMapping(value = {"riskService","riskService/v1.1","antifraudService","antifraudService/v1.1"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public String riskService(@RequestHeader Map<String,Object> header, @RequestParam Map<String,Object> request,
-                                    HttpServletResponse response) {
+                              HttpServletResponse response, HttpServletRequest httpRequest) {
 
         request.putAll(header);
         IRiskResponse riskResponse = riskService.riskService(request);
@@ -64,7 +65,7 @@ public class RiskServiceController {
     @RequestMapping(value = {"contentRiskService","contentRiskService/v1.1"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public String contentRiskService(@RequestHeader Map<String,Object> header, @RequestParam Map<String,Object> request,
-                              HttpServletResponse response) {
+                              HttpServletResponse response, HttpServletRequest httpRequest) {
 
         request.putAll(header);
         IRiskResponse riskResponse = riskService.riskService(request, ContentRisk.NAME);

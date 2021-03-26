@@ -101,7 +101,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 if (StringUtils.isBlank(trueIp)) {
                     return null;
                 }
-                geoInfo = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp));
+                geoInfo = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp,context));
             } else {
                 geoInfo = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, GeoipEntity.class);
             }

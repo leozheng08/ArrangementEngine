@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * geoIp信息获取
  *
@@ -44,7 +46,7 @@ public class GeoIpStep implements IRiskStep {
             GeoipEntity geoip = null;
             try {
                 final String finalIp = ip;
-                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp));
+                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp, context));
             } catch (Exception e) {
                 ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoip");
                 logger.error(TraceUtils.getFormatTrace() + "GeoIp query error!ip:" + ip, e);
@@ -58,11 +60,13 @@ public class GeoIpStep implements IRiskStep {
                 String ip3 = ipSegs[0] + "." + ipSegs[1] + "." + ipSegs[2];
                 context.set("ip3", ip3);
             }
-            context.set("ipAddressCountry",geoip.getCounty());
-            context.set("ipProvince",geoip.getProvince());
-            context.set("ipAddressCity",geoip.getCity());
-            context.set("ipAddressCountryCode",geoip.getCountryId());
-            logger.info("geoip的数据结果:"+JSON.toJSONString(geoip));
+            if (Objects.nonNull(geoip)) {
+                context.set("ipAddressCountry", geoip.getCountry());
+                context.set("ipProvince", geoip.getProvince());
+                context.set("ipAddressCity", geoip.getCity());
+                context.set("ipAddressCountryCode", geoip.getCountryId());
+                logger.info("geoip的数据结果:" + JSON.toJSONString(geoip));
+            }
         }
 
         return true;

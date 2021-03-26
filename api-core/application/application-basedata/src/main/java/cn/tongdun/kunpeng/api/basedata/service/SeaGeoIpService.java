@@ -5,6 +5,7 @@ import cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService;
 import cn.tongdun.evan.client.entity.AGeoipEntity;
 import cn.tongdun.evan.client.entity.AGeoipQueryDTO;
 import cn.tongdun.evan.client.lang.Result;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -29,7 +30,7 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
     private AGeoipInfoQueryService evanQueryService;
 
     @Override
-    public GeoipEntity getIpInfo(String ip) {
+    public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
         try {
             if (StringUtils.isBlank(ip)) {
                 logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get geoentity from elfin with params null");
