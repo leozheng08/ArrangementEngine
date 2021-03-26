@@ -105,7 +105,7 @@ public enum ReasonCode {
     ADDRESS_SERVICE_CALL_ERROR("50717", "地址服务调用出错"),
     ADDRESS_SERVICE_CALL_TIMEOUT("50718", "地址服务调用超时"),
     GROOVY_EXECUTE_ERROR("50719", "动态脚本执行失败"),
-    GEOIP_SERVICE_CALL_ERROR("50720", "GEOIP服务调用失败"),
+
     CREDIT_SCORE_SERVICE_CALL_TIMEOUT("50721", "智信分服务调用超时"),
     CREDIT_SCORE_SERVICE_CALL_ERROR("50722", "信用分内部调用失败"),
     MOBILE_SERVICE_CALL_TIMEOUT("50723", "手机画像调用超时"),
@@ -163,8 +163,14 @@ public enum ReasonCode {
 
     USBIN_ERROR_OTHER("50746","查询cardbin数据异常"),
     USBIN_ERROR_TIMEOUT("50747","查询不到cardbin信息超时"),
-    ;
 
+    GEOIP_SERVICE_CALL_ERROR("50720", "geoip服务调用失败"),
+    GEOIP_SERVICE_CALL_TIMEOUT("50760", "geoip服务调用查询超时"),
+    GEOIP_ILLEGAL_ERROR("50761","查询geoip-us非法参数"),
+    GEOIP_PARAM_ERROR("50762","查询geoip-us必要参数为空"),
+    GEOIP_PERNISSION_ERROR("50763","查询geoip-us权限不足"),
+    GEOIP_SERRVER_ERROR("50764","查询geoip-us内部服务错误"),
+    ;
 
     private String code;
     private String description;

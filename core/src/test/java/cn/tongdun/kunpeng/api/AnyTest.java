@@ -1,12 +1,16 @@
 package cn.tongdun.kunpeng.api;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Test;
 import org.springframework.util.DigestUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 /**
  * @author yangchangkai
@@ -35,5 +39,17 @@ public class AnyTest {
         } catch (UnsupportedEncodingException e) {
         }
         return md5;
+    }
+
+    @Test
+    public void testE(){
+        HttpClient client = HttpClientBuilder.create().build();
+        String url = "https://sgapi.tongdun.net/riskService?partnerCode=default&secretKey=a6fbd9425f0d4990991edacc08101448&eventId=catheadcardbin&cardBin=107567&partnerKey=a5a46de3c5994504a846e08b658c0c21";
+        try {
+            String resp = HttpClient4Utils.sendPost(client, url, new HashMap<>(), Charset.forName("UTF-8"));
+            System.out.println(resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

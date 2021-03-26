@@ -60,6 +60,11 @@
         </dependency>
 
         <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>evan-client</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>module.riskbase</artifactId>
             <version>1.4.7</version>
