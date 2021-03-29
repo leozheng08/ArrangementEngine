@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface DecisionFlowDAO {
 
-    @Cacheable
     DecisionFlowDO selectByUuid(String uuid);
 
     //todo 后期优化，按分页查询所有

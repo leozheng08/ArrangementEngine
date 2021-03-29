@@ -1,11 +1,9 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng;
 
-import cn.tongdun.kunpeng.api.engine.reload.docache.Cacheable;
 import cn.tongdun.kunpeng.share.dataobject.AccessBusinessDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author: yuanhang
@@ -24,7 +22,6 @@ public interface AccessBusinessDAO {
      * @param uuid
      * @return
      */
-    @Cacheable
     AccessBusinessDO selectByUuid(String uuid);
 
 }

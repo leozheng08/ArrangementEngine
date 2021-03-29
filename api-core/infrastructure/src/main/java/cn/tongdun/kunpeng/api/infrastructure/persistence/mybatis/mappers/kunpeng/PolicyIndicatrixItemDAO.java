@@ -14,7 +14,6 @@ public interface PolicyIndicatrixItemDAO {
      */
     List<PolicyIndicatrixItemDO> selectEnabledByPolicyUuid(String policyUuid);
 
-    @Cacheable
     PolicyIndicatrixItemDO selectByUuid(String uuid);
 
 }

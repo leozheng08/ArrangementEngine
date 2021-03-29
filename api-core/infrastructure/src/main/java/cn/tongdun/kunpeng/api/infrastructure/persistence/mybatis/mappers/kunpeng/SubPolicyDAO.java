@@ -10,7 +10,6 @@ public interface SubPolicyDAO {
     //todo 后期优化，按分页查询所有
     List<SubPolicyDO> selectAll();
 
-    @Cacheable
     SubPolicyDO selectByUuid(String uuid);
 
     /**
@@ -19,7 +18,6 @@ public interface SubPolicyDAO {
      * @param policyUuid
      * @return
      */
-    @Cacheable(idxName = "policyUuid")
     List<SubPolicyDO> selectListByPolicyUuid(String policyUuid);
 
 }
