@@ -11,9 +11,6 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import redis.clients.jedis.JedisPoolConfig;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 /**
  * @author: yuanhang
  * @date: 2020-06-29 18:00
@@ -50,11 +47,11 @@ public class RedisClientFactory implements InitializingBean, FactoryBean<RedisCl
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (environment.isInternalEnvironment()) {
-            this.pool = new RedisSentinelPoolAdapter(this.getMasterName(), new HashSet(Arrays.asList(sentinels)), new JedisPoolConfig(), socketTimeOut, this.getPassword());
-        } else {
+//        if (environment.isInternalEnvironment()) {
+//            this.pool = new RedisSentinelPoolAdapter(this.getMasterName(), new HashSet(Arrays.asList(sentinels)), new JedisPoolConfig(), socketTimeOut, this.getPassword());
+//        } else {
             this.pool = RoundRobinStandalonePool.create().servers(servers.split(",")).connectionTimeoutMs(connectionTimeOut).soTimeoutMs(socketTimeOut).password(this.getPassword()).poolConfig(new JedisPoolConfig()).build();
-        }
+//        }
     }
 
     public ILocalEnvironment getEnvironment() {
