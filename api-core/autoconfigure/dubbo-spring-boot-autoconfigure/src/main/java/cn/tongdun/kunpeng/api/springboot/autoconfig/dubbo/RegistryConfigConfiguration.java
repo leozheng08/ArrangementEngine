@@ -28,6 +28,7 @@ public class RegistryConfigConfiguration implements ImportBeanDefinitionRegistra
         beanDefinition.getPropertyValues().add("group", "${dubbo.zookeeper.root}");
         beanDefinition.getPropertyValues().add("protocol", "${dubbo.registry.protocol:zookeeper}");
         beanDefinition.getPropertyValues().add("address", "${dubbo.zookeeper.host}");
+        beanDefinition.getPropertyValues().add("port", "${dubbo.port:20880}");
         beanDefinition.getPropertyValues().add("client", "${dubbo.registry.client:curator}");
         registry.registerBeanDefinition("registryConfig", beanDefinition);
 
