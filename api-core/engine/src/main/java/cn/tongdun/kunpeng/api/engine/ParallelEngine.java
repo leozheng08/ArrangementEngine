@@ -122,7 +122,7 @@ public class ParallelEngine extends DecisionTool {
 
         policyResponse.setPolicyUuid(policy.getUuid());
         policyResponse.setPolicyName(policy.getName());
-
+        context.setPolicyVersion(policy.getVersion());
         List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
         List<Callable<SubPolicyResponse>> tasks = new ArrayList<>();
         for (SubPolicy subPolicy : subPolicyList) {

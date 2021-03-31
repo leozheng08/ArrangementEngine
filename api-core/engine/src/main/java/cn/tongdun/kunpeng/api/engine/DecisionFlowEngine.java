@@ -68,6 +68,7 @@ public class DecisionFlowEngine extends DecisionTool {
 
         policyResponse.setPolicyUuid(policy.getUuid());
         policyResponse.setPolicyName(policy.getName());
+        context.setPolicyVersion(policy.getVersion());
         //取最坏策略结果
         SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponseList);
         if (Objects.nonNull(finalSubPolicyResponse)) {
