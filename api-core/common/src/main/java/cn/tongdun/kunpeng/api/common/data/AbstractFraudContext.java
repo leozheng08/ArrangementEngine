@@ -386,7 +386,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             }
         }
 
-        return getExternalFieldValues(key);
+        return externalReturnObj.get(key);
     }
 
     public String getFieldToString(String key) {
