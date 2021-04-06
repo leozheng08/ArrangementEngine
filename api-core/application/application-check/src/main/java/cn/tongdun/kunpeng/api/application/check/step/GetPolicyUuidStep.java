@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 300)
 public class GetPolicyUuidStep implements IRiskStep {
 
-    private static String BODY_GUARD_ID = "bodyguard_id";
+    private static String CREDIT_CLOUD = "creditcloudsync";
 
     @Autowired
     private ILocalEnvironment localEnvironment;
@@ -75,7 +75,7 @@ public class GetPolicyUuidStep implements IRiskStep {
             if(policyDefinition == null){
                 logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
-                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
+                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
                 return false;
             }
 
@@ -83,7 +83,7 @@ public class GetPolicyUuidStep implements IRiskStep {
             if(DeleteStatusEnum.INVALID.getCode() == policyDefinition.isDeleted()){
                 logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_DELETED.getCode(), ReasonCode.POLICY_DELETED.getDescription(), "决策引擎执行"));
-                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_DELETED.getDescription());
+                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode()+":"+ReasonCode.POLICY_DELETED.getDescription());
                 return false;
             }
 
@@ -91,7 +91,7 @@ public class GetPolicyUuidStep implements IRiskStep {
             if(CommonStatusEnum.CLOSE.getCode() == policyDefinition.getStatus()){
                 logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_CLOSED.getCode(), ReasonCode.POLICY_CLOSED.getDescription(), "决策引擎执行"));
-                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_CLOSED.getDescription());
+                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode()+":"+ReasonCode.POLICY_CLOSED.getDescription());
                 return false;
             }
             policyUuid = policyDefinition.getCurrVersionUuid();
@@ -101,14 +101,14 @@ public class GetPolicyUuidStep implements IRiskStep {
         if(StringUtils.isBlank(policyUuid)){
             logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
             return false;
         }
         Policy policy = policyCache.get(policyUuid);
         if(policy == null){
             logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
             return false;
         }
 
@@ -116,7 +116,7 @@ public class GetPolicyUuidStep implements IRiskStep {
         if(DeleteStatusEnum.INVALID.getCode() == policy.isDeleted()){
             logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_DELETED.getCode(), ReasonCode.POLICY_DELETED.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_DELETED.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode()+":"+ReasonCode.POLICY_DELETED.getDescription());
             return false;
         }
 
@@ -124,7 +124,7 @@ public class GetPolicyUuidStep implements IRiskStep {
         if(CommonStatusEnum.CLOSE.getCode() == policy.getStatus()){
             logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_CLOSED.getCode(), ReasonCode.POLICY_CLOSED.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_CLOSED.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode()+":"+ReasonCode.POLICY_CLOSED.getDescription());
             return false;
         }
 
@@ -167,7 +167,7 @@ public class GetPolicyUuidStep implements IRiskStep {
         //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
         String businessType = baseConfig.getBusinessByEventType(context.getEventType());
         bizScenario.setBusiness(businessType);
-        if (context.getFieldValues().get(BODY_GUARD_ID) != null) {
+        if (CREDIT_CLOUD.equalsIgnoreCase(context.getServiceType())) {
             bizScenario.setBusiness(Constant.BUSINESS_CREDIT);
         } else {
             bizScenario.setBusiness(businessType);

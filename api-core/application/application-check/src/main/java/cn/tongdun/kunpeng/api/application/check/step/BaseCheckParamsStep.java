@@ -42,13 +42,7 @@ public class BaseCheckParamsStep implements IRiskStep {
         StringBuilder sbFormat = new StringBuilder();
         StringBuilder sbOvermax = new StringBuilder();
 
-        Map<String, IFieldDefinition> sysFieldMap = fieldDefinitionCache.getSystemField(context.getEventType());
-        if (sysFieldMap != null && sysFieldMap.size() > 0) {
-            sysFieldMap.putAll(fieldDefinitionCache.getSystemField("all"));
-            context.setSystemFieldMap(sysFieldMap);
-        } else {
-            context.setSystemFieldMap(fieldDefinitionCache.getSystemField("all"));
-        }
+        context.setSystemFieldMap(fieldDefinitionCache.getSystemField(context.getEventType()));
 
         Map<String, IFieldDefinition> extendFieldMap = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType());
         if (extendFieldMap != null && extendFieldMap.size() > 0) {
