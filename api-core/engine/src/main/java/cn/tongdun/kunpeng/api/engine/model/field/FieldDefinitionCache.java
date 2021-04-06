@@ -99,8 +99,6 @@ public class FieldDefinitionCache extends AbstractLocalCache<String,IFieldDefini
     public Map<String,IFieldDefinition> getExtendField(String partnerCode, String eventType){
         String key = getExtendFieldKey(partnerCode,eventType);
         Map<String,IFieldDefinition> sysFieldMap = extendFieldMap.get(key);
-        String allEventTypeKey = getExtendFieldKey(partnerCode, "all");
-        sysFieldMap.putAll(extendFieldMap.get(allEventTypeKey));
         return sysFieldMap;
     }
 
