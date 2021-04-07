@@ -44,7 +44,7 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
             queryDTO.setSeqId(context.getSeqId());
             queryDTO.setSource("kunpeng-sea-api");
             Result<AGeoipEntity> aGeoipEntity = evanQueryService.queryGeoipInfo(queryDTO);
-            if (aGeoipEntity.isSuccess() && aGeoipEntity.getCode() == "200") {
+            if (aGeoipEntity.isSuccess() && "200".equalsIgnoreCase(aGeoipEntity.getCode())) {
                 return copyGeoipEntityProperties(aGeoipEntity.getData());
             }
 
