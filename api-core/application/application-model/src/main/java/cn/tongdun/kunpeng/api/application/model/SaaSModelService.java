@@ -7,14 +7,15 @@ import cn.fraudmetrix.holmes.service.object.ModelCalResponse;
 import cn.fraudmetrix.holmes.service.object.ModelResponse;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelConfigInfo;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelParam;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.RightFieldType;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
-import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -61,17 +62,24 @@ public class SaaSModelService implements ModelServiceExtPt {
         try {
             modelCalResponse = holmesService.calculate(reqParams);
         } catch (Exception e) {
+            if (ReasonCodeUtil.isTimeout(e)) {
+                ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_TIMEOUT, "holmes-api");
+            } else {
+                ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
+            }
             logger.error(TraceUtils.getFormatTrace()+"[Holmes] calculate catch error,modelUuid : {} ", modelUuid, e);
             return false;
         }
 
         if (modelCalResponse == null) {
             logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is null");
+            ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             return false;
         }
 
         if (!modelCalResponse.isSuccess()) {
             logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
+            ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             return false;
         }
 
@@ -88,16 +96,23 @@ public class SaaSModelService implements ModelServiceExtPt {
         try {
             modelResponse = holmesService.predict(predictionInputDTO);
         } catch (Exception e) {
+            if (ReasonCodeUtil.isTimeout(e)) {
+                ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_TIMEOUT, "holmes-api");
+            } else {
+                ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
+            }
             logger.error(TraceUtils.getFormatTrace()+"[Holmes] predict catch error, modelUuid : {}", modelUuid, e);
             return false;
         }
 
         if (modelResponse == null) {
+            ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             logger.error(TraceUtils.getFormatTrace()+"[Holmes] modelResponse is null" );
             return false;
         }
 
         if (!modelResponse.isSuccess()) {
+            ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
             return false;
         }
