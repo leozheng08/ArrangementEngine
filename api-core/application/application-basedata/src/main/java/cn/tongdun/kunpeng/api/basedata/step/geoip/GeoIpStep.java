@@ -6,12 +6,9 @@ import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
 import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.common.data.ReasonCode;
-import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.json.JSON;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -43,29 +40,20 @@ public class GeoIpStep implements IRiskStep {
             if (index > 0) {
                 ip = ip.substring(0, index).trim();
             }
-            GeoipEntity geoip = null;
-            try {
-                final String finalIp = ip;
-                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp, context));
-            } catch (Exception e) {
-                ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoip");
-                logger.error(TraceUtils.getFormatTrace() + "GeoIp query error!ip:" + ip, e);
-            }
-            if (null != geoip) {
-                context.addExternalObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, geoip);
-            }
-
-            String[] ipSegs = ip.split("\\.");
-            if (ipSegs.length >= 3) {
-                String ip3 = ipSegs[0] + "." + ipSegs[1] + "." + ipSegs[2];
-                context.set("ip3", ip3);
-            }
+            final String finalIp = ip;
+            GeoipEntity geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalIp, context));
             if (Objects.nonNull(geoip)) {
+                context.addExternalObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, geoip);
                 context.set("ipAddressCountry", geoip.getCountry());
                 context.set("ipProvince", geoip.getProvince());
                 context.set("ipAddressCity", geoip.getCity());
                 context.set("ipAddressCountryCode", geoip.getCountryId());
                 logger.info("geoip的数据结果:" + JSON.toJSONString(geoip));
+            }
+            String[] ipSegs = ip.split("\\.");
+            if (ipSegs.length >= 3) {
+                String ip3 = ipSegs[0] + "." + ipSegs[1] + "." + ipSegs[2];
+                context.set("ip3", ip3);
             }
         }
 

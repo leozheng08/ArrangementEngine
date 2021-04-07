@@ -6,6 +6,8 @@ import cn.tongdun.evan.client.entity.AGeoipEntity;
 import cn.tongdun.evan.client.entity.AGeoipQueryDTO;
 import cn.tongdun.evan.client.lang.Result;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -33,7 +35,7 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
     public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get geoentity from elfin with params null");
+                logger.info(TraceUtils.getFormatTrace() + "AGeoipInfoQueryService get geoentity from evan with params null");
                 return null;
             }
             AGeoipQueryDTO queryDTO = new AGeoipQueryDTO();
@@ -42,9 +44,36 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
             queryDTO.setSeqId(context.getSeqId());
             queryDTO.setSource("kunpeng-sea-api");
             Result<AGeoipEntity> aGeoipEntity = evanQueryService.queryGeoipInfo(queryDTO);
-            return copyGeoipEntityProperties(aGeoipEntity.getData());
+            if (aGeoipEntity.isSuccess() && aGeoipEntity.getCode() == "200") {
+                return copyGeoipEntityProperties(aGeoipEntity.getData());
+            }
+
+            // refs: http://wiki.tongdun.me/pages/viewpage.action?pageId=37815128
+            logger.error(TraceUtils.getFormatTrace() + "ip query geoInfo failed ip {}, aGeoipEntity :{}", ip, aGeoipEntity);
+            switch (aGeoipEntity.getCode()) {
+                case "100":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_ILLEGAL_ERROR, "geoip");
+                    break;
+                case "102":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_PARAM_ERROR, "geoip");
+                    break;
+                case "403":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_PERNISSION_ERROR, "geoip");
+                    break;
+                case "500":
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERRVER_ERROR, "geoip");
+                    break;
+                default:
+                    ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoip");
+            }
+            return null;
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "ip query geoinfo failed ip {}", ip, e);
+            if (ReasonCodeUtil.isTimeout(e)) {
+                ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_TIMEOUT, "geoip");
+            } else {
+                ReasonCodeUtil.add(context, ReasonCode.GEOIP_SERVICE_CALL_ERROR, "geoip");
+            }
+            logger.error(TraceUtils.getFormatTrace() + "ip query geoinfo failed ip" + ip, e);
         }
         return null;
     }
