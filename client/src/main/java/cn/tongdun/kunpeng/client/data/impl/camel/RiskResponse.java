@@ -407,4 +407,16 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     public void setCreditCloud(JSONObject creditCloud) {
 
     }
+
+    @Override
+    public List<RuleDetail> getRuleTestDetails() {
+        return null;
+    }
+
+    @Override
+    public void setRuleTestDetails(List<RuleDetail> ruleTestDetails) {
+
+    }
+
+
 }
