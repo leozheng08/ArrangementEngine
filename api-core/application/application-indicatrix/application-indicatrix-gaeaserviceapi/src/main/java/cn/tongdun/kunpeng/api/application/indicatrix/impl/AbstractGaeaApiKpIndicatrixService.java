@@ -61,7 +61,7 @@ public abstract class AbstractGaeaApiKpIndicatrixService extends AbstractKpIndic
             for (IndicatrixResult iResult : listResult.getVal()) {
                 responseVal = new PlatformIndexData();
                 responseVal.setIndicatrixId(iResult.getIndicatrixId());
-                responseVal.setDescription(iResult.getDescription());
+                responseVal.setDesc(iResult.getDescription());
                 responseVal.setDetail(iResult.getConditionDetail());
 
                 responseVal.setFeatureLevel1Name(iResult.getFeatureLevel1Name());

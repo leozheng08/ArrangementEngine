@@ -14,6 +14,7 @@ import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelConfigInfo;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelParam;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.ModelServiceExtPt;
 import cn.tongdun.kunpeng.api.engine.model.decisionflow.RightFieldType;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import com.google.common.collect.Maps;
@@ -35,6 +36,9 @@ public class SaaSModelService implements ModelServiceExtPt {
 
     @Autowired
     private ICalculateService holmesService;
+
+    @Autowired
+    private DictionaryManager dictionaryManager;
 
     @Override
     public boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo decisionFlowModel) {
@@ -79,7 +83,11 @@ public class SaaSModelService implements ModelServiceExtPt {
 
         if (!modelCalResponse.isSuccess()) {
             logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
-            ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
+            String subReasonCode = dictionaryManager.getReasonCode("holmes", modelCalResponse.getReasonCode());
+            if (StringUtils.isNotEmpty(subReasonCode)) {
+                String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
+                ReasonCodeUtil.addExtCode(fraudContext, subReasonCode, subReasonCodeMessage, "holmes", "queryGeoipInfo", modelCalResponse.getReasonCode(), modelCalResponse.getReasonMsg());
+            }
             return false;
         }
 
@@ -112,8 +120,12 @@ public class SaaSModelService implements ModelServiceExtPt {
         }
 
         if (!modelResponse.isSuccess()) {
-            ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
+            String subReasonCode = dictionaryManager.getReasonCode("holmes", modelResponse.getReasonCode());
+            if (StringUtils.isNotEmpty(subReasonCode)) {
+                String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
+                ReasonCodeUtil.addExtCode(fraudContext, subReasonCode, subReasonCodeMessage, "holmes", "queryGeoipInfo", modelResponse.getReasonCode(), modelResponse.getReasonMsg());
+            }
             return false;
         }
 

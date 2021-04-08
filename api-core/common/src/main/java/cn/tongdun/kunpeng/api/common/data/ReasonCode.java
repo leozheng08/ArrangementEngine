@@ -71,6 +71,8 @@ public enum ReasonCode {
     NO_FP("20006", "没有设备指纹数据"),
     NO_KUNTA("20007", "没有三方数据"),
     NO_WATSON("20008", "没有地址服务数据"),
+    NO_SCORE_CARD("20009", "没有智信分"),
+    NO_GEOIP("20010", "没有GEOIP信息"),
 
     // 400~499：策略执行错误
     POLICY_NOT_EXIST_SUB("40401", "没有对应的策略配置"),

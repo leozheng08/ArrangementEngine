@@ -52,6 +52,7 @@ public class DynamicScriptManager {
         try {
             handleField(context);
         } catch (Exception e) {
+            // 暂不处理动态脚本执行超时的状态码，以日志为准
             if (!ReasonCodeUtil.isTimeout(e) ){
                 logger.error(TraceUtils.getFormatTrace() + "动态脚本调用异常", e);
                 ReasonCodeUtil.add(context, ReasonCode.GROOVY_EXECUTE_ERROR, "groovy");

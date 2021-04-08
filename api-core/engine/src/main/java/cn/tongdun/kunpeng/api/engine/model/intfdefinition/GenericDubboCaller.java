@@ -172,9 +172,9 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                     SubReasonCode subReasonCodeObj = null;
                     // 决策流里融合了地址服务的接口，子状态码和三方子状态码区别开来
                     if (SPECIAL_THIRD_INTERFACE.contains(serviceName)) {
-                        subReasonCodeObj = addSubServiceCode(fraudContext, WATSON, resultMap, serviceName);
+                        subReasonCodeObj = addSubServiceCode(fraudContext, WATSON, String.valueOf(resultMap.get("reasonCode")), String.valueOf(resultMap.get("reasonDesc")), serviceName);
                     } else {
-                        subReasonCodeObj = addSubServiceCode(fraudContext, KUNTA, resultMap, serviceName);
+                        subReasonCodeObj = addSubServiceCode(fraudContext, KUNTA, String.valueOf(resultMap.get("reasonCode")), String.valueOf(resultMap.get("reasonDesc")), serviceName);
                     }
 
                     if (subReasonCodeObj != null && subReasonCodeObj.getSub_code() != null
@@ -493,13 +493,12 @@ public class GenericDubboCaller implements IGenericDubboCaller{
     /**
      * watson异常，处理三方
      * @param context
-     * @param resultMap
+     * @param extReasonCode
+     * @param extReasonMessage
      * @param interfaceName
      * @return
      */
-    public SubReasonCode addSubServiceCode(AbstractFraudContext context,String subService, Map<String, Object> resultMap, String interfaceName){
-        String extReasonCode = (String) resultMap.get("reasonCode");
-        String extReasonMessage = (String) resultMap.get("reasonDesc");
+    public SubReasonCode addSubServiceCode(AbstractFraudContext context,String subService,String extReasonCode,String extReasonMessage, String interfaceName){
         if(extReasonCode != null && extReasonMessage != null){
             String subReasonCode = dictionaryManager.getReasonCode(subService,extReasonCode);
             if(StringUtils.isBlank(subReasonCode)){
