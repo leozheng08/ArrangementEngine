@@ -75,6 +75,7 @@ public class RiskService implements IRiskService {
         }
         String[] tags = {
                 "partner_code", riskRequest.getPartnerCode()};
+        metrics.counter("kunpeng.api.riskservice.partner.qps", tags);
         ITimeContext timePartner = metrics.metricTimer("kunpeng.api.riskservice.partner.rt", tags);
 
         FraudContext context = new FraudContext();
