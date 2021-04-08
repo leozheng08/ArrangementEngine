@@ -62,19 +62,21 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
     }
 
     private AdminApplication loadByKey(String key) {
+        AdminApplication result =  new AdminApplication();
         String[] values = StringUtils.split(key, ".");
         if(values != null && values.length == 2){
             AdminApplicationDTO adminApplicationDTO = iAdminApplicationRepository.selectApplicationByPartnerAppName(values[0], values[1]);
             AdminApplication adminApplication = new AdminApplication();
             BeanUtils.copyProperties(adminApplicationDTO,adminApplication);
         }
-        return null;
+        return result;
     }
 
     @Override
     public AdminApplication get(String key){
         try {
-            return adminApplicationTimingCache.get(key);
+            AdminApplication adminApplication = adminApplicationTimingCache.get(key);
+            return adminApplication == null || StringUtils.isEmpty(adminApplication.getSecretKey()) ? null : adminApplication;
         } catch (ExecutionException e) {
             logger.error(TraceUtils.getFormatTrace() + "adminApplicationTimingCache.get error", e);
             return null;
@@ -83,7 +85,8 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
 
     public AdminApplication get(String partnerCode, String appName){
         try {
-            return adminApplicationTimingCache.get(generateKey(partnerCode,appName));
+            AdminApplication adminApplication = adminApplicationTimingCache.get(generateKey(partnerCode,appName));
+            return adminApplication == null || StringUtils.isEmpty(adminApplication.getSecretKey()) ? null : adminApplication;
         } catch (ExecutionException e) {
             logger.error(TraceUtils.getFormatTrace() + "adminApplicationTimingCache.get error", e);
             return null;
