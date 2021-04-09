@@ -83,8 +83,8 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
         oldGeoipEntity.setArea(geoipEntity.getAreacode());
         oldGeoipEntity.setCountry(geoipEntity.getCountry());
         oldGeoipEntity.setIspId(geoipEntity.getIsp());
-        oldGeoipEntity.setLongitude(Float.valueOf(geoipEntity.getLngwgs()));
-        oldGeoipEntity.setLatitude(Float.valueOf(geoipEntity.getLatwgs()));
+        oldGeoipEntity.setLongitude(StringUtils.isEmpty(geoipEntity.getLngwgs()) ? null : Float.valueOf(geoipEntity.getLngwgs()));
+        oldGeoipEntity.setLatitude(StringUtils.isEmpty(geoipEntity.getLatwgs()) ? null : Float.valueOf(geoipEntity.getLatwgs()));
         oldGeoipEntity.setIp(geoipEntity.getIp());
         oldGeoipEntity.setCounty(geoipEntity.getDistrict());
         return oldGeoipEntity;
@@ -97,4 +97,5 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
     public Map<String, GeoipEntity> batchGetIpInfo(List<String> ipList) {
         return null;
     }
+
 }
