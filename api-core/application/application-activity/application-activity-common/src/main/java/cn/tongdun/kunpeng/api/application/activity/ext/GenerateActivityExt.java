@@ -51,8 +51,11 @@ public class GenerateActivityExt implements IGenerateActivityExtPt {
         actitivy.setGeoipEntity(getGeoIpInfo(queueItem.getContext()));
 
         Map deviceInfo = context.getDeviceInfo();
-        deviceInfo.put("blackBox", queueItem.getRequest().getBlackBox());
-        actitivy.setDeviceInfo(deviceInfo);
+        //详情使用，复制一份出来，避免输出到客户响应中（这里是异步执行的，有可能会影响到response中的deviceInfo）
+        Map<String, Object> deviceInfoMap = new HashMap<>();
+        deviceInfoMap.putAll(deviceInfo);
+        deviceInfoMap.put("blackBox", queueItem.getRequest().getBlackBox());
+        actitivy.setDeviceInfo(deviceInfoMap);
 
 //        logger.info("GenerateActivityExt....................seqId={}, actitivy={}", context.getSeqId(), JSON.toJSONString(actitivy));
 
