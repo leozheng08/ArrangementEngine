@@ -75,7 +75,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             return true;
         }
         if(list.size() == 1){
-            remove(list.get(0));
+            return remove(list.get(0));
         }
         return batchAddOrUpdate(list);
     };
@@ -85,7 +85,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             return true;
         }
         if(list.size() == 1){
-            create(list.get(0));
+            return create(list.get(0));
         }
         return batchAddOrUpdate(list);
     };
@@ -105,7 +105,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             return true;
         }
         if(list.size() == 1){
-            activate(list.get(0));
+            return activate(list.get(0));
         }
         return batchAddOrUpdate(list);
     };
@@ -115,7 +115,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             return true;
         }
         if(list.size() == 1){
-            deactivate(list.get(0));
+            return deactivate(list.get(0));
         }
         return batchAddOrUpdate(list);
     };

@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
@@ -23,7 +24,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author jie
@@ -45,6 +49,9 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     @Autowired
     private PlatformIndexCache policyIndicatrixItemCache;
+
+    @Autowired
+    private DictionaryManager dictionaryManager;
 
     @Override
     public IndicatrixApiResult<List<PlatformIndexData>> calculateByIdsAndSetContext(AbstractFraudContext context) {
@@ -140,15 +147,12 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
                 logger.error(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
             }
         } else {
-            if (retCode == 600) {
-                ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_LIMITING, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}获取限流", indicatrixVal.getIndicatrixId());
-            } else if (retCode == 508) {
-                ReasonCodeUtil.add(context, ReasonCode.GAEA_FLOW_ERROR, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}指标流量不足", indicatrixVal.getIndicatrixId());
-            } else {
-                ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}指标读取异常", indicatrixVal.getIndicatrixId());
+            logger.error(TraceUtils.getFormatTrace()+"指标返回异常,gaea返回结果：{}", indicatrixVal.toString());
+            String subReasonCode = dictionaryManager.getReasonCode("gaea", String.valueOf(retCode));
+            // 针对字典表中未配置的状态子码，暂时不做处理
+            if (StringUtils.isNotEmpty(subReasonCode)) {
+                String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
+                ReasonCodeUtil.addExtCode(context, subReasonCode, subReasonCodeMessage, "gaea", "queryGeoipInfo", String.valueOf(retCode), indicatrixVal.getDesc());
             }
         }
     }
