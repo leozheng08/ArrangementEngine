@@ -83,8 +83,8 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
         oldGeoipEntity.setArea(geoipEntity.getAreacode());
         oldGeoipEntity.setCountry(geoipEntity.getCountry());
         oldGeoipEntity.setIspId(geoipEntity.getIsp());
-        oldGeoipEntity.setLongitude(StringUtils.isEmpty(geoipEntity.getLngwgs()) ? null : Float.valueOf(geoipEntity.getLngwgs()));
-        oldGeoipEntity.setLatitude(StringUtils.isEmpty(geoipEntity.getLatwgs()) ? null : Float.valueOf(geoipEntity.getLatwgs()));
+        oldGeoipEntity.setLongitude(StringUtils.isEmpty(geoipEntity.getLngwgs()) ? 0.0f : Float.valueOf(geoipEntity.getLngwgs()));
+        oldGeoipEntity.setLatitude(StringUtils.isEmpty(geoipEntity.getLatwgs()) ? 0.0f : Float.valueOf(geoipEntity.getLatwgs()));
         oldGeoipEntity.setIp(geoipEntity.getIp());
         oldGeoipEntity.setCounty(geoipEntity.getDistrict());
         return oldGeoipEntity;

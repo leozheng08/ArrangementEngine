@@ -1,20 +1,16 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.model.constant.BizTypeEnum;
-import cn.tongdun.kunpeng.api.engine.reload.dataobject.RuleEventDO;
-import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.share.dataobject.RuleDO;
-import cn.tongdun.kunpeng.share.dataobject.SubPolicyDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.RuleEventDO;
+import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -100,7 +95,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             return true;
         }
         if(list.size() == 1){
-            update(list.get(0));
+            return update(list.get(0));
         }
         return batchAddOrUpdate(list);
     };
