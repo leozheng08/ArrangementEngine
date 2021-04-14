@@ -141,6 +141,11 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
                 return;
             }
 
+            if (retCode == IndicatrixRetCode.PARAMS_ERROR.getCode()) {
+                logger.warn(TraceUtils.getFormatTrace()+"指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
+                return;
+            }
+
             String indicatrixId = indicatrixVal.getIndicatrixId().toString();
             context.putPlatformIndexMap(indicatrixId, indicatrixVal);
             if (retCode == IndicatrixRetCode.INDEX_ERROR.getCode()) {
@@ -152,7 +157,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
             // 针对字典表中未配置的状态子码，暂时不做处理
             if (StringUtils.isNotEmpty(subReasonCode)) {
                 String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
-                ReasonCodeUtil.addExtCode(context, subReasonCode, subReasonCodeMessage, "gaea", "queryGeoipInfo", String.valueOf(retCode), indicatrixVal.getDesc());
+                ReasonCodeUtil.addExtCode(context, subReasonCode, subReasonCodeMessage, "gaea", "calculateByIds", String.valueOf(retCode), indicatrixVal.getDesc());
             }
         }
     }

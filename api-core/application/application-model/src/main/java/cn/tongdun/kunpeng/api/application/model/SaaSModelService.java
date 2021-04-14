@@ -86,7 +86,7 @@ public class SaaSModelService implements ModelServiceExtPt {
             String subReasonCode = dictionaryManager.getReasonCode("holmes", modelCalResponse.getReasonCode());
             if (StringUtils.isNotEmpty(subReasonCode)) {
                 String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
-                ReasonCodeUtil.addExtCode(fraudContext, subReasonCode, subReasonCodeMessage, "holmes", "queryGeoipInfo", modelCalResponse.getReasonCode(), modelCalResponse.getReasonMsg());
+                ReasonCodeUtil.addExtCode(fraudContext, subReasonCode, subReasonCodeMessage, "holmes", "calculate", modelCalResponse.getReasonCode(), modelCalResponse.getReasonMsg());
             }
             return false;
         }
@@ -124,7 +124,7 @@ public class SaaSModelService implements ModelServiceExtPt {
             String subReasonCode = dictionaryManager.getReasonCode("holmes", modelResponse.getReasonCode());
             if (StringUtils.isNotEmpty(subReasonCode)) {
                 String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
-                ReasonCodeUtil.addExtCode(fraudContext, subReasonCode, subReasonCodeMessage, "holmes", "queryGeoipInfo", modelResponse.getReasonCode(), modelResponse.getReasonMsg());
+                ReasonCodeUtil.addExtCode(fraudContext, subReasonCode, subReasonCodeMessage, "holmes", "predict", modelResponse.getReasonCode(), modelResponse.getReasonMsg());
             }
             return false;
         }
