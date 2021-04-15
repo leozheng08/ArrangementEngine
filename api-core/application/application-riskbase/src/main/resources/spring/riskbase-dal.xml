@@ -73,4 +73,16 @@
         <property name="sqlSessionFactoryBeanName" value="riskbaseSqlSessionFactory"/>
     </bean>
 
+    <bean id="districtQueryService"
+          class="cn.fraudmetrix.module.riskbase.service.impl.DistrictQueryServiceImpl"
+          init-method="init" />
+
+    <bean id="idInfoQueryService"
+          class="cn.fraudmetrix.module.riskbase.service.impl.IdInfoQueryServiceImpl"
+          init-method="init" />
+
+    <bean id="binInfoQueryService"
+          class="cn.fraudmetrix.module.riskbase.service.impl.BinInfoQueryServiceImpl"
+          init-method="init" />
+
 </beans>

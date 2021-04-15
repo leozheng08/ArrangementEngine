@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>application</artifactId>
+        <groupId>cn.tongdun.kunpeng-api</groupId>
+
+        <version>1.0.2-release-20210317-1-SNAPSHOT</version>
+
+
+
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>application-riskbase</artifactId>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix.forseti.fp</groupId>
+            <artifactId>fp-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>elfin-biz-intf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.gaea</groupId>
+            <artifactId>gaea-factservice-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aerospike</groupId>
+            <artifactId>aerospike-client</artifactId>
+            <version>4.1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>evan-client</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module.riskbase</artifactId>
+            <version>1.4.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.fraudmetrix</groupId>
+                    <artifactId>redis-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.fraudmetrix</groupId>
+                    <artifactId>module-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.fraudmetrix</groupId>
+                    <artifactId>module-elasticsearch</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.fraudmetrix.eunomia</groupId>
+                    <artifactId>eunomia-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis-spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+    </dependencies>
+</project>

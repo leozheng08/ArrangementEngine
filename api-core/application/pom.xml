@@ -30,6 +30,7 @@
         <module>application-model</module>
         <module>application-keyword</module>
         <module>application-indicatrix</module>
+        <module>application-riskbase</module>
     </modules>
 
 
