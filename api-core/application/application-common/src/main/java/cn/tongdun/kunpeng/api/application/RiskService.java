@@ -80,6 +80,7 @@ public class RiskService implements IRiskService {
 
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
+        context.setRiskStartTime(System.currentTimeMillis());
 
         //business 依赖event_id找到对应的event_type再确认，放
         // 到GetPolicyUuidStep步骤中实现。

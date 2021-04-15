@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.application.indicatrix.impl;
 
-import java.util.List;
-
 import cn.tongdun.gaea.api.client.IndicatrixApi;
 import cn.tongdun.gaea.client.common.IndicatrixParam;
 import cn.tongdun.gaea.client.common.IndicatrixResult;
@@ -9,8 +7,11 @@ import cn.tongdun.gaea.client.common.base.Result;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixRequest;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
+import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * gaea-api-client rt敏感型场景 指标平台接口对接
@@ -24,6 +25,8 @@ public class GaeaApiLatencyServiceImpl extends AbstractGaeaApiKpIndicatrixServic
     @Autowired
     private IndicatrixApi indicatrixApi;
 
+    @Autowired
+    private DictionaryManager dictionaryManager;
 
     @Override
     public IndicatrixApiResult<List<PlatformIndexData>> calculateByIds(IndicatrixRequest indicatrixRequest) throws Exception {
@@ -32,7 +35,6 @@ public class GaeaApiLatencyServiceImpl extends AbstractGaeaApiKpIndicatrixServic
 
         // 2. 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
         Result<List<IndicatrixResult>> apiResult = indicatrixApi.calculateByIdForLatencySensitive(indicatrixParam);
-
         return convertApiResult(apiResult);
     }
 

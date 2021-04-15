@@ -10,12 +10,9 @@ public interface IndexDefinitionDAO {
     //todo 后期优化，按分页查询所有
     List<IndexDefinitionDO> selectAll();
 
-    @Cacheable(idxName = "policyUuid")
     List<IndexDefinitionDO> selectEnabledIndexesByPolicyUuid(String policyUuid);
 
-    @Cacheable(idxName = "subPolicyUuid")
     List<IndexDefinitionDO> selectEnabledIndexesBySubPolicyUuid(String subPolicyUuid);
 
-    @Cacheable
     IndexDefinitionDO selectByUuid(String uuid);
 }

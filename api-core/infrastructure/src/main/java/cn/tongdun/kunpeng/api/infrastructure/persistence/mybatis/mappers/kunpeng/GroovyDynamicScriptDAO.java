@@ -16,7 +16,6 @@ public interface GroovyDynamicScriptDAO {
      * @param partners
      * @return
      */
-    @Cacheable(idxName = "partner")
     List<DynamicScriptDO> selectGroovyByPartners(Set partners);
 
     /**
@@ -24,6 +23,5 @@ public interface GroovyDynamicScriptDAO {
      * @param uuid
      * @return
      */
-    @Cacheable
     DynamicScriptDO selectByUuid(String uuid);
 }

@@ -96,6 +96,12 @@ public class KeywordStep implements IRiskStep {
         try {
             wordResultModels = wordSearchDubboService.searchList(context.getSeqId(), context.getPartnerCode(), context.getAppName(), wordModels);
         } catch (Exception ex) {
+            if (ReasonCodeUtil.isTimeout(ex)) {
+                ReasonCodeUtil.add(context, ReasonCode.NLAS_CALL_TIMEOUT, "nlas");
+            } else {
+                ReasonCodeUtil.add(context, ReasonCode.NLAS_CALL_ERROR, "nlas");
+            }
+            logger.error("关键词规则dubbo远程批量调用出错,{}",ex.getMessage(),ex);
             logger.error(TraceUtils.getTrace() + "关键词规则dubbo远程批量调用出错,policyUuid = {},{}", policyUuid, ex.getMessage(), ex);
             if (ReasonCodeUtil.isTimeout(ex)) {
                 ReasonCodeUtil.add(context, ReasonCode.NLAS_CALL_TIMEOUT, "nlas");

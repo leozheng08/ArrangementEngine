@@ -88,8 +88,8 @@ public class AssignFieldValueStep implements IRiskStep {
         String serviceType = request.getServiceType();
         if (StringUtils.isBlank(serviceType)) {
             serviceType = "professional";
-            context.setServiceType(serviceType);
         }
+        context.setServiceType(serviceType);
 
         //判断是否测试数据
         context.setTestFlag(request.isTestFlag());

@@ -28,13 +28,13 @@
     </bean>
 
 
-    <!-- ====== AOP === -->
-    <bean id="cacheableAspect" class="cn.tongdun.kunpeng.api.engine.reload.docache.CacheableAspect"/>
-    <aop:config>
-        <aop:aspect  id="cacheableAspect" ref="cacheableAspect" >
-            <aop:around method="around"
-                        pointcut="@annotation(cn.tongdun.kunpeng.api.engine.reload.docache.Cacheable)"/>
-        </aop:aspect>
-    </aop:config>
+    <!--&lt;!&ndash; ====== AOP === &ndash;&gt;-->
+    <!--<bean id="cacheableAspect" class="cn.tongdun.kunpeng.api.engine.reload.docache.CacheableAspect"/>-->
+    <!--<aop:config>-->
+        <!--<aop:aspect  id="cacheableAspect" ref="cacheableAspect" >-->
+            <!--<aop:around method="around"-->
+                        <!--pointcut="@annotation(cn.tongdun.kunpeng.api.engine.reload.docache.Cacheable)"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
 
 </beans>

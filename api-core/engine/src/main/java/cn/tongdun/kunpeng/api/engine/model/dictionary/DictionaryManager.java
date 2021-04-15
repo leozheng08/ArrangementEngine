@@ -149,7 +149,7 @@ public class DictionaryManager {
 
                 Map<String,Object> codeConfigValue = (Map<String, Object>) stringObjectEntry.getValue();
                 for (Map.Entry<String, Object> subCode : codeConfigValue.entrySet()) {
-                    List<String> codes = JSON.parseArray((String) subCode.getValue(), String.class);
+                    List<String> codes = (List<String>) subCode.getValue();
 
                     for (String code : codes) {
                         subReasonCodeCache.put(stringObjectEntry.getKey() + code, subCode.getKey());

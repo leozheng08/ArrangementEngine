@@ -153,4 +153,8 @@ public interface IRiskResponse extends IApiResponse {
     JSONObject getCreditCloud();
 
     void setCreditCloud(JSONObject creditCloud);
+
+    List<RuleDetail> getRuleTestDetails();
+
+    void setRuleTestDetails(List<RuleDetail> ruleTestDetails);
 }

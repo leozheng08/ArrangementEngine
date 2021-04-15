@@ -146,6 +146,16 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
     @Override
+    public List<RuleDetail> getRuleTestDetails() {
+        return null;
+    }
+
+    @Override
+    public void setRuleTestDetails(List<RuleDetail> ruleTestDetails) {
+
+    }
+
+    @Override
     public String getSeqId() {
         return seqId;
     }

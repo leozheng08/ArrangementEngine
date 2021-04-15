@@ -13,6 +13,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ElfinBaseDataService {
     private final static Logger logger = LoggerFactory.getLogger(ElfinBaseDataService.class);
 
+    @Autowired
     private BaseDataQueryService baseDataQueryService;
 
     // FIXME: 2/7/20 cache handle

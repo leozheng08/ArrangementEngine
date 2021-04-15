@@ -29,7 +29,7 @@ public class RuleDeatilOutputStep implements IRiskStep {
         //通过通用输出扩展点
         return extensionExecutor.execute(IRuleDetailOutputExtPt.class,
                 context.getBizScenario(),
-                extension -> extension.ruleDetailOutput(context,response)
+                extension -> extension.ruleDetailOutput(context,response,request)
         );
     }
 

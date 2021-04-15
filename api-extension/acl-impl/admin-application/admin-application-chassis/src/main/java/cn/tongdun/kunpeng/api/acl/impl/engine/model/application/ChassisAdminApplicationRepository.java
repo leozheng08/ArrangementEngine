@@ -5,6 +5,7 @@ import cn.fraudmetrix.chassis.api.oper.dto.AppProductDTO;
 import cn.fraudmetrix.chassis.api.oper.intf.ProductService;
 import cn.tongdun.kunpeng.api.acl.engine.model.application.AdminApplicationDTO;
 import cn.tongdun.kunpeng.api.acl.engine.model.application.IAdminApplicationRepository;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
 
     @Override
     public AdminApplicationDTO selectApplicationByPartnerAppName(String partnerCode, String appName) {
+        AdminApplicationDTO result = new AdminApplicationDTO();
         if (StringUtils.isAnyBlank(partnerCode, appName)) {
             return null;
         }
@@ -70,18 +72,22 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
         if (appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
             appList = appProductList.getData();
         } else {
-            logger.warn("chassis selectApplicationByPartnerAppName result is error:{}", appProductList.getMsg());
-            return null;
+            logger.warn("chassis selectApplicationByPartnerAppName result is error:{}", appProductList);
+            return result;
         }
 
         logger.info("ChassisAdminApplicationRepository selectApplicationByPartnerAppName end, size:{} ", appProductList.getData().size());
 
-        return appList.stream().findFirst().map(appProductDTO -> {
-            AdminApplicationDTO adminApplication = new AdminApplicationDTO();
-            BeanUtils.copyProperties(appProductDTO, adminApplication);
-            adminApplication.setDisplayName(appProductDTO.getAppDisplayName());
-            return adminApplication;
-        }).get();
+        if (CollectionUtils.isNotEmpty(appList)) {
+            return appList.stream().findFirst().map(appProductDTO -> {
+                AdminApplicationDTO adminApplication = new AdminApplicationDTO();
+                BeanUtils.copyProperties(appProductDTO, adminApplication);
+                return adminApplication;
+            }).get();
+        } else {
+            return result;
+        }
+
     }
 
     @Override

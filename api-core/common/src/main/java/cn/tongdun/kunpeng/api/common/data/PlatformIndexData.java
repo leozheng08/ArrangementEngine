@@ -43,11 +43,6 @@ public class PlatformIndexData {
     private transient String meaningCode;
 
     /**
-     * 指标描述
-     */
-    private transient String description;
-
-    /**
      * 一级行业分类中文
      */
     private transient String featureLevel1Name;

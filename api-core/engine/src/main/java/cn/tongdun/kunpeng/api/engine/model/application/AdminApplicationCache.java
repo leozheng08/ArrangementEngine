@@ -3,13 +3,8 @@ package cn.tongdun.kunpeng.api.engine.model.application;
 import cn.tongdun.kunpeng.api.acl.engine.model.application.AdminApplicationDTO;
 import cn.tongdun.kunpeng.api.acl.engine.model.application.IAdminApplicationRepository;
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
-import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
+import com.google.common.cache.*;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -58,15 +50,11 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
             }
         };
 
-        RemovalListener<String,AdminApplication> removalListener = new RemovalListener<String,AdminApplication>(){
-
-            @Override
-            public void onRemoval(RemovalNotification<String,AdminApplication> notification) {
-                AdminApplication value = notification.getValue();
-                if(null != value){
-                    appNameToSecretKey.remove(value.getAppName());
-                    secretKeyToAppName.remove(value.getSecretKey());
-                }
+        RemovalListener<String,AdminApplication> removalListener = notification -> {
+            AdminApplication value = notification.getValue();
+            if(null != value){
+                appNameToSecretKey.remove(value.getAppName());
+                secretKeyToAppName.remove(value.getSecretKey());
             }
         };
 
@@ -74,19 +62,21 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
     }
 
     private AdminApplication loadByKey(String key) {
+        AdminApplication result =  new AdminApplication();
         String[] values = StringUtils.split(key, ".");
         if(values != null && values.length == 2){
             AdminApplicationDTO adminApplicationDTO = iAdminApplicationRepository.selectApplicationByPartnerAppName(values[0], values[1]);
             AdminApplication adminApplication = new AdminApplication();
             BeanUtils.copyProperties(adminApplicationDTO,adminApplication);
         }
-        return null;
+        return result;
     }
 
     @Override
     public AdminApplication get(String key){
         try {
-            return adminApplicationTimingCache.get(key);
+            AdminApplication adminApplication = adminApplicationTimingCache.get(key);
+            return adminApplication == null || StringUtils.isEmpty(adminApplication.getSecretKey()) ? null : adminApplication;
         } catch (ExecutionException e) {
             logger.error(TraceUtils.getFormatTrace() + "adminApplicationTimingCache.get error", e);
             return null;
@@ -95,7 +85,8 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
 
     public AdminApplication get(String partnerCode, String appName){
         try {
-            return adminApplicationTimingCache.get(generateKey(partnerCode,appName));
+            AdminApplication adminApplication = adminApplicationTimingCache.get(generateKey(partnerCode,appName));
+            return adminApplication == null || StringUtils.isEmpty(adminApplication.getSecretKey()) ? null : adminApplication;
         } catch (ExecutionException e) {
             logger.error(TraceUtils.getFormatTrace() + "adminApplicationTimingCache.get error", e);
             return null;
@@ -133,6 +124,11 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
             return null;
         }
         return get(partnerCodeAppName);
+    }
+
+    public String getPartnerCodeAppNameBySecretKey(String secretKey) {
+        String partnerCodeAppName = secretKeyToAppName.get(secretKey);
+        return partnerCodeAppName;
     }
 
 

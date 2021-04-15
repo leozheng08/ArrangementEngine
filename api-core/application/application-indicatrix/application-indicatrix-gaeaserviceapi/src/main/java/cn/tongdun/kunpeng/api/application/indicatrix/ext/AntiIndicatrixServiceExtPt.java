@@ -7,6 +7,7 @@ import cn.tongdun.kunpeng.api.application.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,11 @@ public class AntiIndicatrixServiceExtPt implements IndicatrixServiceExtPt {
         IndicatrixApiResult<List<PlatformIndexData>> apiResult = kpIndicatrixService.calculateByIdsAndSetContext(fraudContext);
 
         if (null == apiResult) {
-            logger.warn("AntiIndicatrixServiceExtPt calculate result is null");
-            return false;
+            logger.debug("AntiIndicatrixServiceExtPt calculate result is null");
+            return true;
         }
 
-        logger.info("AntiIndicatrixServiceExtPt calculate result:{},code:{}", apiResult.isSuccess(), apiResult.getCode());
-        return apiResult.isSuccess();
+        logger.info(TraceUtils.getFormatTrace() + "AntiIndicatrixServiceExtPt calculate result:{},code:{}", apiResult.isSuccess(), apiResult.getCode());
+        return true;
     }
 }
