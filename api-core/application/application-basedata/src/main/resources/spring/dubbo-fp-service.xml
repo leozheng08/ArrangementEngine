@@ -8,7 +8,7 @@
        default-autowire="byName">
 
     <dubbo:reference id="deviceInfoQuery" interface="cn.fraudmetrix.forseti.fp.dubbo.DeviceInfoQuery"
-                     version="${device.info.dubbo.version}" retries="0" timeout="${device.info.dubbo.timeout}" connections="2" >
+                     version="${device.info.dubbo.version}" retries="0" timeout="${device.info.dubbo.timeout}" connections="2" check="false" >
         <dubbo:parameter key="threadname" value="Dubbo-DeviceInfo-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
         <dubbo:parameter key="corethreads" value="2" />
