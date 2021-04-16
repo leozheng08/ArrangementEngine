@@ -238,7 +238,6 @@ public class KeywordFunction extends AbstractFunction {
             KeywordDetail detail = new KeywordDetail();
             detail.setRuleUuid(this.ruleUuid);
             detail.setConditionUuid(this.conditionUuid);
-            detail.setType(this.calcField);
             detail.setDescription(description);
             detail.setData(data);
             return detail;
