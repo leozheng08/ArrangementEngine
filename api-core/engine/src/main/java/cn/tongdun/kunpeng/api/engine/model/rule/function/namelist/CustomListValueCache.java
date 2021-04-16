@@ -86,4 +86,16 @@ public class CustomListValueCache {
         }
         return score;
     }
+
+    public boolean zadd(String customListUuid, long expireTime, String value) {
+        return redisScoreKVRepository.zadd(customListUuid, (double) expireTime, value);
+
+    }
+
+    public boolean zrem(String customListUuid, String value) {
+        return redisScoreKVRepository.zrem(customListUuid, value);
+
+    }
+
+
 }
