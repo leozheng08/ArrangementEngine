@@ -46,10 +46,7 @@ public class BaseCheckParamsStep implements IRiskStep {
 
         Map<String, IFieldDefinition> extendFieldMap = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType());
         if (extendFieldMap != null && extendFieldMap.size() > 0) {
-            extendFieldMap.putAll(fieldDefinitionCache.getExtendField(context.getPartnerCode(), "all"));
             context.setExtendFieldMap(extendFieldMap);
-        } else {
-            context.setExtendFieldMap(fieldDefinitionCache.getExtendField(context.getPartnerCode(),"all"));
         }
 
         checkParamFromRequest(request,context,sbType,sbFormat,sbOvermax);
