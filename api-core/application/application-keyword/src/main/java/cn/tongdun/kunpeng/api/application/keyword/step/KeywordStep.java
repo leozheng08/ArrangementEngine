@@ -4,13 +4,13 @@ import cn.fraudmetrix.nlas.dubbo.common.bean.WordModel;
 import cn.fraudmetrix.nlas.dubbo.common.bean.WordResultModel;
 import cn.fraudmetrix.nlas.dubbo.service.word.WordSearchDubboService;
 import cn.tongdun.kunpeng.api.application.keyword.constant.KeywordConstant;
+import cn.tongdun.kunpeng.api.application.step.IRiskStep;
+import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
-import cn.tongdun.kunpeng.api.application.step.IRiskStep;
-import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.keyword.KeywordBatchRemoteCallData;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
@@ -96,12 +96,7 @@ public class KeywordStep implements IRiskStep {
         try {
             wordResultModels = wordSearchDubboService.searchList(context.getSeqId(), context.getPartnerCode(), context.getAppName(), wordModels);
         } catch (Exception ex) {
-            if (ReasonCodeUtil.isTimeout(ex)) {
-                ReasonCodeUtil.add(context, ReasonCode.NLAS_CALL_TIMEOUT, "nlas");
-            } else {
-                ReasonCodeUtil.add(context, ReasonCode.NLAS_CALL_ERROR, "nlas");
-            }
-            logger.error("关键词规则dubbo远程批量调用出错,{}",ex.getMessage(),ex);
+            logger.error("关键词规则dubbo远程批量调用出错,{}", ex.getMessage(), ex);
             logger.error(TraceUtils.getTrace() + "关键词规则dubbo远程批量调用出错,policyUuid = {},{}", policyUuid, ex.getMessage(), ex);
             if (ReasonCodeUtil.isTimeout(ex)) {
                 ReasonCodeUtil.add(context, ReasonCode.NLAS_CALL_TIMEOUT, "nlas");
