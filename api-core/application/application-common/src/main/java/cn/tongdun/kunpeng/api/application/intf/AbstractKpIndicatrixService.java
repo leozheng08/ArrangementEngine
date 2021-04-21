@@ -3,7 +3,6 @@ package cn.tongdun.kunpeng.api.application.intf;
 import cn.tongdun.gaea.client.common.IndicatrixRetCode;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixRequest;
-import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
@@ -29,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static cn.tongdun.kunpeng.api.common.MetricsConstant.*;
+
 /**
  * @author jie
  * @date 2020/12/15
@@ -37,12 +38,6 @@ import java.util.Set;
 public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractKpIndicatrixService.class);
-
-    protected static final String METRICS_TAG_API_QPS_KEY = MetricsConstant.METRICS_TAG_API_QPS_KEY;
-    protected static final String METRICS_TAG_PARTNER_KEY = "partner_code";
-    protected static final String METRICS_API_QPS_KEY = MetricsConstant.METRICS_API_QPS_KEY;
-    protected static final String METRICS_API_RT_KEY = MetricsConstant.METRICS_API_RT_KEY;
-    protected static final String METRICS_API_PARTNER_RT_KEY = "kunpeng.api.dubbo.partner.rt";
 
     @Autowired
     private IMetrics metrics;
