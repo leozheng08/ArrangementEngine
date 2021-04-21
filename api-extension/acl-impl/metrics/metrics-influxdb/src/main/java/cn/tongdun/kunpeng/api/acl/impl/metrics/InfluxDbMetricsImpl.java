@@ -27,7 +27,7 @@ public class InfluxDbMetricsImpl implements IMetrics{
     @Override
     public void counter(String counterName,String... tags){
         MeasurementKey.MeasurementKeyBuilder builder = new MeasurementKey.MeasurementKeyBuilder("counter");
-        if (tags != null) {
+        if (tags != null && tags.length > 0) {
             builder.addTag(tags[0], tags[1]);
         }
         Measurement measurement = registry.getMeasurement(builder.build());
@@ -51,7 +51,7 @@ public class InfluxDbMetricsImpl implements IMetrics{
     @Override
     public ITimeContext metricTimer(String timerName, String... tags){
         MeasurementKey.MeasurementKeyBuilder builder = new MeasurementKey.MeasurementKeyBuilder("timer");
-        if (tags != null) {
+        if (tags != null && tags.length > 0) {
             builder.addTag(tags[0], tags[1]);
         }
         Measurement measurement = registry.getMeasurement(builder.build());
