@@ -87,7 +87,6 @@ public class ImageFunctionV2 extends AbstractFunction {
 
     @Override
     public String getName() {
-//        return Constant.Function.CONTENT_IMAGE;
         return null;
     }
 
