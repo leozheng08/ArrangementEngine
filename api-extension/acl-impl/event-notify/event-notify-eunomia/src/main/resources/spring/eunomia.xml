@@ -11,6 +11,7 @@
         <property name="threadCount" value="1"/>
         <!-- 升级数据总线到kafka1.1，添加该配置 -->
         <property name="brokers" value="${eunomia.client.brokers}"/>
+        <property name="prefix" value="${eunomia.schema.prefix:}"/>
     </bean>
 
     <bean id="domainEventListener" class="cn.tongdun.kunpeng.api.acl.impl.event.notify.eunomia.DomainEventListener"/>
