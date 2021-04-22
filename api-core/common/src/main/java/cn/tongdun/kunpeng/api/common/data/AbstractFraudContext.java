@@ -33,6 +33,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private static final Field[] classFields = AbstractFraudContext.class.getDeclaredFields();
     private static final Set<String> classFieldNames = new HashSet<>(classFields.length / 3);
 
+    //字段名To字段方法
     private static final Map<String, Method> fieldGetMethodMap = new HashMap<>();
     private static final Map<String, Method> fieldSetMethodMap = new HashMap<>();
 

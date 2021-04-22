@@ -14,12 +14,14 @@ import cn.tongdun.kunpeng.api.common.util.CompareUtils;
 import cn.tongdun.kunpeng.api.ruledetail.ImageDetail;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +63,10 @@ public class ImageFunction extends AbstractFunction {
         //解析策略条件
         List<List<FilterConditionDO>> filters = this.parseParams(conditions);
 
+        Map<String, List<List<FilterConditionDO>>> labelToFilterConditions = this.parseParamsV1(conditions);
+
+
+
         //满足所有的条件
         if ("&&".equals(logicOperator)) {
             Integer sum = 0;
@@ -70,7 +76,10 @@ public class ImageFunction extends AbstractFunction {
                 for (Map imageLogoScore : imageLogoScores) {
                     if (this.isMatchLogoAndScore(filter, imageLogoScore)) {
                         sum++;
-                        break b;
+                        if(sum.equals(filters.size())){
+                            break b;
+                        }
+
                     }
                 }
             }
@@ -122,7 +131,8 @@ public class ImageFunction extends AbstractFunction {
 
     @Override
     public String getName() {
-        return Constant.Function.CONTENT_IMAGE;
+//        return Constant.Function.CONTENT_IMAGE;
+        return null;
     }
 
     /**
@@ -182,8 +192,9 @@ public class ImageFunction extends AbstractFunction {
         FilterConditionDO logoNameCondition = filters.get(0);
         FilterConditionDO logoScoreCondition = filters.get(1);
 
-        boolean matchLogoName = this.isMatch(logoNameCondition, imageLogoScore, "logoName");
-        boolean matchLogoScore = this.isMatch(logoScoreCondition, imageLogoScore, "score");
+
+        boolean matchLogoName = this.isMatch(logoNameCondition, imageLogoScore, logoNameCondition.getLeftPropertyName());
+        boolean matchLogoScore = this.isMatch(logoScoreCondition, imageLogoScore, logoScoreCondition.getLeftPropertyName());
 
         if (matchLogoName && matchLogoScore) {
             if (logger.isDebugEnabled()) {
@@ -278,4 +289,37 @@ public class ImageFunction extends AbstractFunction {
             return detail;
         };
     }
+
+
+
+    public Map<String,List<List<FilterConditionDO>>> parseParamsV1(String params){
+        params = params.replace("\\\\\"", "\"").replace("\\", "");
+        List<JSONArray> jsonArrays = JSONUtil.parseArray(params).toList(JSONArray.class);
+        Map<String,List<List<FilterConditionDO>>> labelToFilterCondiitons = new HashMap();
+        for(JSONArray jsonArray : jsonArrays){
+
+            Map<String, Object> logoName = (Map<String, Object>) jsonArray.get(0);
+            Map<String,Object> logoScore = (Map<String, Object>) jsonArray.get(1);
+            List<List<FilterConditionDO>> filterConditionList = labelToFilterCondiitons.getOrDefault((String)logoName.get("field"),new ArrayList<>());
+            FilterConditionDO logoNameCondition = new FilterConditionDO();
+            logoNameCondition.setLeftPropertyName(logoName.get("field").toString());
+            logoNameCondition.setOperator(logoName.get("operator").toString());
+            logoNameCondition.setRightValue(logoName.get("value").toString());
+            logoNameCondition.setRightValueType("STRING");
+
+            FilterConditionDO logoScoreCondition = new FilterConditionDO();
+            logoScoreCondition.setLeftPropertyName(logoScore.get("field").toString());
+            logoScoreCondition.setOperator(logoScore.get("operator").toString());
+            logoScoreCondition.setRightValue(logoScore.get("value").toString());
+            logoScoreCondition.setRightValueType("DOUBLE");
+
+            filterConditionList.add(Lists.newArrayList(logoNameCondition, logoScoreCondition));
+            labelToFilterCondiitons.put((String)logoName.get("value"),filterConditionList );
+
+        }
+        return labelToFilterCondiitons;
+    }
+
+
+
 }

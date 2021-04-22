@@ -8,6 +8,7 @@ import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
+import cn.tongdun.kunpeng.api.application.content.function.image.functionV1.ImageFunctionV1;
 
 /**
  * @description: 内容安全-图像识别
@@ -15,7 +16,7 @@ import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
  * @date: 2021-02-22 15:04
  */
 public class ImageRule extends AbstractRule {
-    private ImageFunction function;
+    private ImageFunctionV1 function;
 
     @Override
     public EvalResult run(ExecuteContext executeContext) {
@@ -29,7 +30,7 @@ public class ImageRule extends AbstractRule {
             if (rawRule.getFunctionDescList().size() > 1) {
                 throw new ParseException("ImageRule parse error!expect 1 FunctionDesc,but input :" + rawRule.getFunctionDescList().size());
             } else {
-                this.function = (ImageFunction) FunctionLoader.getFunction((FunctionDesc) rawRule.getFunctionDescList().get(0));
+                this.function = (ImageFunctionV1) FunctionLoader.getFunction((FunctionDesc) rawRule.getFunctionDescList().get(0));
             }
         } else {
             throw new ParseException("ImageRule parse error!null == rawRule or rawRule.getFunctionDescList is blank!");
