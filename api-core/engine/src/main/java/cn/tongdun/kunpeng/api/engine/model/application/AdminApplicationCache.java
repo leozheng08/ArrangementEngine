@@ -52,7 +52,7 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
 
         RemovalListener<String,AdminApplication> removalListener = notification -> {
             AdminApplication value = notification.getValue();
-            if(null != value){
+            if(null == value){
                 appNameToSecretKey.remove(value.getAppName());
                 secretKeyToAppName.remove(value.getSecretKey());
             }
