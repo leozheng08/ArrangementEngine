@@ -5,11 +5,11 @@
     <parent>
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.0.2-release-20210203-01-SNAPSHOT</version>
+        <version>1.0.2-release-20210423-test-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>acl-api</artifactId>
-    <version>1.0.2-release-20210203-01-SNAPSHOT</version>
+    <version>1.0.2-release-20210423-test-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

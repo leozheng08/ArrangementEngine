@@ -41,7 +41,7 @@ public class ImageFunctionV1 extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(ImageFunction.class);
     private String conditions;
     private String logicOperator;
-    private String model;
+    private String model = "image_brand_logo_model_result";
     private static final String paramKeyConditions = "conditions";
     private static final String paramKeyLogicOperator = "logicOperator";
     private static final String paramKeyModelType = "model";
@@ -84,17 +84,17 @@ public class ImageFunctionV1 extends AbstractFunction {
     /**
      * 解析图片logo及分数信息
      *
-     * @param LablelAndScoreModelResult 图片解析结果json
+     * @param lablelAndScoreModelResult 图片解析结果json
      *                        eg:[{"score": 0.9977513551712036,"logoName": "chanel"},{"score": 0.9977513551712126,"logoName": "lv"},{"score": 0.3477513551712036,"logoName": "lv"}]
      * @return
      */
-    private List<Map> parseLogoModelResult(String LablelAndScoreModelResult) {
+    private List<Map> parseLogoModelResult(String lablelAndScoreModelResult) {
         List<Map> maps = null;
         try {
-            maps = JSONUtil.parseArray(LablelAndScoreModelResult).toList(Map.class);
+            maps = JSONUtil.parseArray(lablelAndScoreModelResult).toList(Map.class);
         } catch (Exception ex) {
-            logger.error("{},json解析出错，请检查格式：logoModelResult = {},error:{}", TraceUtils.getTrace(), LablelAndScoreModelResult, ex.getMessage(), ex);
-            throw new ParseException("json解析出错，请检查格式：logoModelResult = " + LablelAndScoreModelResult);
+            logger.error("{},json解析出错，请检查格式：logoModelResult = {},error:{}", TraceUtils.getTrace(), lablelAndScoreModelResult, ex.getMessage(), ex);
+            throw new ParseException("json解析出错，请检查格式：logoModelResult = " + lablelAndScoreModelResult);
         }
         return maps;
     }
@@ -233,7 +233,9 @@ public class ImageFunctionV1 extends AbstractFunction {
         int sum =  conditionList.size();
         int cnt =0;
         if(logicOperator.equals("&&")){
+            a:
             for(List<FilterConditionDO> condition :  conditionList){
+                b:
                 for (Map lablelAndScoreModelResult : lablelAndScoreModelResultList) {
                     if(this.isMatchLabelAndScore(condition,lablelAndScoreModelResult)){
                         cnt++;
@@ -241,6 +243,7 @@ public class ImageFunctionV1 extends AbstractFunction {
                             hitFilters.addAll(conditionList);
                             return true;
                         }
+                        break b;
                     }
                 }
             }
@@ -310,8 +313,8 @@ public class ImageFunctionV1 extends AbstractFunction {
         FilterConditionDO logoScoreCondition = condition.get(1);
 
 
-        boolean matchLogoName = this.isMatch(logoNameCondition, lablelAndScoreModelResult, logoNameCondition.getLeftPropertyName());
-        boolean matchLogoScore = this.isMatch(logoScoreCondition, lablelAndScoreModelResult, logoScoreCondition.getLeftPropertyName());
+        boolean matchLogoName = this.isMatch(logoNameCondition, lablelAndScoreModelResult, "label");
+        boolean matchLogoScore = this.isMatch(logoScoreCondition, lablelAndScoreModelResult, "score");
 
         if (matchLogoName && matchLogoScore) {
             if (logger.isDebugEnabled()) {
