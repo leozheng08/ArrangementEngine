@@ -21,4 +21,4 @@ android/deviceAnomaly=cn.tongdun.kunpeng.api.basedata.rule.function.android.Andr
 android/fpException=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidFpFetchExceptionFunction
 location/addressMatch=cn.tongdun.kunpeng.api.basedata.rule.function.location.AddressMatchFunction
 keyword/wordList=cn.tongdun.kunpeng.api.application.keyword.function.KeywordFunction
-content/image=cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction
+content/image=cn.tongdun.kunpeng.api.application.content.function.image.ImageFunctionV1
