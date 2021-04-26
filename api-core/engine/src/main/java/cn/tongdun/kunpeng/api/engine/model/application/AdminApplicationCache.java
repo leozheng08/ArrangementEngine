@@ -63,11 +63,18 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
 
     private AdminApplication loadByKey(String key) {
         AdminApplication result =  new AdminApplication();
-        String[] values = StringUtils.split(key, ".");
-        if(values != null && values.length == 2){
-            AdminApplicationDTO adminApplicationDTO = iAdminApplicationRepository.selectApplicationByPartnerAppName(values[0], values[1]);
-            AdminApplication adminApplication = new AdminApplication();
-            BeanUtils.copyProperties(adminApplicationDTO,adminApplication);
+        try {
+            String[] values = StringUtils.split(key, ".");
+            if(values != null && values.length == 2){
+                AdminApplicationDTO adminApplicationDTO = iAdminApplicationRepository.selectApplicationByPartnerAppName(values[0], values[1]);
+                AdminApplication adminApplication = new AdminApplication();
+                BeanUtils.copyProperties(adminApplicationDTO,adminApplication);
+                result = adminApplication;
+            } else {
+                logger.error("load partnerCode and appName key invalidate :{}", key);
+            }
+        } catch (Exception e) {
+            logger.error("load partnerCode and appName"+ key +" :{}"  , e);
         }
         return result;
     }
