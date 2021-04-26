@@ -9,6 +9,7 @@ import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUtil;
 import cn.tongdun.kunpeng.api.application.content.constant.ModelResultEnum;
 import cn.tongdun.kunpeng.api.application.content.function.image.FilterConditionDO;
 import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
@@ -108,7 +109,7 @@ public class ImageFunctionV1 extends AbstractFunction {
 
     private String getModelResultMatchingConditionModel(Map<ModelResultEnum, String> modelResultEnumToLablelAndScoreModelResult, String model) {
         for(Map.Entry<ModelResultEnum, String> ele : modelResultEnumToLablelAndScoreModelResult.entrySet()){
-            if(ele.getKey().getName().equals(model)){
+            if(ele.getKey().getName().equals(model)||ele.getKey().getName().equals(CamelAndUnderlineConvertUtil.underline2camel(model))){
                 return ele.getValue();
             }
         }
