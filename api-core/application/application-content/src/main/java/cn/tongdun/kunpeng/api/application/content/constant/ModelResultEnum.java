@@ -4,10 +4,10 @@ package cn.tongdun.kunpeng.api.application.content.constant;
 
 public enum ModelResultEnum {
 
-    BRAND_LOGO_RECOGNITION_MODEL("品牌识别模型","image_brand_logo_model_result"),
-    LOGO_RECOGNITION_MODEL("LOGO识别模型","image_logo_model_result"),
-    SPR_POLITICAL_MODEL("涉政模型", "image_politics_model_result"),
-    VIOLENT_TERROR_MODEL("暴恐模型","image_terror_model_result")
+    BRAND_LOGO_RECOGNITION_MODEL("品牌识别模型","imageBrandLogoModelResult","image_brand_logo_model_result"),
+    LOGO_RECOGNITION_MODEL("LOGO识别模型","imageLogoModelResult", "image_logo_model_result"),
+    SPR_POLITICAL_MODEL("涉政模型", "imagePoliticsModelResult", "image_politics_model_result"),
+    VIOLENT_TERROR_MODEL("暴恐模型","imageTerrorModelResult", "image_terror_model_result")
     ;
 
 
@@ -30,9 +30,19 @@ public enum ModelResultEnum {
     private String desc;
     private String name;
 
-    ModelResultEnum(String desc, String name){
+    public String getCamelName() {
+        return camelName;
+    }
+
+    public void setCamelName(String camelName) {
+        this.camelName = camelName;
+    }
+
+    private String camelName;
+    ModelResultEnum(String desc, String camelName, String name){
         this.desc = desc;
         this.name = name;
+        this.camelName = camelName;
     }
 
 }

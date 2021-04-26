@@ -210,7 +210,7 @@ public class ImageFunctionV1 extends AbstractFunction {
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
         //遍历枚举类型，一次访问只会传入一类模型数据
         for(ModelResultEnum modelResultEnum: modelResultEnums){
-            Object result = context.get(modelResultEnum.getName());
+            Object result = context.get(modelResultEnum.getCamelName())==null?context.get(modelResultEnum.getName()):context.get(modelResultEnum.getCamelName());
             if(result!=null){
                 String lablelAndScoreModelResult = result.toString();
                 ModelResultEnumToLablelAndScoreModelResult.put(modelResultEnum,lablelAndScoreModelResult);
