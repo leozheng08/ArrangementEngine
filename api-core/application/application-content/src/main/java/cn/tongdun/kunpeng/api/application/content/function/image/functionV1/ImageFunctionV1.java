@@ -226,7 +226,7 @@ public class ImageFunctionV1 extends AbstractFunction {
      * @param context         上下文
      * @return
      */
-    public Map<ModelResultEnum,String> achieveModelResult(AbstractFraudContext context){
+    private Map<ModelResultEnum,String> achieveModelResult(AbstractFraudContext context){
         Map<ModelResultEnum,String> ModelResultMap = new HashMap<>();
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
         //遍历枚举类型，一次访问只会传入一类模型数据
@@ -250,7 +250,7 @@ public class ImageFunctionV1 extends AbstractFunction {
      * @return true：条件全部满足下 全部满足 任意满足下 任意满足   false：条件全部满足下 未能全部满足 任意满足下 全都不满足
      */
 
-    public boolean isConditionSatisfied(String logicOperator, List<Map> matchModelResultList, List<List<FilterConditionDO>> conditionList, List<List<FilterConditionDO>> hitFilters){
+    private boolean isConditionSatisfied(String logicOperator, List<Map> matchModelResultList, List<List<FilterConditionDO>> conditionList, List<List<FilterConditionDO>> hitFilters){
         int sum =  conditionList.size();
         int cnt =0;
         if(logicOperator.equals("&&")){
@@ -326,7 +326,7 @@ public class ImageFunctionV1 extends AbstractFunction {
      * @param lablelAndScoreModelResult
      * @return true：命中   false：未命中
      */
-    public boolean isMatchLabelAndScore(List<FilterConditionDO> condition, Map lablelAndScoreModelResult) {
+    private boolean isMatchLabelAndScore(List<FilterConditionDO> condition, Map lablelAndScoreModelResult) {
         if (condition == null || condition.size() == 0) {
             return false;
         }

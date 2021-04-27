@@ -29,10 +29,9 @@ public class ImageFunctionV2 extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(ImageFunction.class);
     private String conditions;
     private String logicOperator;
-    private String model;
     private static final String paramKeyConditions = "conditions";
     private static final String paramKeyLogicOperator = "logicOperator";
-    private static final String paramKeyModelType = "model";
+//    private static final String paramKeyModelType = "model";
 
 
     @Override
@@ -41,18 +40,18 @@ public class ImageFunctionV2 extends AbstractFunction {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
         //遍历枚举类型，一次访问会传入多类模型数据
-        Map<ModelResultEnum,String> ModelResultEnumToLablelAndScoreModelResult = achieveModelResult(context);
-        if (hasNullData(ModelResultEnumToLablelAndScoreModelResult,conditions, logicOperator)) {
+        Map<ModelResultEnum,String> modelResult = achieveModelResult(context);
+        if (hasNullData(modelResult,conditions, logicOperator)) {
             return functionResult;
         }
-        ConditionModel conditionModel = parseCondition(conditions,model);
-        String LablelAndScoreModelResult = getModelResultMatchingConditionModel(ModelResultEnumToLablelAndScoreModelResult,conditionModel.getModel());
-        if(LablelAndScoreModelResult==null){
+        ConditionModel conditionModel = parseCondition(conditions);
+        String matchModelResult = matchModel(modelResult,conditionModel.getModel());
+        if(matchModelResult==null){
             return functionResult;
         }
-        List<Map> LablelAndScoreModelResultList = this.parseLogoModelResult(LablelAndScoreModelResult);
+        List<Map> matchModelResultList = this.parseLogoModelResult(matchModelResult);
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
-        if(isConditionSatisfiedNumMatchConditionSize(logicOperator, LablelAndScoreModelResultList, conditionModel,hitFilters)){
+        if(isConditionSatisfied(logicOperator, matchModelResultList, conditionModel,hitFilters)){
             functionResult.setResult(true);
         }
         else{
@@ -76,9 +75,9 @@ public class ImageFunctionV2 extends AbstractFunction {
             if(functionParam.getName().equals(paramKeyLogicOperator)){
                 logicOperator = functionParam.getValue();
             }
-            if(functionParam.getName().equals(paramKeyModelType)){
-                model = functionParam.getValue();
-            }
+//            if(functionParam.getName().equals(paramKeyModelType)){
+//                model = functionParam.getValue();
+//            }
 
         }
     }
@@ -137,11 +136,11 @@ public class ImageFunctionV2 extends AbstractFunction {
     /**
      * 获取符合规则模型字段的图片分析结果
      *
-     * @param modelResultEnumToLablelAndScoreModelResult 图片分析结果
+     * @param modelResult 图片分析结果
      * @return
      */
-    private String getModelResultMatchingConditionModel(Map<ModelResultEnum, String> modelResultEnumToLablelAndScoreModelResult, String model) {
-        for(Map.Entry<ModelResultEnum, String> ele : modelResultEnumToLablelAndScoreModelResult.entrySet()){
+    private String matchModel(Map<ModelResultEnum, String> modelResult, String model) {
+        for(Map.Entry<ModelResultEnum, String> ele : modelResult.entrySet()){
             if(ele.getKey().getName().equals(model)||ele.getKey().getName().equals(CamelAndUnderlineConvertUtil.underline2camel(model))){
                 return ele.getValue();
             }
@@ -151,18 +150,23 @@ public class ImageFunctionV2 extends AbstractFunction {
     }
 
 
-    private ConditionModel parseCondition(String params, String model) {
+    private ConditionModel parseCondition(String params) {
         params = params.replace("\\\\\"", "\"").replace("\\", "");
         List<JSONArray> jsonArrays = JSONUtil.parseArray(params).toList(JSONArray.class);
         ConditionModel conditionModel = new ConditionModel();
         Map<String,List<ConditionGroup>> labelToConditionGroups = new HashMap<>();
         Map<String,List<FilterConditionDTO>> filters = new HashMap<>();
+        String model = null;
         for (JSONArray jsonArray : jsonArrays) {
             Map<String, Object> logoName = (Map<String, Object>) jsonArray.get(0);
             FilterConditionDO logoNameCondition = new FilterConditionDO();
             logoNameCondition.setLeftPropertyName(logoName.get("field").toString());
             logoNameCondition.setOperator(logoName.get("operator").toString());
             logoNameCondition.setRightValue(logoName.get("value").toString());
+            //通过解析field的值获得model类别
+            if(model==null){
+                model = logoName.get("value").toString();
+            }
             logoNameCondition.setRightValueType("STRING");
 
             Map<String, Object> logoScore = (Map<String, Object>) jsonArray.get(1);
@@ -272,7 +276,7 @@ public class ImageFunctionV2 extends AbstractFunction {
         return maps;
     }
 
-    public boolean isConditionSatisfiedNumMatchConditionSize(String logicOperator, List<Map> LablelAndScoreModelResultList, ConditionModel conditionModel, List<List<FilterConditionDO>> hitFilters){
+    public boolean isConditionSatisfied(String logicOperator, List<Map> matchModelResultList, ConditionModel conditionModel, List<List<FilterConditionDO>> hitFilters){
         Map<String, List<ConditionGroup>> labelToConditionGroups = conditionModel.getLabelToConditionGroups();
         if(StringUtils.equalsIgnoreCase(logicOperator,"&&")){
             int times = calcul(labelToConditionGroups);
@@ -281,7 +285,7 @@ public class ImageFunctionV2 extends AbstractFunction {
             for(Map.Entry<String, List<ConditionGroup>> labelToConditionGroup: labelToConditionGroups.entrySet()){
                b:
                for(ConditionGroup conditionGroup : labelToConditionGroup.getValue()){
-                   if(containsMatchModelResult(conditionGroup,LablelAndScoreModelResultList,"&&")){
+                   if(containsMatchModelResult(conditionGroup,matchModelResultList,"&&")){
                        cnt++;
                        if(cnt==times){
                            hitFilters.addAll(ConvertConditionGroupsToFilterConditions(labelToConditionGroups));
@@ -298,7 +302,7 @@ public class ImageFunctionV2 extends AbstractFunction {
             for(Map.Entry<String, List<ConditionGroup>> labelToConditionGroup: labelToConditionGroups.entrySet()){
                 b:
                 for(ConditionGroup conditionGroup : labelToConditionGroup.getValue()){
-                    if(containsMatchModelResult(conditionGroup,LablelAndScoreModelResultList,"||")){
+                    if(containsMatchModelResult(conditionGroup,matchModelResultList,"||")){
                             hitFilters.add(ConvertConditionGroupToFilterConditions(conditionGroup));
                             return true;
                         }
