@@ -45,7 +45,6 @@ public class ImageFunctionV1 extends AbstractFunction {
     private String model = "image_brand_logo_model_result";
     private static final String paramKeyConditions = "conditions";
     private static final String paramKeyLogicOperator = "logicOperator";
-    private static final String paramKeyModelType = "model";
 
 
     @Override
@@ -55,22 +54,30 @@ public class ImageFunctionV1 extends AbstractFunction {
 
         //遍历枚举类型，一次访问会传入多类模型数据
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
-        Map<ModelResultEnum,String> modelResultEnumToLablelAndScoreModelResult = achieveModelResult(context);
-        if (hasNullData(modelResultEnumToLablelAndScoreModelResult,conditions, logicOperator)) {
-            return functionResult;
-        }
-        String LablelAndScoreModelResult = getModelResultMatchingConditionModel(modelResultEnumToLablelAndScoreModelResult,model);
-        if(LablelAndScoreModelResult==null){
-            return functionResult;
-        }
-        //解析图片logo及分数信息
-        List<Map> lablelAndScoreModelResultList = this.parseLogoModelResult(LablelAndScoreModelResult);
-        if (org.springframework.util.CollectionUtils.isEmpty(lablelAndScoreModelResultList)) {
+        //从上下文获取多组模型数据
+        Map<ModelResultEnum,String> modelResult = achieveModelResult(context);
+        if (hasNullData(modelResult,conditions, logicOperator)) {
             return functionResult;
         }
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
+        //解析规则条件
         List<List<FilterConditionDO>> conditionList = this.parseCondition(conditions);
-        if(isConditionSatisfied(logicOperator, lablelAndScoreModelResultList, conditionList, hitFilters)){
+
+        String model = getModel(conditionList);
+        if(model==null){
+            return functionResult;
+        }
+        String matchModelResult = matchModel(modelResult,model);
+        if(matchModelResult==null){
+            return functionResult;
+        }
+        //解析图片logo及分数信息
+        List<Map> matchModelResultList = this.parseLogoModelResult(matchModelResult);
+        if (org.springframework.util.CollectionUtils.isEmpty(matchModelResultList)) {
+            return functionResult;
+        }
+        //判断数据是否命中规则
+        if(isConditionSatisfied(logicOperator, matchModelResultList, conditionList, hitFilters)){
             //未添加命中规则详情
 //            hitFilters.addAll(filters);
             functionResult.setResult(true);
@@ -81,34 +88,49 @@ public class ImageFunctionV1 extends AbstractFunction {
         }
         return functionResult;
     }
+    /**
+     * 解析condition中field对应的模型名称
+     *
+     * @param conditionList
+     * @return
+     */
+    private String getModel(List<List<FilterConditionDO>> conditionList) {
+        for(List<FilterConditionDO> condition : conditionList){
+            FilterConditionDO filterConditionDO = condition.get(0);
+            if(!StringUtils.isEmpty(filterConditionDO.getLeftPropertyName())){
+                return filterConditionDO.getLeftPropertyName();
+            }
+        }
+        return null;
+    }
 
     /**
      * 解析图片logo及分数信息
      *
-     * @param lablelAndScoreModelResult 图片解析结果json
+     * @param matchModelResult 图片解析结果json
      *                        eg:[{"score": 0.9977513551712036,"logoName": "chanel"},{"score": 0.9977513551712126,"logoName": "lv"},{"score": 0.3477513551712036,"logoName": "lv"}]
      * @return
      */
-    private List<Map> parseLogoModelResult(String lablelAndScoreModelResult) {
+    private List<Map> parseLogoModelResult(String matchModelResult) {
         List<Map> maps = null;
         try {
-            maps = JSONUtil.parseArray(lablelAndScoreModelResult).toList(Map.class);
+            maps = JSONUtil.parseArray(matchModelResult).toList(Map.class);
         } catch (Exception ex) {
-            logger.error("{},json解析出错，请检查格式：logoModelResult = {},error:{}", TraceUtils.getTrace(), lablelAndScoreModelResult, ex.getMessage(), ex);
-            throw new ParseException("json解析出错，请检查格式：logoModelResult = " + lablelAndScoreModelResult);
+            logger.error("{},json解析出错，请检查格式：logoModelResult = {},error:{}", TraceUtils.getTrace(), matchModelResult, ex.getMessage(), ex);
+            throw new ParseException("json解析出错，请检查格式：logoModelResult = " + matchModelResult);
         }
         return maps;
     }
     /**
      * 解析图片logo及分数信息
      *
-     * @param modelResultEnumToLablelAndScoreModelResult 模型分类后的数据
+     * @param modelResult 模型分类后的数据
      * @param        model 规则模型
      * return     对应规则模型的数据json
      **/
 
-    private String getModelResultMatchingConditionModel(Map<ModelResultEnum, String> modelResultEnumToLablelAndScoreModelResult, String model) {
-        for(Map.Entry<ModelResultEnum, String> ele : modelResultEnumToLablelAndScoreModelResult.entrySet()){
+    private String matchModel(Map<ModelResultEnum, String> modelResult, String model) {
+        for(Map.Entry<ModelResultEnum, String> ele : modelResult.entrySet()){
             if(ele.getKey().getName().equals(model)||ele.getKey().getName().equals(CamelAndUnderlineConvertUtil.underline2camel(model))){
                 return ele.getValue();
             }
@@ -163,9 +185,7 @@ public class ImageFunctionV1 extends AbstractFunction {
             if(functionParam.getName().equals(paramKeyLogicOperator)){
                 logicOperator = functionParam.getValue();
             }
-            if(functionParam.getName().equals(paramKeyModelType)){
-                model = functionParam.getValue();
-            }
+
 
         }
     }
@@ -178,13 +198,13 @@ public class ImageFunctionV1 extends AbstractFunction {
     /**
      * 校验数据
      *
-     * @param modelResultEnumToLablelAndScoreModelResult 图片分析结果
+     * @param modelResult 图片分析结果
      * @param conditions      条件
      * @param logicOperator   条件组之间的关系 && ||
      * @return
      */
-    private boolean hasNullData(Map<ModelResultEnum,String> modelResultEnumToLablelAndScoreModelResult, String conditions, String logicOperator) {
-        if (modelResultEnumToLablelAndScoreModelResult.isEmpty()) {
+    private boolean hasNullData(Map<ModelResultEnum,String> modelResult, String conditions, String logicOperator) {
+        if (modelResult.isEmpty()) {
             logger.warn("The lablelAndScoreModelResult doesn't match modelResultEnum!");
             return true;
         }
@@ -207,38 +227,38 @@ public class ImageFunctionV1 extends AbstractFunction {
      * @return
      */
     public Map<ModelResultEnum,String> achieveModelResult(AbstractFraudContext context){
-        Map<ModelResultEnum,String> ModelResultEnumToLablelAndScoreModelResult = new HashMap<>();
+        Map<ModelResultEnum,String> ModelResultMap = new HashMap<>();
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
         //遍历枚举类型，一次访问只会传入一类模型数据
         for(ModelResultEnum modelResultEnum: modelResultEnums){
             Object result = context.get(modelResultEnum.getCamelName())==null?context.get(modelResultEnum.getName()):context.get(modelResultEnum.getCamelName());
             if(result!=null){
                 String lablelAndScoreModelResult = result.toString();
-                ModelResultEnumToLablelAndScoreModelResult.put(modelResultEnum,lablelAndScoreModelResult);
+                ModelResultMap.put(modelResultEnum,lablelAndScoreModelResult);
             }
         }
-        return ModelResultEnumToLablelAndScoreModelResult;
+        return ModelResultMap;
     }
 
     /**
      * 是否 命中label && 分数满足阈值
      *
      * @param logicOperator  命中&& ||
-     * @param lablelAndScoreModelResultList 访问接口上传的对应模型数据
+     * @param matchModelResultList 访问接口上传的对应模型数据
      * @param conditionList       规则列表
      * @param hitFilters 命中过滤的规则列表
      * @return true：条件全部满足下 全部满足 任意满足下 任意满足   false：条件全部满足下 未能全部满足 任意满足下 全都不满足
      */
 
-    public boolean isConditionSatisfied(String logicOperator, List<Map> lablelAndScoreModelResultList, List<List<FilterConditionDO>> conditionList, List<List<FilterConditionDO>> hitFilters){
+    public boolean isConditionSatisfied(String logicOperator, List<Map> matchModelResultList, List<List<FilterConditionDO>> conditionList, List<List<FilterConditionDO>> hitFilters){
         int sum =  conditionList.size();
         int cnt =0;
         if(logicOperator.equals("&&")){
             a:
             for(List<FilterConditionDO> condition :  conditionList){
                 b:
-                for (Map lablelAndScoreModelResult : lablelAndScoreModelResultList) {
-                    if(this.isMatchLabelAndScore(condition,lablelAndScoreModelResult)){
+                for (Map matchModelResult : matchModelResultList) {
+                    if(this.isMatchLabelAndScore(condition,matchModelResult)){
                         cnt++;
                         if(cnt==sum){
                             hitFilters.addAll(conditionList);
@@ -252,8 +272,8 @@ public class ImageFunctionV1 extends AbstractFunction {
         }
         else{
             for(List<FilterConditionDO> condition :  conditionList){
-                for (Map lablelAndScoreModelResult : lablelAndScoreModelResultList) {
-                    if(this.isMatchLabelAndScore(condition,lablelAndScoreModelResult)){
+                for (Map matchModelResult : matchModelResultList) {
+                    if(this.isMatchLabelAndScore(condition,matchModelResult)){
                         hitFilters.add(condition);
                         return true;
                     }

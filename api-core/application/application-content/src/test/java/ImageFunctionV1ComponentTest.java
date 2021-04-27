@@ -42,10 +42,10 @@ public class ImageFunctionV1ComponentTest {
             "      }\n" +
             "    ]";
 
-    private String lablelAndScoreModelResult1 = "[{\"score\": 0.9977513551712036,\"label\": \"chanel\"},{\"score\": 0.9977513551712126,\"label\": \"lv\"},{\"score\": 0.3477513551712036,\"label\": \"lv\"}]";
-    private String lablelAndScoreModelResult2 = "[{\"score\": 0.9977513551712036,\"label\": \"coach\"},{\"score\": 0.9977513551712126,\"label\": \"nike\"},{\"score\": 0.3477513551712036,\"label\": \"nike\"}]";
-    private String lablelAndScoreModelResult3 = "[{\"score\": 0.9977513551712036,\"label\": \"dior\"},{\"score\": 0.9977513551712126,\"label\": \"lv\"},{\"score\": 0.3477513551712036,\"label\": \"Jaeger\"}]";
-    private String lablelAndScoreModelResult4 = "[{\"score\": 0.9977513551712036,\"label\": \"supreme\"},{\"score\": 0.9977513551712126,\"label\": \"burberry\"},{\"score\": 0.3477513551712036,\"label\": \"lv\"}]";
+    private String modelResult1 = "[{\"score\": 0.9977513551712036,\"label\": \"chanel\"},{\"score\": 0.9977513551712126,\"label\": \"lv\"},{\"score\": 0.3477513551712036,\"label\": \"lv\"}]";
+    private String modelResult2 = "[{\"score\": 0.9977513551712036,\"label\": \"coach\"},{\"score\": 0.9977513551712126,\"label\": \"nike\"},{\"score\": 0.3477513551712036,\"label\": \"nike\"}]";
+    private String modelResult3 = "[{\"score\": 0.9977513551712036,\"label\": \"dior\"},{\"score\": 0.9977513551712126,\"label\": \"lv\"},{\"score\": 0.3477513551712036,\"label\": \"Jaeger\"}]";
+    private String modelResult4 = "[{\"score\": 0.9977513551712036,\"label\": \"supreme\"},{\"score\": 0.9977513551712126,\"label\": \"burberry\"},{\"score\": 0.3477513551712036,\"label\": \"lv\"}]";
 
     String condition = "[[{\"field\":\"logoName\",\"operator\":\"include\",\"value\":\"dior\"},{\"field\":\"score\",\"operator\":\">\",\"value\":0.5}],[{\"field\":\"logoName\",\"operator\":\"include\",\"value\":\"Jaeger\"},{\"field\":\"score\",\"operator\":\"<\",\"value\":1}]]";
 
@@ -58,7 +58,7 @@ public class ImageFunctionV1ComponentTest {
     public void parseLogoModelResultTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method parseLogoModelResult = v1.getDeclaredMethod("parseLogoModelResult",String.class);
         parseLogoModelResult.setAccessible(true);
-        List<Map> lablelAndScoreModelResults = (List<Map>)parseLogoModelResult.invoke(v1Instance,lablelAndScoreModelResult1);
+        List<Map> lablelAndScoreModelResults = (List<Map>)parseLogoModelResult.invoke(v1Instance,modelResult1);
         for(Map map : lablelAndScoreModelResults){
             System.out.println(map.get("label"));
             System.out.println(map.get("score"));
@@ -69,22 +69,22 @@ public class ImageFunctionV1ComponentTest {
 
 
     @Test
-    public void getModelResultMatchingConditionModelTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Map<ModelResultEnum, String> modelResultEnumToLablelAndScoreModelResult = construct();
-        Method getModelResultMatchingConditionModel = v1.getDeclaredMethod("getModelResultMatchingConditionModel",Map.class,String.class);
-        getModelResultMatchingConditionModel.setAccessible(true);
-        String modelResult = (String) getModelResultMatchingConditionModel.invoke(v1Instance,modelResultEnumToLablelAndScoreModelResult,model);
-        System.out.println(modelResult);
+    public void matchModelTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Map<ModelResultEnum, String> modelResult = construct();
+        Method matchModel = v1.getDeclaredMethod("matchModel",Map.class,String.class);
+        matchModel.setAccessible(true);
+        String matchModelResult = (String) matchModel.invoke(v1Instance,modelResult,model);
+        System.out.println(matchModelResult);
     }
 
 
     public Map<ModelResultEnum,String> construct(){
-        Map<ModelResultEnum, String> modelResultEnumToLabelandScoreModelResult = new HashMap<>();
-        modelResultEnumToLabelandScoreModelResult.put(ModelResultEnum.BRAND_LOGO_RECOGNITION_MODEL,lablelAndScoreModelResult1);
-        modelResultEnumToLabelandScoreModelResult.put(ModelResultEnum.LOGO_RECOGNITION_MODEL,lablelAndScoreModelResult2);
-        modelResultEnumToLabelandScoreModelResult.put(ModelResultEnum.SPR_POLITICAL_MODEL,lablelAndScoreModelResult3);
-        modelResultEnumToLabelandScoreModelResult.put(ModelResultEnum.VIOLENT_TERROR_MODEL,lablelAndScoreModelResult4);
-        return modelResultEnumToLabelandScoreModelResult;
+        Map<ModelResultEnum, String> modelResultMap = new HashMap<>();
+        modelResultMap.put(ModelResultEnum.BRAND_LOGO_RECOGNITION_MODEL,modelResult1);
+        modelResultMap.put(ModelResultEnum.LOGO_RECOGNITION_MODEL,modelResult2);
+        modelResultMap.put(ModelResultEnum.SPR_POLITICAL_MODEL,modelResult3);
+        modelResultMap.put(ModelResultEnum.VIOLENT_TERROR_MODEL,modelResult4);
+        return modelResultMap;
 
     }
 
@@ -132,7 +132,7 @@ public class ImageFunctionV1ComponentTest {
         String logicOperator = "&&";
         Method parseLogoModelResult = v1.getDeclaredMethod("parseLogoModelResult",String.class);
         parseLogoModelResult.setAccessible(true);
-        List<Map> lablelAndScoreModelResults = (List<Map>)parseLogoModelResult.invoke(v1Instance,lablelAndScoreModelResult3);
+        List<Map> modelResults = (List<Map>)parseLogoModelResult.invoke(v1Instance,modelResult3);
         Method parseCondition = v1.getDeclaredMethod("parseCondition", String.class);
         parseCondition.setAccessible(true);
         List<List<FilterConditionDO>> conditionList = (List<List<FilterConditionDO>> )parseCondition.invoke(v1Instance,condition);
@@ -141,7 +141,7 @@ public class ImageFunctionV1ComponentTest {
 
         Method isConditionSatisfied = v1.getDeclaredMethod("isConditionSatisfied",String.class,List.class,List.class,List.class);
         isConditionSatisfied.setAccessible(true);
-        Boolean res = (Boolean)isConditionSatisfied.invoke(v1Instance,logicOperator,lablelAndScoreModelResults,conditionList,hitFilters);
+        Boolean res = (Boolean)isConditionSatisfied.invoke(v1Instance,logicOperator,modelResults,conditionList,hitFilters);
         System.out.println(res==true);
 
     }

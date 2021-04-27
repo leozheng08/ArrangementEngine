@@ -8,6 +8,7 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUtil;
 import cn.tongdun.kunpeng.api.application.content.constant.MathOperatorEnum;
 import cn.tongdun.kunpeng.api.application.content.constant.ModelResultEnum;
 import cn.tongdun.kunpeng.api.application.content.function.image.*;
@@ -39,7 +40,7 @@ public class ImageFunctionV2 extends AbstractFunction {
         FunctionResult functionResult = new FunctionResult(false, null);
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
-        //遍历枚举类型，一次访问只会传入一类模型数据
+        //遍历枚举类型，一次访问会传入多类模型数据
         Map<ModelResultEnum,String> ModelResultEnumToLablelAndScoreModelResult = achieveModelResult(context);
         if (hasNullData(ModelResultEnumToLablelAndScoreModelResult,conditions, logicOperator)) {
             return functionResult;
@@ -51,11 +52,8 @@ public class ImageFunctionV2 extends AbstractFunction {
         }
         List<Map> LablelAndScoreModelResultList = this.parseLogoModelResult(LablelAndScoreModelResult);
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
-        if(isConditionSatisfiedNumMatchConditionSize(logicOperator, LablelAndScoreModelResultList, conditionModel)){
-            //未添加命中规则详情
-//            hitFilters.addAll(filters);
+        if(isConditionSatisfiedNumMatchConditionSize(logicOperator, LablelAndScoreModelResultList, conditionModel,hitFilters)){
             functionResult.setResult(true);
-//            functionResult.setDetailCallable(this.buildDetail(hitFilters));
         }
         else{
             functionResult.setResult(false);
@@ -92,7 +90,7 @@ public class ImageFunctionV2 extends AbstractFunction {
 
 
     /**
-     * 遍历枚举类型，默认一次访问只会传入一类模型数据, 但使用Map防止多模型数据传入，同一模型多次输入数据会被覆盖，获取模型数据
+     * 遍历枚举类型，默认一次访问会传入多类模型数据, 但使用Map防止多模型数据传入，同一模型多次输入数据会被覆盖，获取模型数据
      *
      * @param context         上下文
      * @return
@@ -102,7 +100,7 @@ public class ImageFunctionV2 extends AbstractFunction {
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
         //遍历枚举类型，一次访问只会传入一类模型数据
         for(ModelResultEnum modelResultEnum: modelResultEnums){
-            Object result = context.get(modelResultEnum.getName());
+            Object result = context.get(modelResultEnum.getCamelName())==null?context.get(modelResultEnum.getName()):context.get(modelResultEnum.getCamelName());
             if(result!=null){
                 String lablelAndScoreModelResult = result.toString();
                 ModelResultEnumToLablelAndScoreModelResult.put(modelResultEnum,lablelAndScoreModelResult);
@@ -144,7 +142,7 @@ public class ImageFunctionV2 extends AbstractFunction {
      */
     private String getModelResultMatchingConditionModel(Map<ModelResultEnum, String> modelResultEnumToLablelAndScoreModelResult, String model) {
         for(Map.Entry<ModelResultEnum, String> ele : modelResultEnumToLablelAndScoreModelResult.entrySet()){
-            if(ele.getKey().getName().equals(model)){
+            if(ele.getKey().getName().equals(model)||ele.getKey().getName().equals(CamelAndUnderlineConvertUtil.underline2camel(model))){
                 return ele.getValue();
             }
         }
@@ -274,7 +272,7 @@ public class ImageFunctionV2 extends AbstractFunction {
         return maps;
     }
 
-    public boolean isConditionSatisfiedNumMatchConditionSize(String logicOperator, List<Map> LablelAndScoreModelResultList, ConditionModel conditionModel){
+    public boolean isConditionSatisfiedNumMatchConditionSize(String logicOperator, List<Map> LablelAndScoreModelResultList, ConditionModel conditionModel, List<List<FilterConditionDO>> hitFilters){
         Map<String, List<ConditionGroup>> labelToConditionGroups = conditionModel.getLabelToConditionGroups();
         if(StringUtils.equalsIgnoreCase(logicOperator,"&&")){
             int times = calcul(labelToConditionGroups);
@@ -286,8 +284,10 @@ public class ImageFunctionV2 extends AbstractFunction {
                    if(containsMatchModelResult(conditionGroup,LablelAndScoreModelResultList,"&&")){
                        cnt++;
                        if(cnt==times){
+                           hitFilters.addAll(ConvertConditionGroupsToFilterConditions(labelToConditionGroups));
                            return true;
                        }
+                       break b;
                    }
                }
             }
@@ -299,6 +299,7 @@ public class ImageFunctionV2 extends AbstractFunction {
                 b:
                 for(ConditionGroup conditionGroup : labelToConditionGroup.getValue()){
                     if(containsMatchModelResult(conditionGroup,LablelAndScoreModelResultList,"||")){
+                            hitFilters.add(ConvertConditionGroupToFilterConditions(conditionGroup));
                             return true;
                         }
                     }
@@ -308,7 +309,33 @@ public class ImageFunctionV2 extends AbstractFunction {
 
     }
 
+    private List<FilterConditionDO> ConvertConditionGroupToFilterConditions(ConditionGroup conditionGroup) {
+        List<FilterConditionDO> res = new ArrayList<>();
+        if(conditionGroup.getLeftCondition()!=null){
+            res.add(conditionGroup.getLeftCondition().get(0));
+            res.add(conditionGroup.getLeftCondition().get(1));
+        }
+        if(conditionGroup.getRightCondition()!=null){
+            res.add(conditionGroup.getRightCondition().get(0));
+            res.add(conditionGroup.getRightCondition().get(1));
+        }
+        return res;
+    }
 
+    private List<List<FilterConditionDO>> ConvertConditionGroupsToFilterConditions(Map<String, List<ConditionGroup>> labelToConditionGroups) {
+        List<List<FilterConditionDO>> res = new ArrayList<>();
+        for(Map.Entry<String, List<ConditionGroup>> labelToConditionGroup : labelToConditionGroups.entrySet()){
+            for(ConditionGroup conditionGroup : labelToConditionGroup.getValue()){
+                if(conditionGroup.getLeftCondition()!=null){
+                    res.add(conditionGroup.getLeftCondition());
+                }
+                if(conditionGroup.getRightCondition()!=null){
+                    res.add(conditionGroup.getRightCondition());
+                }
+            }
+        }
+        return res;
+    }
 
 
     private int calcul(Map<String, List<ConditionGroup>> labelToConditionGroups) {
