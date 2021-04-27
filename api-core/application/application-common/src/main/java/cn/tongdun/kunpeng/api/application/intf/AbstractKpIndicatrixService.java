@@ -132,19 +132,19 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         if (retCode < 500) {
             if (indicatrixVal.getIndicatrixId() == null) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
+                logger.info(TraceUtils.getFormatTrace()+"指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
                 return;
             }
 
             if (retCode == IndicatrixRetCode.PARAMS_ERROR.getCode()) {
-                logger.warn(TraceUtils.getFormatTrace()+"指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
+                logger.info(TraceUtils.getFormatTrace()+"指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
                 return;
             }
 
             String indicatrixId = indicatrixVal.getIndicatrixId().toString();
             context.putPlatformIndexMap(indicatrixId, indicatrixVal);
             if (retCode == IndicatrixRetCode.INDEX_ERROR.getCode()) {
-                logger.error(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
+                logger.info(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
             }
         } else {
             logger.error(TraceUtils.getFormatTrace()+"指标返回异常,gaea返回结果：{}", indicatrixVal.toString());

@@ -53,7 +53,7 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
             }
 
             // refs: http://wiki.tongdun.me/pages/viewpage.action?pageId=37815128
-            logger.error(TraceUtils.getFormatTrace() + "ip query geoInfo failed ip {}, aGeoip code :{}, msg :{}", ip, aGeoipEntity.getCode(), aGeoipEntity.getMsg());
+            logger.info(TraceUtils.getFormatTrace() + "ip query geoInfo failed ip {}, aGeoip code :{}, msg :{}", ip, aGeoipEntity.getCode(), aGeoipEntity.getMsg());
             String subReasonCode = dictionaryManager.getReasonCode("geoIp", aGeoipEntity.getCode());
             // 针对字典表中未配置的状态子码，暂时不做处理
             if (StringUtils.isNotEmpty(subReasonCode)) {
