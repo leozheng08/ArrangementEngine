@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- metrics的集中管理中心,所有的metrics,如果需要汇报,都需要从这里获得(自动注册)-->
+    <bean id="registry" class="cn.fraudmetrix.metrics.Registry" />
+
+    <!-- influxdb的client,用于往influxdb发送数据-->
+    <bean id="influxDB" class="org.influxdb.InfluxDBFactory" factory-method="connect">
+        <constructor-arg name="url" value="${influxdb.url}"/>
+        <constructor-arg name="username" value="user"/>
+        <constructor-arg name="password" value="pass"/>
+    </bean>
+
+    <!-- 负责将metrics数据汇报给influxdb-->
+    <bean id="influxDBReporter" class="cn.fraudmetrix.metrics.reporter.InfluxDBReporter">
+        <property name="influxDB" ref="influxDB" />
+        <property name="database" value="${influxdb.database}" />
+        <property name="tagProviders">
+            <list>
+                <ref bean="serverInfoProvider"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 从registry中读取数据,然后转交给具体的report进行汇报-->
+    <bean class="cn.fraudmetrix.metrics.RegistryReporter" init-method="init">
+        <property name="registry" ref="registry"/>
+        <property name="reportIntervalMillis" value="${metrics.report.interval}"/>
+        <!-- true 启用 false 不启用 -->
+        <property name="isEnable" value="${metrics.enable}"/>
+        <property name="reporters">
+            <list>
+                <ref bean="influxDBReporter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 给influxdbReporter添加公共tag-->
+    <bean id="serverInfoProvider"  class="cn.fraudmetrix.metrics.ServerInfoProvider" >
+    </bean>
+
+</beans>

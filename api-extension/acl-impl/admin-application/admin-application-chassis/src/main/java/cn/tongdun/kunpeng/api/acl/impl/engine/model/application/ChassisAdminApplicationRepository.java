@@ -69,6 +69,7 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
         List<AppProductDTO> appList = new ArrayList<>();
         // 正常的话查询dubbo接口获取应用
         ApiResult<List<AppProductDTO>> appProductList = productService.getAppList(partnerCode, appName);
+
         if (appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
             appList = appProductList.getData();
         } else {
@@ -76,18 +77,14 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
             return result;
         }
 
-        logger.info("ChassisAdminApplicationRepository selectApplicationByPartnerAppName end, size:{} ", appProductList.getData().size());
-
         if (CollectionUtils.isNotEmpty(appList)) {
-            return appList.stream().findFirst().map(appProductDTO -> {
+            result = appList.stream().findFirst().map(appProductDTO -> {
                 AdminApplicationDTO adminApplication = new AdminApplicationDTO();
                 BeanUtils.copyProperties(appProductDTO, adminApplication);
                 return adminApplication;
             }).get();
-        } else {
-            return result;
         }
-
+        return result;
     }
 
     @Override
