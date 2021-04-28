@@ -3,7 +3,6 @@ package cn.tongdun.kunpeng.api.application.intf;
 import cn.tongdun.gaea.client.common.IndicatrixRetCode;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixRequest;
-import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
@@ -29,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static cn.tongdun.kunpeng.api.common.MetricsConstant.*;
+
 /**
  * @author jie
  * @date 2020/12/15
@@ -37,12 +38,6 @@ import java.util.Set;
 public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractKpIndicatrixService.class);
-
-    protected static final String METRICS_TAG_API_QPS_KEY = MetricsConstant.METRICS_TAG_API_QPS_KEY;
-    protected static final String METRICS_TAG_PARTNER_KEY = "partner_code";
-    protected static final String METRICS_API_QPS_KEY = MetricsConstant.METRICS_API_QPS_KEY;
-    protected static final String METRICS_API_RT_KEY = MetricsConstant.METRICS_API_RT_KEY;
-    protected static final String METRICS_API_PARTNER_RT_KEY = "kunpeng.api.dubbo.partner.rt";
 
     @Autowired
     private IMetrics metrics;
@@ -137,19 +132,19 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         if (retCode < 500) {
             if (indicatrixVal.getIndicatrixId() == null) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
+                logger.info(TraceUtils.getFormatTrace()+"指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
                 return;
             }
 
             if (retCode == IndicatrixRetCode.PARAMS_ERROR.getCode()) {
-                logger.warn(TraceUtils.getFormatTrace()+"指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
+                logger.info(TraceUtils.getFormatTrace()+"指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
                 return;
             }
 
             String indicatrixId = indicatrixVal.getIndicatrixId().toString();
             context.putPlatformIndexMap(indicatrixId, indicatrixVal);
             if (retCode == IndicatrixRetCode.INDEX_ERROR.getCode()) {
-                logger.error(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
+                logger.info(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
             }
         } else {
             logger.error(TraceUtils.getFormatTrace()+"指标返回异常,gaea返回结果：{}", indicatrixVal.toString());

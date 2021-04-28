@@ -7,6 +7,9 @@ package cn.tongdun.kunpeng.api.common;
  */
 public class MetricsConstant {
 
+    public static final String METRICS_TAG_PARTNER_KEY = "partner_code";
+    public static final String METRICS_API_PARTNER_RT_KEY = "kunpeng.api.dubbo.partner.rt";
+
     /**
      * kunpeng 调用外部dubbo/http等接口打点标签
      */

@@ -18,6 +18,7 @@
     <modules>
         <module>metrics-prometheus</module>
         <module>metrics-ignore</module>
+        <module>metrics-influxdb</module>
     </modules>
 
 
