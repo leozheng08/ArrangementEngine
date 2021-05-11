@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application.content.function.image.functionV1;
 
+import cn.fraudmetrix.module.tdrule.action.Action;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
@@ -19,6 +20,7 @@ import cn.tongdun.kunpeng.api.common.util.CompareUtils;
 import cn.tongdun.kunpeng.api.ruledetail.ImageDetail;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,10 +44,10 @@ public class ImageFunctionV1 extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(ImageFunction.class);
     private String conditions;
     private String logicOperator;
+    private List<Action> actionList;
     private String model = "image_brand_logo_model_result";
     private static final String paramKeyConditions = "conditions";
     private static final String paramKeyLogicOperator = "logicOperator";
-
 
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
@@ -226,6 +228,7 @@ public class ImageFunctionV1 extends AbstractFunction {
      * @param context         上下文
      * @return
      */
+
     private Map<ModelResultEnum,String> achieveModelResult(AbstractFraudContext context){
         Map<ModelResultEnum,String> ModelResultMap = new HashMap<>();
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
@@ -369,5 +372,15 @@ public class ImageFunctionV1 extends AbstractFunction {
         }
         boolean match = CompareUtils.compare(imageLogoScore.get(field).toString(), rightValue, type, operator);
         return match;
+    }
+
+    /**
+     * 传入操作配置
+     *
+     * @param  actionList
+     * @return
+     */
+    public void parseAction(List<Action> actionList) {
+        this.actionList = actionList;
     }
 }

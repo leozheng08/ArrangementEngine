@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.application.content.rule.image;
 
+import cn.fraudmetrix.module.tdrule.action.Action;
+import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
@@ -10,6 +12,8 @@ import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
 import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
 import cn.tongdun.kunpeng.api.application.content.function.image.functionV1.ImageFunctionV1;
 
+import java.util.List;
+
 /**
  * @description: 内容安全-图像识别
  * @author: zhongxiang.wang
@@ -19,7 +23,13 @@ public class ImageRule extends AbstractRule {
     private ImageFunctionV1 function;
 
     @Override
+    public List<Action> getActionList() {
+        return super.getActionList();
+    }
+
+    @Override
     public EvalResult run(ExecuteContext executeContext) {
+        this.function.parseAction(getActionList());
         Object ret = this.function.eval(executeContext);
         return EvalResult.valueOf(ret);
     }

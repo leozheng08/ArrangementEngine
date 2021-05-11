@@ -6,6 +6,7 @@ import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUtil;
@@ -15,6 +16,7 @@ import cn.tongdun.kunpeng.api.application.content.function.image.*;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.CompareUtils;
+import cn.tongdun.kunpeng.api.ruledetail.ImageDetail;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -53,6 +55,7 @@ public class ImageFunctionV2 extends AbstractFunction {
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
         if(isConditionSatisfied(logicOperator, matchModelResultList, conditionModel,hitFilters)){
             functionResult.setResult(true);
+            functionResult.setDetailCallable(this.buildDetail(hitFilters));
         }
         else{
             functionResult.setResult(false);
@@ -60,6 +63,32 @@ public class ImageFunctionV2 extends AbstractFunction {
         return functionResult;
     }
 
+    private DetailCallable buildDetail(List<List<FilterConditionDO>> hitFilters) {
+        return () -> {
+            ImageDetail detail = new ImageDetail();
+            detail.setRuleUuid(this.ruleUuid);
+            detail.setConditionUuid(this.conditionUuid);
+            detail.setDescription(description);
+            List<String> conditions = new ArrayList<>();
+            if (!org.springframework.util.CollectionUtils.isEmpty(hitFilters)) {
+                hitFilters.stream().forEach(hitFilter -> {
+                    StringBuilder builder = new StringBuilder();
+                    FilterConditionDO logoName = hitFilter.get(0);
+                    FilterConditionDO logoScore = hitFilter.get(1);
+                    String condition = builder.append(logoName.getLeftPropertyName()).append(" ")
+                            .append(logoName.getOperator()).append(" ")
+                            .append(logoName.getRightValue()).append(",")
+                            .append(logoScore.getLeftPropertyName()).append(" ")
+                            .append(logoScore.getOperator()).append(" ")
+                            .append(logoScore.getRightValue())
+                            .toString();
+                    conditions.add(condition);
+                });
+            }
+            detail.setHitConditions(conditions);
+            return detail;
+        };
+    }
 
 
     @Override

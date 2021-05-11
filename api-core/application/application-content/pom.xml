@@ -38,6 +38,12 @@
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>application-check</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
