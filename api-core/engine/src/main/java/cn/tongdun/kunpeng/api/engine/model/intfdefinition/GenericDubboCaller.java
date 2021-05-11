@@ -56,7 +56,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
     private GenericServiceManager genericServiceManager;
 
     @Autowired
-    private IMetrics prometheusMetricsImpl;
+    private IMetrics metrics;
 
     @Autowired
     private DictionaryManager dictionaryManager;
@@ -95,8 +95,8 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             final GenericService genericService = genericServiceManager.getGenericService(interfaceDefinition);
 
             // 5. 监控打点
-            prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_QPS_KEY, tags);
-            timeContext = prometheusMetricsImpl.metricTimer(MetricsConstant.METRICS_API_RT_KEY, tags);
+            metrics.counter(MetricsConstant.METRICS_API_QPS_KEY, tags);
+            timeContext = metrics.metricTimer(MetricsConstant.METRICS_API_RT_KEY, tags);
 
             logger.info(TraceUtils.getFormatTrace()
                             + "dubbo泛化调用开始 interface_method:{}-{},interfaceParamInfos:{} , DecisionFlowInterfaceCallInfo:{}",
@@ -116,13 +116,13 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             return false;
         } catch (Exception e) {
             if (ReasonCodeUtil.isTimeout(e)) {
-                prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_TIMEOUT_KEY,tags);
+                metrics.counter(MetricsConstant.METRICS_API_TIMEOUT_KEY,tags);
                 result = APIResult.DUBBO_API_RESULT_TIMEOUT;
             } else if (e.getClass() == com.alibaba.dubbo.rpc.RpcException.class) {
-                prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_CALL_ERROR_KEY,tags);
+                metrics.counter(MetricsConstant.METRICS_API_CALL_ERROR_KEY,tags);
                 result = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR;
             } else {
-                prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_INTERNAL_ERROR_KEY,tags);
+                metrics.counter(MetricsConstant.METRICS_API_INTERNAL_ERROR_KEY,tags);
                 result = APIResult.DUBBO_API_RESULT_INTERNAL_ERROR;
             }
             logger.warn(TraceUtils.getFormatTrace() + "generic dubbo call method:{}, provider:{} catch exception result:{}", interfaceDefinition.getName(), providerHost, JSON.toJSONString(result), e);
@@ -179,7 +179,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
                     if (subReasonCodeObj != null && subReasonCodeObj.getSub_code() != null
                         && subReasonCodeObj.getSub_code().startsWith("507")) {
-                        prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_BIZ_ERROR_KEY, tags);
+                        metrics.counter(MetricsConstant.METRICS_API_BIZ_ERROR_KEY, tags);
                     }
                 }
             }
@@ -189,7 +189,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             // 三方接口结果按照配置映射输出到上下文字段中
             serializeOutParamsToRuleEngine(fraudContext, decisionFlowInterface, interfaceDefinition, result);
         } catch (Exception e) {
-            prometheusMetricsImpl.counter(MetricsConstant.METRICS_API_OTHER_ERROR_KEY, tags);
+            metrics.counter(MetricsConstant.METRICS_API_OTHER_ERROR_KEY, tags);
             logger.error(TraceUtils.getFormatTrace()
                          + "dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
         }
