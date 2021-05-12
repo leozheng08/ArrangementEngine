@@ -370,7 +370,8 @@ public class ImageFunctionV1 extends AbstractFunction {
         if (StringUtils.isEmpty(type) || StringUtils.isEmpty(operator) || StringUtils.isEmpty(rightValue)) {
             return false;
         }
-        boolean match = CompareUtils.compare(imageLogoScore.get(field).toString(), rightValue, type, operator);
+
+        boolean match = CompareUtils.compare(imageLogoScore.get(field)==null?null:imageLogoScore.get(field).toString(), rightValue, type, operator);
         return match;
     }
 

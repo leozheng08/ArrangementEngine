@@ -194,6 +194,21 @@ public class ImageFunctionV1Test {
         Assert.assertEquals(modelResultMap.get(ModelResultEnum.VIOLENT_TERROR_MODEL),modelResult4);
     }
 
+
+    @Test
+    public void isMatchTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        FilterConditionDO filterConditionDO = new FilterConditionDO();
+        filterConditionDO.setRightValueType("String");
+        filterConditionDO.setOperator("isnull");
+        filterConditionDO.setRightValue("lv");
+        Map<String,String> imageLogoScore = new HashMap<>();
+        imageLogoScore.put("score","0.5");
+        Method isMatch = v1.getDeclaredMethod("isMatch",FilterConditionDO.class, Map.class, String.class);
+        isMatch.setAccessible(true);
+        Boolean result = (Boolean) isMatch.invoke(v1Instance,filterConditionDO,imageLogoScore,"label");
+        Assert.assertEquals(result,true);
+    }
+
     /**
      * 测试满足任意条件命中
      */
