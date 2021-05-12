@@ -45,6 +45,7 @@ public class GeoIpStep implements IRiskStep {
             if (Objects.nonNull(geoip)) {
                 context.addExternalObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, geoip);
                 context.set("ipAddressCountry", geoip.getCountry());
+                context.set("ipAddressProvince",geoip.getProvince());
                 context.set("ipProvince", geoip.getProvince());
                 context.set("ipAddressCity", geoip.getCity());
                 context.set("ipAddressCountryCode", geoip.getCountryId());

@@ -142,7 +142,7 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
             GeoipEntity geoip = null;
             try {
                 geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp,context));
-                context.set("trueIpAddressCountry",geoip.getCounty());
+                context.set("trueIpAddressCountry",geoip.getCountry());
                 context.set("trueIpAddressProvince",geoip.getProvince());
                 context.set("trueIpAddressCity",geoip.getCity());
                 context.set("trueIpAddressCountryCode",geoip.getCountryId());

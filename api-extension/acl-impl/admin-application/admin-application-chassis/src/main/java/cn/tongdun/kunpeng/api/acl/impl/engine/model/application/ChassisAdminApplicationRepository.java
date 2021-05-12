@@ -13,10 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +21,7 @@ import java.util.stream.Collectors;
  * @Date: 2020/4/13 上午11:27
  */
 @Repository
-public class ChassisAdminApplicationRepository implements IAdminApplicationRepository {
+public class ChassisAdminApplicationRepository implements IAdminApplicationRepository{
 
     private Logger logger = LoggerFactory.getLogger(ChassisAdminApplicationRepository.class);
 
@@ -33,8 +30,8 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
     private ProductService productService;
 
     @Override
-    public List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners) {
-        if (null == partners || partners.isEmpty()) {
+    public List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners){
+        if (null==partners||partners.isEmpty()){
             return Collections.emptyList();
         }
 
@@ -42,18 +39,15 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
         List<AppProductDTO> appList = new ArrayList<>();
         // 正常的话查询dubbo接口获取应用
         ApiResult<List<AppProductDTO>> appProductList = productService.getAppProductList(null);
-        if (appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
+        if(appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
             appList = appProductList.getData();
         } else {
             return Collections.emptyList();
         }
 
-        logger.info("ChassisAdminApplicationRepository queryApplicationsByPartners end, size:{} ", appProductList.getData().size());
-
-        return appList.stream().filter(x -> partners.contains(x.getPartnerCode())).map(appProductDTO -> {
+        return appList.stream().filter(x -> partners.contains(x.getPartnerCode())).map(appProductDTO->{
             AdminApplicationDTO adminApplication = new AdminApplicationDTO();
-            BeanUtils.copyProperties(appProductDTO, adminApplication);
-            adminApplication.setDisplayName(appProductDTO.getAppDisplayName());
+            BeanUtils.copyProperties(appProductDTO,adminApplication);
             return adminApplication;
         }).collect(Collectors.toList());
     }
@@ -70,7 +64,7 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
         // 正常的话查询dubbo接口获取应用
         ApiResult<List<AppProductDTO>> appProductList = productService.getAppList(partnerCode, appName);
 
-        if (appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
+        if(appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
             appList = appProductList.getData();
         } else {
             logger.warn("chassis selectApplicationByPartnerAppName result is error:{}", appProductList);
@@ -85,6 +79,7 @@ public class ChassisAdminApplicationRepository implements IAdminApplicationRepos
             }).get();
         }
         return result;
+
     }
 
     @Override
