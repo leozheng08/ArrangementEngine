@@ -134,12 +134,6 @@
             <version>${api-extension.version}</version>
         </dependency>
 
-        <dependency>
-            <!-- 无redis等缓存基件 -->
-            <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>kv-cache-ignore</artifactId>
-            <version>${api-extension.version}</version>
-        </dependency>
 
         <dependency>
             <!-- 单一集群 -->
