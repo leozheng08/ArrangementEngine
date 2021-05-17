@@ -58,6 +58,7 @@
         <spring-test.version>5.2.2.RELEASE</spring-test.version>
         <junit.version>4.12</junit.version>
         <jcache-provider.version>1.0.11</jcache-provider.version>
+        <evan-client.version>1.0.4</evan-client.version>
 
     </properties>
 

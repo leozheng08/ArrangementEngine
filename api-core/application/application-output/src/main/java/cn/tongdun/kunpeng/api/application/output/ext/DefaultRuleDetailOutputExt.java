@@ -138,6 +138,9 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
             response.setRuleDetails(ruleDetailList);
         }
 
+        if (StringUtils.contains(request.getRespDetailType(), "hitRuleTestDetails")) {
+            response.setRuleTestDetails(ruleDetailList);
+        }
         return true;
     }
 }
