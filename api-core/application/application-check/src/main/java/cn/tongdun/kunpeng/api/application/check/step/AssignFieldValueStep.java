@@ -116,13 +116,13 @@ public class AssignFieldValueStep implements IRiskStep {
             if (eventOccurTime != null && eventOccurTime instanceof String) {
                 Date date = DateUtil.parseDateTime(eventOccurTime.toString());
                 if (KUNPENG_PARTNER_TIME.contains(context.getPartnerCode())) {
-                    date = DateUtils.addHours(date, 13);
+                    date = DateUtils.addHours(date, -8);
                 }
                 context.setEventOccurTime(date);
             } else if (eventOccurTime != null && eventOccurTime instanceof Date) {
                 Date date = (Date) eventOccurTime;
                 if (KUNPENG_PARTNER_TIME.contains(context.getPartnerCode())) {
-                    date = DateUtils.addHours(date, 13);
+                    date = DateUtils.addHours(date, -8);
                 }
                 context.setEventOccurTime(date);
             }
