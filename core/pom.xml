@@ -8,7 +8,7 @@
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
     <name>core</name>
-    <version>1.0.15-api</version>
+    <version>1.0.16-api</version>
 
 
     <properties>
