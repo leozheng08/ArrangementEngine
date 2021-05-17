@@ -23,10 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 设置上下文中的字段值
@@ -116,20 +115,28 @@ public class AssignFieldValueStep implements IRiskStep {
             if (eventOccurTime != null && eventOccurTime instanceof String) {
                 Date date = DateUtil.parseDateTime(eventOccurTime.toString());
                 if (KUNPENG_PARTNER_TIME.contains(context.getPartnerCode())) {
-                    date = DateUtils.addHours(date, -8);
+                    date = DateUtil.parseDateTimeBeiJing(eventOccurTime.toString());
                 }
                 context.setEventOccurTime(date);
             } else if (eventOccurTime != null && eventOccurTime instanceof Date) {
-                Date date = (Date) eventOccurTime;
-                if (KUNPENG_PARTNER_TIME.contains(context.getPartnerCode())) {
-                    date = DateUtils.addHours(date, -8);
-                }
-                context.setEventOccurTime(date);
+                context.setEventOccurTime((Date) eventOccurTime);
             }
         } catch (Exception e) {
             logger.error("parse eventOccurTime raise ex:{}", e);
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        try {
+            Date date = DateUtil.parseDateTimeBeiJing("2020-08-24 12:16:30");
+//            Date date1 = DateUtil.parseDateTimeBeiJingDate(new Date(1503544630000L));
+//            Date date2 = DateUtil.parseDateTimeBeiJingDate1(new Date(1503544630000L));
+            System.out.println("--");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

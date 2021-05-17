@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * 类DateUtils.java的实现描述：时间工具类
@@ -64,6 +65,19 @@ public class DateUtil {
 	 */
 	public static Date parseDateTime(final String source) throws ParseException {
 		return datetimeFormat.parse(source);
+	}
+
+	/**
+	 * 解析时间日期字符串为Date对象
+	 *
+	 * @param source
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date parseDateTimeBeiJing(final String source) throws ParseException {
+		SimpleDateFormat bjSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 北京
+		bjSdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai")); // 设置北京时区
+		return bjSdf.parse(source);
 	}
 
 	/**
