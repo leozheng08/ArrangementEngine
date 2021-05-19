@@ -37,8 +37,8 @@ import java.util.*;
 @Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 1100)
 public class AssignFieldValueStep implements IRiskStep {
 
-    @Value("${kunpeng.partner.time:globalegrow,liveme,derica}")
-    private String KUNPENG_PARTNER_TIME = "globalegrow,liveme,derica";
+    @Value("${kunpeng.partner.time:globalegrow,pagsmile,derica}")
+    private String KUNPENG_PARTNER_TIME = "globalegrow,pagsmile,derica";
 
     private Logger logger = LoggerFactory.getLogger(AssignFieldValueStep.class);
 
@@ -111,9 +111,9 @@ public class AssignFieldValueStep implements IRiskStep {
 
         //如果客户有传事件发生时间，为客户传的为准
         try {
-            Object eventOccurTime = context.getFieldValues().get("eventOccurTime");
+            Object eventOccurTime = request.getFieldValues().get("eventOccurTime");
             if (eventOccurTime != null && eventOccurTime instanceof String) {
-                Date date = DateUtil.parseDateTime(eventOccurTime.toString());
+                Date date = DateUtil.parseDateTimeUTC(eventOccurTime.toString());
                 if (KUNPENG_PARTNER_TIME.contains(context.getPartnerCode())) {
                     date = DateUtil.parseDateTimeBeiJing(eventOccurTime.toString());
                 }
@@ -127,17 +127,16 @@ public class AssignFieldValueStep implements IRiskStep {
         return true;
     }
 
-    public static void main(String[] args) {
-        try {
-            Date date = DateUtil.parseDateTimeBeiJing("2020-08-24 12:16:30");
-//            Date date1 = DateUtil.parseDateTimeBeiJingDate(new Date(1503544630000L));
-//            Date date2 = DateUtil.parseDateTimeBeiJingDate1(new Date(1503544630000L));
-            System.out.println("--");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    public static void main(String[] args) {
+//        try {
+//            Date date = DateUtil.parseDateTimeBeiJing("2021-5-18 10:22:33");
+//            Date date1 = DateUtil.parseDateTimeUTC("2021-5-18 10:22:33");
+//            System.out.println("--"+date.getTime()+"--"+date1.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 
     public void setFraudContext(AbstractFraudContext ctx, RiskRequest request) {

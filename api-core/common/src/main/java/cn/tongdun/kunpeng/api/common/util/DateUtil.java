@@ -81,6 +81,32 @@ public class DateUtil {
 	}
 
 	/**
+	 * 解析时间日期字符串为UTC对象
+	 *
+	 * @param source
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date parseDateTimeUTC(final String source) throws ParseException {
+		SimpleDateFormat bjSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 北京
+		bjSdf.setTimeZone(TimeZone.getTimeZone("UTC")); // 设置北京时区
+		return bjSdf.parse(source);
+	}
+
+//	/**
+//	 * 解析时间日期字符串为Date对象
+//	 *
+//	 * @param source
+//	 * @return
+//	 * @throws ParseException
+//	 */
+//	public static Date parseDateTimeAsia(final String source) throws ParseException {
+//		SimpleDateFormat bjSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 北京
+//		bjSdf.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo")); // 设置北京时区
+//		return bjSdf.parse(source);
+//	}
+
+	/**
 	 * 获取当前时间的datetime格式
 	 * @return
 	 */
