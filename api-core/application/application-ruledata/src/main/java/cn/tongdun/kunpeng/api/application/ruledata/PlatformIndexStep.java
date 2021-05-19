@@ -99,7 +99,7 @@ public class PlatformIndexStep implements IRiskStep {
                 String[] partnerTags = {
                         "partner_code",request.getPartnerCode()};
                 ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt",partnerTags);
-
+//                logger.info("时区Id3："+context.getSeqId()+"--"+JSON.toJSONString(indicatrixValQuery));
                 indicatrixResult = shenWeiUsApi.calcMulti(indicatrixValQuery);
                 timeContext.stop();
                 timePartner.stop();
