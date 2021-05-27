@@ -17,9 +17,18 @@ public class RiskRequest implements Serializable {
 
     private static final Field[] fields = RiskRequest.class.getDeclaredFields();
     private static final Set<String> fieldNames = new HashSet<>(fields.length);
-    private static final Map<String,Method> fieldGetMethodMap = new HashMap<>();
+    public static final Map<String, Method> fieldGetMethodMap = new HashMap<>();
+
     static {
-        Set<String> includeTypes =new HashSet<String>(){{add("int");add("integer");add("string");add("double");add("long");add("float");add("boolean");}};
+        Set<String> includeTypes = new HashSet<String>() {{
+            add("int");
+            add("integer");
+            add("string");
+            add("double");
+            add("long");
+            add("float");
+            add("boolean");
+        }};
         for (Field field : fields) {
             String simTypeName = field.getType().getSimpleName();
             if (includeTypes.contains(simTypeName.toLowerCase())) {
@@ -27,7 +36,7 @@ public class RiskRequest implements Serializable {
                 String methodName = "get" + upperCaseFirstChar(field.getName());
                 try {
                     Method method = RiskRequest.class.getMethod(methodName);
-                    fieldGetMethodMap.put(field.getName(),method);
+                    fieldGetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
                     // ignore
                 }
@@ -122,7 +131,7 @@ public class RiskRequest implements Serializable {
 
 
     /**
-     *  仿真的合作方编码
+     * 仿真的合作方编码
      */
     private String simulationPartner;
 
@@ -311,14 +320,18 @@ public class RiskRequest implements Serializable {
         this.fieldValues = fieldValues;
     }
 
-    public void setFieldValue(String fieldCode, Object value){
-        fieldValues.put(fieldCode,value);
+    public void setFieldValue(String fieldCode, Object value) {
+        fieldValues.put(fieldCode, value);
     }
 
 
     private static String upperCaseFirstChar(String x) {
-        if (x == null) {return null;}
-        if (x.isEmpty()) {return "";}
+        if (x == null) {
+            return null;
+        }
+        if (x.isEmpty()) {
+            return "";
+        }
         String firstChar = x.substring(0, 1);
         String exceptFirst = x.substring(1);
         return firstChar.toUpperCase() + exceptFirst;
@@ -361,7 +374,7 @@ public class RiskRequest implements Serializable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return JSON.toJSONString(this);
     }
 

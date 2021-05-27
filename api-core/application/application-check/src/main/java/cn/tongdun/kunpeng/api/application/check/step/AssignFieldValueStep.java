@@ -26,8 +26,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import static cn.tongdun.kunpeng.client.data.RiskRequest.fieldGetMethodMap;
+
 /**
  * 设置上下文中的字段值
+ *
  * @Author: liang.chen
  * @Date: 2020/2/17 下午11:09
  */
@@ -53,15 +56,16 @@ public class AssignFieldValueStep implements IRiskStep {
         }
     };
 
-    private static final Map<String,Assign> dataTypeAssignMap=new HashMap<>(7);
+    private static final Map<String, Assign> dataTypeAssignMap = new HashMap<>(7);
+
     static {
-        dataTypeAssignMap.put(FieldDataType.OBJECT.name(),new ObjectAssign());
-        dataTypeAssignMap.put(FieldDataType.ARRAY.name(),new ArrayAssign());
-        dataTypeAssignMap.put(FieldDataType.BOOLEAN.name(),new BooleanAssign());
-        dataTypeAssignMap.put(FieldDataType.DATETIME.name(),new DatetimeAssign());
-        dataTypeAssignMap.put(FieldDataType.DOUBLE.name(),new DoubleAssign());
-        dataTypeAssignMap.put(FieldDataType.INT.name(),new IntAssign());
-        dataTypeAssignMap.put(FieldDataType.STRING.name(),new StringAssign());
+        dataTypeAssignMap.put(FieldDataType.OBJECT.name(), new ObjectAssign());
+        dataTypeAssignMap.put(FieldDataType.ARRAY.name(), new ArrayAssign());
+        dataTypeAssignMap.put(FieldDataType.BOOLEAN.name(), new BooleanAssign());
+        dataTypeAssignMap.put(FieldDataType.DATETIME.name(), new DatetimeAssign());
+        dataTypeAssignMap.put(FieldDataType.DOUBLE.name(), new DoubleAssign());
+        dataTypeAssignMap.put(FieldDataType.INT.name(), new IntAssign());
+        dataTypeAssignMap.put(FieldDataType.STRING.name(), new StringAssign());
     }
 
     @Autowired
@@ -79,7 +83,7 @@ public class AssignFieldValueStep implements IRiskStep {
         Partner partner = partnerCache.get(context.getPartnerCode());
 
         /*************根据字段的定义，将请求参数设置到上下文中 start**********************/
-        setFraudContext(context,request);
+        setFraudContext(context, request);
         /*************根据字段的定义，将请求参数设置到上下文中 end**********************/
 
 
@@ -95,7 +99,7 @@ public class AssignFieldValueStep implements IRiskStep {
         context.setTestFlag(request.isTestFlag());
 
         // 设置合作方的行业信息
-        if(partner != null) {
+        if (partner != null) {
             context.set("firstIndustryType", partner.getIndustryType());
             context.set("secondIndustryType", partner.getSecondIndustryType());
         }
@@ -106,7 +110,7 @@ public class AssignFieldValueStep implements IRiskStep {
         //如果客户有传事件发生时间，为客户传的为准
         try {
             Object eventOccurTime = context.getFieldValues().get("eventOccurTime");
-            if(eventOccurTime != null && eventOccurTime instanceof String){
+            if (eventOccurTime != null && eventOccurTime instanceof String) {
                 context.setEventOccurTime(DateUtil.parseDateTime(eventOccurTime.toString()));
             } else if (eventOccurTime != null && eventOccurTime instanceof Date) {
                 context.setEventOccurTime((Date) eventOccurTime);
@@ -139,30 +143,53 @@ public class AssignFieldValueStep implements IRiskStep {
                 continue;
             }
 
-            putValueByFieldDefinition(ctx.getFieldValues(),fieldDefinition,entry.getValue());
+            putValueByFieldDefinition(ctx.getFieldValues(), fieldDefinition, entry.getValue());
         }
-    }
 
+        //解决AbstracFraundContext类中get方法反射抛出异常错误（AbstractFraudContext异常位置4,object is not an instance of declaring class）
+        for (String key : fieldGetMethodMap.keySet()) {
+            Object value = request.get(key);
+            if (value == null) {
+                continue;
+            }
+            IFieldDefinition fieldDefinition = ctx.getFieldDefinition(key);
+            if (null == fieldDefinition) {
+                String stardandCode = CamelAndUnderlineConvertUtil.underline2camel(key);
+                if (null == stardandCode) {
+                    continue;
+                }
+                fieldDefinition = ctx.getFieldDefinition(stardandCode);
+            }
+            if (null == fieldDefinition) {
+                continue;
+            }
+
+            putValueByFieldDefinition(ctx.getFieldValues(), fieldDefinition, value);
+        }
+
+
+    }
 
 
     /**
      * 将合作方请求的值，根据字段定义做转换后设置到上下文
+     *
      * @param fieldDefinition
      * @param requestValue
      * @return
      */
-    private void putValueByFieldDefinition(Map<String, Object> fields,IFieldDefinition fieldDefinition,Object requestValue){
+    private void putValueByFieldDefinition(Map<String, Object> fields, IFieldDefinition fieldDefinition, Object requestValue) {
 
         String dataType = fieldDefinition.getDataType();
         String fieldCode = fieldDefinition.getFieldCode();
         try {
-            Assign assign=dataTypeAssignMap.get(dataType);
-            if (null==assign){
+            Assign assign = dataTypeAssignMap.get(dataType);
+            if (null == assign) {
                 return;
             }
-            assign.execute(fields,fieldDefinition,requestValue);
+            assign.execute(fields, fieldDefinition, requestValue);
         } catch (Exception e) {
-            logger.warn(TraceUtils.getFormatTrace()+"决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
+            logger.warn(TraceUtils.getFormatTrace() + "决策引擎入参 Failed to set system field, fieldName:{},fieldValue:{},error:{}",
                     fieldCode, requestValue, e.getMessage());
         }
     }
