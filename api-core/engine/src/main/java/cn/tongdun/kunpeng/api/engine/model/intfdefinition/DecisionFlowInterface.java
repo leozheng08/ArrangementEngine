@@ -38,11 +38,6 @@ public class DecisionFlowInterface {
     private List<InterfaceDefinitionParamInfo>  outputParams;
 
     /**
-     * 参数类型
-     */
-    private String[] inputParamTypeMap;
-
-    /**
      * 该决策引擎字段是否直接决策接口输出
      */
     private boolean isRiskServiceOutput;

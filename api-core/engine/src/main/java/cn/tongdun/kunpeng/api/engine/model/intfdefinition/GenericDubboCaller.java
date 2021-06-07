@@ -90,7 +90,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
             // 3. 解析三方接口的参数类型数组及值对象数组
             DecisionFlowInterfaceCallInfo interfaceCallInfo = encapsulateDubboCallParam(mappingParamAndValue,
-                    interfaceDefinition);
+                                                                                        interfaceDefinition);
             // 4. 发起泛化调用
             final GenericService genericService = genericServiceManager.getGenericService(interfaceDefinition);
 
@@ -102,12 +102,8 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                             + "dubbo泛化调用开始 interface_method:{}-{},interfaceParamInfos:{} , DecisionFlowInterfaceCallInfo:{}",
                     interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
                     Arrays.toString(decisionFlowInterface.getInputParams().toArray()), interfaceCallInfo);
-
-
-
             result = genericService.$invoke(interfaceDefinition.getMethodName(), interfaceCallInfo.getInputParamType(),
-                    interfaceCallInfo.getInputParamValue());
-
+                                            interfaceCallInfo.getInputParamValue());
             timeContext.stop();
 
             logger.info(TraceUtils.getFormatTrace()
@@ -161,16 +157,16 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
             if (!BooleanUtils.toBoolean(JsonUtil.getBoolean(resultMap,"success"))) {
                 if (result == APIResult.DUBBO_API_RESULT_TIMEOUT
-                        || result == APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR) {
+                    || result == APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR) {
                     if (SPECIAL_THIRD_INTERFACE.contains(serviceName)) {
                         ReasonCodeUtil.add(fraudContext, ReasonCode.ADDRESS_SERVICE_CALL_TIMEOUT, WATSON);
                         logger.info(TraceUtils.getFormatTrace() + "地址服务调用超时:{}-{} timeout:{} 50718",
-                                interfaceDefinition.getName(), interfaceDefinition.getMethodName());
+                                    interfaceDefinition.getName(), interfaceDefinition.getMethodName());
                     } else {
                         ReasonCodeUtil.add(fraudContext, ReasonCode.THIRD_SERVICE_CALL_TIMEOUT, KUNTA);
                         logger.info(TraceUtils.getFormatTrace() + "三方调用超时:{}-{} timeout:{} 50707",
-                                interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
-                                interfaceDefinition.getTimeout());
+                                    interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                                    interfaceDefinition.getTimeout());
                     }
                 } else {
                     SubReasonCode subReasonCodeObj = null;
@@ -182,7 +178,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                     }
 
                     if (subReasonCodeObj != null && subReasonCodeObj.getSub_code() != null
-                            && subReasonCodeObj.getSub_code().startsWith("507")) {
+                        && subReasonCodeObj.getSub_code().startsWith("507")) {
                         metrics.counter(MetricsConstant.METRICS_API_BIZ_ERROR_KEY, tags);
                     }
                 }
@@ -195,7 +191,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
         } catch (Exception e) {
             metrics.counter(MetricsConstant.METRICS_API_OTHER_ERROR_KEY, tags);
             logger.error(TraceUtils.getFormatTrace()
-                    + "dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
+                         + "dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
         }
     }
 
@@ -214,6 +210,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
         Map<String, Object> resultMap = (HashMap<String, Object>) result;
         Map<String, Object> resultMapOutput = Maps.newHashMapWithExpectedSize(resultMap.size());
+
         try {
             for (InterfaceDefinitionParamInfo paramInfo : decisionFlowInterface.getOutputParams()) {
                 String ruleParam = paramInfo.getRuleField();
@@ -227,13 +224,11 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 }
                 // 直接拍平路径获取json值
                 Object mappingValue = JSONPath.eval(result,interfaceParam);
-
                 resultMapOutput.put(KunpengStringUtils.camel2underline(ruleParam), mappingValue);
 
                 if (mappingValue instanceof Map) {
                     fraudContext.setObject(true);
                 }
-
                 fraudContext.setField(ruleParam, mappingValue);
             }
 
@@ -270,13 +265,13 @@ public class GenericDubboCaller implements IGenericDubboCaller{
         } else if (result instanceof Collections || result.getClass().isArray()) {
             //不支持其它集合或者数组类型
             return resultMap;
-        } else if (result instanceof java.lang.String
-                || result instanceof java.lang.Integer
-                || result instanceof java.lang.Boolean
-                || result instanceof java.lang.Double
-                || result instanceof java.lang.Float) {
+        } else if (result instanceof String
+                || result instanceof Integer
+                || result instanceof Boolean
+                || result instanceof Double
+                || result instanceof Float) {
             resultMap.put("result", result);
-        } else {
+        } else {        
             //其它dubbo异常情况产生的返回值一律处理成外部服务器错误501
             resultMap = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR.toMap();
             logger.info(TraceUtils.getFormatTrace() + "dubbo泛化调用返回501错误");
@@ -333,7 +328,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
         //输出参数
         interfaceParams.setOutputParams(resultMap);
         interfaceResult.addInterfaceParams(interfaceDefinition.getMethodName(), interfaceParams);
-    }
+   }
 
     /**
      * 通过三方接口定义及映射入参值，组装泛化调用参数
@@ -409,7 +404,6 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 value = paramInfo.getRuleField();
             } else {
                 value = fraudContext.get(paramInfo.getRuleField());
-                // value = fraudContext.getRiskRequest().getFieldValues().get(paramInfo.getRuleField());
                 //对于seqId字段直接从context中取值
                 String[] temp = paramInfo.getInterfaceField().split("\\.");
                 if (temp[temp.length - 1].equals("sequenceId")) {
