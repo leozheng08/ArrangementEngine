@@ -46,6 +46,9 @@ public class RiskServiceController {
         } else {
             // 用于zabbix状态码统计
             response.setHeader("Reason-code", "200");
+            if (riskResponse.getDecisionType() != null) {
+                response.setHeader("Decision-Type", riskResponse.getDecisionType().getIdentity());
+            }
         }
 
         String body = riskResponse.toJsonString();

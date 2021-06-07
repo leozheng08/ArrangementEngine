@@ -2,22 +2,24 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
-import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: liang.chen
@@ -39,8 +41,13 @@ public class BaseCheckParamsStep implements IRiskStep {
         StringBuilder sbType = new StringBuilder();
         StringBuilder sbFormat = new StringBuilder();
         StringBuilder sbOvermax = new StringBuilder();
+
         context.setSystemFieldMap(fieldDefinitionCache.getSystemField(context.getEventType()));
-        context.setExtendFieldMap(fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType()));
+
+        Map<String, IFieldDefinition> extendFieldMap = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType());
+        if (extendFieldMap != null && extendFieldMap.size() > 0) {
+            context.setExtendFieldMap(extendFieldMap);
+        }
 
         checkParamFromRequest(request,context,sbType,sbFormat,sbOvermax);
 
@@ -172,7 +179,7 @@ public class BaseCheckParamsStep implements IRiskStep {
                 }
             } else if (FieldDataType.DATETIME.name().equals(dataType)) {
                 if(val instanceof Date){
-                   continue;
+                    continue;
                 }
                 if (!KunpengStringUtils.isDate(val.toString())) {
                     if (sbType.length() > 0){

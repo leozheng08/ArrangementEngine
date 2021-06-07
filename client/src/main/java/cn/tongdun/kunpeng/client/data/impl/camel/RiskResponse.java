@@ -1,11 +1,9 @@
 package cn.tongdun.kunpeng.client.data.impl.camel;
 
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
-import cn.tongdun.kunpeng.client.data.IOutputField;
-import cn.tongdun.kunpeng.client.data.IRiskResponse;
-import cn.tongdun.kunpeng.client.data.IRiskResponseFactory;
-import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
+import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.kunpeng.share.json.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.Map;
 
 /**
  * 风险扫描返回结果
- * 
+ *
  * @author zxb 2014年3月12日 上午11:00:59
  */
 
@@ -209,4 +207,216 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     public void setPolicyUuid(String policyUuid) {
         this.policyUuid = policyUuid;
     }
+
+    @Override
+    public Map<String, String> getGeoipInfo() {
+        return null;
+    }
+
+    @Override
+    public void setGeoipInfo(Map<String, String> geoipInfo) {
+
+    }
+
+    @Override
+    public Map<String, Object> getDeviceInfo() {
+        return null;
+    }
+
+    @Override
+    public void setDeviceInfo(Map<String, Object> deviceInfo) {
+
+    }
+
+    @Override
+    public Map<String, String> getAttribution() {
+        return null;
+    }
+
+    @Override
+    public void setAttribution(Map<String, String> attribution) {
+
+    }
+
+    @Override
+    public Map<String, Double> getOutputIndicatrixes() {
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getOutputModels() {
+        return null;
+    }
+
+    @Override
+    public void setOutputModels(List<Map<String, Object>> outputModels) {
+
+    }
+
+    @Override
+    public List<Map<String, Object>> getOutputServices() {
+        return null;
+    }
+
+    @Override
+    public void setOutput_services(List<Map<String, Object>> outputServices) {
+
+    }
+
+    @Override
+    public void setOutputIndicatrixes(Map<String, Double> outputIndicatrixes) {
+
+    }
+
+    @Override
+    public Map<String, Object> getCreditScore() {
+        return null;
+    }
+
+    @Override
+    public void setCreditScore(Map<String, Object> creditScore) {
+
+    }
+
+    @Override
+    public Map<String, Object> getHitRuleDetailInfo() {
+        return null;
+    }
+
+    @Override
+    public void setHitRuleDetailInfo(Map<String, Object> hitRuleDetailInfo) {
+
+    }
+
+    @Override
+    public Map<String, Object> getHitRuleDetailV3Info() {
+        return null;
+    }
+
+    @Override
+    public void setHitRuleDetailV3Info(Map<String, Object> hitRuleDetailV3Info) {
+
+    }
+
+    @Override
+    public String getRiskType() {
+        return null;
+    }
+
+    @Override
+    public void setRiskType(String riskType) {
+
+    }
+
+    @Override
+    public Boolean getFlowChargeSuccessed() {
+        return null;
+    }
+
+    @Override
+    public void setFlowChargeSuccessed(Boolean flowChargeSuccessed) {
+
+    }
+
+    @Override
+    public boolean isContainApplicationId() {
+        return false;
+    }
+
+    @Override
+    public void setContainApplicationId(boolean containApplicationId) {
+
+    }
+
+    @Override
+    public Boolean getEmergencySwithcOn() {
+        return null;
+    }
+
+    @Override
+    public void setEmergencySwithcOn(Boolean emergencySwithcOn) {
+
+    }
+
+    @Override
+    public List<String> getExecutedRuleIds() {
+        return null;
+    }
+
+    @Override
+    public void setExecutedRuleIds(List<String> executedRuleIds) {
+
+    }
+
+    @Override
+    public List<String> getHitRuleIds() {
+        return null;
+    }
+
+    @Override
+    public void setHitRuleIds(List<String> hitRuleIds) {
+
+    }
+
+    @Override
+    public DecisionType getDecisionType() {
+        return null;
+    }
+
+    @Override
+    public void setDecisionType(DecisionType decisionType) {
+
+    }
+
+    @Override
+    public String getSubPolicyName() {
+        return null;
+    }
+
+    @Override
+    public void setSubPolicyName(String policyName) {
+
+    }
+
+    @Override
+    public List<IHitRule> getHitRules() {
+        return null;
+    }
+
+    @Override
+    public void setHitRules(List<IHitRule> hitRules) {
+
+    }
+
+    @Override
+    public String getApplicationId() {
+        return null;
+    }
+
+    @Override
+    public void setApplicationId(String applicationId) {
+
+    }
+
+    @Override
+    public JSONObject getCreditCloud() {
+        return null;
+    }
+
+    @Override
+    public void setCreditCloud(JSONObject creditCloud) {
+
+    }
+
+    @Override
+    public List<RuleDetail> getRuleTestDetails() {
+        return null;
+    }
+
+    @Override
+    public void setRuleTestDetails(List<RuleDetail> ruleTestDetails) {
+
+    }
+
+
 }
