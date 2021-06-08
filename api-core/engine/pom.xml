@@ -7,7 +7,7 @@
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.20-api</version>
+        <version>1.0.21-api</version>
 
 
 
@@ -37,7 +37,7 @@
         <log4j-version>1.2.16</log4j-version>
         <guava-version>20.0</guava-version>
         <metrics-version>3.2.6</metrics-version>
-        <config-client-version>1.0.20-api</config-client-version>
+        <config-client-version>1.0.21-api</config-client-version>
         <client-version>1.0.0</client-version>
         <graylog-logback-version>1.0.27.6</graylog-logback-version>
         <testng-version>6.9.4</testng-version>
