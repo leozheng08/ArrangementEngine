@@ -318,15 +318,15 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     }
 
-    @Override
-    public boolean isContainApplicationId() {
-        return false;
-    }
-
-    @Override
-    public void setContainApplicationId(boolean containApplicationId) {
-
-    }
+//    @Override
+//    public boolean isContainApplicationId() {
+//        return false;
+//    }
+//
+//    @Override
+//    public void setContainApplicationId(boolean containApplicationId) {
+//
+//    }
 
     @Override
     public Boolean getEmergencySwithcOn() {
