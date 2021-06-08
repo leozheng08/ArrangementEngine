@@ -135,6 +135,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                     interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
                     Arrays.toString(decisionFlowInterface.getInputParams().toArray()), (System.currentTimeMillis() - beginTime));
         }
+        logger.info(TraceUtils.getFormatTrace() + "generic dubbo call result:{}", JSON.toJSONString(result));
         return true;
     }
 
