@@ -4,7 +4,6 @@ import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.client.data.IOutputField;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.client.data.impl.underline.OutputField;
@@ -46,7 +45,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
                 String getMethodName = "get" + KunpengStringUtils.upperCaseFirstChar(field.getName());
                 try {
-                    Method method = RiskRequest.class.getMethod(getMethodName);
+                    Method method = AbstractFraudContext.class.getMethod(getMethodName);
                     fieldGetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
                     logger.error("AbstractFraudContext异常位置1,{}",e.getMessage(),e);
