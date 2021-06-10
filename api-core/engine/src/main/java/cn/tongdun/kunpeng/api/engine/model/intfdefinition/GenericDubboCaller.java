@@ -407,11 +407,14 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 value = fraudContext.get(paramInfo.getRuleField());
                 //对于seqId字段直接从context中取值
                 String[] temp = paramInfo.getInterfaceField().split("\\.");
-                if (temp[temp.length - 1].equals("sequenceId")) {
+                if (temp[temp.length - 1].equals("sequenceId")||temp[temp.length - 1].equals("seqId")) {
                     value = fraudContext.getSeqId();
                 }
                 if (temp[temp.length - 1].equals("appName")) {
                     value = fraudContext.getAppName();
+                }
+                if (temp[temp.length - 1].equals("eventOccurTime")) {
+                    value = fraudContext.getEventOccurTime().getTime();
                 }
             }
 

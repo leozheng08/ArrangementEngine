@@ -36,7 +36,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
                 String getMethodName = "get" + KunpengStringUtils.upperCaseFirstChar(field.getName());
                 try {
-                    Method method = RiskRequest.class.getMethod(getMethodName);
+                    Method method = AbstractFraudContext.class.getMethod(getMethodName);
                     fieldGetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
                     // ignore
@@ -44,7 +44,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
 
                 String setMethodName = "set" + KunpengStringUtils.upperCaseFirstChar(field.getName());
                 try {
-                    Method method = RiskRequest.class.getMethod(setMethodName);
+                    Method method = AbstractFraudContext.class.getMethod(setMethodName);
                     fieldSetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
                     // ignore
