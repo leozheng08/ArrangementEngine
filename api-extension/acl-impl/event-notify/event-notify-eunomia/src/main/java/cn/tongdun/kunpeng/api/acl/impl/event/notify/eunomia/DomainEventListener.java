@@ -31,9 +31,6 @@ public class DomainEventListener implements EunomiaListener {
     //放到redis缓存上的超期时间
     private static final long EXPIRE_TIME = (LAST_MINUTES + 1) * 60 * 1000L;
 
-    /**
-     * 公共配置，登录相关
-     */
     @Value("${open.domain.event.log:false}")
     private boolean openDomainEventLog;
 
