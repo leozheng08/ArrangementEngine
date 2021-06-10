@@ -31,14 +31,14 @@ public class DomainEventListener implements EunomiaListener {
     //放到redis缓存上的超期时间
     private static final long EXPIRE_TIME = (LAST_MINUTES + 1) * 60 * 1000L;
 
-    @Value("${open.domain.event.log:false}")
-    private boolean openDomainEventLog;
+    @Value("${open.debug.log:false}")
+    private boolean openDebugLog;
 
 
     @Override
     public boolean onEvent(RowData rowData) throws Exception {
 
-        if (openDomainEventLog) {
+        if (openDebugLog) {
             log.info("DomainEventListener start.................................rowData={}", JSON.toJSONString(rowData));
         }
 
@@ -89,7 +89,7 @@ public class DomainEventListener implements EunomiaListener {
      */
     private void putEventMsgToRemoteCache(String eventMsg, Long occurredTime) {
         String currentKey = DateUtil.getYYYYMMDDHHMMStr();
-        if (openDomainEventLog) {
+        if (openDebugLog) {
             log.info("DomainEventListener start...............write redis. currentKey={}, occurredTime={}, eventMsg={}", currentKey, occurredTime, eventMsg);
         }
         scoreKVRepository.zadd(currentKey, occurredTime, eventMsg);
