@@ -117,8 +117,16 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
             return null;
         }
         GeoipEntity geoipEntity = new GeoipEntity();
-        geoipEntity.setLongitude(Float.parseFloat(aGeoipEntity.getLngwgs()));
-        geoipEntity.setLatitude(Float.parseFloat(aGeoipEntity.getLatwgs()));
+        try {
+            if (StringUtils.isNotEmpty(aGeoipEntity.getLngwgs())){
+                geoipEntity.setLongitude(Float.parseFloat(aGeoipEntity.getLngwgs()));
+            }
+            if (StringUtils.isNotEmpty(aGeoipEntity.getLatwgs())){
+                geoipEntity.setLatitude(Float.parseFloat(aGeoipEntity.getLatwgs()));
+            }
+        }catch (Exception e){
+            logger.error("UsGeoIpService fromDTO2EntityV2 error:" , e);
+        }
         geoipEntity.setCountry(aGeoipEntity.getCountry());
         geoipEntity.setCity(aGeoipEntity.getCity());
         geoipEntity.setAddress("");

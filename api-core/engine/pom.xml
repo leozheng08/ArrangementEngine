@@ -10,14 +10,12 @@
         <version>1.0.2-release-20210423-test-SNAPSHOT</version>
 
 
-
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>engine</artifactId>
     <packaging>jar</packaging>
     <name>engine</name>
-
 
 
     <properties>
@@ -37,7 +35,6 @@
         <log4j-version>1.2.16</log4j-version>
         <guava-version>20.0</guava-version>
         <metrics-version>3.2.6</metrics-version>
-        <config-client-version>1.0.10-api</config-client-version>
         <client-version>1.0.0</client-version>
         <graylog-logback-version>1.0.27.6</graylog-logback-version>
         <testng-version>6.9.4</testng-version>
@@ -56,9 +53,9 @@
             <version>8.0.1</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.ow2.asm</groupId>-->
-            <!--<artifactId>asm</artifactId>-->
-            <!--<version>4.1</version>-->
+        <!--<groupId>org.ow2.asm</groupId>-->
+        <!--<artifactId>asm</artifactId>-->
+        <!--<version>4.1</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -235,7 +232,6 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
         </dependency>
-
 
 
         <!--  -->
