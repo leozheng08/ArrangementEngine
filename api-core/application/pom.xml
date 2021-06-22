@@ -6,7 +6,7 @@
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.2-release-20210423-test-SNAPSHOT</version>
+        <version>1.3.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -31,6 +31,7 @@
         <module>application-keyword</module>
         <module>application-indicatrix</module>
         <module>application-content</module>
+        <module>application-riskbase</module>
     </modules>
 
 
