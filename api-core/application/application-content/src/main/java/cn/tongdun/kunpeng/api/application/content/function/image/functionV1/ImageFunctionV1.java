@@ -14,6 +14,7 @@ import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUti
 import cn.tongdun.kunpeng.api.application.content.constant.ModelResultEnum;
 import cn.tongdun.kunpeng.api.application.content.function.image.FilterConditionDO;
 import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
+import cn.tongdun.kunpeng.api.application.content.function.image.ModelResult;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.CompareUtils;
@@ -25,6 +26,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import java.util.Map;
  */
 
 
+
 public class ImageFunctionV1 extends AbstractFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageFunction.class);
@@ -49,6 +52,13 @@ public class ImageFunctionV1 extends AbstractFunction {
     private static final String paramKeyConditions = "conditions";
     private static final String paramKeyLogicOperator = "logicOperator";
 
+    @Value("${model.result.name:model.result.name=image_brand_logo_model_result,image_logo_model_result,image_politics_model_result,image_terror_model_result}")
+    private String modelResultName;
+    @Value("${model.result.camel.name:imageBrandLogoModelResult,imageLogoModelResult,imagePoliticsModelResult,imageTerrorModelResult}")
+    private String modelResultCamelName;
+    @Value("${model.result.desc:品牌识别模型,LOGO识别模型,涉政模型,暴恐模型}")
+    private String modelResultDesc;
+
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
         FunctionResult functionResult = new FunctionResult(false, null);
@@ -56,9 +66,15 @@ public class ImageFunctionV1 extends AbstractFunction {
 
         //遍历枚举类型，一次访问会传入多类模型数据
         ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
+
+        String[] modelResultNames = modelResultName.split(",");
+        String[] modelResultCamelNames = modelResultCamelName.split(",");
+        String[] modelResultDescs = modelResultDesc.split(",");
+        ModelResult[] modelResults = compositeModelResult(modelResultNames,modelResultCamelNames,modelResultDescs);
+
         //从上下文获取多组模型数据
-        Map<ModelResultEnum,String> modelResult = achieveModelResult(context);
-        if (hasNullData(modelResult,conditions, logicOperator)) {
+        Map<ModelResult,String> modelResult = achieveModelResult(context,modelResults);
+        if (hasNullData(modelResult, conditions, logicOperator)) {
             return functionResult;
         }
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
@@ -90,6 +106,21 @@ public class ImageFunctionV1 extends AbstractFunction {
         }
         return functionResult;
     }
+
+    private ModelResult[] compositeModelResult(String[] modelResultNames, String[] modelResultCamelNames, String[] modelResultDescs) {
+        int size = modelResultNames.length;
+
+        if(size!=modelResultCamelNames.length||size!=modelResultDescs.length){
+            logger.error("图像识别模型配置数量不一致报错，请检查配置文件：model.result.name = {}, model.result.camelname = {}, model.result.desc = {}", modelResultNames.length, modelResultCamelNames.length, modelResultDescs.length);
+        }
+        ModelResult[] res = new ModelResult[size];
+        for(int i=0;i<size;i++){
+            ModelResult modelResult = new ModelResult(modelResultNames[i], modelResultCamelNames[i],modelResultDescs[i]);
+            res[i] = modelResult;
+        }
+        return res;
+    }
+
     /**
      * 解析condition中field对应的模型名称
      *
@@ -131,8 +162,8 @@ public class ImageFunctionV1 extends AbstractFunction {
      * return     对应规则模型的数据json
      **/
 
-    private String matchModel(Map<ModelResultEnum, String> modelResult, String model) {
-        for(Map.Entry<ModelResultEnum, String> ele : modelResult.entrySet()){
+    private String matchModel(Map<ModelResult, String> modelResult, String model) {
+        for(Map.Entry<ModelResult, String> ele : modelResult.entrySet()){
             if(ele.getKey().getName().equals(model)||ele.getKey().getName().equals(CamelAndUnderlineConvertUtil.underline2camel(model))){
                 return ele.getValue();
             }
@@ -205,7 +236,7 @@ public class ImageFunctionV1 extends AbstractFunction {
      * @param logicOperator   条件组之间的关系 && ||
      * @return
      */
-    private boolean hasNullData(Map<ModelResultEnum,String> modelResult, String conditions, String logicOperator) {
+    private boolean hasNullData(Map<ModelResult,String> modelResult, String conditions, String logicOperator) {
         if (modelResult.isEmpty()) {
             logger.warn("The lablelAndScoreModelResult doesn't match modelResultEnum!");
             return true;
@@ -229,15 +260,14 @@ public class ImageFunctionV1 extends AbstractFunction {
      * @return
      */
 
-    private Map<ModelResultEnum,String> achieveModelResult(AbstractFraudContext context){
-        Map<ModelResultEnum,String> ModelResultMap = new HashMap<>();
-        ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
+    private Map<ModelResult,String> achieveModelResult(AbstractFraudContext context, ModelResult[] modelResults){
+        Map<ModelResult,String> ModelResultMap = new HashMap<>();
         //遍历枚举类型，一次访问只会传入一类模型数据
-        for(ModelResultEnum modelResultEnum: modelResultEnums){
-            Object result = context.get(modelResultEnum.getCamelName())==null?context.get(modelResultEnum.getName()):context.get(modelResultEnum.getCamelName());
+        for(ModelResult modelResult: modelResults){
+            Object result = context.get(modelResult.getCamelName())==null?context.get(modelResult.getName()):context.get(modelResult.getCamelName());
             if(result!=null){
                 String lablelAndScoreModelResult = result.toString();
-                ModelResultMap.put(modelResultEnum,lablelAndScoreModelResult);
+                ModelResultMap.put(modelResult,lablelAndScoreModelResult);
             }
         }
         return ModelResultMap;
