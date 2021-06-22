@@ -8,7 +8,7 @@
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
 
-    <version>1.3.1-api</version>
+    <version>1.3.2-api</version>
 
 
 
@@ -68,6 +68,48 @@
                 <groupId>cn.fraudmetrix</groupId>
                 <artifactId>module.riskbase</artifactId>
                 <version>1.4.7</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>cn.fraudmetrix</groupId>
+                        <artifactId>redis-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>cn.fraudmetrix</groupId>
+                        <artifactId>module-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>cn.fraudmetrix</groupId>
+                        <artifactId>module-elasticsearch</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>cn.fraudmetrix.eunomia</groupId>
+                        <artifactId>eunomia-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis-spring</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>cn.fraudmetrix.eunomia</groupId>
+                        <artifactId>eunomia-client</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun</groupId>
