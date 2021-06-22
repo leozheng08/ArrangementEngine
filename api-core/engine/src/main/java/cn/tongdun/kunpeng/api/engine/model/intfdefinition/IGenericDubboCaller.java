@@ -4,7 +4,13 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 
 public interface IGenericDubboCaller {
 
-    boolean call(AbstractFraudContext fraudContext, // 你懂的
-                 DecisionFlowInterface decisionFlowInterface //接口配置信息
+    /**
+     * 三方接口泛化调用
+     * @param fraudContext
+     * @param decisionFlowInterface 三方接口配置信息
+     * @return
+     */
+    boolean call(AbstractFraudContext fraudContext,
+                 DecisionFlowInterface decisionFlowInterface
     );
 }

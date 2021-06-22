@@ -36,11 +36,15 @@ public class DictionaryManager {
     private LoadingCache<String, List<Dictionary>> dict10MinuteCache;
     //应用层面的缓存
     private ConcurrentMap<String, Object> appCache;
+    // subReasonCodeCache
+    private ConcurrentMap<String, String> subReasonCodeCache;
     private final Object appCacheLock = new Object();
+    private final Object subReasonCodeCacheLock = new Object();
 
     @PostConstruct
     public void init() {
         appCache = new ConcurrentHashMap<>(5);
+        subReasonCodeCache = new ConcurrentHashMap<>(10);
         final CacheLoader<String, List<Dictionary>> loader = new CacheLoader<String, List<Dictionary>>() {
             @Override
             public List<Dictionary> load(String key) throws Exception {
@@ -51,6 +55,9 @@ public class DictionaryManager {
             @Override
             public void onRemoval(RemovalNotification<String, List<Dictionary>> removal) {
                 appCache.remove(removal.getKey());
+                if (SubReasonCodeCacheData.name().equals(removal.getKey())) {
+                    subReasonCodeCache.clear();
+                }
                 logger.info("监听移除DictionaryManager cacheKey:" + removal.getKey());
             }
         };
@@ -101,6 +108,76 @@ public class DictionaryManager {
             appCache.put(StarkDeviceResult.name(), resultMap);
             return resultMap;
         }
+    }
+
+    /**
+     * 获取并解析组装三方子code配置
+     *
+     * @return e.g key:kunta100,value:20007,   key:message20007,value:"没有三方数据"
+     */
+    public Map<String, String> getSubReasonCodeMap() {
+        if (null != subReasonCodeCache && subReasonCodeCache.size() > 0) {
+            return subReasonCodeCache;
+        }
+        synchronized (subReasonCodeCacheLock) {
+            if (null != subReasonCodeCache && subReasonCodeCache.size() > 0) {
+                return subReasonCodeCache;
+            }
+            List<Dictionary> dictionaryList = null;
+            try {
+                dictionaryList = dict10MinuteCache.get(SubReasonCodeCacheData.name());
+            } catch (Exception e) {
+                logger.error(TraceUtils.getFormatTrace() + "getSubReasonCodeMap error", e);
+            }
+
+            if (null == dictionaryList || dictionaryList.isEmpty()) {
+                subReasonCodeCache.put(SubReasonCodeCacheData.name(), "");
+                return Collections.emptyMap();
+            }
+
+            Map<String,Object> serviceCodeMap = JSON.parseObject(dictionaryList.get(0).getValue(), Map.class);
+            for (Map.Entry<String, Object> stringObjectEntry : serviceCodeMap.entrySet()) {
+                if("message".equalsIgnoreCase(stringObjectEntry.getKey())) {
+                    Map<String,String> messages = (Map) serviceCodeMap.get("message");
+                    if(messages != null){
+                        for (Map.Entry<String, String> message : messages.entrySet()) {
+                            subReasonCodeCache.put("message" + message.getKey(), message.getValue());
+                        }
+                    }
+                    continue;
+                }
+
+                Map<String,Object> codeConfigValue = (Map<String, Object>) stringObjectEntry.getValue();
+                for (Map.Entry<String, Object> subCode : codeConfigValue.entrySet()) {
+                    List<String> codes = (List<String>) subCode.getValue();
+
+                    for (String code : codes) {
+                        subReasonCodeCache.put(stringObjectEntry.getKey() + code, subCode.getKey());
+                    }
+                }
+            }
+
+            return subReasonCodeCache;
+        }
+    }
+
+    public String getReasonCode(String subService, String subReasonCode){
+        Map<String, String> reasons = getSubReasonCodeMap();
+        String result = reasons.get(subService + subReasonCode);
+        if(result != null){
+            return result;
+        }
+        return "";
+    }
+
+
+    public String getMessage(String riskServiceCode){
+        Map<String, String> reasons = getSubReasonCodeMap();
+        String result = reasons.get("message" + riskServiceCode);
+        if(result != null){
+            return result;
+        }
+        return "";
     }
 
     /**

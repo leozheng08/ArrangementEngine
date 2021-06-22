@@ -1,11 +1,18 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
 import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
+import cn.tongdun.kunpeng.share.json.JSON;
+import com.google.common.base.Preconditions;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Data
 public class InterfaceDefinition extends StatusEntity {
+
+    private static final Logger logger = LoggerFactory.getLogger(InterfaceDefinition.class);
 
     /**
      * 所属应用，非合作方应用 application
@@ -78,5 +85,23 @@ public class InterfaceDefinition extends StatusEntity {
      */
     private String template;
 
-
+    @Override
+    public boolean isValid() {
+        try {
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getInterfaceId()), "interfaceId can't be empty");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getApplication()), "application can't be empty");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getUuid()), "interface uuid can't be empty");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getName()), "interface name can't be empty");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getServiceName()), "service name can't be empty");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getMethodName()), "method name can't be empty");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getVersion()), "version can't be empty");
+            Preconditions.checkArgument(this.getTimeout() >= 1, "timeout can't be less than 1ms");
+            Preconditions.checkArgument(this.getRetryCount() >= 0, "retry count can't be less than 0");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(this.getInputParam()), "input parameters can't be empty");
+        } catch (Exception e) {
+            logger.error("验证返回接口参数有效性异常 service:{}", JSON.toJSONString(this), e);
+            return false;
+        }
+        return true;
+    }
 }

@@ -15,7 +15,9 @@ public enum DictionaryEnum {
 
     SwitchOnKafkaKey("是否发送kafka数据key"),
 
-    PhoneSwitch("是否调用手机号三方接口key");
+    PhoneSwitch("是否调用手机号三方接口key"),
+
+    SubReasonCodeCacheData("三方状态码配置");
 
 
     private String desc;

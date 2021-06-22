@@ -1,11 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
