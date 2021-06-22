@@ -70,6 +70,18 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
      */
     private Map customPolicyResult;
 
+    // 纯数据输出-决策流三方接口输出变量
+    @JsonProperty("output_services")
+    private List<Map<String, Object>> output_services;
+
+    // 纯数据输出-决策流模型输出变量
+    @JsonProperty("output_services")
+    private List<Map<String, Object>> output_models;
+
+    // 纯数据输出-指标
+    @JsonProperty("output_indicatrixes")
+    private Map<String, Double>       output_indicatrixes;
+
     @JsonIgnore
     private transient IRiskResponseFactory factory;
 
@@ -287,7 +299,6 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     /**
      * 输出为json
-     *
      * @return
      */
     @Override

@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.model.intfdefinition;
 
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
-
 import java.util.List;
 
 /**

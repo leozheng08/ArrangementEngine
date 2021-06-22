@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  * @Author: liang.chen
  * @Date: 2020/2/11 下午3:10
  */
+
 /**
  * @author: yuanhang
  * @date: 2021-02-23 13:52
@@ -71,13 +72,13 @@ public class InterfaceDefinitionNode extends AbstractBizNode {
         try {
             decisionFlowInterface = new DecisionFlowInterface();
             Map json = JSON.parseObject(interfaceTaskConfig, HashMap.class);
-            decisionFlowInterface.setUuid(JsonUtil.getString(json,"uuid"));
-            decisionFlowInterface.setName(JsonUtil.getString(json,"name"));
+            decisionFlowInterface.setUuid(JsonUtil.getString(json, "uuid"));
+            decisionFlowInterface.setName(JsonUtil.getString(json, "name"));
             decisionFlowInterface.setIndexUuids(indexUuids);
             decisionFlowInterface.setFields(fields);
-            decisionFlowInterface.setInputParams(buildParaInfo((List<Map>)json.get("inputs")));
-            decisionFlowInterface.setOutputParams(buildParaInfo((List<Map>)json.get("outputs")));
-            decisionFlowInterface.setRiskServiceOutput(JsonUtil.getBoolean(json,"isRiskServiceOutput") == null ? false : JsonUtil.getBoolean(json,"isRiskServiceOutput"));
+            decisionFlowInterface.setInputParams(buildParaInfo((List<Map>) json.get("inputs")));
+            decisionFlowInterface.setOutputParams(buildParaInfo((List<Map>) json.get("outputs")));
+            decisionFlowInterface.setRiskServiceOutput(JsonUtil.getBoolean(json, "isRiskServiceOutput") == null ? false : JsonUtil.getBoolean(json, "isRiskServiceOutput"));
         } catch (Exception e) {
             throw new ParseException("interfaceTaskConfig parse json error, interfaceTaskConfig : " + interfaceTaskConfig);
         }
@@ -85,6 +86,7 @@ public class InterfaceDefinitionNode extends AbstractBizNode {
 
     /**
      * 解析输入|输出参数
+     *
      * @param array
      * @return
      */
@@ -93,20 +95,20 @@ public class InterfaceDefinitionNode extends AbstractBizNode {
             List<InterfaceDefinitionParamInfo> list = Lists.newArrayList();
             array.stream().forEach(json -> {
                 InterfaceDefinitionParamInfo paramInfo = new InterfaceDefinitionParamInfo();
-                paramInfo.setInterfaceField(JsonUtil.getString(json,"interface_field"));
-                paramInfo.setInterfaceType(JsonUtil.getString(json,"interface_type"));
+                paramInfo.setInterfaceField(JsonUtil.getString(json, "interface_field"));
+                paramInfo.setInterfaceType(JsonUtil.getString(json, "interface_type"));
 
                 if (json.containsKey("type")) {
-                    paramInfo.setType(JsonUtil.getString(json,"type"));
+                    paramInfo.setType(JsonUtil.getString(json, "type"));
                 }
 
                 if (json.containsKey("selectType")) {
-                    paramInfo.setType(JsonUtil.getString(json,"selectType"));
+                    paramInfo.setType(JsonUtil.getString(json, "selectType"));
                 }
 
-                paramInfo.setRuleField(JsonUtil.getString(json,"rule_field"));
-                paramInfo.setNecessary(BooleanUtils.toBoolean(JsonUtil.getBoolean(json,"necessary")));
-                paramInfo.setArray(BooleanUtils.toBoolean(JsonUtil.getBoolean(json,"isArray")));
+                paramInfo.setRuleField(JsonUtil.getString(json, "rule_field"));
+                paramInfo.setNecessary(BooleanUtils.toBoolean(JsonUtil.getBoolean(json, "necessary")));
+                paramInfo.setArray(BooleanUtils.toBoolean(JsonUtil.getBoolean(json, "isArray")));
 
                 list.add(paramInfo);
             });

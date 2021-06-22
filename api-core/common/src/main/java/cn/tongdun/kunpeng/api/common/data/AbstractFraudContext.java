@@ -48,23 +48,23 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     Method method = AbstractFraudContext.class.getMethod(getMethodName);
                     fieldGetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
-                    logger.error("AbstractFraudContext异常位置1,{}",e.getMessage(),e);
+                    logger.error("AbstractFraudContext异常位置1,{}", e.getMessage(), e);
                 }
 
                 String setMethodName = "set" + KunpengStringUtils.upperCaseFirstChar(field.getName());
                 try {
-                    Method method = RiskRequest.class.getMethod(setMethodName);
+                    Method method = AbstractFraudContext.class.getMethod(setMethodName);
                     fieldSetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
-                    logger.error("AbstractFraudContext异常位置2,{}",e.getMessage(),e);
+                    logger.error("AbstractFraudContext异常位置2,{}", e.getMessage(), e);
                 }
             }
         }
 
-        if(!CollectionUtils.isEmpty(fieldGetMethodMap)){
+        if (!CollectionUtils.isEmpty(fieldGetMethodMap)) {
             Set<Map.Entry<String, Method>> entries = fieldGetMethodMap.entrySet();
             entries.stream().forEach(methodEntry -> {
-                logger.info("AbstractFraudContext.fieldGetMethodMap值为，key={},value={}",methodEntry.getKey(),methodEntry.getValue().getName());
+                logger.info("AbstractFraudContext.fieldGetMethodMap值为，key={},value={}", methodEntry.getKey(), methodEntry.getValue().getName());
             });
 
         }
@@ -354,7 +354,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             try {
                 setMethod.invoke(this, o);
             } catch (Exception ex) {
-                logger.error("AbstractFraudContext异常位置3,{}",ex.getMessage(),ex);
+                logger.error("AbstractFraudContext异常位置3,{}", ex.getMessage(), ex);
             }
         }
 
@@ -399,7 +399,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     return value;
                 }
             } catch (Exception e) {
-                logger.error("AbstractFraudContext异常位置4,{}",e.getMessage(),e);
+                logger.error("AbstractFraudContext异常位置4,{}", e.getMessage(), e);
             }
         }
 
