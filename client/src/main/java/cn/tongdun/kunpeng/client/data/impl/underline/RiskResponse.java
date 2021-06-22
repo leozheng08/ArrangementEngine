@@ -18,52 +18,52 @@ import java.util.Map;
 
 public class RiskResponse extends ApiResponse implements IRiskResponse {
 
-    private static final long         serialVersionUID    = 844958112006659504L;
+    private static final long serialVersionUID = 844958112006659504L;
     // 风险分数
     @JsonProperty("final_score")
-    private Integer                   finalScore;
+    private Integer finalScore;
     // 最终的风险决策结果
     @JsonProperty("final_decision")
-    private String                    finalDecision;
+    private String finalDecision;
     // 策略名称
     @JsonProperty("policy_set_name")
-    private String                    policyName;
+    private String policyName;
     // 子策略名称
     @JsonProperty("policy_name")
-    private String                    subPolicyName;
+    private String subPolicyName;
     // 命中规则列表
     @JsonProperty("hit_rules")
-    private List<IHitRule>            hitRules;
+    private List<IHitRule> hitRules;
     // 请求序列号，每个请求进来都分配一个全局唯一的id
     @JsonProperty("seq_id")
-    private String                    seqId;
+    private String seqId;
     // 花费的时间，单位ms
     @JsonProperty("spend_time")
-    private Integer                   spendTime;
+    private Integer spendTime;
     // 策略集信息
     @JsonProperty("policy_set")
-    private List<ISubPolicyResult>    subPolicys;
+    private List<ISubPolicyResult> subPolicys;
     // 风险类型
     @JsonProperty("risk_type")
-    private String                    riskType;
+    private String riskType;
 
     @JsonProperty("policy_uuid")
-    private String                    policyUuid;
+    private String policyUuid;
 
     @JsonIgnore
-    private DecisionType decisionType        = DecisionType.POLICY_SET;
+    private DecisionType decisionType = DecisionType.POLICY_SET;
 
     // 策略结果自定义输出
     @JsonProperty("output_fields")
-    private List<IOutputField>        outputFields;
+    private List<IOutputField> outputFields;
 
     //原始详情
     @JsonIgnore
-    private List<RuleDetail>          ruleDetails;
+    private List<RuleDetail> ruleDetails;
 
     //原因子码
     @JsonIgnore
-    private String                    subReasonCodes;
+    private String subReasonCodes;
 
     /**
      * 用户自定义输出
@@ -83,7 +83,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     private Map<String, Double>       output_indicatrixes;
 
     @JsonIgnore
-    private transient IRiskResponseFactory      factory;
+    private transient IRiskResponseFactory factory;
 
 
     @Override
@@ -116,10 +116,12 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     public void setPolicyName(String policyName) {
         this.policyName = policyName;
     }
+
     @Override
     public String getSubPolicyName() {
         return subPolicyName;
     }
+
     @Override
     public void setSubPolicyName(String subPolicyName) {
         this.subPolicyName = subPolicyName;
@@ -129,6 +131,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     public List<IHitRule> getHitRules() {
         return hitRules;
     }
+
     @Override
     public void setHitRules(List<IHitRule> hitRules) {
         this.hitRules = hitRules;
@@ -193,10 +196,12 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     public void setSubPolicys(List<ISubPolicyResult> subPolicys) {
         this.subPolicys = subPolicys;
     }
+
     @Override
     public String getRiskType() {
         return riskType;
     }
+
     @Override
     public void setRiskType(String riskType) {
         this.riskType = riskType;
@@ -212,15 +217,15 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     }
 
-//    @Override
-//    public boolean isContainApplicationId() {
-//        return false;
-//    }
-//
-//    @Override
-//    public void setContainApplicationId(boolean containApplicationId) {
-//
-//    }
+    @Override
+    public boolean isContainApplicationId() {
+        return false;
+    }
+
+    @Override
+    public void setContainApplicationId(boolean containApplicationId) {
+
+    }
 
     @Override
     public Boolean getEmergencySwithcOn() {
@@ -297,12 +302,12 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
      * @return
      */
     @Override
-    public String toJsonString(){
+    public String toJsonString() {
         return JSON.toJSONString(this);
     }
 
     @Override
-    public IRiskResponseFactory getFactory(){
+    public IRiskResponseFactory getFactory() {
         return factory;
     }
 
@@ -437,7 +442,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
 
-    public void setFactory(IRiskResponseFactory factory){
+    public void setFactory(IRiskResponseFactory factory) {
         this.factory = factory;
     }
 }

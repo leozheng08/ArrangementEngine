@@ -12,7 +12,6 @@ public interface InterfaceDefinitionDAO {
      * 查询所有在用的
      * @return
      */
-    @Cacheable(idxName = "allAvailable" )
     List<InterfaceDefinitionDO> selectAllAvailable();
 
     /**
@@ -20,7 +19,6 @@ public interface InterfaceDefinitionDAO {
      * @param uuid
      * @return
      */
-    @Cacheable
     InterfaceDefinitionDO selectByUuid(@Param("uuid") String uuid);
 
 }

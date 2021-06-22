@@ -34,6 +34,18 @@ public class RuleCache extends AbstractLocalCache<String,Rule> {
     //subPolicyUuid -> Set<ruleUuid>
     private Map<String,Set<String>>  subPolicyUuidToRuleMap = new ConcurrentHashMap<>(3000);
 
+    public String getSubPolicyUuidByRuleUuid(String ruleUuid){
+        String subPolicyUuid = null;
+        for(String key : subPolicyUuidToRuleMap.keySet()){
+            Set<String> set = subPolicyUuidToRuleMap.get(key);
+            if(set.contains(ruleUuid)){
+                subPolicyUuid = key;
+                break;
+            }
+        }
+        return subPolicyUuid;
+    }
+
     @Override
     public Rule get(String uuid){
         return ruleMap.get(uuid);

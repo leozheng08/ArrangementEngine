@@ -7,8 +7,8 @@ package cn.tongdun.kunpeng.api.common;
 public class Constant {
 
     public static final String BUSINESS_DEFAULT = "default";
-//    public static final String BUSINESS_ANTI_FRAUD = "anti_fraud";
-//    public static final String BUSINESS_CREDIT = "credit";
+    public static final String BUSINESS_ANTI_FRAUD = "anti_fraud";
+    public static final String BUSINESS_CREDIT = "credit";
 
     public static final double EARTH_RADIUS = 6378137.0;
 
@@ -26,6 +26,7 @@ public class Constant {
     public class Function {
         public static final String TIME_TIME_DIFFER = "time/timediffer";
         public static final String TIME_TIME_POINT_COMPARISON = "time/timePointComparison";
+        public static final String TIME_EVENT_TIME_DF = "time/eventTimeDf";
 
         public static final String MAIL_MODEL = "mail/model";
 
@@ -36,6 +37,7 @@ public class Constant {
         public static final String PATTERN_REGEX = "pattern/regex";
         public static final String PATTERN_FUNCTION_KIT = "pattern/functionKit";
         public static final String PATTERN_FOUR_CALCULATION = "pattern/fourCalculation";
+        public static final String PATTERN_COUNT = "pattern/count";
 
 
         public static final String WATCHLIST_CUSTOM_LIST = "watchlist/customList";
@@ -63,6 +65,7 @@ public class Constant {
 
         public static final String ANDROID_EMULATOR = "android/emulator";
         public static final String ANDROID_IS_CHEAT_V2 = "android/isCheatV2";
+        public static final String ANDROID_CHEAT_APP = "android/cheatApp";
         public static final String ANDROID_VPN = "android/vpn";
         public static final String ANDROID_HTTP = "android/http";
         public static final String ANDROID_NOT_OFFICIAL_APP = "android/notOfficialApp";
@@ -73,6 +76,8 @@ public class Constant {
 
 
         public static final String KEYWORD_WORDLIST = "keyword/wordList";
+        public static final String CONTENT_IMAGE = "content/image";
+        public static final String COMNON_CUSTOM = "common/custom";
     }
 
 

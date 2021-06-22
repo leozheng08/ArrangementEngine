@@ -2,6 +2,9 @@ package cn.tongdun.kunpeng.api.application.check.step;
 
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
+import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -14,9 +17,6 @@ import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.api.common.Constant;
-import cn.tongdun.kunpeng.api.common.config.IBaseConfig;
-import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 取得策略uuid
+ *
  * @Author: liang.chen
  * @Date: 2020/2/17 下午11:09
  */
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Component;
 @Step(pipeline = Risk.NAME, phase = Risk.CHECK, order = 300)
 public class GetPolicyUuidStep implements IRiskStep {
 
+    private static String CREDIT_CLOUD = "creditcloudsync";
 
     @Autowired
     private ILocalEnvironment localEnvironment;
@@ -41,7 +43,6 @@ public class GetPolicyUuidStep implements IRiskStep {
 
     @Autowired
     private PolicyCache policyCache;
-
 
     @Autowired
     private IBaseConfig baseConfig;
@@ -59,72 +60,72 @@ public class GetPolicyUuidStep implements IRiskStep {
         String eventId = request.getEventId();
         String policyVersion = request.getPolicyVersion();
 
-        if(StringUtils.isBlank(eventId)){
-            response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString()+":"+"eventId值为空");
+        if (StringUtils.isBlank(eventId)) {
+            response.setReasonCode(ReasonCode.REQ_DATA_TYPE_ERROR.toString() + ":" + "eventId值为空");
             return false;
         }
         context.setEventId(eventId);
         context.setPolicyVersion(policyVersion);
 
         String policyUuid = null;
-        if(StringUtils.isNotBlank(policyVersion)) {
+        if (StringUtils.isNotBlank(policyVersion)) {
             policyUuid = policyCache.getPolicyUuid(partnerCode, appName, eventId, policyVersion);
         } else {
-            PolicyDefinition policyDefinition= policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
+            PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
             //策略定义不存在
-            if(policyDefinition == null){
-                logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+            if (policyDefinition == null) {
+                logger.warn(TraceUtils.getFormatTrace() + ",policyDefinition == null,{},partnerCode:{},appName={},eventId:{}", ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, appName, eventId);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
-                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
+                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode() + ":" + ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
                 return false;
             }
 
             //策略定义已删除
-            if(DeleteStatusEnum.INVALID.getCode() == policyDefinition.isDeleted()){
-                logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
+            if (DeleteStatusEnum.INVALID.getCode() == policyDefinition.isDeleted()) {
+                logger.warn(TraceUtils.getFormatTrace() + "{},partnerCode:{},appName={},eventId:{}", ReasonCode.POLICY_DELETED.toString(), partnerCode, appName, eventId);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_DELETED.getCode(), ReasonCode.POLICY_DELETED.getDescription(), "决策引擎执行"));
-                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_DELETED.getDescription());
+                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode() + ":" + ReasonCode.POLICY_DELETED.getDescription());
                 return false;
             }
 
             //策略定义已关闭
-            if(CommonStatusEnum.CLOSE.getCode() == policyDefinition.getStatus()){
-                logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
+            if (CommonStatusEnum.CLOSE.getCode() == policyDefinition.getStatus()) {
+                logger.warn(TraceUtils.getFormatTrace() + "{},partnerCode:{},appName={},eventId:{}", ReasonCode.POLICY_CLOSED.toString(), partnerCode, appName, eventId);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_CLOSED.getCode(), ReasonCode.POLICY_CLOSED.getDescription(), "决策引擎执行"));
-                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_CLOSED.getDescription());
+                response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode() + ":" + ReasonCode.POLICY_CLOSED.getDescription());
                 return false;
             }
             policyUuid = policyDefinition.getCurrVersionUuid();
         }
 
         //策略不存在
-        if(StringUtils.isBlank(policyUuid)){
-            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+        if (StringUtils.isBlank(policyUuid)) {
+            logger.warn(TraceUtils.getFormatTrace() + ",policyUuid isBlank,{},partnerCode:{},appName={},eventId:{}", ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, appName, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode() + ":" + ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
             return false;
         }
         Policy policy = policyCache.get(policyUuid);
-        if(policy == null){
-            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, eventId);
+        if (policy == null) {
+            logger.warn(TraceUtils.getFormatTrace() + ",policy == null,{},partnerCode:{},appName={},eventId:{}", ReasonCode.POLICY_NOT_EXIST_SUB.toString(), partnerCode, appName, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_NOT_EXIST_SUB.getCode(), ReasonCode.POLICY_NOT_EXIST_SUB.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode() + ":" + ReasonCode.POLICY_NOT_EXIST_SUB.getDescription());
             return false;
         }
 
         //策略已删除
-        if(DeleteStatusEnum.INVALID.getCode() == policy.isDeleted()){
-            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_DELETED.toString(), partnerCode, eventId);
+        if (DeleteStatusEnum.INVALID.getCode() == policy.isDeleted()) {
+            logger.warn(TraceUtils.getFormatTrace() + "{},partnerCode:{},appName={},eventId:{}", ReasonCode.POLICY_DELETED.toString(), partnerCode, appName, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_DELETED.getCode(), ReasonCode.POLICY_DELETED.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_DELETED.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode() + ":" + ReasonCode.POLICY_DELETED.getDescription());
             return false;
         }
 
         //策略已关闭
-        if(CommonStatusEnum.CLOSE.getCode() == policy.getStatus()){
-            logger.warn(TraceUtils.getFormatTrace()+"{},partnerCode:{},eventId:{}",ReasonCode.POLICY_CLOSED.toString(), partnerCode, eventId);
+        if (CommonStatusEnum.CLOSE.getCode() == policy.getStatus()) {
+            logger.warn(TraceUtils.getFormatTrace() + "{},partnerCode:{},appName={},eventId:{}", ReasonCode.POLICY_CLOSED.toString(), partnerCode, appName, eventId);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.POLICY_CLOSED.getCode(), ReasonCode.POLICY_CLOSED.getDescription(), "决策引擎执行"));
-            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.toString()+":"+ReasonCode.POLICY_CLOSED.getDescription());
+            response.setReasonCode(ReasonCode.POLICY_NOT_EXIST.getCode() + ":" + ReasonCode.POLICY_CLOSED.getDescription());
             return false;
         }
 
@@ -140,8 +141,8 @@ public class GetPolicyUuidStep implements IRiskStep {
     }
 
 
-    private void setDefaultPartnerCode(AbstractFraudContext context){
-        if(StringUtils.isNotBlank(context.getPartnerCode())){
+    private void setDefaultPartnerCode(AbstractFraudContext context) {
+        if (StringUtils.isNotBlank(context.getPartnerCode())) {
             return;
         }
 
@@ -149,15 +150,15 @@ public class GetPolicyUuidStep implements IRiskStep {
         context.setPartnerCode(Constant.DEFAULT_PARTNER);
     }
 
-    private void setDefaultAppName(AbstractFraudContext context){
-        if(StringUtils.isNotBlank(context.getAppName())) {
+    private void setDefaultAppName(AbstractFraudContext context) {
+        if (StringUtils.isNotBlank(context.getAppName())) {
             return;
         }
         context.setAppName(Constant.DEFAULT_APP_NAME);
     }
 
 
-    private BizScenario createBizScenario(AbstractFraudContext context){
+    private BizScenario createBizScenario(AbstractFraudContext context) {
         BizScenario bizScenario = new BizScenario();
         bizScenario.setTenant(localEnvironment.getTenant());
         bizScenario.setPartner(context.getPartnerCode());
@@ -167,6 +168,11 @@ public class GetPolicyUuidStep implements IRiskStep {
         //根据event_type区分业务类型，如credit信贷，anti_fraud反欺诈
         String businessType = baseConfig.getBusinessByEventType(context.getEventType());
         bizScenario.setBusiness(businessType);
+        if (CREDIT_CLOUD.equalsIgnoreCase(context.getServiceType())) {
+            bizScenario.setBusiness(Constant.BUSINESS_CREDIT);
+        } else {
+            bizScenario.setBusiness(businessType);
+        }
         return bizScenario;
     }
 }

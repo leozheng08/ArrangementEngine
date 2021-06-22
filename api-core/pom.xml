@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>api-core</artifactId>
-    <version>1.0.24-api</version>
+    <version>1.3.2-api</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -145,24 +145,17 @@
                 <version>${project.version}</version>
             </dependency>
 
-<!--            <dependency>-->
-<!--                <groupId>cn.tongdun.kunpeng-api</groupId>-->
-<!--                <artifactId>application-mail</artifactId>-->
-<!--                <version>${project.version}</version>-->
-<!--            </dependency>-->
-
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>application-fieldmapping</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
-<!--            <dependency>-->
-<!--                <groupId>cn.tongdun.kunpeng-api</groupId>-->
-<!--                <artifactId>application-mix</artifactId>-->
-<!--                <version>${project.version}</version>-->
-<!--            </dependency>-->
-            <!-- kunpeng-api application end -->
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-indicatrix-shenwei</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
         </dependencies>
 

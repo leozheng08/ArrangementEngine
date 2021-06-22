@@ -7,13 +7,11 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.api.common.util.JsonUtil;
-import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
-import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
+import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
 import cn.tongdun.kunpeng.share.json.JSON;
-import com.eclipsesource.json.Json;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -155,8 +153,8 @@ public class CustomListFunction extends AbstractFunction {
      */
     private boolean fuzzyMatch(String text, String pattern) {
         int from = 0;
-        for (char c : pattern.toCharArray()) {
-            from = text.indexOf(c, from);
+        for (char c : text.toCharArray()) {
+            from = pattern.indexOf(c, from);
             if (from < 0) {
                 return false;
             }

@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 
 /**
  * activity发kafka
+ *
  * @Author: liang.chen
  * @Date: 2020/3/3 下午7:42
  */
@@ -35,21 +36,21 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
 
 
     @Override
-    public String getName(){
+    public String getName() {
         return getClass().getSimpleName();
     }
 
 
     //过滤条件,在入队列之前过滤
     @Override
-    public Predicate<QueueItem> getFilter(){
-        return (item)->{
+    public Predicate<QueueItem> getFilter() {
+        return (item) -> {
             //过滤掉测试标记的
-            if(item.getContext().isTestFlag()){
+            if (item.getContext().isTestFlag()) {
                 return false;
             }
             //过滤掉调用失败无效的数据
-            if(!item.getResponse().isSuccess()){
+            if (!item.getResponse().isSuccess()) {
                 return false;
             }
             return true;
@@ -57,9 +58,9 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
     @Override
-    public void onEvent(QueueItem item){
+    public void onEvent(QueueItem item) {
 
-        if(item.getContext() == null){
+        if (item.getContext() == null) {
             return;
         }
 
@@ -71,13 +72,14 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     }
 
 
-    private IActitivyMsg generateActivity(QueueItem item){
+    private IActitivyMsg generateActivity(QueueItem item) {
         IActitivyMsg actitivyMsg = extensionExecutor.execute(IGenerateActivityExtPt.class, item.getContext().getBizScenario(),
                 extension -> extension.generateActivity(item));
         return actitivyMsg;
     }
 
-    private void sendToKafka(IActitivyMsg actitivyMsg){
-        msgProducer.produce(KUNPENG_API_RAW_ACTIVITY,actitivyMsg.getMessageKey(),actitivyMsg.toJsonString());
+    private void sendToKafka(IActitivyMsg actitivyMsg) {
+//        logger.info("GenerateActivityExt....................msgKey={}", actitivyMsg.getMessageKey());
+        msgProducer.produce(KUNPENG_API_RAW_ACTIVITY, actitivyMsg.getMessageKey(), actitivyMsg.toJsonString());
     }
 }

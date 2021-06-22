@@ -19,5 +19,6 @@ android/notOfficialApp=cn.tongdun.kunpeng.api.basedata.rule.template.android.And
 android/root=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidRootRule
 android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidDeviceStatusAbnormalRule
 android/fpException=cn.tongdun.kunpeng.api.basedata.rule.template.android.AndroidFpExceptionRule
-mail/model=cn.tongdun.kunpeng.api.application.mail.rule.MailModelRule
+keyword/wordList=cn.tongdun.kunpeng.api.application.keyword.rule.KeywordRule
+content/image=cn.tongdun.kunpeng.api.application.content.rule.image.ImageRule
 location/addressMatch=cn.tongdun.kunpeng.api.basedata.rule.template.location.AddressMatchRule

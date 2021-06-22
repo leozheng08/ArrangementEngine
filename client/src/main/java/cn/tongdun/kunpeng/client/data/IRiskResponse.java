@@ -118,9 +118,9 @@ public interface IRiskResponse extends IApiResponse {
 
     void setFlowChargeSuccessed(Boolean flowChargeSuccessed);
 
-    // boolean isContainApplicationId();
+    boolean isContainApplicationId();
 
-    // void setContainApplicationId(boolean containApplicationId);
+    void setContainApplicationId(boolean containApplicationId);
 
     Boolean getEmergencySwithcOn();
 

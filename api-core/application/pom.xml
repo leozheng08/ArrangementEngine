@@ -6,7 +6,7 @@
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.0.24-api</version>
+        <version>1.3.2-api</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -26,10 +26,12 @@
         <module>application-auth</module>
         <module>application-activity</module>
         <module>application-challenger</module>
-<!--        <module>application-mail</module>-->
-<!--        <module>application-mix</module>-->
         <module>application-fieldmapping</module>
         <module>application-model</module>
+        <module>application-keyword</module>
+        <module>application-indicatrix</module>
+        <module>application-content</module>
+        <module>application-riskbase</module>
     </modules>
 
 

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>application</artifactId>
+        <groupId>cn.tongdun.kunpeng-api</groupId>
+        <version>1.3.2-api</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>application-riskbase</artifactId>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix.forseti.fp</groupId>
+            <artifactId>fp-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>elfin-biz-intf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.gaea</groupId>
+            <artifactId>gaea-factservice-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aerospike</groupId>
+            <artifactId>aerospike-client</artifactId>
+            <version>4.1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>evan-client</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>module.riskbase</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

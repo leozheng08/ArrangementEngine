@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-@Step(pipeline = Risk.NAME,phase = Risk.RULE_DATA,order = 1100)
+@Step(pipeline = Risk.NAME, phase = Risk.RULE_DATA, order = 1100)
 public class PlatformIndexStep implements IRiskStep {
 
     @Autowired
@@ -49,14 +49,14 @@ public class PlatformIndexStep implements IRiskStep {
         // 1.取实时解析的gaea缓存
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
-        if(indicatrixs == null || indicatrixs.isEmpty()){
-            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
+        if (indicatrixs == null || indicatrixs.isEmpty()) {
+            logger.info(TraceUtils.getFormatTrace() + "策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return true;
         }
 
         Map<String, Object> activityParam = getGaeaFields(context);
-        if (Objects.nonNull(request.get("blackBox"))){
-            activityParam.put("blackBox",request.get("blackBox"));
+        if (Objects.nonNull(request.get("blackBox"))) {
+            activityParam.put("blackBox", request.get("blackBox"));
         }
         List<Long> indicatrixsParam = new ArrayList<>();
         for (String key : indicatrixs) {
@@ -71,8 +71,8 @@ public class PlatformIndexStep implements IRiskStep {
             }
         }
 
-        if(indicatrixsParam.isEmpty()){
-            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
+        if (indicatrixsParam.isEmpty()) {
+            logger.info(TraceUtils.getFormatTrace() + "策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
             return true;
         }
 
@@ -92,13 +92,13 @@ public class PlatformIndexStep implements IRiskStep {
             try {
                 // 根据指标ID计算,适用于延迟敏感型场景(p999 50ms)
                 String[] tags = {
-                        "dubbo_qps","paas.api.GaeaApi"};
-                metrics.counter("kunpeng.api.dubbo.qps",tags);
-                ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+                        "dubbo_qps", "paas.api.GaeaApi"};
+                metrics.counter("kunpeng.api.dubbo.qps", tags);
+                ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
 
                 String[] partnerTags = {
-                        "partner_code",request.getPartnerCode()};
-                ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt",partnerTags);
+                        "partner_code", request.getPartnerCode()};
+                ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt", partnerTags);
 //                logger.info("时区Id3："+context.getSeqId()+"--"+JSON.toJSONString(indicatrixValQuery));
                 indicatrixResult = shenWeiUsApi.calcMulti(indicatrixValQuery);
                 timeContext.stop();
@@ -110,7 +110,7 @@ public class PlatformIndexStep implements IRiskStep {
                 } else {
                     ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
                 }
-                logger.error(TraceUtils.getFormatTrace()+"Error occurred when {} indicatrix result for {}.", context.getSeqId(), JSON.toJSONString(indicatrixsParam), e);
+                logger.error(TraceUtils.getFormatTrace() + "Error occurred when {} indicatrix result for {}.", context.getSeqId(), JSON.toJSONString(indicatrixsParam), e);
             }
             if (null != indicatrixResult && indicatrixResult.isSuccess()) {
                 for (ShenWeiIndicatrixVal indicatrixVal : indicatrixResult.getData()) {
@@ -123,7 +123,7 @@ public class PlatformIndexStep implements IRiskStep {
                 }
             }
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"Error occurred when GaeaIndexCalculateImpl fetchData.", e);
+            logger.error(TraceUtils.getFormatTrace() + "Error occurred when GaeaIndexCalculateImpl fetchData.", e);
         }
 
         return true;
@@ -132,9 +132,9 @@ public class PlatformIndexStep implements IRiskStep {
 
     public void resolveGaeaValue(AbstractFraudContext context, ShenWeiIndicatrixVal indicatrixVal) {
 
-        if (null==indicatrixVal){
+        if (null == indicatrixVal) {
             ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-            logger.warn(TraceUtils.getFormatTrace()+"指标读取异常,indicatrixVal值为null!");
+            logger.warn(TraceUtils.getFormatTrace() + "指标读取异常,indicatrixVal值为null!");
             return;
         }
 
@@ -142,7 +142,7 @@ public class PlatformIndexStep implements IRiskStep {
         if (indicatrixVal.getRetCode() < 500) {
             if (indicatrixVal.getIndicatrixId() == null) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
+                logger.warn(TraceUtils.getFormatTrace() + "指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
                 return;
             }
 
@@ -150,18 +150,18 @@ public class PlatformIndexStep implements IRiskStep {
             PlatformIndexData indexData = setPlatformIndexData(indicatrixVal, parseDouble(context, indicatrixVal.getResult()));
             context.putPlatformIndexMap(indicatrixId, indexData);
             if (retCode == IndicatrixRetCode.INDEX_ERROR.getCode()) {
-                logger.error(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixVal.getIndicatrixId());
+                logger.error(TraceUtils.getFormatTrace() + "合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixVal.getIndicatrixId());
             }
         } else {
             if (retCode == 600) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_LIMITING, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}获取限流", indicatrixVal.getIndicatrixId());
+                logger.warn(TraceUtils.getFormatTrace() + "gaea指标:{}获取限流", indicatrixVal.getIndicatrixId());
             } else if (retCode == 508) {
                 ReasonCodeUtil.add(context, ReasonCode.GAEA_FLOW_ERROR, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}指标流量不足", indicatrixVal.getIndicatrixId());
+                logger.warn(TraceUtils.getFormatTrace() + "gaea指标:{}指标流量不足", indicatrixVal.getIndicatrixId());
             } else {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.warn(TraceUtils.getFormatTrace()+"gaea指标:{}指标读取异常", indicatrixVal.getIndicatrixId());
+                logger.warn(TraceUtils.getFormatTrace() + "gaea指标:{}指标读取异常", indicatrixVal.getIndicatrixId());
             }
         }
     }
@@ -170,9 +170,9 @@ public class PlatformIndexStep implements IRiskStep {
     public Map<String, Object> getGaeaFields(AbstractFraudContext context) {
         Map<String, Object> gaeaContext = new HashMap<>();
         //系统字段
-        Map<String,IFieldDefinition> systemFieldMap=context.getSystemFieldMap();
+        Map<String, IFieldDefinition> systemFieldMap = context.getSystemFieldMap();
         //扩展字段
-        Map<String,IFieldDefinition> extendFieldMap=context.getExtendFieldMap();
+        Map<String, IFieldDefinition> extendFieldMap = context.getExtendFieldMap();
 
         build(context, systemFieldMap, gaeaContext);
         build(context, extendFieldMap, gaeaContext);
@@ -189,7 +189,7 @@ public class PlatformIndexStep implements IRiskStep {
             try {
                 return Double.parseDouble(obj.toString());
             } catch (Exception e) {
-                logger.error(TraceUtils.getFormatTrace()+"gata return result :" + obj + " can't parse to Double", e);
+                logger.error(TraceUtils.getFormatTrace() + "gata return result :" + obj + " can't parse to Double", e);
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
                 return null;
             }
@@ -208,9 +208,9 @@ public class PlatformIndexStep implements IRiskStep {
     }
 
 
-    private void build(AbstractFraudContext context, Map<String,IFieldDefinition> systemFieldMap, Map<String, Object> gaeaContext) {
-        if (null!=systemFieldMap&&!systemFieldMap.isEmpty()) {
-            systemFieldMap.forEach((k,v)-> {
+    private void build(AbstractFraudContext context, Map<String, IFieldDefinition> systemFieldMap, Map<String, Object> gaeaContext) {
+        if (null != systemFieldMap && !systemFieldMap.isEmpty()) {
+            systemFieldMap.forEach((k, v) -> {
                 Object fieldValue = context.get(k);
                 if (null != fieldValue) {
                     gaeaContext.put(k, fieldValue);

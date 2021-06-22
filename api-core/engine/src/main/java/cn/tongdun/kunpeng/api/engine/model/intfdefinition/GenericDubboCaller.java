@@ -35,7 +35,7 @@ import java.util.*;
  * @date 2021/1/13
  */
 @Service("genericDubboCaller")
-public class GenericDubboCaller implements IGenericDubboCaller{
+public class GenericDubboCaller implements IGenericDubboCaller {
 
     private static final Logger logger = LoggerFactory.getLogger(GenericDubboCaller.class);
 
@@ -90,7 +90,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
             // 3. 解析三方接口的参数类型数组及值对象数组
             DecisionFlowInterfaceCallInfo interfaceCallInfo = encapsulateDubboCallParam(mappingParamAndValue,
-                                                                                        interfaceDefinition);
+                    interfaceDefinition);
             // 4. 发起泛化调用
             final GenericService genericService = genericServiceManager.getGenericService(interfaceDefinition);
 
@@ -103,7 +103,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                     interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
                     Arrays.toString(decisionFlowInterface.getInputParams().toArray()), interfaceCallInfo);
             result = genericService.$invoke(interfaceDefinition.getMethodName(), interfaceCallInfo.getInputParamType(),
-                                            interfaceCallInfo.getInputParamValue());
+                    interfaceCallInfo.getInputParamValue());
             timeContext.stop();
 
             logger.info(TraceUtils.getFormatTrace()
@@ -116,13 +116,13 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             return false;
         } catch (Exception e) {
             if (ReasonCodeUtil.isTimeout(e)) {
-                metrics.counter(MetricsConstant.METRICS_API_TIMEOUT_KEY,tags);
+                metrics.counter(MetricsConstant.METRICS_API_TIMEOUT_KEY, tags);
                 result = APIResult.DUBBO_API_RESULT_TIMEOUT;
             } else if (e.getClass() == com.alibaba.dubbo.rpc.RpcException.class) {
-                metrics.counter(MetricsConstant.METRICS_API_CALL_ERROR_KEY,tags);
+                metrics.counter(MetricsConstant.METRICS_API_CALL_ERROR_KEY, tags);
                 result = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR;
             } else {
-                metrics.counter(MetricsConstant.METRICS_API_INTERNAL_ERROR_KEY,tags);
+                metrics.counter(MetricsConstant.METRICS_API_INTERNAL_ERROR_KEY, tags);
                 result = APIResult.DUBBO_API_RESULT_INTERNAL_ERROR;
             }
             logger.warn(TraceUtils.getFormatTrace() + "generic dubbo call method:{}, provider:{} catch exception result:{}", interfaceDefinition.getName(), providerHost, JSON.toJSONString(result), e);
@@ -141,6 +141,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
     /**
      * 集中处理dubbo返回结果
+     *
      * @param fraudContext
      * @param result
      * @param interfaceDefinition
@@ -156,18 +157,18 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             // 三方地址服务状态码处理
             String serviceName = interfaceDefinition.getServiceName();
 
-            if (!BooleanUtils.toBoolean(JsonUtil.getBoolean(resultMap,"success"))) {
+            if (!BooleanUtils.toBoolean(JsonUtil.getBoolean(resultMap, "success"))) {
                 if (result == APIResult.DUBBO_API_RESULT_TIMEOUT
-                    || result == APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR) {
+                        || result == APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR) {
                     if (SPECIAL_THIRD_INTERFACE.contains(serviceName)) {
                         ReasonCodeUtil.add(fraudContext, ReasonCode.ADDRESS_SERVICE_CALL_TIMEOUT, WATSON);
                         logger.info(TraceUtils.getFormatTrace() + "地址服务调用超时:{}-{} timeout:{} 50718",
-                                    interfaceDefinition.getName(), interfaceDefinition.getMethodName());
+                                interfaceDefinition.getName(), interfaceDefinition.getMethodName());
                     } else {
                         ReasonCodeUtil.add(fraudContext, ReasonCode.THIRD_SERVICE_CALL_TIMEOUT, KUNTA);
                         logger.info(TraceUtils.getFormatTrace() + "三方调用超时:{}-{} timeout:{} 50707",
-                                    interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
-                                    interfaceDefinition.getTimeout());
+                                interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                                interfaceDefinition.getTimeout());
                     }
                 } else {
                     SubReasonCode subReasonCodeObj = null;
@@ -179,7 +180,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                     }
 
                     if (subReasonCodeObj != null && subReasonCodeObj.getSub_code() != null
-                        && subReasonCodeObj.getSub_code().startsWith("507")) {
+                            && subReasonCodeObj.getSub_code().startsWith("507")) {
                         metrics.counter(MetricsConstant.METRICS_API_BIZ_ERROR_KEY, tags);
                     }
                 }
@@ -192,12 +193,13 @@ public class GenericDubboCaller implements IGenericDubboCaller{
         } catch (Exception e) {
             metrics.counter(MetricsConstant.METRICS_API_OTHER_ERROR_KEY, tags);
             logger.error(TraceUtils.getFormatTrace()
-                         + "dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
+                    + "dubbo泛化调用异常 call generic dubbo interface(generate result) error", e);
         }
     }
 
     /**
      * 根据出参配置将调用结果填装到上下文
+     *
      * @param fraudContext
      * @param decisionFlowInterface
      * @param interfaceDefinition
@@ -224,7 +226,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                     interfaceParam = "reasonDesc";
                 }
                 // 直接拍平路径获取json值
-                Object mappingValue = JSONPath.eval(result,interfaceParam);
+                Object mappingValue = JSONPath.eval(result, interfaceParam);
                 resultMapOutput.put(KunpengStringUtils.camel2underline(ruleParam), mappingValue);
 
                 if (mappingValue instanceof Map) {
@@ -243,12 +245,13 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 fraudContext.appendInterfaceOutputFields(resultMapOutput);
             }
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"dubbo泛化调用异常 接口调用的结果赋值给规则引擎字段异常", e);
+            logger.error(TraceUtils.getFormatTrace() + "dubbo泛化调用异常 接口调用的结果赋值给规则引擎字段异常", e);
         }
     }
 
     /**
      * dubbo 返回结果包装
+     *
      * @param result
      * @return
      */
@@ -272,7 +275,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 || result instanceof Double
                 || result instanceof Float) {
             resultMap.put("result", result);
-        } else {        
+        } else {
             //其它dubbo异常情况产生的返回值一律处理成外部服务器错误501
             resultMap = APIResult.DUBBO_API_RESULT_EXTERNAL_CALL_ERROR.toMap();
             logger.info(TraceUtils.getFormatTrace() + "dubbo泛化调用返回501错误");
@@ -329,21 +332,22 @@ public class GenericDubboCaller implements IGenericDubboCaller{
         //输出参数
         interfaceParams.setOutputParams(resultMap);
         interfaceResult.addInterfaceParams(interfaceDefinition.getMethodName(), interfaceParams);
-   }
+    }
 
     /**
      * 通过三方接口定义及映射入参值，组装泛化调用参数
+     *
      * @param mappingParamValue
      * @param interfaceDefinition
      * @return
      */
-    private DecisionFlowInterfaceCallInfo encapsulateDubboCallParam(Map<String,Object> mappingParamValue,InterfaceDefinition interfaceDefinition) throws BizException{
+    private DecisionFlowInterfaceCallInfo encapsulateDubboCallParam(Map<String, Object> mappingParamValue, InterfaceDefinition interfaceDefinition) throws BizException {
 
-        if(StringUtils.isEmpty(interfaceDefinition.getInputParam())){
+        if (StringUtils.isEmpty(interfaceDefinition.getInputParam())) {
             throw BizException.create(BasicErrorCode.PARAMS_ERROR);
         }
         // DB接口配置中的参数顺序列表
-        List<Map> configParamList = JSON.parseArray(interfaceDefinition.getInputParam(),Map.class);
+        List<Map> configParamList = JSON.parseArray(interfaceDefinition.getInputParam(), Map.class);
 
         DecisionFlowInterfaceCallInfo interfaceCallInfo = new DecisionFlowInterfaceCallInfo();
         if (CollectionUtils.isEmpty(configParamList)) {
@@ -362,9 +366,9 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 inputParamValue[i] = jsonTypeParamValue.get(param.get(CONFIG_KEY_NAME));
 
                 Object type = param.get(CONFIG_KEY_TYPE);
-                if(type instanceof Map){
+                if (type instanceof Map) {
                     inputParamType[i] = (String) ((Map) type).get(CONFIG_KEY_TYPE);
-                }else{
+                } else {
                     inputParamType[i] = (String) type;
                 }
             }
@@ -379,15 +383,18 @@ public class GenericDubboCaller implements IGenericDubboCaller{
         return interfaceCallInfo;
     }
 
+
     /**
      * 解析决策流三方接口入参映射并赋值
+     *
      * @param fraudContext
      * @param decisionFlowInterface
      * @return key:interface_field,value:真实值
      */
-    private Map<String,Object> assignInputParamValue(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
+    private Map<String, Object> assignInputParamValue(AbstractFraudContext fraudContext, DecisionFlowInterface
+            decisionFlowInterface) {
         List<InterfaceDefinitionParamInfo> inputParams = decisionFlowInterface.getInputParams();
-        Map<String,Object> mappingParamValue = new HashMap<>(inputParams.size());
+        Map<String, Object> mappingParamValue = new HashMap<>(inputParams.size());
 
         // 拼接指标值组装
         String indexValueStr = getJointIndexs(fraudContext, decisionFlowInterface);
@@ -407,7 +414,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
                 value = fraudContext.get(paramInfo.getRuleField());
                 //对于seqId字段直接从context中取值
                 String[] temp = paramInfo.getInterfaceField().split("\\.");
-                if (temp[temp.length - 1].equals("sequenceId")||temp[temp.length - 1].equals("seqId")) {
+                if (temp[temp.length - 1].equals("sequenceId") || temp[temp.length - 1].equals("seqId")) {
                     value = fraudContext.getSeqId();
                 }
                 if (temp[temp.length - 1].equals("appName")) {
@@ -424,7 +431,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
             // 必填校验
             if (paramInfo.isNecessary() && value == null) {
                 logger.warn(TraceUtils.getFormatTrace() + "call generic dubbo interface:{} param:{} 不能为空", decisionFlowInterface.getName(), paramInfo.getRuleField());
-                throw BizException.create(BasicErrorCode.PARAMS_ERROR, "必填参数["+paramInfo.getRuleField()+"]缺失");
+                throw BizException.create(BasicErrorCode.PARAMS_ERROR, "必填参数[" + paramInfo.getRuleField() + "]缺失");
             }
         }
 
@@ -434,10 +441,12 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
     /**
      * 拼接字段  值组装
+     *
      * @param fraudContext
      * @param decisionFlowInterface
      * @return
      */
+
     private String getJointFields(AbstractFraudContext fraudContext, DecisionFlowInterface decisionFlowInterface) {
         String fieldValueStr;
         String fields = Optional.ofNullable(decisionFlowInterface.getFields()).orElse("");
@@ -462,6 +471,7 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
     /**
      * 指标拼接字段 值组装
+     *
      * @param fraudContext
      * @param decisionFlowInterface
      * @return
@@ -496,16 +506,17 @@ public class GenericDubboCaller implements IGenericDubboCaller{
 
     /**
      * watson异常，处理三方
+     *
      * @param context
      * @param extReasonCode
      * @param extReasonMessage
      * @param interfaceName
      * @return
      */
-    public SubReasonCode addSubServiceCode(AbstractFraudContext context,String subService,String extReasonCode,String extReasonMessage, String interfaceName){
-        if(extReasonCode != null && extReasonMessage != null){
-            String subReasonCode = dictionaryManager.getReasonCode(subService,extReasonCode);
-            if(StringUtils.isBlank(subReasonCode)){
+    public SubReasonCode addSubServiceCode(AbstractFraudContext context, String subService, String extReasonCode, String extReasonMessage, String interfaceName) {
+        if (extReasonCode != null && extReasonMessage != null) {
+            String subReasonCode = dictionaryManager.getReasonCode(subService, extReasonCode);
+            if (StringUtils.isBlank(subReasonCode)) {
                 return null;
             }
             String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);

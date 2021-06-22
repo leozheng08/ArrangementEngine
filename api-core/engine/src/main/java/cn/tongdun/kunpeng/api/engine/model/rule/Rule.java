@@ -1,11 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.model.rule;
 
-import cn.tongdun.ddd.common.domain.Entity;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.AbstractBatchRemoteCallData;
 import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import cn.tongdun.kunpeng.api.engine.model.rule.function.WeightFunction;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 规则实体，规则的定义已经经过解析，可放到manager中执行。

@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * 风险扫描返回结果
- *
+ * 
  * @author zxb 2014年3月12日 上午11:00:59
  */
 
@@ -318,15 +318,15 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     }
 
-//    @Override
-//    public boolean isContainApplicationId() {
-//        return false;
-//    }
-//
-//    @Override
-//    public void setContainApplicationId(boolean containApplicationId) {
-//
-//    }
+    @Override
+    public boolean isContainApplicationId() {
+        return false;
+    }
+
+    @Override
+    public void setContainApplicationId(boolean containApplicationId) {
+
+    }
 
     @Override
     public Boolean getEmergencySwithcOn() {

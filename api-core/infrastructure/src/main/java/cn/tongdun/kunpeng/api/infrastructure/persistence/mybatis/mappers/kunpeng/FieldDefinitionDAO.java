@@ -15,7 +15,6 @@ public interface FieldDefinitionDAO {
      * 查询所有字段
      * @return
      */
-    @Cacheable(idxName = "fieldType")
     List<FieldDefinitionDO> selectByFieldType(String fieldType);
 
     /**
@@ -23,7 +22,6 @@ public interface FieldDefinitionDAO {
      * @param uuid
      * @return
      */
-    @Cacheable
     FieldDefinitionDO selectByUuid(@Param("uuid") String uuid);
 
 }

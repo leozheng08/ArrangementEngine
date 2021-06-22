@@ -37,20 +37,19 @@ public class AccessBusinessLoadManager implements ILoad {
     IAccessBusinessRepository accessBusinessRepository;
 
 
-
     private Logger logger = LoggerFactory.getLogger(AccessBusinessLoadManager.class);
 
 
     @Override
     public boolean load() {
-        logger.info(TraceUtils.getFormatTrace() + " load accessBusiness start");
+        logger.info(TraceUtils.getFormatTrace() + " AccessBusinessLoadManager start");
         long start = System.currentTimeMillis();
         List<AccessBusiness> accessBusinessList = accessBusinessRepository.queryAllUsableAccess(partnerClusterCache.getPartners());
         Map<String, List<AccessBusiness>> accessBusinessMap = accessBusinessList.stream().collect(groupingBy(r -> r.getPartnerCode() + ":" + r.getAppName()));
         for (Map.Entry<String, List<AccessBusiness>> entry : accessBusinessMap.entrySet()) {
             entry.getValue().stream().forEach(r -> accessBusinessCache.put(entry.getKey(), r));
         }
-        logger.info(TraceUtils.getFormatTrace() + "load accessBusiness end cost time :{}", System.currentTimeMillis() - start);
+        logger.info(TraceUtils.getFormatTrace() + "AccessBusinessLoadManager end cost time :{}, size={}", System.currentTimeMillis() - start, accessBusinessCache.getAccessBusinessMap().size());
         return true;
     }
 }

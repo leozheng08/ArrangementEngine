@@ -43,7 +43,7 @@ public class HaiwaiCreateRiskRequestExtPt implements ICreateRiskRequestExtPt {
     public static final String        X_SEQUENCE_ID          = "x-sequence-id";
     public static final String        RESP_DETAIL_TYPE       = "resp_detail_type";
     public static final String        RECALL                 = "recall";
-    public static final String        RECALL_SEQ_ID     = "recall_seq_id";
+    public static final String        RECALL_SEQ_ID          = "recall_sequence_id";
     public static final String        TOKEN_ID               = "token_id";
     public static final String        BLACK_BOX              = "black_box";
     public static final String        REQUEST_ID             = "request_id";

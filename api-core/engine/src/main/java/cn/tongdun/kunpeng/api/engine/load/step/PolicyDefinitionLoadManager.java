@@ -46,6 +46,8 @@ public class PolicyDefinitionLoadManager implements ILoad {
 
         //取得合作方范围
         Set<String> partners = partnerClusterCache.getPartners();
+        //TODO 排查问题，待删除
+//        logger.info("加载的合作方信息为：{}",partners.toString());
 
         //取得策略定义列表
         List<PolicyDefinition> PolicyModifiedDOList = policyDefinitionRepository.queryByPartners(partners);

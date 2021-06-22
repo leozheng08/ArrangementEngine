@@ -4,7 +4,6 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import com.alibaba.dubbo.rpc.RpcContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +43,7 @@ public class ReasonCodeUtil {
         try{
             SubReasonCode subReasonCodeObj = new SubReasonCode(subReasonCode, subReasonCodeMessage, service);
             context.addSubReasonCode(subReasonCodeObj, new SubReasonCode().extCodeConstructor(interfaceName, extReasonCode, extReasonMessage));
-//            if(RpcContext.getContext() != null && RpcContext.getContext().isConsumerSide()) {
-//                context.addProviderHost(subReasonCode,RpcContext.getContext().getRemoteHost());
-//            }
+
             return subReasonCodeObj;
         }
         catch (Exception e){

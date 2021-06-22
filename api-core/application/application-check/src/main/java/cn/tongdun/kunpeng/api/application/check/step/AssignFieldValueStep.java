@@ -16,16 +16,18 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+import static cn.tongdun.kunpeng.client.data.RiskRequest.fieldGetMethodMap;
 
 /**
  * 设置上下文中的字段值
@@ -94,8 +96,8 @@ public class AssignFieldValueStep implements IRiskStep {
         String serviceType = request.getServiceType();
         if (StringUtils.isBlank(serviceType)) {
             serviceType = "professional";
-            context.setServiceType(serviceType);
         }
+        context.setServiceType(serviceType);
 
         //判断是否测试数据
         context.setTestFlag(request.isTestFlag());
@@ -162,6 +164,29 @@ public class AssignFieldValueStep implements IRiskStep {
 
             putValueByFieldDefinition(ctx.getFieldValues(), fieldDefinition, entry.getValue());
         }
+
+        //解决AbstracFraundContext类中get方法反射抛出异常错误（AbstractFraudContext异常位置4,object is not an instance of declaring class）
+        for (String key : fieldGetMethodMap.keySet()) {
+            Object value = request.get(key);
+            if (value == null) {
+                continue;
+            }
+            IFieldDefinition fieldDefinition = ctx.getFieldDefinition(key);
+            if (null == fieldDefinition) {
+                String stardandCode = CamelAndUnderlineConvertUtil.underline2camel(key);
+                if (null == stardandCode) {
+                    continue;
+                }
+                fieldDefinition = ctx.getFieldDefinition(stardandCode);
+            }
+            if (null == fieldDefinition) {
+                continue;
+            }
+
+            putValueByFieldDefinition(ctx.getFieldValues(), fieldDefinition, value);
+        }
+
+
     }
 
 

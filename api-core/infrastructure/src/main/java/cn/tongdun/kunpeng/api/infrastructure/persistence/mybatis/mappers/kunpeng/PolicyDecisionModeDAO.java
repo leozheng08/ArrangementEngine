@@ -8,10 +8,8 @@ import java.util.List;
 
 public interface PolicyDecisionModeDAO {
 
-    @Cacheable(idxName = "policyUuid")
     PolicyDecisionModeDO selectByPolicyUuid(String policyUuid);
 
-    @Cacheable
     PolicyDecisionModeDO selectByUuid(String uuid);
 
     //todo 后期优化，按分页查询所有

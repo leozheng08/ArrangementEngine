@@ -45,7 +45,7 @@ public class DomainEventHandle {
     public void init(){
         threadPool = threadService.createThreadPool(
                 1,
-                2,
+                1,
                 30L,
                 TimeUnit.MINUTES,
                 10000,

@@ -36,7 +36,6 @@ public class BaseCheckParamsStep implements IRiskStep {
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
 
-
         // 检查必填字段，字段类型
         StringBuilder sbType = new StringBuilder();
         StringBuilder sbFormat = new StringBuilder();
@@ -44,24 +43,22 @@ public class BaseCheckParamsStep implements IRiskStep {
 
         context.setSystemFieldMap(fieldDefinitionCache.getSystemField(context.getEventType()));
 
-        Map<String, IFieldDefinition> extendFieldMap = fieldDefinitionCache.getExtendField(context.getPartnerCode(),context.getEventType());
+        Map<String, IFieldDefinition> extendFieldMap = fieldDefinitionCache.getExtendField(context.getPartnerCode(), context.getEventType());
         if (extendFieldMap != null && extendFieldMap.size() > 0) {
             context.setExtendFieldMap(extendFieldMap);
         }
 
-        checkParamFromRequest(request,context,sbType,sbFormat,sbOvermax);
+        checkParamFromRequest(request, context, sbType, sbFormat, sbOvermax);
 
 
         StringBuilder sb = new StringBuilder();
         if (sbType.length() > 0) {
             sb.append(ReasonCode.PARAM_DATA_TYPE_ERROR.toString());
             sb.append(",").append(sbType.toString());
-        }
-        else if (sbFormat.length() > 0) {
+        } else if (sbFormat.length() > 0) {
             sb.append(ReasonCode.PARAM_FORMAT_ERROR.toString());
             sb.append(",").append(sbFormat.toString());
-        }
-        else if (sbOvermax.length() > 0) {
+        } else if (sbOvermax.length() > 0) {
             sb.append(ReasonCode.PARAM_OVER_MAX_LEN.toString());
             sb.append(",").append(sbOvermax.toString());
         }
@@ -81,29 +78,29 @@ public class BaseCheckParamsStep implements IRiskStep {
         }
         for (Map.Entry<String, Object> entry : request.getFieldValues().entrySet()) {
             //值检查
-            Object val=entry.getValue();
-            if(val == null){
+            Object val = entry.getValue();
+            if (val == null) {
                 continue;
             }
-            if(val instanceof String && StringUtils.isBlank((String)val)){
+            if (val instanceof String && StringUtils.isBlank((String) val)) {
                 continue;
             }
 
-            IFieldDefinition fieldDefinition=context.getFieldDefinition(entry.getKey());
-            if (null==fieldDefinition){
-                String stardandCode=CamelAndUnderlineConvertUtil.underline2camel(entry.getKey());
-                if (null==stardandCode){
+            IFieldDefinition fieldDefinition = context.getFieldDefinition(entry.getKey());
+            if (null == fieldDefinition) {
+                String stardandCode = CamelAndUnderlineConvertUtil.underline2camel(entry.getKey());
+                if (null == stardandCode) {
                     continue;
                 }
-                fieldDefinition=context.getFieldDefinition(stardandCode);
+                fieldDefinition = context.getFieldDefinition(stardandCode);
             }
 
-            if (null==fieldDefinition){
+            if (null == fieldDefinition) {
                 continue;
             }
 
             if (FieldDataType.INT.name().equals(fieldDefinition.getDataType()) || FieldDataType.DOUBLE.name().equals(fieldDefinition.getDataType())) {
-                if(val instanceof Number ){
+                if (val instanceof Number) {
                     continue;
                 }
                 if (!KunpengStringUtils.isNumeric(val.toString())) {
@@ -113,17 +110,17 @@ public class BaseCheckParamsStep implements IRiskStep {
                     sbType.append(fieldDefinition.getFieldCode());
                 }
             } else if (FieldDataType.DATETIME.name().equals(fieldDefinition.getDataType())) {
-                if(val instanceof Date){
+                if (val instanceof Date) {
                     continue;
                 }
                 if (!KunpengStringUtils.isDate(val.toString())) {
-                    if (sbType.length() > 0){
+                    if (sbType.length() > 0) {
                         sbType.append(",");
                     }
                     sbType.append(fieldDefinition.getFieldCode());
                 }
             } else if (FieldDataType.BOOLEAN.name().equals(fieldDefinition.getDataType())) {
-                if(val instanceof Boolean){
+                if (val instanceof Boolean) {
                     continue;
                 }
                 if (!"true".equalsIgnoreCase(val.toString()) && !"false".equalsIgnoreCase(val.toString())) {
@@ -133,7 +130,7 @@ public class BaseCheckParamsStep implements IRiskStep {
                     sbType.append(fieldDefinition.getFieldCode());
                 }
             } else if (FieldDataType.ARRAY.name().equals(fieldDefinition.getDataType())) {
-                if(val instanceof List || val instanceof Object[]){
+                if (val instanceof List || val instanceof Object[]) {
                     continue;
                 }
                 if (val.toString().replaceAll("，", ",").split(",").length > 20) {
@@ -146,29 +143,31 @@ public class BaseCheckParamsStep implements IRiskStep {
 
         }
     }
+
     /**
      * 检查参数格式是否正确
+     *
      * @param request
      * @param fields
      * @param sbType
      * @param sbFormat
      * @param sbOvermax
      */
-    private void checkParams(RiskRequest request,Collection<FieldDefinition> fields,
-                             StringBuilder sbType, StringBuilder sbFormat, StringBuilder sbOvermax){
+    private void checkParams(RiskRequest request, Collection<FieldDefinition> fields,
+                             StringBuilder sbType, StringBuilder sbFormat, StringBuilder sbOvermax) {
         for (FieldDefinition fieldDefinition : fields) {
             String fieldCode = fieldDefinition.getFieldCode();
             String dataType = fieldDefinition.getDataType();
 
             Object val = request.getFieldValues().get(fieldCode);
-            if(val == null){
+            if (val == null) {
                 continue;
             }
-            if(val instanceof String && StringUtils.isBlank((String)val)){
+            if (val instanceof String && StringUtils.isBlank((String) val)) {
                 continue;
             }
             if (FieldDataType.INT.name().equals(dataType) || FieldDataType.DOUBLE.name().equals(dataType)) {
-                if(val instanceof Number ){
+                if (val instanceof Number) {
                     continue;
                 }
                 if (!KunpengStringUtils.isNumeric(val.toString())) {
@@ -178,17 +177,17 @@ public class BaseCheckParamsStep implements IRiskStep {
                     sbType.append(fieldCode);
                 }
             } else if (FieldDataType.DATETIME.name().equals(dataType)) {
-                if(val instanceof Date){
+                if (val instanceof Date) {
                     continue;
                 }
                 if (!KunpengStringUtils.isDate(val.toString())) {
-                    if (sbType.length() > 0){
+                    if (sbType.length() > 0) {
                         sbType.append(",");
                     }
                     sbType.append(fieldCode);
                 }
             } else if (FieldDataType.BOOLEAN.name().equals(dataType)) {
-                if(val instanceof Boolean){
+                if (val instanceof Boolean) {
                     continue;
                 }
                 if (!"true".equalsIgnoreCase(val.toString()) && !"false".equalsIgnoreCase(val.toString())) {
@@ -198,7 +197,7 @@ public class BaseCheckParamsStep implements IRiskStep {
                     sbType.append(fieldCode);
                 }
             } else if (FieldDataType.ARRAY.name().equals(dataType)) {
-                if(val instanceof List || val instanceof Object[]){
+                if (val instanceof List || val instanceof Object[]) {
                     continue;
                 }
                 if (val.toString().replaceAll("，", ",").split(",").length > 20) {

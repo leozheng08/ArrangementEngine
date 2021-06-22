@@ -17,10 +17,8 @@ public interface EventTypeDAO {
      */
     List<EventTypeDO> selectAvailableByCodes(@Param("list") Set<String> codeList);
 
-    @Cacheable(idxName = "allAvailable")
     List<EventTypeDO> selectAllAvailable();
 
-    @Cacheable(idxName = "all")
     List<EventTypeDO> selectAll();
 
     /**
@@ -28,7 +26,6 @@ public interface EventTypeDAO {
      * @param uuid
      * @return
      */
-    @Cacheable
     EventTypeDO selectByUuid(@Param("uuid") String uuid);
 
 }

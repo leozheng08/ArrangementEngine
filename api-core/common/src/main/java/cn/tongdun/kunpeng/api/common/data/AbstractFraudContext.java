@@ -1,14 +1,21 @@
 package cn.tongdun.kunpeng.api.common.data;
 
+import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.client.data.IOutputField;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.client.data.impl.underline.OutputField;
 import cn.tongdun.tdframework.core.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -19,11 +26,13 @@ import java.util.function.Supplier;
 
 @Data
 public abstract class AbstractFraudContext implements Serializable, ExecuteContext {
+    private static Logger logger = LoggerFactory.getLogger(AbstractFraudContext.class);
 
     private static final long serialVersionUID = -3320502733559293390L;
     private static final Field[] classFields = AbstractFraudContext.class.getDeclaredFields();
     private static final Set<String> classFieldNames = new HashSet<>(classFields.length / 3);
 
+    //字段名To字段方法
     private static final Map<String, Method> fieldGetMethodMap = new HashMap<>();
     private static final Map<String, Method> fieldSetMethodMap = new HashMap<>();
 
@@ -39,7 +48,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     Method method = AbstractFraudContext.class.getMethod(getMethodName);
                     fieldGetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
-                    // ignore
+                    logger.error("AbstractFraudContext异常位置1,{}", e.getMessage(), e);
                 }
 
                 String setMethodName = "set" + KunpengStringUtils.upperCaseFirstChar(field.getName());
@@ -47,10 +56,19 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     Method method = AbstractFraudContext.class.getMethod(setMethodName);
                     fieldSetMethodMap.put(field.getName(), method);
                 } catch (Exception e) {
-                    // ignore
+                    logger.error("AbstractFraudContext异常位置2,{}", e.getMessage(), e);
                 }
             }
         }
+
+        if (!CollectionUtils.isEmpty(fieldGetMethodMap)) {
+            Set<Map.Entry<String, Method>> entries = fieldGetMethodMap.entrySet();
+            entries.stream().forEach(methodEntry -> {
+                logger.info("AbstractFraudContext.fieldGetMethodMap值为，key={},value={}", methodEntry.getKey(), methodEntry.getValue().getName());
+            });
+
+        }
+
     }
 
 
@@ -268,9 +286,27 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 设备指纹信息
      */
-    private Map<String, Object> deviceInfo = new HashMap<String, Object>();
+    private Map<String, Object> deviceInfo = new HashMap<>();
+
+    /**
+     * 用于设备指纹判断黑白名单
+     */
+    private Map<String, Object> deviceInfoFp = new HashMap<>();
+    /**
+     * 通过geoIp获得的访问ip对应的相关地理位置信息
+     */
+    private GeoipEntity geoipEntity;
+
+    /**
+     * 关键词匹配结果
+     */
+    private List<Object> keywordResultModels = new ArrayList<>();
+
     /*************外部接口返回结果 end******************/
 
+    private List<IOutputField> outputFields = Lists.newArrayList();
+
+    private List<Map<String, Object>> outputIndicatrixes = Lists.newArrayList();
 
     /**
      * 添加异常子码及对应外部系统的原因码
@@ -318,7 +354,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             try {
                 setMethod.invoke(this, o);
             } catch (Exception ex) {
-                // 没有找到系统字段
+                logger.error("AbstractFraudContext异常位置3,{}", ex.getMessage(), ex);
             }
         }
 
@@ -363,7 +399,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
                     return value;
                 }
             } catch (Exception e) {
-                // ignore
+                logger.error("AbstractFraudContext异常位置4,{}", e.getMessage(), e);
             }
         }
 
@@ -374,7 +410,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             }
         }
 
-        return getExternalFieldValues(key);
+        return externalReturnObj.get(key);
     }
 
     public String getFieldToString(String key) {
@@ -590,6 +626,19 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             }
         }
         return null;
+    }
+
+    public void appendOutputFields(OutputField outputField) {
+        //如果包含则覆盖,否则就追加
+        int i = outputFields.indexOf(outputField);
+        if (i > -1) {
+            IOutputField exists = outputFields.get(i);
+            exists.setValue(outputField.getValue());
+            exists.setType(outputField.getType());
+            exists.setDesc(outputField.getDesc());
+        } else {
+            outputFields.add(outputField);
+        }
     }
 
 }

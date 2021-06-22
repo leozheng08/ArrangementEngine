@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpen
 import cn.tongdun.kunpeng.share.dataobject.DecisionCustomOutputDO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DecisionCustomOutputDAO {
 
@@ -15,5 +16,7 @@ public interface DecisionCustomOutputDAO {
     List<DecisionCustomOutputDO> selectAvailableByPolicyUuid(String policyUuid);
 
     DecisionCustomOutputDO selectByUuid(String uuid);
+
+    List<DecisionCustomOutputDO> selectAvailableByPartners(Set<String> partners);
 
 }

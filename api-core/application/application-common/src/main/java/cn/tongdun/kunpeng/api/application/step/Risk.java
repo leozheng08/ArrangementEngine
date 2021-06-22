@@ -30,6 +30,8 @@ public class Risk {
     @Phase(parallel = false, order = 6000)
     public final static String RUN_ENGINE = "runEngine";
 
+    @Phase(parallel = false, order = 6500)
+    public final static String BILLING_INCREASE = "billingIncrease";
 
     // required = true 如果前面各个阶段中断运行后，output仍需要运行
     @Phase(parallel = false, order = 7000, required = true)

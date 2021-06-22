@@ -8,7 +8,6 @@ import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessBusinessCache;
 import cn.tongdun.kunpeng.api.engine.model.fieldmapping.AccessParam;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,6 @@ public class FieldMappingStep implements IRiskStep {
 
         AccessBusiness access = uuidAccessMap.get(partnerCode + ":" + appName);
         if (null == access) {
-            logger.info(TraceUtils.getFormatTrace() + "access :{} not exits, use default parameters", appName);
             return true;
         }
 

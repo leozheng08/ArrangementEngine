@@ -27,6 +27,12 @@ public class SubReasonCode implements Serializable {
         this.sub_msg = sub_msg;
     }
 
+    public SubReasonCode(ReasonCode reasonCode, String ext_service) {
+        this.sub_code = reasonCode.getCode();
+        this.sub_msg = reasonCode.getDescription();
+        this.ext_service = ext_service;
+    }
+
     public SubReasonCode.ExtCode extCodeConstructor(String ext_service_name, String ext_reasonCode, String ext_message) {
         return new ExtCode(ext_service_name, ext_reasonCode, ext_message);
     }

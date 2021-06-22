@@ -1,6 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.script;
 
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
@@ -50,7 +52,11 @@ public class DynamicScriptManager {
         try {
             handleField(context);
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "动态脚本调用异常", e);
+            // 暂不处理动态脚本执行超时的状态码，以日志为准
+            if (!ReasonCodeUtil.isTimeout(e) ){
+                logger.error(TraceUtils.getFormatTrace() + "动态脚本调用异常", e);
+                ReasonCodeUtil.add(context, ReasonCode.GROOVY_EXECUTE_ERROR, "groovy");
+            }
         }
         return true;
     }
@@ -228,7 +234,8 @@ public class DynamicScriptManager {
             }
             context.setField(fieldName, value);
         } catch (Throwable ex) {
-            return false;
+//            logger.error(TraceUtils.getFormatTrace() + "动态脚本执行失败, fieldName :{}, methodName :{}", fieldName, methodName);
+            throw ex;
         }
 
         return true;

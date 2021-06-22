@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.ruledetail.FieldCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.IndexCustomDetail;
 import cn.tongdun.kunpeng.api.ruledetail.RuleDetail;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
+import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.shenwei.dto.ShenWeiConditionDetail;
 import cn.tongdun.tdframework.core.extension.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
@@ -36,7 +37,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
     RuleCache ruleCache;
 
     @Override
-    public boolean ruleDetailOutput(AbstractFraudContext context, IRiskResponse response) {
+    public boolean ruleDetailOutput(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
 
         Map<String, Map<String, DetailCallable>> functionHitDetail = context.getFunctionHitDetail();
         if (functionHitDetail == null || functionHitDetail.isEmpty()) {
@@ -137,6 +138,9 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
             response.setRuleDetails(ruleDetailList);
         }
 
+        if (StringUtils.contains(request.getRespDetailType(), "hitRuleTestDetails")) {
+            response.setRuleTestDetails(ruleDetailList);
+        }
         return true;
     }
 }

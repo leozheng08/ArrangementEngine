@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>partner-cluster</artifactId>
+        <groupId>cn.tongdun.kunpeng-api</groupId>
+        <version>1.3.2-api</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>partner-cluster-chassis</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>acl-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>chassis-api-partner</artifactId>
+            <version>1.1.16</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- test end -->
+    </dependencies>
+</project>
