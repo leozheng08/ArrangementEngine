@@ -48,16 +48,9 @@ public class ImageFunctionV1 extends AbstractFunction {
     private String conditions;
     private String logicOperator;
     private List<Action> actionList;
-    private String model = "image_brand_logo_model_result";
     private static final String paramKeyConditions = "conditions";
     private static final String paramKeyLogicOperator = "logicOperator";
 
-    @Value("${model.result.name:model.result.name=image_brand_logo_model_result,image_logo_model_result,image_politics_model_result,image_terror_model_result}")
-    private String modelResultName;
-    @Value("${model.result.camel.name:imageBrandLogoModelResult,imageLogoModelResult,imagePoliticsModelResult,imageTerrorModelResult}")
-    private String modelResultCamelName;
-    @Value("${model.result.desc:品牌识别模型,LOGO识别模型,涉政模型,暴恐模型}")
-    private String modelResultDesc;
 
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
@@ -65,16 +58,8 @@ public class ImageFunctionV1 extends AbstractFunction {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
         //遍历枚举类型，一次访问会传入多类模型数据
-        ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
 
-        String[] modelResultNames = modelResultName.split(",");
-        String[] modelResultCamelNames = modelResultCamelName.split(",");
-        String[] modelResultDescs = modelResultDesc.split(",");
-        ModelResult[] modelResults = compositeModelResult(modelResultNames,modelResultCamelNames,modelResultDescs);
-
-        //从上下文获取多组模型数据
-        Map<ModelResult,String> modelResult = achieveModelResult(context,modelResults);
-        if (hasNullData(modelResult, conditions, logicOperator)) {
+        if (hasNullData(conditions, logicOperator)) {
             return functionResult;
         }
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
@@ -82,10 +67,12 @@ public class ImageFunctionV1 extends AbstractFunction {
         List<List<FilterConditionDO>> conditionList = this.parseCondition(conditions);
 
         String model = getModel(conditionList);
+
+
         if(model==null){
             return functionResult;
         }
-        String matchModelResult = matchModel(modelResult,model);
+        String matchModelResult = achieveModelResult(context,model);
         if(matchModelResult==null){
             return functionResult;
         }
@@ -205,6 +192,7 @@ public class ImageFunctionV1 extends AbstractFunction {
         return filters;
     }
 
+
     @Override
     protected void parseFunction(FunctionDesc functionDesc) {
         if(functionDesc==null|| CollectionUtils.isEmpty(functionDesc.getParamList())){
@@ -231,16 +219,11 @@ public class ImageFunctionV1 extends AbstractFunction {
     /**
      * 校验数据
      *
-     * @param modelResult 图片分析结果
      * @param conditions      条件
      * @param logicOperator   条件组之间的关系 && ||
      * @return
      */
-    private boolean hasNullData(Map<ModelResult,String> modelResult, String conditions, String logicOperator) {
-        if (modelResult.isEmpty()) {
-            logger.warn("The lablelAndScoreModelResult doesn't match modelResultEnum!");
-            return true;
-        }
+    private boolean hasNullData( String conditions, String logicOperator) {
         if (StringUtils.isEmpty(conditions)) {
             logger.warn("The logo's rule condition is empty!");
             return true;
@@ -254,23 +237,22 @@ public class ImageFunctionV1 extends AbstractFunction {
 
 
     /**
-     * 遍历枚举类型，默认一次访问只会传入一类模型数据, 但使用Map防止多模型数据传入，同一模型多次输入数据会被覆盖，获取模型数据
+     * 从上下文中读取规则中对应模型的具体入参
      *
      * @param context         上下文
      * @return
      */
 
-    private Map<ModelResult,String> achieveModelResult(AbstractFraudContext context, ModelResult[] modelResults){
-        Map<ModelResult,String> ModelResultMap = new HashMap<>();
+    private String achieveModelResult(AbstractFraudContext context, String model){
+        Map<String,String> ModelResultMap = new HashMap<>();
+        String modelCamel = CamelAndUnderlineConvertUtil.underline2camel(model);
         //遍历枚举类型，一次访问只会传入一类模型数据
-        for(ModelResult modelResult: modelResults){
-            Object result = context.get(modelResult.getCamelName())==null?context.get(modelResult.getName()):context.get(modelResult.getCamelName());
-            if(result!=null){
-                String lablelAndScoreModelResult = result.toString();
-                ModelResultMap.put(modelResult,lablelAndScoreModelResult);
-            }
+        Object result = context.get(model)==null?context.get(modelCamel):context.get(model);
+        if(result!=null){
+            String lablelAndScoreModelResult = result.toString();
+            return lablelAndScoreModelResult;
         }
-        return ModelResultMap;
+        return null;
     }
 
     /**
