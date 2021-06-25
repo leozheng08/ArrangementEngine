@@ -11,9 +11,7 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUtil;
-import cn.tongdun.kunpeng.api.application.content.constant.ModelResultEnum;
 import cn.tongdun.kunpeng.api.application.content.function.image.FilterConditionDO;
-import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
 import cn.tongdun.kunpeng.api.application.content.function.image.ModelResult;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -21,12 +19,10 @@ import cn.tongdun.kunpeng.api.common.util.CompareUtils;
 import cn.tongdun.kunpeng.api.ruledetail.ImageDetail;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +40,7 @@ import java.util.Map;
 
 public class ImageFunctionV1 extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImageFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImageFunctionV1.class);
     private String conditions;
     private String logicOperator;
     private List<Action> actionList;
@@ -57,21 +53,18 @@ public class ImageFunctionV1 extends AbstractFunction {
         FunctionResult functionResult = new FunctionResult(false, null);
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
-        //遍历枚举类型，一次访问会传入多类模型数据
-
         if (hasNullData(conditions, logicOperator)) {
             return functionResult;
         }
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
         //解析规则条件
         List<List<FilterConditionDO>> conditionList = this.parseCondition(conditions);
-
+        //遍历条件，由于前端写死每条规则只允许配置一种模型。因此只选择首个条件的模型
         String model = getModel(conditionList);
-
-
         if(model==null){
             return functionResult;
         }
+        //从api接口获取匹配规则配置模型的一条入参
         String matchModelResult = achieveModelResult(context,model);
         if(matchModelResult==null){
             return functionResult;
@@ -96,7 +89,6 @@ public class ImageFunctionV1 extends AbstractFunction {
 
     private ModelResult[] compositeModelResult(String[] modelResultNames, String[] modelResultCamelNames, String[] modelResultDescs) {
         int size = modelResultNames.length;
-
         if(size!=modelResultCamelNames.length||size!=modelResultDescs.length){
             logger.error("图像识别模型配置数量不一致报错，请检查配置文件：model.result.name = {}, model.result.camelname = {}, model.result.desc = {}", modelResultNames.length, modelResultCamelNames.length, modelResultDescs.length);
         }
@@ -128,7 +120,7 @@ public class ImageFunctionV1 extends AbstractFunction {
      * 解析图片logo及分数信息
      *
      * @param matchModelResult 图片解析结果json
-     *                        eg:[{"score": 0.9977513551712036,"logoName": "chanel"},{"score": 0.9977513551712126,"logoName": "lv"},{"score": 0.3477513551712036,"logoName": "lv"}]
+     *                        eg:[{"score": 0.9977513551712036,"label": "chanel"},{"score": 0.9977513551712126,"label": "lv"},{"score": 0.3477513551712036,"label": "lv"}]
      * @return
      */
     private List<Map> parseLogoModelResult(String matchModelResult) {
