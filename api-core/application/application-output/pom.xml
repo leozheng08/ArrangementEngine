@@ -55,6 +55,12 @@
             <artifactId>application-basedata</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>shenwei-client</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
