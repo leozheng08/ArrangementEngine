@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>starter-sea</artifactId>
-    <version>1.3.2-api</version>
+    <version>1.3.4-api</version>
     <name>starter-sea</name>
 
     <properties>
@@ -14,8 +14,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <api-core.version>1.3.2-api</api-core.version>
-        <api-extension.version>1.3.2-api</api-extension.version>
+        <api-core.version>1.3.4-api</api-core.version>
+        <api-extension.version>1.3.4-api</api-extension.version>
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <skip_maven_deploy>false</skip_maven_deploy>
