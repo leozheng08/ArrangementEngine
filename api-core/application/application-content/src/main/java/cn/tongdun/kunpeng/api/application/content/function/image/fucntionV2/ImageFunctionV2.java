@@ -12,8 +12,8 @@ import cn.hutool.json.JSONUtil;
 import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUtil;
 import cn.tongdun.kunpeng.api.application.content.constant.MathOperatorEnum;
 import cn.tongdun.kunpeng.api.application.content.constant.ModelResultEnum;
-import cn.tongdun.kunpeng.api.application.content.function.image.*;
-import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.application.content.function.image.FilterConditionDO;
+import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.CompareUtils;
 import cn.tongdun.kunpeng.api.ruledetail.ImageDetail;
@@ -236,8 +236,9 @@ public class ImageFunctionV2 extends AbstractFunction {
             }
             else if(a.getValue()>b.getValue()){
                 return 1;
+            } else{
+                return 0;
             }
-            else return 0;
         });
         PriorityQueue<FilterConditionDTO> rightSideQueue = new PriorityQueue<>((a,b)->{
             if(a.getValue()<b.getValue()){
@@ -245,8 +246,9 @@ public class ImageFunctionV2 extends AbstractFunction {
             }
             else if(a.getValue()>b.getValue()){
                 return 1;
+            } else{
+                return 0;
             }
-            else return 0;
         });
         for(FilterConditionDTO filterConditionDTO : filterConditionDTOList){
             if(filterConditionDTO.getMathOperatorEnum().equals(MathOperatorEnum.LESS_EQUAL)||filterConditionDTO.getMathOperatorEnum().equals(MathOperatorEnum.LESS)){
