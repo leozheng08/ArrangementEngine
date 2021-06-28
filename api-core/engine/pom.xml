@@ -269,6 +269,12 @@
             <artifactId>fastjson</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
         <!-- test end -->
     </dependencies>
 
