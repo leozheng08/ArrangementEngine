@@ -27,7 +27,7 @@
 
 
     <dubbo:reference id="aGeoipInfoQueryService" interface="cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService"
-                     version="${geoip.dubbo.version}" retries="0" timeout="${geoip.dubbo.timeout}" check="false" connections="2" >
+                     version="${geoip.dubbo.version}" retries="2" timeout="${geoip.dubbo.timeout}" check="false" connections="2" >
         <dubbo:parameter key="threadname" value="aGeo-query-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
         <dubbo:parameter key="corethreads" value="1" />
