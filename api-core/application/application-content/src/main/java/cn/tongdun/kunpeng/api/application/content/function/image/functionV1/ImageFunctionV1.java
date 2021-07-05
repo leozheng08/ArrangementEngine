@@ -236,7 +236,6 @@ public class ImageFunctionV1 extends AbstractFunction {
      */
 
     private String achieveModelResult(AbstractFraudContext context, String model){
-        Map<String,String> ModelResultMap = new HashMap<>();
         String modelCamel = CamelAndUnderlineConvertUtil.underline2camel(model);
         //遍历枚举类型，一次访问只会传入一类模型数据
         Object result = context.get(model)==null?context.get(modelCamel):context.get(model);
