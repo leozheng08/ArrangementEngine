@@ -12,12 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class SaaSIdInfoService implements IdInfoServiceExtPt{
-
-    @Autowired
-    private IdInfoQueryService idInfoQueryService;
-
     @Override
     public IdInfo getIdInfo(String id) {
-        return idInfoQueryService.getIdInfo(id);
+        return null;
     }
 }
