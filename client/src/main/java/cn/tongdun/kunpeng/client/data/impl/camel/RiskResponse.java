@@ -11,35 +11,35 @@ import java.util.Map;
 
 /**
  * 风险扫描返回结果
- * 
+ *
  * @author zxb 2014年3月12日 上午11:00:59
  */
 
 public class RiskResponse extends ApiResponse implements IRiskResponse {
 
-    private static final long         serialVersionUID    = 844958112006659504L;
+    private static final long serialVersionUID = 844958112006659504L;
     // 风险分数
-    private Integer                   finalScore;
+    private Integer finalScore;
     // 最终的风险决策结果
-    private String                    finalDecision;
+    private String finalDecision;
     // 策略名称
-    private String                    policyName;
+    private String policyName;
     // 策略uuid
-    private String                    policyUuid;
+    private String policyUuid;
     // 命中规则列表
 //    private List<IHitRule>             hitRules;
     // 请求序列号，每个请求进来都分配一个全局唯一的id
-    private String                    seqId;
+    private String seqId;
     // 花费的时间，单位ms
-    private Integer                   spendTime;
+    private Integer spendTime;
     // 策略集信息
-    private List<ISubPolicyResult>    subPolicys;
+    private List<ISubPolicyResult> subPolicys;
     // 策略结果自定义输出
-    private List<IOutputField>        outputFields;
+    private List<IOutputField> outputFields;
     //原始详情
-    private List                      ruleDetails;
+    private List ruleDetails;
     //原因子码
-    private String                    subReasonCodes;
+    private String subReasonCodes;
 
     /**
      * 用户自定义输出
@@ -48,6 +48,9 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     @JsonIgnore
     private transient IRiskResponseFactory factory;
+
+    @JsonIgnore
+    private boolean isContainApplicationId;
 
     @Override
     public Integer getFinalScore() {
@@ -318,14 +321,15 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     }
 
+    @JsonIgnore
     @Override
     public boolean isContainApplicationId() {
-        return false;
+        return isContainApplicationId;
     }
 
     @Override
     public void setContainApplicationId(boolean containApplicationId) {
-
+        this.isContainApplicationId = containApplicationId;
     }
 
     @Override
