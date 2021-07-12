@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -167,7 +168,7 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
     }
 
     private Map<String, Object> invokeFingerPrint(AbstractFraudContext context, String partnerCode, String appName, String tokenId, String blackBox, String respDetailType) {
-
+        Object checkoutToken = context.getFieldValues().get("checkoutToken");
         Map<String, Object> result = new HashMap<>();
         String paramDetailType = getDetailType(respDetailType);
         QueryParams params = new QueryParams();
@@ -184,10 +185,19 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
         logger.info("deviceInfoQuery.query params :{}", JSON.toJSONString(params));
         try {
             String[] tags = {
-                    MetricsConstant.METRICS_TAG_API_QPS_KEY, "fp.dubbo.DeviceInfoQuery"};
-            metrics.counter(MetricsConstant.METRICS_API_QPS_KEY, tags);
-            ITimeContext timeContext = metrics.metricTimer(MetricsConstant.METRICS_API_RT_KEY, tags);
-            baseResult = deviceInfoQuery.query(params);
+                    "dubbo_qps", "fp.dubbo.DeviceInfoQuery"};
+            metrics.counter("kunpeng.api.dubbo.qps", tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
+            if (Objects.nonNull(checkoutToken)) {
+                baseResult = deviceInfoQuery.query(params.getPartnerCode(),"web",checkoutToken.toString());
+                if (null == baseResult) {
+                    logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,checkoutToken:" + checkoutToken);
+                    FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
+                    return result;
+                }
+            }else {
+                baseResult = deviceInfoQuery.query(params);
+            }
             timeContext.stop();
             if (null == baseResult) {
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,blackBox:" + blackBox);
@@ -218,6 +228,7 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
             return result;
         }
     }
+
 
     private String getDetailType(String respDetailType) {
         if (StringUtils.isBlank(respDetailType)) {
