@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -137,16 +138,26 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
 
     private void dealWithTrueIp(AbstractFraudContext context, Map<String, Object> deviceMap) {
         // 处理geoIp
-        String trueIp = deviceMap.get("trueIp") + "";
-        if (StringUtils.isNotEmpty(trueIp)) {
+        Object trueIp = deviceMap.get("trueIp");
+        // 判断当前的trueIp是否为null，如果为null，则不执行当前的判断
+        if (trueIp != null) {
+            // 将object属性转化为String
+            String trueIpString = trueIp.toString();
+            // 处理含有代理情况，双ip地址用逗号隔开的情况
+            int index = trueIpString.indexOf(',');
+            // 如果找到了这个逗号，则返回我们的第一个IP地址
+            if (index > 0) {
+                trueIpString = trueIpString.substring(0, index).trim();
+            }
             GeoipEntity geoip = null;
             try {
-                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp,context));
-                context.set("trueIpAddressCountry",geoip.getCountry());
-                context.set("trueIpAddressProvince",geoip.getProvince());
-                context.set("trueIpAddressCity",geoip.getCity());
-                context.set("trueIpAddressCountryCode",geoip.getCountryId());
-                logger.info("真实geoip的数据结果:"+ JSON.toJSONString(geoip));
+                String finalTrueIpString = trueIpString;
+                geoip = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(finalTrueIpString, context));
+                context.set("trueIpAddressCountry", geoip.getCountry());
+                context.set("trueIpAddressProvince", geoip.getProvince());
+                context.set("trueIpAddressCity", geoip.getCity());
+                context.set("trueIpAddressCountryCode", geoip.getCountryId());
+                logger.info("真实geoip的数据结果:" + JSON.toJSONString(geoip));
             } catch (Exception e) {
                 logger.warn(TraceUtils.getFormatTrace() + "GeoIp查询 IP查询错误", e);
             }
@@ -157,7 +168,7 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
     }
 
     private Map<String, Object> invokeFingerPrint(AbstractFraudContext context, String partnerCode, String appName, String tokenId, String blackBox, String respDetailType) {
-
+        Object checkoutToken = context.getFieldValues().get("checkoutToken");
         Map<String, Object> result = new HashMap<>();
         String paramDetailType = getDetailType(respDetailType);
         QueryParams params = new QueryParams();
@@ -174,10 +185,19 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
         logger.info("deviceInfoQuery.query params :{}", JSON.toJSONString(params));
         try {
             String[] tags = {
-                    MetricsConstant.METRICS_TAG_API_QPS_KEY,"fp.dubbo.DeviceInfoQuery"};
-            metrics.counter(MetricsConstant.METRICS_API_QPS_KEY,tags);
-            ITimeContext timeContext = metrics.metricTimer(MetricsConstant.METRICS_API_RT_KEY,tags);
-            baseResult = deviceInfoQuery.query(params);
+                    "dubbo_qps", "fp.dubbo.DeviceInfoQuery"};
+            metrics.counter("kunpeng.api.dubbo.qps", tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
+            if (Objects.nonNull(checkoutToken)) {
+                baseResult = deviceInfoQuery.query(params.getPartnerCode(),"web",checkoutToken.toString());
+                if (null == baseResult) {
+                    logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,checkoutToken:" + checkoutToken);
+                    FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
+                    return result;
+                }
+            }else {
+                baseResult = deviceInfoQuery.query(params);
+            }
             timeContext.stop();
             if (null == baseResult) {
                 logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,blackBox:" + blackBox);
@@ -208,6 +228,7 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
             return result;
         }
     }
+
 
     private String getDetailType(String respDetailType) {
         if (StringUtils.isBlank(respDetailType)) {

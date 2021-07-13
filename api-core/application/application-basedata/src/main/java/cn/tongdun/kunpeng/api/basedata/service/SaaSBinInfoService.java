@@ -15,13 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Extension(tenant = BizScenario.DEFAULT, business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
 public class SaaSBinInfoService implements BinInfoServiceExtPt{
-
-    @Autowired
-    private BinInfoQueryService binInfoQueryService;
-
     @Override
     public BinInfoDO getBinInfo(String binCode){
-        return binInfoQueryService.getBinInfo(binCode);
+        return null;
     }
 
     @Override
