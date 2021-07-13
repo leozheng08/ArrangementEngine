@@ -3,7 +3,7 @@ package cn.tongdun.kunpeng.api.acl.impl.engine.model.partner;
 import cn.fraudmetrix.chassis.api.common.ApiResult;
 import cn.fraudmetrix.chassis.api.partner.dto.PartnerResultDTO;
 import cn.fraudmetrix.chassis.api.partner.intf.PartnerQueryService;
-import cn.fraudmetrix.forseti.global.util.CollectionUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
 import cn.tongdun.kunpeng.api.common.Constant;
@@ -52,12 +52,12 @@ public class ChassisPartnerRepository implements IPartnerRepository {
     @Override
     public List<PartnerDTO> queryEnabledByPartners(Set<String> partners) {
         if (CollectionUtils.isEmpty(partners)) {
-            return CollectionUtil.EMPTY_LIST;
+            return Lists.newArrayList();
         }
         ApiResult<List<cn.fraudmetrix.chassis.api.partner.dto.PartnerDTO>> apiResult = partnerQueryService.queryByPartnerCodeList(new ArrayList<>(partners));
         if (apiResult == null || apiResult.getCode() != 200 || CollectionUtils.isEmpty(apiResult.getData())) {
             logger.error("get partner responseVo error! responseVo :{}", apiResult);
-            return CollectionUtil.EMPTY_LIST;
+            return Lists.newArrayList();
         }
         List<PartnerDTO> partnerDTOList = Lists.newArrayList();
         apiResult.getData().forEach(p -> {

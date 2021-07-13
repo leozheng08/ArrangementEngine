@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>starter-saas</artifactId>
 
-    <version>1.3.9-api</version>
+    <version>1.3.13-api</version>
     <name>starter-saas</name>
     <groupId>cn.tongdun.kunpeng-api</groupId>
 
@@ -13,8 +13,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <api-core.version>1.3.9-api</api-core.version>
-        <api-extension.version>1.3.9-api</api-extension.version>
+        <api-core.version>1.3.13-api</api-core.version>
+        <api-extension.version>1.3.13-api</api-extension.version>
         <kunpeng-consumer.version>1.2.4-consumer</kunpeng-consumer.version>
 
         <maven_deploy_version>2.8.2</maven_deploy_version>
@@ -178,6 +178,17 @@
             <groupId>cn.tongdun.kunpeng-consumer</groupId>
             <artifactId>consumer-custom-list</artifactId>
             <version>${kunpeng-consumer.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.fraudmetrix.shutter</groupId>
+                    <artifactId>shutter-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>cn.fraudmetrix.shutter</groupId>
+            <artifactId>shutter-client</artifactId>
+            <version>2.1.8.4</version>
         </dependency>
         <dependency>
             <!-- kunpeng-api consume将activity消息保存到es -->
@@ -251,6 +262,7 @@
                     <generateBackupPoms>false</generateBackupPoms>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
