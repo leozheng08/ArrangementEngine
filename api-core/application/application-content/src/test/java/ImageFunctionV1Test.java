@@ -9,15 +9,12 @@ import cn.tongdun.kunpeng.api.application.content.function.image.FilterCondition
 import cn.tongdun.kunpeng.api.application.content.function.image.functionV1.ImageFunctionV1;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.share.json.JSON;
-import org.elasticsearch.common.mvel2.util.FastList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.testng.mustache.Model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

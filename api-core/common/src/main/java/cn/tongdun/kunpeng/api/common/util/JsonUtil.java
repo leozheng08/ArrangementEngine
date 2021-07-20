@@ -121,7 +121,7 @@ public class JsonUtil {
     public static Object getJsonValue(Object json, String key) {
         String[] keys = key.split("\\.");
         for (int j = 0; j < keys.length; j++) {
-            if (json == null){
+            if (json == null) {
                 return null;
             }
             String k = keys[j];
@@ -138,7 +138,7 @@ public class JsonUtil {
         String[] keys = key.split("\\.");
         for (int i = 0; i < keys.length - 1; i++) {
             String k = keys[i];
-            if (!json.containsKey(k)){
+            if (!json.containsKey(k)) {
                 json.put(k, new HashMap());
             }
             json = (Map) json.get(k);

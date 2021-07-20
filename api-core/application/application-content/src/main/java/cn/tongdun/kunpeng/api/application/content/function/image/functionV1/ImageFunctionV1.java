@@ -11,16 +11,14 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import cn.tongdun.kunpeng.api.application.check.step.CamelAndUnderlineConvertUtil;
-import cn.tongdun.kunpeng.api.application.content.constant.ModelResultEnum;
 import cn.tongdun.kunpeng.api.application.content.function.image.FilterConditionDO;
-import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
+import cn.tongdun.kunpeng.api.application.content.function.image.ModelResult;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.CompareUtils;
 import cn.tongdun.kunpeng.api.ruledetail.ImageDetail;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,37 +37,35 @@ import java.util.Map;
  */
 
 
+
 public class ImageFunctionV1 extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImageFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImageFunctionV1.class);
     private String conditions;
     private String logicOperator;
     private List<Action> actionList;
-    private String model = "image_brand_logo_model_result";
     private static final String paramKeyConditions = "conditions";
     private static final String paramKeyLogicOperator = "logicOperator";
+
 
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
         FunctionResult functionResult = new FunctionResult(false, null);
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
-        //遍历枚举类型，一次访问会传入多类模型数据
-        ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
-        //从上下文获取多组模型数据
-        Map<ModelResultEnum,String> modelResult = achieveModelResult(context);
-        if (hasNullData(modelResult,conditions, logicOperator)) {
+        if (hasNullData(conditions, logicOperator)) {
             return functionResult;
         }
         List<List<FilterConditionDO>> hitFilters = new ArrayList<>();
         //解析规则条件
         List<List<FilterConditionDO>> conditionList = this.parseCondition(conditions);
-
+        //遍历条件，由于前端写死每条规则只允许配置一种模型。因此只选择首个条件的模型
         String model = getModel(conditionList);
         if(model==null){
             return functionResult;
         }
-        String matchModelResult = matchModel(modelResult,model);
+        //从api接口获取匹配规则配置模型的一条入参
+        String matchModelResult = achieveModelResult(context,model);
         if(matchModelResult==null){
             return functionResult;
         }
@@ -90,6 +86,20 @@ public class ImageFunctionV1 extends AbstractFunction {
         }
         return functionResult;
     }
+
+    private ModelResult[] compositeModelResult(String[] modelResultNames, String[] modelResultCamelNames, String[] modelResultDescs) {
+        int size = modelResultNames.length;
+        if(size!=modelResultCamelNames.length||size!=modelResultDescs.length){
+            logger.error("图像识别模型配置数量不一致报错，请检查配置文件：model.result.name = {}, model.result.camelname = {}, model.result.desc = {}", modelResultNames.length, modelResultCamelNames.length, modelResultDescs.length);
+        }
+        ModelResult[] res = new ModelResult[size];
+        for(int i=0;i<size;i++){
+            ModelResult modelResult = new ModelResult(modelResultNames[i], modelResultCamelNames[i],modelResultDescs[i]);
+            res[i] = modelResult;
+        }
+        return res;
+    }
+
     /**
      * 解析condition中field对应的模型名称
      *
@@ -110,7 +120,7 @@ public class ImageFunctionV1 extends AbstractFunction {
      * 解析图片logo及分数信息
      *
      * @param matchModelResult 图片解析结果json
-     *                        eg:[{"score": 0.9977513551712036,"logoName": "chanel"},{"score": 0.9977513551712126,"logoName": "lv"},{"score": 0.3477513551712036,"logoName": "lv"}]
+     *                        eg:[{"score": 0.9977513551712036,"label": "chanel"},{"score": 0.9977513551712126,"label": "lv"},{"score": 0.3477513551712036,"label": "lv"}]
      * @return
      */
     private List<Map> parseLogoModelResult(String matchModelResult) {
@@ -131,8 +141,8 @@ public class ImageFunctionV1 extends AbstractFunction {
      * return     对应规则模型的数据json
      **/
 
-    private String matchModel(Map<ModelResultEnum, String> modelResult, String model) {
-        for(Map.Entry<ModelResultEnum, String> ele : modelResult.entrySet()){
+    private String matchModel(Map<ModelResult, String> modelResult, String model) {
+        for(Map.Entry<ModelResult, String> ele : modelResult.entrySet()){
             if(ele.getKey().getName().equals(model)||ele.getKey().getName().equals(CamelAndUnderlineConvertUtil.underline2camel(model))){
                 return ele.getValue();
             }
@@ -174,6 +184,7 @@ public class ImageFunctionV1 extends AbstractFunction {
         return filters;
     }
 
+
     @Override
     protected void parseFunction(FunctionDesc functionDesc) {
         if(functionDesc==null|| CollectionUtils.isEmpty(functionDesc.getParamList())){
@@ -200,16 +211,11 @@ public class ImageFunctionV1 extends AbstractFunction {
     /**
      * 校验数据
      *
-     * @param modelResult 图片分析结果
      * @param conditions      条件
      * @param logicOperator   条件组之间的关系 && ||
      * @return
      */
-    private boolean hasNullData(Map<ModelResultEnum,String> modelResult, String conditions, String logicOperator) {
-        if (modelResult.isEmpty()) {
-            logger.warn("The lablelAndScoreModelResult doesn't match modelResultEnum!");
-            return true;
-        }
+    private boolean hasNullData( String conditions, String logicOperator) {
         if (StringUtils.isEmpty(conditions)) {
             logger.warn("The logo's rule condition is empty!");
             return true;
@@ -223,24 +229,21 @@ public class ImageFunctionV1 extends AbstractFunction {
 
 
     /**
-     * 遍历枚举类型，默认一次访问只会传入一类模型数据, 但使用Map防止多模型数据传入，同一模型多次输入数据会被覆盖，获取模型数据
+     * 从上下文中读取规则中对应模型的具体入参
      *
      * @param context         上下文
      * @return
      */
 
-    private Map<ModelResultEnum,String> achieveModelResult(AbstractFraudContext context){
-        Map<ModelResultEnum,String> ModelResultMap = new HashMap<>();
-        ModelResultEnum[] modelResultEnums = ModelResultEnum.values();
+    private String achieveModelResult(AbstractFraudContext context, String model){
+        String modelCamel = CamelAndUnderlineConvertUtil.underline2camel(model);
         //遍历枚举类型，一次访问只会传入一类模型数据
-        for(ModelResultEnum modelResultEnum: modelResultEnums){
-            Object result = context.get(modelResultEnum.getCamelName())==null?context.get(modelResultEnum.getName()):context.get(modelResultEnum.getCamelName());
-            if(result!=null){
-                String lablelAndScoreModelResult = result.toString();
-                ModelResultMap.put(modelResultEnum,lablelAndScoreModelResult);
-            }
+        Object result = context.get(model)==null?context.get(modelCamel):context.get(model);
+        if(result!=null){
+            String lablelAndScoreModelResult = result.toString();
+            return lablelAndScoreModelResult;
         }
-        return ModelResultMap;
+        return null;
     }
 
     /**

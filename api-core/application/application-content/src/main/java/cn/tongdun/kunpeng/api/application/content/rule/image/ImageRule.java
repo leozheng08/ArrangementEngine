@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.application.content.rule.image;
 
 import cn.fraudmetrix.module.tdrule.action.Action;
-import cn.fraudmetrix.module.tdrule.action.ActionDesc;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.eval.EvalResult;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
@@ -9,7 +8,6 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.model.RawRule;
 import cn.fraudmetrix.module.tdrule.rule.AbstractRule;
 import cn.fraudmetrix.module.tdrule.util.FunctionLoader;
-import cn.tongdun.kunpeng.api.application.content.function.image.ImageFunction;
 import cn.tongdun.kunpeng.api.application.content.function.image.functionV1.ImageFunctionV1;
 
 import java.util.List;

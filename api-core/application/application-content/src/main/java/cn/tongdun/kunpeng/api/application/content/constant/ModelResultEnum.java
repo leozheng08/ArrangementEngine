@@ -29,7 +29,7 @@ public enum ModelResultEnum {
 
     private String desc;
     private String name;
-
+    private String camelName;
     public String getCamelName() {
         return camelName;
     }
@@ -38,7 +38,7 @@ public enum ModelResultEnum {
         this.camelName = camelName;
     }
 
-    private String camelName;
+
     ModelResultEnum(String desc, String camelName, String name){
         this.desc = desc;
         this.name = name;
