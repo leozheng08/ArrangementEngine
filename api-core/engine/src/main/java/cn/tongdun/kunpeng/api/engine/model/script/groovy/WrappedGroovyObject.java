@@ -18,20 +18,15 @@ public class WrappedGroovyObject extends VersionedEntity {
     private String partnerCode;
 
     /**
-     * 应用名称 app_name
-     */
-    private String appName;
-
-    /**
      * 事件类型 event_type
      */
     private String eventType;
 
 
-    private GroovyObject        groovyObject;                                // 编译后的对象
-    private String              source;                                      // 源代码
-    private String              fieldMethodName;                             // 方法名
-    private String              assignField;                                 // 赋值的字段名
+    private GroovyObject groovyObject;                                // 编译后的对象
+    private String source;                                      // 源代码
+    private String fieldMethodName;                             // 方法名
+    private String assignField;                                 // 赋值的字段名
 
     private Map<String, String> fieldMethods = new ConcurrentHashMap<>();    // 字段和方法体
 

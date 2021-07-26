@@ -7,7 +7,7 @@ import lombok.Data;
  * @Date: 2020/4/20 上午10:16
  */
 @Data
-public class DynamicScriptDTO extends CommonDTO{
+public class DynamicScriptDTO extends CommonDTO {
     /**
      * 名称 script_name
      */
@@ -17,11 +17,6 @@ public class DynamicScriptDTO extends CommonDTO{
      * 合作方 partner_code
      */
     private String partnerCode;
-
-    /**
-     * 产品 product_code
-     */
-    private String productCode;
 
     /**
      * 赋值字段 assign_field

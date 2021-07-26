@@ -49,12 +49,12 @@ public class GroovyCompileManager {
         String field = script.getAssignField();
         String methodBody = script.getScriptCode();
 
-        if(StringUtils.isAnyBlank(field, methodBody)){
+        if (StringUtils.isAnyBlank(field, methodBody)) {
             return;
         }
 
         WrappedGroovyObject groovyField = new WrappedGroovyObject();
-        String className = "groovy_"+script.getUuid();
+        String className = "groovy_" + script.getUuid();
         GroovyClassGenerator generator = new GroovyClassGenerator(className);
         generator.init();
         String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(field);
@@ -67,7 +67,6 @@ public class GroovyCompileManager {
         groovyField.setUuid(script.getUuid());
         groovyField.setGmtModify(script.getGmtModify());
         groovyField.setPartnerCode(script.getPartnerCode());
-        groovyField.setAppName(script.getAppName());
         groovyField.setEventType(script.getEventType());
         groovyField.setAssignField(script.getAssignField());
         groovyField.setFieldMethodName(methodName);
@@ -82,7 +81,7 @@ public class GroovyCompileManager {
 
     public void warmAllGroovyFields() {
         Collection<WrappedGroovyObject> allGooovyObjs = groovyFieldCache.getAll();
-        for(WrappedGroovyObject groovyField : allGooovyObjs){
+        for (WrappedGroovyObject groovyField : allGooovyObjs) {
             warmGroovyField(groovyField);
         }
     }
@@ -92,20 +91,30 @@ public class GroovyCompileManager {
             AbstractFraudContext context = mockFraudContext();
             executeGroovyField(context, field);
         } catch (Exception ex) {
-            logger.error(TraceUtils.getFormatTrace()+"动态脚本预热失败",ex);
+            logger.error(TraceUtils.getFormatTrace() + "动态脚本预热失败", ex);
         }
     }
 
     private static AbstractFraudContext mockFraudContext() {
-        AbstractFraudContext context = new AbstractFraudContext(){
+        AbstractFraudContext context = new AbstractFraudContext() {
             @Override
-            public Object getField(String var1){return null;}
+            public Object getField(String var1) {
+                return null;
+            }
+
             @Override
-            public void setField(String var1, Object var2){}
+            public void setField(String var1, Object var2) {
+            }
+
             @Override
-            public Double getPlatformIndex(String var1){return null;}
+            public Double getPlatformIndex(String var1) {
+                return null;
+            }
+
             @Override
-            public Double getOriginPlatformIndex(String var1){return null;}
+            public Double getOriginPlatformIndex(String var1) {
+                return null;
+            }
 
             @Override
             public Object getPlatformIndex4Object(String indexId) {
@@ -113,19 +122,22 @@ public class GroovyCompileManager {
             }
 
             @Override
-            public Double getPolicyIndex(String var1){return null;}
+            public Double getPolicyIndex(String var1) {
+                return null;
+            }
+
             @Override
-            public void saveDetail(String var1, String var2, DetailCallable var3){}
+            public void saveDetail(String var1, String var2, DetailCallable var3) {
+            }
         };
         context.setPartnerCode("demo");
-        context.set("accountMobile","13712341234");
+        context.set("accountMobile", "13712341234");
         context.set("accountEmail", "hello@world.com");
         context.setEventId("login");
         context.setEventType("Login");
         context.setEventOccurTime(new Date());
         return context;
     }
-
 
 
     private boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject field) {
@@ -141,13 +153,13 @@ public class GroovyCompileManager {
                 long t1 = System.currentTimeMillis();
                 value = executeGroovyField(field.getGroovyObject(), methodName, context);
                 long t2 = System.currentTimeMillis();
-                if(t2 - t1 > 30){
-                    logger.warn(TraceUtils.getFormatTrace()+"动态脚本执行时间过长,fieldName:{},methodName:{}", fieldName, methodName);
+                if (t2 - t1 > 30) {
+                    logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间过长,fieldName:{},methodName:{}", fieldName, methodName);
                 }
 
                 context.setField(fieldName, value);
-            } catch(Throwable ex) {
-                logger.error(TraceUtils.getFormatTrace()+"动态脚本执行失败,fieldName:{},methodName:{}", fieldName, methodName,ex);
+            } catch (Throwable ex) {
+                logger.error(TraceUtils.getFormatTrace() + "动态脚本执行失败,fieldName:{},methodName:{}", fieldName, methodName, ex);
                 failedCnt++;
             }
         }
@@ -159,7 +171,7 @@ public class GroovyCompileManager {
     }
 
     private Object executeGroovyField(GroovyObject groovyObject, String methodName, AbstractFraudContext context) {
-        Object[] args = new Object[] { context};
+        Object[] args = new Object[]{context};
         Object value = groovyObject.invokeMethod(methodName, args);
         return value;
     }
