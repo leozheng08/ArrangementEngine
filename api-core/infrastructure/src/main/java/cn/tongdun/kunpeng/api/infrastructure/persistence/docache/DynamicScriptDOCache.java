@@ -30,40 +30,45 @@ public class DynamicScriptDOCache extends AbstractDataObjectCache<DynamicScriptD
     @Override
     public void refreshAll() {
         List<DynamicScriptDO> list = groovyDynamicScriptDAO.selectAll();
-        if(list == null || list.isEmpty()){
+        if (list == null || list.isEmpty()) {
             return;
         }
-        list.forEach(dataObject ->{
+        list.forEach(dataObject -> {
             set(dataObject);
         });
     }
 
     /**
      * 添加索引
+     *
      * @param dataObject
      */
     @Override
-    public void setByIdx(DynamicScriptDO dataObject){
+    public void setByIdx(DynamicScriptDO dataObject) {
         //添加合作方索引. 索引按zadd(idex_name,分数固定为0,索引值:uuid)方式添加，通过zrangebylex来按索引查询
-        scoreKVRepository.zadd(cacheKey+"_partner",0,dataObject.getPartnerCode()+":"+dataObject.getUuid());
+        //TODO 去掉合作方 --刘佩
+//        scoreKVRepository.zadd(cacheKey+"_partner",0,dataObject.getPartnerCode()+":"+dataObject.getUuid());
+
     }
 
     /**
      * 删除索引
+     *
      * @param dataObject
      */
     @Override
-    public void removeIdx(DynamicScriptDO dataObject){
-        scoreKVRepository.zrem(cacheKey+"_partner",dataObject.getPartnerCode()+":"+dataObject.getUuid());
+    public void removeIdx(DynamicScriptDO dataObject) {
+        //TODO 去掉合作方 --刘佩
+//        scoreKVRepository.zrem(cacheKey + "_partner", dataObject.getPartnerCode() + ":" + dataObject.getUuid());
     }
 
 
     @Override
-    public boolean isValid(DynamicScriptDO dataObject){
-        if(dataObject.getStatus() != null && dataObject.getStatus().equals(CommonStatusEnum.CLOSE.getCode())) {
+    public boolean isValid(DynamicScriptDO dataObject) {
+        if (dataObject.getStatus() != null && dataObject.getStatus().equals(CommonStatusEnum.CLOSE.getCode())) {
             return false;
         }
-        if(dataObject.isDeleted()) {
+        if (dataObject.isDeleted()) {
             return false;
         }
 
