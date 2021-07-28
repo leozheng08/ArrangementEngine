@@ -16,5 +16,7 @@ v1.3.13(2021-07-12) 黄良帅
 对其他版本无影响
 
 v1.3.16(2021-07-29) 陈庆然
-该版本主要删掉了SaaSBinInfoService和SaaSIdInfoService，清楚一些代码的强依赖
+- 该版本主要删掉了SaaSBinInfoService和SaaSIdInfoService，清除一些代码的强依赖
+- 清除starters里的starter-sea模块
+对其他版本无影响
 
