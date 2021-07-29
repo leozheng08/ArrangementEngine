@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.convertor.batch;
 
 import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.evidence.EvidenceBatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.keyword.KeywordBatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
@@ -27,6 +28,7 @@ public class BatchRemoteCallDataBuilderFactory {
 
     static {
         builders.put(Constant.Function.KEYWORD_WORDLIST, new KeywordBatchRemoteCallDataBuilder());
+        builders.put(Constant.Function.EVIDENCE_EVIDENCE, new EvidenceBatchRemoteCallDataBuilder());
     }
 
     public static BatchRemoteCallDataBuilder getBuilder(String template) {
