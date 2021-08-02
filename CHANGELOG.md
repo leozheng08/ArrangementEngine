@@ -15,7 +15,7 @@ v1.3.13(2021-07-12) 黄良帅
 该版本主要修复了UsDeviceInfoExt合并代码过程中丢失部分代码及增加CHANGELOG日志
 对其他版本无影响
 
-v1.3.16(2021-07-29) 陈庆然
+v1.3.17(2021-07-29) 陈庆然
 - 该版本主要删掉了SaaSBinInfoService和SaaSIdInfoService，清除一些代码的强依赖
 - 清除starters里的starter-sea模块
 对其他版本无影响
