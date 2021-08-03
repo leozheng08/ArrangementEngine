@@ -66,7 +66,7 @@ public class GroovyCompileManager {
         groovyField.setSource(generator.getSource().toString());
         groovyField.setUuid(script.getUuid());
         groovyField.setGmtModify(script.getGmtModify());
-        groovyField.setPartnerCode(script.getPartnerCode());
+//        groovyField.setPartnerCode(script.getPartnerCode());
         groovyField.setEventType(script.getEventType());
         groovyField.setAssignField(script.getAssignField());
         groovyField.setFieldMethodName(methodName);

@@ -27,65 +27,85 @@ public class CacheKeyGenerator {
     public static List<String> getkey(WrappedGroovyObject wrappedGroovyObject) {
         List<String> keys = new ArrayList<>();
         if (Objects.nonNull(wrappedGroovyObject)) {
+//            /**
+//             * 全部合作方全部事件类型:   "all" + "all";
+//             */
+//            if ("all".equals(wrappedGroovyObject.getPartnerCode()) &&
+//                    "all".equals(wrappedGroovyObject.getEventType())
+//
+//            ) {
+//                String key = "all-" + "all";
+//                keys.add(key);
+//                return keys;
+//            }
             /**
              * 全部合作方全部事件类型:   "all" + "all";
              */
-            if ("all".equals(wrappedGroovyObject.getPartnerCode()) &&
-                    "all".equals(wrappedGroovyObject.getEventType())
-
-            ) {
-                String key = "all-" + "all";
+            if ("all".equals(wrappedGroovyObject.getEventType())) {
+                String key = "all";
                 keys.add(key);
                 return keys;
             }
+
+//            /**
+//             * 全部合作方指定事件类型:   "all" +  context.getEventType();
+//             */
+//            if ("all".equals(wrappedGroovyObject.getPartnerCode()) &&
+//                    !"all".equals(wrappedGroovyObject.getEventType())
+//
+//            ) {
+//                String[] eventTypes = StringUtils.split(wrappedGroovyObject.getEventType(), ",");
+//                for (String retval : eventTypes) {
+//                    String key = "all-" + retval;
+//                    keys.add(key);
+//                }
+//                return keys;
+//            }
+
             /**
              * 全部合作方指定事件类型:   "all" +  context.getEventType();
              */
-            if ("all".equals(wrappedGroovyObject.getPartnerCode()) &&
-                    !"all".equals(wrappedGroovyObject.getEventType())
-
-            ) {
+            if (!"all".equals(wrappedGroovyObject.getEventType())) {
                 String[] eventTypes = StringUtils.split(wrappedGroovyObject.getEventType(), ",");
                 for (String retval : eventTypes) {
-                    String key = "all-" + retval;
+                    String key = retval;
                     keys.add(key);
                 }
                 return keys;
             }
 
+//            /**
+//             * 指定合作方全部事件类型  context.getPartnerCode() + "all"
+//             */
+//            if (!"all".equals(wrappedGroovyObject.getPartnerCode()) &&
+//                    "all".equals(wrappedGroovyObject.getEventType())
+//
+//            ) {
+//                String[] partnerCodes = StringUtils.split(wrappedGroovyObject.getPartnerCode(), ",");
+//                for (String retval : partnerCodes) {
+//                    String key = retval + "-all";
+//                    keys.add(key);
+//                }
+//                return keys;
+//            }
 
-            /**
-             * 指定合作方全部事件类型  context.getPartnerCode() + "all"
-             */
-            if (!"all".equals(wrappedGroovyObject.getPartnerCode()) &&
-                    "all".equals(wrappedGroovyObject.getEventType())
-
-            ) {
-                String[] partnerCodes = StringUtils.split(wrappedGroovyObject.getPartnerCode(), ",");
-                for (String retval : partnerCodes) {
-                    String key = retval + "-all";
-                    keys.add(key);
-                }
-                return keys;
-            }
-
-            /**
-             * 指定合作方指定事件类型  context.getPartnerCode() + context.getEventType();
-             */
-            if (!"all".equals(wrappedGroovyObject.getPartnerCode()) &&
-                    !"all".equals(wrappedGroovyObject.getEventType())
-
-            ) {
-                String[] partnerCodes = StringUtils.split(wrappedGroovyObject.getPartnerCode(), ",");
-                String[] eventTypes = StringUtils.split(wrappedGroovyObject.getEventType(), ",");
-                for (String retval : partnerCodes) {
-                    for (String eventType : eventTypes) {
-                        String key = retval + "-" + eventType;
-                        keys.add(key);
-                    }
-                }
-                return keys;
-            }
+//            /**
+//             * 指定合作方指定事件类型  context.getPartnerCode() + context.getEventType();
+//             */
+//            if (!"all".equals(wrappedGroovyObject.getPartnerCode()) &&
+//                    !"all".equals(wrappedGroovyObject.getEventType())
+//
+//            ) {
+//                String[] partnerCodes = StringUtils.split(wrappedGroovyObject.getPartnerCode(), ",");
+//                String[] eventTypes = StringUtils.split(wrappedGroovyObject.getEventType(), ",");
+//                for (String retval : partnerCodes) {
+//                    for (String eventType : eventTypes) {
+//                        String key = retval + "-" + eventType;
+//                        keys.add(key);
+//                    }
+//                }
+//                return keys;
+//            }
 
 
         }

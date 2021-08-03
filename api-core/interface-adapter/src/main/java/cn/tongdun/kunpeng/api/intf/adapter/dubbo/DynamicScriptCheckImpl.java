@@ -21,18 +21,22 @@ public class DynamicScriptCheckImpl implements IDynamicScriptCheck {
 
     @Override
     public SingleResult<Boolean> checkDynamicScript(DynamicScriptDTO dynamicScriptDTO) {
-        try{
+        try {
             String code = dynamicScriptDTO.getScriptCode();
             Long id = dynamicScriptDTO.getId();
-            String scriptType = dynamicScriptDTO.getScriptType();
-            if(ScriptType.isValid(scriptType)){
-                return SingleResult.failure(400, String.format("script type [%s] is invalid", scriptType));
-            }
-            if(StringUtils.equals(scriptType, "groovy")){
-                GroovyClassGenerator.compileMethod(id, code);
+//            String scriptType = dynamicScriptDTO.getScriptType();
+//            if(ScriptType.isValid(scriptType)){
+//                return SingleResult.failure(400, String.format("script type [%s] is invalid", scriptType));
+//            }
+//            if(StringUtils.equals(scriptType, "groovy")){
+//                GroovyClassGenerator.compileMethod(id, code);
+//            }
+            String fieldDataType = dynamicScriptDTO.getFieldDataType();
+            if (ScriptType.isValid(fieldDataType)) {
+                return SingleResult.failure(400, String.format("script fieldDataType [%s] is invalid", fieldDataType));
             }
             return SingleResult.success(true);
-        }catch (Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);

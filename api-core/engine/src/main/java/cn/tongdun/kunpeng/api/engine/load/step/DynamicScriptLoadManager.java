@@ -38,8 +38,8 @@ public class DynamicScriptLoadManager implements ILoad {
     GroovyCompileManager groovyCompileManager;
 
     @Override
-    public boolean load(){
-        logger.info(TraceUtils.getFormatTrace()+"DynamicScriptLoadManager start");
+    public boolean load() {
+        logger.info(TraceUtils.getFormatTrace() + "DynamicScriptLoadManager start");
         long beginTime = System.currentTimeMillis();
 
         Set allPartners = new HashSet(partnerClusterCache.getPartners());
@@ -52,16 +52,20 @@ public class DynamicScriptLoadManager implements ILoad {
                 groovyCompileManager.addOrUpdate(script);
             } catch (Exception e) {
                 failedCount++;
-                logger.warn(TraceUtils.getFormatTrace()+"Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
-                        script.getPartnerCode(), script.getEventType(), script.getAssignField(),script.getScriptCode(),e.getMessage());
+                logger.warn(TraceUtils.getFormatTrace() + "Groovy编译失败,uuid:{},eventType:{},assignField:{},script:{},message:{}",
+                        script.getUuid(), script.getEventType(), script.getAssignField(), script.getScriptCode(), e.getMessage());
+//                logger.warn(TraceUtils.getFormatTrace()+"Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
+//                        script.getPartnerCode(), script.getEventType(), script.getAssignField(),script.getScriptCode(),e.getMessage());
+                logger.warn(TraceUtils.getFormatTrace() + "Groovy编译失败,uuid:{},eventType:{},assignField:{},script:{},message:{}",
+                        script.getUuid(), script.getEventType(), script.getAssignField(), script.getScriptCode(), e.getMessage());
             }
         }
 
         int scriptsCount = 0;
-        if(scripts != null){
+        if (scripts != null) {
             scriptsCount = scripts.size();
         }
-        logger.info(TraceUtils.getFormatTrace()+"DynamicScriptLoadManager success,cost:{},failedCount:{},scriptsCount:{}", System.currentTimeMillis() - beginTime,failedCount, scriptsCount);
+        logger.info(TraceUtils.getFormatTrace() + "DynamicScriptLoadManager success,cost:{},failedCount:{},scriptsCount:{}", System.currentTimeMillis() - beginTime, failedCount, scriptsCount);
         return true;
     }
 }

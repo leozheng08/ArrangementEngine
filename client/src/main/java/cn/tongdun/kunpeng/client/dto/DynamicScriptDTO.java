@@ -14,11 +14,6 @@ public class DynamicScriptDTO extends CommonDTO {
     private String scriptName;
 
     /**
-     * 合作方 partner_code
-     */
-    private String partnerCode;
-
-    /**
      * 赋值字段 assign_field
      */
     private String assignField;
@@ -34,9 +29,9 @@ public class DynamicScriptDTO extends CommonDTO {
     private String eventType;
 
     /**
-     * 脚本类型 groovy script_type
+     * 脚本字段类型 string、int、double等
      */
-    private String scriptType;
+    private String fieldDataType;
 
     /**
      * 代码 script_code

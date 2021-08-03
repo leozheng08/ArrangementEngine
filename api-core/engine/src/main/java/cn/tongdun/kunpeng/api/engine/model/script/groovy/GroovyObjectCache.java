@@ -32,6 +32,7 @@ public class GroovyObjectCache {
      * 指定合作方全部应用指定事件类型  context.getPartnerCode() + "all" + context.getEventType();
      * 指定合作方指定应用全部事件类型  context.getPartnerCode() +"context.getAppName" + "all";
      * 指定合作方指定应用指定事件类型  context.getPartnerCode() +"context.getAppName" + context.getEventType();
+     *
      * @param wrappedGroovyObject
      * @return
      */
@@ -52,13 +53,12 @@ public class GroovyObjectCache {
 //        }
 //        dynamicScriptUuidSet.add(uuid);
 //    }
-
     public void put(String uuid, WrappedGroovyObject wrappedGroovyObject) {
         groovyMap.put(uuid, wrappedGroovyObject);
 
-        List<String> keys=CacheKeyGenerator.getkey(wrappedGroovyObject);
-        if (!CollectionUtils.isEmpty(keys)){
-            keys.forEach(key->{
+        List<String> keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
+        if (!CollectionUtils.isEmpty(keys)) {
+            keys.forEach(key -> {
                 Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
                 if (dynamicScriptUuidSet == null) {
                     dynamicScriptUuidSet = new ConcurrentHashSet();
@@ -80,7 +80,8 @@ public class GroovyObjectCache {
             return null;
         }
 
-        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
+//        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
+        String key = wrappedGroovyObject.getEventType();
         Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
         dynamicScriptUuidSet.remove(uuid);
 
@@ -150,6 +151,5 @@ public class GroovyObjectCache {
 
     public String generateKey(String partnerCode, String eventType) {
         return StringUtils.join(partnerCode, eventType);
-
     }
 }
