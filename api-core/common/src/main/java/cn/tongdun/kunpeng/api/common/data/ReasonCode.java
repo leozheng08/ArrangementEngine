@@ -172,6 +172,9 @@ public enum ReasonCode {
     GEOIP_PARAM_ERROR("50762","查询geoip-us必要参数为空"),
     GEOIP_PERNISSION_ERROR("50763","查询geoip-us权限不足"),
     GEOIP_SERRVER_ERROR("50764","查询geoip-us内部服务错误"),
+
+    ANTIFRAUD_NAME_LIST_QUERY_ERROR("50748", "反欺诈名单库查询出错"),
+    ANTIFRAUD_NAME_LIST_QUERY_TIMEOUT("50749", "反欺诈名单库查询超时"),
     ;
 
     private String code;
