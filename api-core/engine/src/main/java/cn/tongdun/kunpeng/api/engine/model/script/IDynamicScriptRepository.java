@@ -14,4 +14,9 @@ public interface IDynamicScriptRepository {
     List<DynamicScript> queryGroovyByPartners(Set<String> partners);
 
     DynamicScript queryByUuid(String uuid);
+
+    /**
+     * 查询策略配置的动态脚本
+     */
+    List<String> queryByPolicyUuid(String policyUuid);
 }

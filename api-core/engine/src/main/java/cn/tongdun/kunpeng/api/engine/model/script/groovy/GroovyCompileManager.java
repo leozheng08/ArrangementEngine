@@ -66,6 +66,7 @@ public class GroovyCompileManager {
         groovyField.setSource(generator.getSource().toString());
         groovyField.setUuid(script.getUuid());
         groovyField.setGmtModify(script.getGmtModify());
+        //TODO --刘佩 待删除注释
 //        groovyField.setPartnerCode(script.getPartnerCode());
         groovyField.setEventType(script.getEventType());
         groovyField.setAssignField(script.getAssignField());

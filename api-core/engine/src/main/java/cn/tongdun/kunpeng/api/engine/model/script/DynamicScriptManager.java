@@ -11,6 +11,7 @@ import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import groovy.lang.GroovyObject;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.concurrent.*;
 
 /**
  * 子策略执行，根据subPolicyUuid从缓存中取得子策略实体SubPolicy对象后运行。
+ *
  * @Author: huangjin
  */
 @Component
@@ -53,7 +55,7 @@ public class DynamicScriptManager {
             handleField(context);
         } catch (Exception e) {
             // 暂不处理动态脚本执行超时的状态码，以日志为准
-            if (!ReasonCodeUtil.isTimeout(e) ){
+            if (!ReasonCodeUtil.isTimeout(e)) {
                 logger.error(TraceUtils.getFormatTrace() + "动态脚本调用异常", e);
                 ReasonCodeUtil.add(context, ReasonCode.GROOVY_EXECUTE_ERROR, "groovy");
             }
@@ -130,58 +132,61 @@ public class DynamicScriptManager {
 //    }
 
     private void handleField(AbstractFraudContext context) {
+        //TODO --刘佩 待删除注释
+//        List<WrappedGroovyObject> groovyObjectList = new ArrayList<>(50);
+//        String classKey = null;
+//        /**
+//         * 合作方指定应用指定事件类型
+//         */
+//        classKey = context.getPartnerCode() + "-" + context.getAppName() + "-" + context.getEventType();
+//        List<WrappedGroovyObject> tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        /**
+//         * 合作方指定应用全部事件类型
+//         */
+//        classKey = context.getPartnerCode() + "-" + context.getAppName() + "-all";
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//
+//        /**
+//         * 合作方全部应用指定事件类型
+//         */
+//        classKey = context.getPartnerCode() + "-" + "all" + "-" + context.getEventType();
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        /**
+//         * 合作方全部应用全部事件类型
+//         */
+//        classKey = context.getPartnerCode() + "-all" + "-all";
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        /**
+//         * 全部合作方全部应用指定事件类型
+//         */
+//        classKey = "all-all-" + context.getEventType();
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
+//        /**
+//         *全部合作方全部应用全部事件类型
+//         */
+//        classKey = "all"+"-all" + "-all";
+//        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
+//        if (null != tmpGroovyObjects) {
+//            groovyObjectList.addAll(tmpGroovyObjects);
+//        }
         List<WrappedGroovyObject> groovyObjectList = new ArrayList<>(50);
-        String classKey = null;
-        /**
-         * 合作方指定应用指定事件类型
-         */
-        classKey = context.getPartnerCode() + "-" + context.getAppName() + "-" + context.getEventType();
-        List<WrappedGroovyObject> tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != tmpGroovyObjects) {
-            groovyObjectList.addAll(tmpGroovyObjects);
-        }
-        /**
-         * 合作方指定应用全部事件类型
-         */
-        classKey = context.getPartnerCode() + "-" + context.getAppName() + "-all";
-        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != tmpGroovyObjects) {
-            groovyObjectList.addAll(tmpGroovyObjects);
-        }
-
-        /**
-         * 合作方全部应用指定事件类型
-         */
-        classKey = context.getPartnerCode() + "-" + "all" + "-" + context.getEventType();
-        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != tmpGroovyObjects) {
-            groovyObjectList.addAll(tmpGroovyObjects);
-        }
-        /**
-         * 合作方全部应用全部事件类型
-         */
-        classKey = context.getPartnerCode() + "-all" + "-all";
-        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != tmpGroovyObjects) {
-            groovyObjectList.addAll(tmpGroovyObjects);
-        }
-        /**
-         * 全部合作方全部应用指定事件类型
-         */
-        classKey = "all-all-" + context.getEventType();
-        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != tmpGroovyObjects) {
-            groovyObjectList.addAll(tmpGroovyObjects);
-        }
-        /**
-         *全部合作方全部应用全部事件类型
-         */
-        classKey = "all"+"-all" + "-all";
-        tmpGroovyObjects = groovyObjectCache.getByScope(classKey);
-        if (null != tmpGroovyObjects) {
-            groovyObjectList.addAll(tmpGroovyObjects);
-        }
-        if (groovyObjectList.isEmpty()) {
+        groovyObjectList = groovyObjectCache.getByScope(context.getPolicyUuid());
+        if (CollectionUtils.isEmpty(groovyObjectList)) {
             return;
         }
 

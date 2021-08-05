@@ -19,15 +19,21 @@ import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
+import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
@@ -45,14 +51,18 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private IPlatformIndexRepository policyIndicatrixItemRepository;
 
+    private IDynamicScriptRepository dynamicScriptRepository;
+
     private PlatformIndexCache policyIndicatrixItemCache;
+
+    private GroovyObjectCache groovyObjectCache;
 
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
 
-
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
-                          IPlatformIndexRepository policyIndicatrixItemRepository, PlatformIndexCache policyIndicatrixItemCache,BatchRemoteCallDataCache batchRemoteCallDataCache){
+                          IPlatformIndexRepository policyIndicatrixItemRepository, PlatformIndexCache policyIndicatrixItemCache, BatchRemoteCallDataCache batchRemoteCallDataCache,
+                          IDynamicScriptRepository dynamicScriptRepository, GroovyObjectCache groovyObjectCache) {
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
@@ -60,6 +70,8 @@ public class PolicyLoadTask implements Callable<Boolean> {
         this.policyIndicatrixItemRepository = policyIndicatrixItemRepository;
         this.policyIndicatrixItemCache = policyIndicatrixItemCache;
         this.batchRemoteCallDataCache = batchRemoteCallDataCache;
+        this.dynamicScriptRepository = dynamicScriptRepository;
+        this.groovyObjectCache = groovyObjectCache;
     }
 
     /**
@@ -67,10 +79,11 @@ public class PolicyLoadTask implements Callable<Boolean> {
      * 先通过转换器，将数据库对象转换为可运行实体
      * 再将各层的运行实体如规则、子策略、运行模式(并行执行、决策流)、策略 ，保存到本次缓存中。
      * 注意保存实体时，先从最小的对象先保存，最后保存策略缓存。
+     *
      * @return
      */
     @Override
-    public Boolean call(){
+    public Boolean call() {
         PolicyDTO policyDTO = null;
         try {
             policyDTO = policyRepository.queryFullByUuid(policyUuid);
@@ -90,34 +103,34 @@ public class PolicyLoadTask implements Callable<Boolean> {
                             IConvertor<RuleDTO, Rule> ruleConvertor = convertorFactory.getConvertor(RuleDTO.class);
                             Rule rule = ruleConvertor.convert(ruleDO);
                             //缓存规则
-                            localCacheService.put(Rule.class,rule.getUuid(),rule);
+                            localCacheService.put(Rule.class, rule.getUuid(), rule);
                             //缓存规则中批量远程调用相关的数据
-                            this.addBatchRemoteCallDataToCache(subPolicy.getUuid(),ruleDO);
+                            this.addBatchRemoteCallDataToCache(subPolicy.getUuid(), ruleDO);
                         }
                     }
                     //缓存子策略
-                    localCacheService.put(SubPolicy.class,subPolicy.getUuid(),subPolicy);
+                    localCacheService.put(SubPolicy.class, subPolicy.getUuid(), subPolicy);
 
                     //策略指标
-                    if (null!=subpolicyDTO.getIndexDefinitionList()&&!subpolicyDTO.getIndexDefinitionList().isEmpty()){
+                    if (null != subpolicyDTO.getIndexDefinitionList() && !subpolicyDTO.getIndexDefinitionList().isEmpty()) {
                         indexDefinitionDTOList.addAll(subpolicyDTO.getIndexDefinitionList());
                     }
                 }
             }
 
             //缓存策略指标
-            if (!indexDefinitionDTOList.isEmpty()){
-                IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor=convertorFactory.getConvertor(IndexDefinitionDTO.class);
-                List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(indexDefinitionDTOList);
-                if (null!=policyIndexList&&!policyIndexList.isEmpty()){
-                    localCacheService.putList(PolicyIndex.class,policyDTO.getUuid(),policyIndexList);
+            if (!indexDefinitionDTOList.isEmpty()) {
+                IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor = convertorFactory.getConvertor(IndexDefinitionDTO.class);
+                List<PolicyIndex> policyIndexList = policyIndexConvertor.convert(indexDefinitionDTOList);
+                if (null != policyIndexList && !policyIndexList.isEmpty()) {
+                    localCacheService.putList(PolicyIndex.class, policyDTO.getUuid(), policyIndexList);
                 }
             }
 
 
             PolicyDecisionModeDTO policyDecisionModeDTO = policyDTO.getPolicyDecisionModeDTO();
-            if(policyDecisionModeDTO != null && DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())
-                && policyDTO.getDecisionFlowDTO() != null){
+            if (policyDecisionModeDTO != null && DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())
+                    && policyDTO.getDecisionFlowDTO() != null) {
                 //策略流运行模式
                 IConvertor<DecisionFlowDTO, DecisionFlow> flowConvertor = convertorFactory.getConvertor(DecisionFlowDTO.class);
                 DecisionFlow decisionFlow = flowConvertor.convert(policyDTO.getDecisionFlowDTO());
@@ -126,24 +139,30 @@ public class PolicyLoadTask implements Callable<Boolean> {
                 //策略运行模式
                 ParallelSubPolicy parallelSubPolicy = new ParallelSubPolicy();
                 parallelSubPolicy.setPolicyUuid(policy.getUuid());
-                parallelSubPolicy.setGmtModify(policyDecisionModeDTO!= null?policyDecisionModeDTO.getGmtModify():policy.getGmtModify());
+                parallelSubPolicy.setGmtModify(policyDecisionModeDTO != null ? policyDecisionModeDTO.getGmtModify() : policy.getGmtModify());
                 policy.setDecisionMode(parallelSubPolicy);
 
             }
 
             //加载平台指标
             List<String> gaeaIds = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
-            if (!CollectionUtils.isEmpty(gaeaIds)) {
+            if (CollectionUtils.isNotEmpty(gaeaIds)) {
                 policyIndicatrixItemCache.putList(policyUuid, gaeaIds);
             }
 
+            //加载动态脚本
+            List<String> scriptUuids = dynamicScriptRepository.queryByPolicyUuid(policyUuid);
+            if (CollectionUtils.isNotEmpty(scriptUuids)) {
+                groovyObjectCache.putList(policyUuid, scriptUuids);
+            }
+
             //缓存运行模式
-            localCacheService.put(AbstractDecisionMode.class,policy.getUuid(),policy.getDecisionMode());
+            localCacheService.put(AbstractDecisionMode.class, policy.getUuid(), policy.getDecisionMode());
             //缓存策略
-            localCacheService.put(Policy.class,policy.getUuid(), policy);
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
-                    policyUuid, policyDTO!=null?policyDTO.getPartnerCode():"",policyDTO != null? policyDTO.getEventId():"",
+            localCacheService.put(Policy.class, policy.getUuid(), policy);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
+                    policyUuid, policyDTO != null ? policyDTO.getPartnerCode() : "", policyDTO != null ? policyDTO.getEventId() : "",
                     e);
             return false;
         }
@@ -152,12 +171,13 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     /**
      * 添加/更新批量调用数据到cache
+     *
      * @param subPolicyUuid
      * @param ruleDTO
      */
     private void addBatchRemoteCallDataToCache(String subPolicyUuid, RuleDTO ruleDTO) {
         Map<String, List<Object>> batchdatas = BatchRemoteCallDataManager.buildData(policyUuid, subPolicyUuid, ruleDTO);
-        if (!CollectionUtils.isEmpty(batchdatas)) {
+        if (MapUtils.isNotEmpty(batchdatas)) {
             Set<Map.Entry<String, List<Object>>> entries = batchdatas.entrySet();
             for (Map.Entry<String, List<Object>> entry : entries) {
                 batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());

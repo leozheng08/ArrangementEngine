@@ -54,6 +54,7 @@ public class DynamicScriptLoadManager implements ILoad {
                 failedCount++;
                 logger.warn(TraceUtils.getFormatTrace() + "Groovy编译失败,uuid:{},eventType:{},assignField:{},script:{},message:{}",
                         script.getUuid(), script.getEventType(), script.getAssignField(), script.getScriptCode(), e.getMessage());
+                //TODO --刘佩 待删除注释
 //                logger.warn(TraceUtils.getFormatTrace()+"Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
 //                        script.getPartnerCode(), script.getEventType(), script.getAssignField(),script.getScriptCode(),e.getMessage());
                 logger.warn(TraceUtils.getFormatTrace() + "Groovy编译失败,uuid:{},eventType:{},assignField:{},script:{},message:{}",

@@ -1,12 +1,13 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
-import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.google.common.collect.Sets;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -20,6 +21,9 @@ public class GroovyObjectCache {
 
     //scope(适用范围) -> WrappedGroovyObject(包含编译后groovy对象)
     private Map<String, Set<String>> scopeToGroovyMap = new ConcurrentHashMap<>(30); // 缓存编译后的对象
+
+    //scope policyUuid->scriptUuid
+    private ConcurrentMap<String, Set<String>> policyScriptMap = new ConcurrentHashMap<>();
 
     /**
      * scope(适用范围) -> fieldName(字段名) -> WrappedGroovyObject(包含编译后groovy对象)
@@ -56,21 +60,26 @@ public class GroovyObjectCache {
     public void put(String uuid, WrappedGroovyObject wrappedGroovyObject) {
         groovyMap.put(uuid, wrappedGroovyObject);
 
-        List<String> keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
-        if (!CollectionUtils.isEmpty(keys)) {
-            keys.forEach(key -> {
-                Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-                if (dynamicScriptUuidSet == null) {
-                    dynamicScriptUuidSet = new ConcurrentHashSet();
-                    Set oldDynamicScriptUuidSet = scopeToGroovyMap.putIfAbsent(key, dynamicScriptUuidSet);
-                    if (oldDynamicScriptUuidSet != null) {
-                        dynamicScriptUuidSet = oldDynamicScriptUuidSet;
-                    }
-                }
-                dynamicScriptUuidSet.add(uuid);
-            });
-        }
+        //TODO --刘佩 待删除注释
+//        List<String> keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
+//        if (!CollectionUtils.isEmpty(keys)) {
+//            keys.forEach(key -> {
+//                Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
+//                if (dynamicScriptUuidSet == null) {
+//                    dynamicScriptUuidSet = new ConcurrentHashSet();
+//                    Set oldDynamicScriptUuidSet = scopeToGroovyMap.putIfAbsent(key, dynamicScriptUuidSet);
+//                    if (oldDynamicScriptUuidSet != null) {
+//                        dynamicScriptUuidSet = oldDynamicScriptUuidSet;
+//                    }
+//                }
+//                dynamicScriptUuidSet.add(uuid);
+//            });
+//        }
 
+    }
+
+    public void putList(String policyUuid, List<String> scriptUuids) {
+        policyScriptMap.put(policyUuid, Sets.newHashSet(scriptUuids));
     }
 
     public WrappedGroovyObject remove(String uuid) {
@@ -92,18 +101,31 @@ public class GroovyObjectCache {
         return groovyMap.get(uuid);
     }
 
-    public List<WrappedGroovyObject> getByScope(String key) {
-        Set<String> dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-        if (dynamicScriptUuidSet == null) {
+    public List<WrappedGroovyObject> getByScope(String policyUuid) {
+        //TODO --刘佩 待删除注释
+//        Set<String> dynamicScriptUuidSet = scopeToGroovyMap.get(key);
+//        if (dynamicScriptUuidSet == null) {
+//            return null;
+//        }
+//        List<WrappedGroovyObject> wrappedGroovyObjectList = new ArrayList<>(dynamicScriptUuidSet.size());
+//        for (String dynamicScriptUuid : dynamicScriptUuidSet) {
+//            WrappedGroovyObject wrappedGroovyObject = groovyMap.get(dynamicScriptUuid);
+//            if (wrappedGroovyObject != null) {
+//                wrappedGroovyObjectList.add(wrappedGroovyObject);
+//            }
+//        }
+        Set<String> scriptUuids = policyScriptMap.get(policyUuid);
+        if (CollectionUtils.isEmpty(scriptUuids)) {
             return null;
         }
-        List<WrappedGroovyObject> wrappedGroovyObjectList = new ArrayList<>(dynamicScriptUuidSet.size());
-        for (String dynamicScriptUuid : dynamicScriptUuidSet) {
+        List<WrappedGroovyObject> wrappedGroovyObjectList = new ArrayList<>(scriptUuids.size());
+        for (String dynamicScriptUuid : scriptUuids) {
             WrappedGroovyObject wrappedGroovyObject = groovyMap.get(dynamicScriptUuid);
             if (wrappedGroovyObject != null) {
                 wrappedGroovyObjectList.add(wrappedGroovyObject);
             }
         }
+
         return wrappedGroovyObjectList;
     }
 
