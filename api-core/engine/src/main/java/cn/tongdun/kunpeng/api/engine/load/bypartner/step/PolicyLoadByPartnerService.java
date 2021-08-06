@@ -13,6 +13,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
@@ -57,16 +58,16 @@ public class PolicyLoadByPartnerService {
     private LocalCacheService localCacheService;
 
     @Autowired
-    private PlatformIndexCache policyIndicatrixItemCache;
+    private PlatformIndexCache platformIndexCache;
 
     @Autowired
-    private IPlatformIndexRepository policyIndicatrixItemRepository;
+    private IPlatformIndexRepository platformIndexRepository;
 
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
     @Autowired
-    private IDynamicScriptRepository dynamicScriptRepository;
+    private IPolicyScriptConfigRepository policyScriptConfigRepository;
 
     @Autowired
     private GroovyObjectCache groovyObjectCache;
@@ -107,7 +108,7 @@ public class PolicyLoadByPartnerService {
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache, batchRemoteCallDataCache, dynamicScriptRepository, groovyObjectCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, policyScriptConfigRepository, groovyObjectCache);
             tasks.add(task);
         }
 

@@ -22,7 +22,7 @@ import java.util.List;
  * @Date: 2019/12/10 下午1:44
  */
 @Component
-public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionEventDO> {
+public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO> {
 
     private Logger logger = LoggerFactory.getLogger(PolicyIndexReLoadManager.class);
 
@@ -39,45 +39,51 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionEventDO
     @Autowired
     private PolicyIndicatrixItemReloadManager policyIndicatrixItemReloadManager;
 
+    @Autowired
+    private PolicyScriptConfigReloadManager policyScriptConfigReloadManager;
+
     @PostConstruct
-    public void init(){
-        reloadFactory.register(IndexDefinitionEventDO.class,this);
+    public void init() {
+        reloadFactory.register(IndexDefinitionEventDO.class, this);
     }
 
     @Override
-    public boolean create(IndexDefinitionEventDO eventDO){
+    public boolean create(IndexDefinitionEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
+
     @Override
-    public boolean update(IndexDefinitionEventDO eventDO){
+    public boolean update(IndexDefinitionEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
+
     @Override
-    public boolean activate(IndexDefinitionEventDO eventDO){
+    public boolean activate(IndexDefinitionEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
 
     /**
      * 更新事件类型
+     *
      * @return
      */
-    public boolean addOrUpdate(IndexDefinitionEventDO eventDO){
+    public boolean addOrUpdate(IndexDefinitionEventDO eventDO) {
         IndexDefinitionDTO indexDefinitionDTO = policyIndexRepository.queryByUuid(eventDO.getUuid());
-        if(indexDefinitionDTO == null){
+        if (indexDefinitionDTO == null) {
             return true;
         }
         return reload(indexDefinitionDTO.getPolicyUuid());
     }
 
-    private boolean reload(String policyUuid){
-        logger.debug(TraceUtils.getFormatTrace()+"PolicyIndex reload start, policyUuid:{}",policyUuid);
+    private boolean reload(String policyUuid) {
+        logger.debug(TraceUtils.getFormatTrace() + "PolicyIndex reload start, policyUuid:{}", policyUuid);
         try {
             List<IndexDefinitionDTO> indexDefinitionDTOList = policyIndexRepository.queryByPolicyUuid(policyUuid);
             //缓存策略指标
-            if (null!= indexDefinitionDTOList && !indexDefinitionDTOList.isEmpty()){
-                List<PolicyIndex> policyIndexList=policyIndexConvertor.convert(indexDefinitionDTOList);
-                if (null!=policyIndexList && !policyIndexList.isEmpty()){
-                    policyIndexCache.putList(policyUuid,policyIndexList);
+            if (null != indexDefinitionDTOList && !indexDefinitionDTOList.isEmpty()) {
+                List<PolicyIndex> policyIndexList = policyIndexConvertor.convert(indexDefinitionDTOList);
+                if (null != policyIndexList && !policyIndexList.isEmpty()) {
+                    policyIndexCache.putList(policyUuid, policyIndexList);
                 }
             } else {
                 policyIndexCache.removeList(policyUuid);
@@ -86,24 +92,28 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionEventDO
             //刷新引用到的平台指标
             policyIndicatrixItemReloadManager.reload(policyUuid);
 
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"PolicyIndex reload failed, policyUuid:{}",policyUuid,e);
+            //属性引用到的动态脚本
+            policyScriptConfigReloadManager.reload(policyUuid);
+
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "PolicyIndex reload failed, policyUuid:{}", policyUuid, e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace()+"PolicyIndex reload success, policyUuid:{}",policyUuid);
+        logger.debug(TraceUtils.getFormatTrace() + "PolicyIndex reload success, policyUuid:{}", policyUuid);
         return true;
     }
 
 
     /**
      * 删除事件类型
+     *
      * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(IndexDefinitionEventDO eventDO){
+    public boolean remove(IndexDefinitionEventDO eventDO) {
         IndexDefinitionDTO indexDefinitionDTO = policyIndexRepository.queryByUuid(eventDO.getUuid());
-        if(indexDefinitionDTO == null){
+        if (indexDefinitionDTO == null) {
             return true;
         }
         return reload(indexDefinitionDTO.getPolicyUuid());
@@ -112,11 +122,12 @@ public class PolicyIndexReLoadManager  implements IReload<IndexDefinitionEventDO
 
     /**
      * 关闭状态
+     *
      * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(IndexDefinitionEventDO eventDO){
+    public boolean deactivate(IndexDefinitionEventDO eventDO) {
         return remove(eventDO);
     }
 

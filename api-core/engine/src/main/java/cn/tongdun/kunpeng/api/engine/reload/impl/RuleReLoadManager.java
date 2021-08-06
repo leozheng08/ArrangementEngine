@@ -45,9 +45,6 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
     private SubPolicyReLoadManager subPolicyReLoadManager;
 
     @Autowired
-    private PolicyIndicatrixItemReloadManager policyIndicatrixItemReloadManager;
-
-    @Autowired
     private RuleCache ruleCache;
 
     @Autowired

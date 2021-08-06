@@ -2,44 +2,32 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
-import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyChallengerDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
-import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
-import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.IPolicyChallengerRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallenger;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallengerCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
-import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyChallengerEventDO;
-import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @Author: liang.chen
@@ -74,15 +62,13 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
     @Autowired
     private LocalCacheService localCacheService;
     @Autowired
-    private IPlatformIndexRepository policyIndicatrixItemRepository;
+    private IPlatformIndexRepository platformIndexRepository;
     @Autowired
-    private PlatformIndexCache policyIndicatrixItemCache;
+    private PlatformIndexCache platformIndexCache;
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
-
     @Autowired
-    private IDynamicScriptRepository dynamicScriptRepository;
-
+    private IPolicyScriptConfigRepository policyScriptConfigRepository;
     @Autowired
     private GroovyObjectCache groovyObjectCache;
 
@@ -199,7 +185,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
                 }
 
                 //加载策略各个子对象信息
-                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache, batchRemoteCallDataCache, dynamicScriptRepository, groovyObjectCache);
+                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, policyScriptConfigRepository, groovyObjectCache);
                 task.call();
             }
         }

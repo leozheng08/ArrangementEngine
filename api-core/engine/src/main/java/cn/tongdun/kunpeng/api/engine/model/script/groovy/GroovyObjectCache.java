@@ -19,8 +19,9 @@ public class GroovyObjectCache {
     //dynamicScriptUuid -> WrappedGroovyObject
     private Map<String, WrappedGroovyObject> groovyMap = new ConcurrentHashMap<>(30); // 缓存编译后的对象
 
+    //TODO --刘佩 待删除注释
     //scope(适用范围) -> WrappedGroovyObject(包含编译后groovy对象)
-    private Map<String, Set<String>> scopeToGroovyMap = new ConcurrentHashMap<>(30); // 缓存编译后的对象
+//    private Map<String, Set<String>> scopeToGroovyMap = new ConcurrentHashMap<>(30); // 缓存编译后的对象
 
     //scope policyUuid->scriptUuid
     private ConcurrentMap<String, Set<String>> policyScriptMap = new ConcurrentHashMap<>();
@@ -84,15 +85,16 @@ public class GroovyObjectCache {
 
     public WrappedGroovyObject remove(String uuid) {
         WrappedGroovyObject wrappedGroovyObject = groovyMap.remove(uuid);
-
         if (wrappedGroovyObject == null) {
             return null;
         }
 
+
+        //TODO --刘佩 待删除注释
 //        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
-        String key = wrappedGroovyObject.getEventType();
-        Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-        dynamicScriptUuidSet.remove(uuid);
+//        String key = wrappedGroovyObject.getEventType();
+//        Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
+//        dynamicScriptUuidSet.remove(uuid);
 
         return wrappedGroovyObject;
     }

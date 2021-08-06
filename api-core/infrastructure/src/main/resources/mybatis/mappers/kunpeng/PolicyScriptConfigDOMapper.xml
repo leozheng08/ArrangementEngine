@@ -10,7 +10,15 @@
         <result column="dynamic_script_uuid" property="dynamicScriptUuid" jdbcType="VARCHAR"/>
         <result column="policy_uuid" property="policyUuid" jdbcType="VARCHAR"/>
         <result column="sub_policy_uuid" property="subPolicyUuid" jdbcType="VARCHAR"/>
+        <result column="biz_uuid" property="bizUuid" jdbcType="CHAR"/>
+        <result column="biz_type" property="bizType" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
     </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , uuid, gmt_create, gmt_modify, creator, operator, dynamic_script_uuid, policy_uuid, sub_policy_uuid, biz_uuid, biz_type, status
+    </sql>
 
     <select id="selectAll" resultMap="BaseResultMap" parameterType="string">
         select
@@ -18,16 +26,11 @@
         from policy_script_config
     </select>
 
-    <sql id="Base_Column_List">
-        id
-        , uuid, gmt_create, gmt_modify, creator, operator, dynamic_script_uuid, policy_uuid, sub_policy_uuid
-    </sql>
 
-
-    <select id="selectByPolicyUuid" resultMap="BaseResultMap">
+    <select id="selectEnabledByPolicyUuid" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from policy_script_config
-        where policy_uuid = #{policyUuid}
+        where status=1 and policy_uuid = #{policyUuid}
     </select>
 </mapper>

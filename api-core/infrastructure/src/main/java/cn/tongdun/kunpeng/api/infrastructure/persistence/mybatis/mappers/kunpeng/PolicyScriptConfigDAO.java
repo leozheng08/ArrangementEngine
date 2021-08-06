@@ -9,6 +9,6 @@ public interface PolicyScriptConfigDAO {
 
     List<PolicyScriptConfigDO> selectAll();
 
-    List<PolicyScriptConfigDO> selectByPolicyUuid(@Param("policyUuid") String policyUuid);
+    List<PolicyScriptConfigDO> selectEnabledByPolicyUuid(@Param("policyUuid") String policyUuid);
 
 }

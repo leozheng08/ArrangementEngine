@@ -1,7 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.model.script;
 
-import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
-
 import java.util.List;
 import java.util.Set;
 
@@ -15,8 +13,5 @@ public interface IDynamicScriptRepository {
 
     DynamicScript queryByUuid(String uuid);
 
-    /**
-     * 查询策略配置的动态脚本
-     */
-    List<String> queryByPolicyUuid(String policyUuid);
+
 }

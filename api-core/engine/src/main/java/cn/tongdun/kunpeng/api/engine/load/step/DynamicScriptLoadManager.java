@@ -4,8 +4,8 @@ import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
 import cn.tongdun.kunpeng.api.engine.model.cluster.PartnerClusterCache;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
-import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class DynamicScriptLoadManager implements ILoad {
 
 
     @Autowired
-    IDynamicScriptRepository groovyRepository;
+    IDynamicScriptRepository dynamicScriptRepository;
 
     @Autowired
     PartnerClusterCache partnerClusterCache;
@@ -44,7 +44,7 @@ public class DynamicScriptLoadManager implements ILoad {
 
         Set allPartners = new HashSet(partnerClusterCache.getPartners());
         allPartners.add("all");
-        List<DynamicScript> scripts = groovyRepository.queryGroovyByPartners(allPartners);
+        List<DynamicScript> scripts = dynamicScriptRepository.queryGroovyByPartners(allPartners);
 
         int failedCount = 0;
         for (DynamicScript script : scripts) {

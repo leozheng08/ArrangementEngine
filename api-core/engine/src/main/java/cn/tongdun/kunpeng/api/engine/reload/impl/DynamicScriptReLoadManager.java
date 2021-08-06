@@ -27,13 +27,10 @@ import javax.annotation.PostConstruct;
 @Component
 public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO> {
 
-    private Logger logger = LoggerFactory.getLogger(SubPolicyReLoadManager.class);
+    private Logger logger = LoggerFactory.getLogger(DynamicScriptReLoadManager.class);
 
     @Autowired
     private IDynamicScriptRepository dynamicScriptRepository;
-
-    @Autowired
-    private SubPolicyCache subPolicyCache;
 
     @Autowired
     GroovyCompileManager groovyCompileManager;
@@ -45,83 +42,87 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO>
     private GroovyObjectCache groovyObjectCache;
 
     @PostConstruct
-    public void init(){
-        reloadFactory.register(DynamicScriptEventDO.class,this);
+    public void init() {
+        reloadFactory.register(DynamicScriptEventDO.class, this);
     }
 
     @Override
-    public boolean create(DynamicScriptEventDO eventDO){
+    public boolean create(DynamicScriptEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
+
     @Override
-    public boolean update(DynamicScriptEventDO eventDO){
+    public boolean update(DynamicScriptEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
+
     @Override
-    public boolean activate(DynamicScriptEventDO eventDO){
+    public boolean activate(DynamicScriptEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
 
     /**
      * 更新事件类型
+     *
      * @return
      */
-    public boolean addOrUpdate(DynamicScriptEventDO eventDO){
+    public boolean addOrUpdate(DynamicScriptEventDO eventDO) {
         String uuid = eventDO.getUuid();
-        logger.debug(TraceUtils.getFormatTrace()+"DynamicScript reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "DynamicScript reload start, uuid:{}", uuid);
         try {
             Long timestamp = eventDO.getModifiedVersion();
             WrappedGroovyObject oldWrappedGroovyObject = groovyObjectCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(timestamp != null && oldWrappedGroovyObject != null &&
+            if (timestamp != null && oldWrappedGroovyObject != null &&
                     timestampCompare(oldWrappedGroovyObject.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug(TraceUtils.getFormatTrace()+"DynamicScript reload localCache is newest, ignore uuid:{}",uuid);
+                logger.debug(TraceUtils.getFormatTrace() + "DynamicScript reload localCache is newest, ignore uuid:{}", uuid);
                 return true;
             }
 
             //设置要查询的时间戳，如果redis缓存的时间戳比这新，则直接按redis缓存的数据返回
-            ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_MODIFIED_VERSION,timestamp);
+            ThreadContext.getContext().setAttr(ReloadConstant.THREAD_CONTEXT_ATTR_MODIFIED_VERSION, timestamp);
             DynamicScript dynamicScript = dynamicScriptRepository.queryByUuid(uuid);
             //如果失效则删除缓存
-            if(dynamicScript == null || !dynamicScript.isValid()){
+            if (dynamicScript == null || !dynamicScript.isValid()) {
                 return remove(eventDO);
             }
-
             groovyCompileManager.addOrUpdate(dynamicScript);
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"DynamicScript reload failed, uuid:{}",uuid,e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "DynamicScript reload failed, uuid:{}", uuid, e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace()+"DynamicScript reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "DynamicScript reload success, uuid:{}", uuid);
         return true;
     }
 
 
     /**
      * 删除事件类型
+     *
      * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(DynamicScriptEventDO eventDO){
+    public boolean remove(DynamicScriptEventDO eventDO) {
         try {
             groovyCompileManager.remove(eventDO.getUuid());
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"DynamicScript remove failed, uuid:{}",eventDO.getUuid(),e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "DynamicScript remove failed, uuid:{}", eventDO.getUuid(), e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace()+"DynamicScript remove success, uuid:{}",eventDO.getUuid());
+        logger.debug(TraceUtils.getFormatTrace() + "DynamicScript remove success, uuid:{}", eventDO.getUuid());
         return true;
     }
 
 
     /**
      * 关闭状态
+     *
      * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(DynamicScriptEventDO eventDO){
+    public boolean deactivate(DynamicScriptEventDO eventDO) {
         return remove(eventDO);
     }
 }

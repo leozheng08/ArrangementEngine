@@ -2,9 +2,13 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
+import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyIndicatrixItemEventDO;
+import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyScriptConfigEventDO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,36 +23,37 @@ import java.util.List;
  * @Date: 2020/3/11 下午3:56
  */
 @Component
-public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatrixItemEventDO> {
+public class PolicyScriptConfigReloadManager implements IReload<PolicyScriptConfigEventDO> {
 
-    private Logger logger = LoggerFactory.getLogger(PolicyIndicatrixItemReloadManager.class);
-
-    @Autowired
-    private IPlatformIndexRepository platformIndexRepository;
+    private Logger logger = LoggerFactory.getLogger(PolicyScriptConfigReloadManager.class);
 
     @Autowired
-    private PlatformIndexCache platformIndexCache;
+    private IPolicyScriptConfigRepository policyScriptConfigRepository;
+
+    @Autowired
+    private GroovyObjectCache groovyObjectCache;
 
     @Autowired
     private ReloadFactory reloadFactory;
 
+
     @PostConstruct
     public void init() {
-        reloadFactory.register(PolicyIndicatrixItemEventDO.class, this);
+        reloadFactory.register(PolicyScriptConfigEventDO.class, this);
     }
 
     @Override
-    public boolean create(PolicyIndicatrixItemEventDO eventDO) {
+    public boolean create(PolicyScriptConfigEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
 
     @Override
-    public boolean update(PolicyIndicatrixItemEventDO eventDO) {
+    public boolean update(PolicyScriptConfigEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
 
     @Override
-    public boolean activate(PolicyIndicatrixItemEventDO eventDO) {
+    public boolean activate(PolicyScriptConfigEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
 
@@ -57,21 +62,21 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
      *
      * @return
      */
-    public boolean addOrUpdate(PolicyIndicatrixItemEventDO eventDO) {
+    public boolean addOrUpdate(PolicyScriptConfigEventDO eventDO) {
         return reload(eventDO.getPolicyUuid());
     }
 
     public boolean reload(String policyUuid) {
-        logger.debug(TraceUtils.getFormatTrace() + "PlatformIndex reload start, policyUuid:{}", policyUuid);
+        logger.debug(TraceUtils.getFormatTrace() + "PolicyScript reload start, policyUuid:{}", policyUuid);
         try {
-            List<String> policyIndicatrixItemDTOList = platformIndexRepository.queryByPolicyUuid(policyUuid);
-            platformIndexCache.putList(policyUuid, policyIndicatrixItemDTOList);
+            List<String> policyScriptConfigList = policyScriptConfigRepository.queryByPolicyUuid(policyUuid);
+            groovyObjectCache.putList(policyUuid, policyScriptConfigList);
 
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "PlatformIndex reload failed, policyUuid:{}", policyUuid, e);
+            logger.error(TraceUtils.getFormatTrace() + "PolicyScript reload failed, policyUuid:{}", policyUuid, e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace() + "PlatformIndex reload success, policyUuid:{}", policyUuid);
+        logger.debug(TraceUtils.getFormatTrace() + "PolicyScript reload success, policyUuid:{}", policyUuid);
         return true;
     }
 
@@ -83,7 +88,7 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
      * @return
      */
     @Override
-    public boolean remove(PolicyIndicatrixItemEventDO eventDO) {
+    public boolean remove(PolicyScriptConfigEventDO eventDO) {
         return reload(eventDO.getPolicyUuid());
     }
 
@@ -94,7 +99,7 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
      * @return
      */
     @Override
-    public boolean deactivate(PolicyIndicatrixItemEventDO eventDO) {
+    public boolean deactivate(PolicyScriptConfigEventDO eventDO) {
         return remove(eventDO);
     }
 

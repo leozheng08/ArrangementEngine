@@ -28,7 +28,7 @@ public class GroovyCompileManager {
 
 
     @Autowired
-    private GroovyObjectCache groovyFieldCache;
+    private GroovyObjectCache groovyObjectCache;
 
 
     /**
@@ -72,17 +72,17 @@ public class GroovyCompileManager {
         groovyField.setAssignField(script.getAssignField());
         groovyField.setFieldMethodName(methodName);
 
-        groovyFieldCache.put(script.getUuid(), groovyField);
+        groovyObjectCache.put(script.getUuid(), groovyField);
     }
 
     public void remove(String uuid) {
-        groovyFieldCache.remove(uuid);
+        groovyObjectCache.remove(uuid);
     }
 
 
     public void warmAllGroovyFields() {
-        Collection<WrappedGroovyObject> allGooovyObjs = groovyFieldCache.getAll();
-        for (WrappedGroovyObject groovyField : allGooovyObjs) {
+        Collection<WrappedGroovyObject> allGroovyObjs = groovyObjectCache.getAll();
+        for (WrappedGroovyObject groovyField : allGroovyObjs) {
             warmGroovyField(groovyField);
         }
     }
@@ -144,11 +144,8 @@ public class GroovyCompileManager {
     private boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject field) {
         int failedCnt = 0;
         for (String fieldName : field.getFieldMethods().keySet()) {
-
-
             String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(fieldName);
             Object value;
-
 
             try {
                 long t1 = System.currentTimeMillis();

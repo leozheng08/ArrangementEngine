@@ -20,6 +20,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
@@ -49,11 +50,11 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private IPolicyRepository policyRepository;
 
-    private IPlatformIndexRepository policyIndicatrixItemRepository;
+    private IPlatformIndexRepository platformIndexRepository;
 
-    private IDynamicScriptRepository dynamicScriptRepository;
+    private IPolicyScriptConfigRepository policyScriptConfigRepository;
 
-    private PlatformIndexCache policyIndicatrixItemCache;
+    private PlatformIndexCache platformIndexCache;
 
     private GroovyObjectCache groovyObjectCache;
 
@@ -61,16 +62,16 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
 
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
-                          IPlatformIndexRepository policyIndicatrixItemRepository, PlatformIndexCache policyIndicatrixItemCache, BatchRemoteCallDataCache batchRemoteCallDataCache,
-                          IDynamicScriptRepository dynamicScriptRepository, GroovyObjectCache groovyObjectCache) {
+                          IPlatformIndexRepository platformIndexRepository, PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache,
+                          IPolicyScriptConfigRepository policyScriptConfigRepository, GroovyObjectCache groovyObjectCache) {
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
         this.policyRepository = policyRepository;
-        this.policyIndicatrixItemRepository = policyIndicatrixItemRepository;
-        this.policyIndicatrixItemCache = policyIndicatrixItemCache;
+        this.platformIndexRepository = platformIndexRepository;
+        this.platformIndexCache = platformIndexCache;
         this.batchRemoteCallDataCache = batchRemoteCallDataCache;
-        this.dynamicScriptRepository = dynamicScriptRepository;
+        this.policyScriptConfigRepository = policyScriptConfigRepository;
         this.groovyObjectCache = groovyObjectCache;
     }
 
@@ -145,13 +146,13 @@ public class PolicyLoadTask implements Callable<Boolean> {
             }
 
             //加载平台指标
-            List<String> gaeaIds = policyIndicatrixItemRepository.queryByPolicyUuid(policyUuid);
+            List<String> gaeaIds = platformIndexRepository.queryByPolicyUuid(policyUuid);
             if (CollectionUtils.isNotEmpty(gaeaIds)) {
-                policyIndicatrixItemCache.putList(policyUuid, gaeaIds);
+                platformIndexCache.putList(policyUuid, gaeaIds);
             }
 
             //加载动态脚本
-            List<String> scriptUuids = dynamicScriptRepository.queryByPolicyUuid(policyUuid);
+            List<String> scriptUuids = policyScriptConfigRepository.queryByPolicyUuid(policyUuid);
             if (CollectionUtils.isNotEmpty(scriptUuids)) {
                 groovyObjectCache.putList(policyUuid, scriptUuids);
             }

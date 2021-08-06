@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @Date: 2020/2/19 下午8:33
  */
 @Repository
-public class GroovyDynamicScriptRepository implements IDynamicScriptRepository {
+public class DynamicScriptRepository implements IDynamicScriptRepository {
 
     @Autowired
     GroovyDynamicScriptDAO groovyDynamicScriptDAO;
@@ -55,12 +55,4 @@ public class GroovyDynamicScriptRepository implements IDynamicScriptRepository {
         return dynamicScript;
     }
 
-    @Override
-    public List<String> queryByPolicyUuid(String policyUuid) {
-        List<PolicyScriptConfigDO> policyScriptConfigDOList = policyScriptConfigDAO.selectByPolicyUuid(policyUuid);
-        if (CollectionUtils.isEmpty(policyScriptConfigDOList)) {
-            return Lists.newArrayList();
-        }
-        return policyScriptConfigDOList.stream().map(o -> o.getDynamicScriptUuid()).collect(Collectors.toList());
-    }
 }
