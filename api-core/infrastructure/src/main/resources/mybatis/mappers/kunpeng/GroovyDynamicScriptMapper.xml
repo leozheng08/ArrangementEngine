@@ -51,7 +51,7 @@
         select t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.script_name, t.assign_field, t.description,
         t.event_type, t.status, t.is_deleted, t.concurrency_version, t.field_data_type, t.script_code
         from dynamic_script t join dynamic_script_partner t2 on t.uuid=t2.dynamic_script_uuid
-        where t.is_deleted = 0 and t.status=1 and t2.is_deleted = 0
+        where t.is_deleted = 0 and t.status=1
         and t2.partner_code in
         <foreach collection="collection" item="partner" index="index" open="(" separator="," close=")">
             #{partner}
