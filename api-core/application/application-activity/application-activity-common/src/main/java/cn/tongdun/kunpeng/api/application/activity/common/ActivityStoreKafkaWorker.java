@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -33,6 +34,9 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
 
     @Value("${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}")
     private String KUNPENG_API_RAW_ACTIVITY = "kunpeng_api_raw_activity";
+
+    @Value("${kafka.kunpeng.consumer.activity.challenge.topic:kunpeng_api_challenger_activity}")
+    private String KUNPENG_API_RAW_CHALLENGER_ACTIVITY = "kunpeng_api_challenger_activity";
 
 
     @Override
@@ -67,8 +71,13 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
         //生成activity消息
         IActitivyMsg actitivyMsg = generateActivity(item);
 
-        //发送到kafka
-        sendToKafka(actitivyMsg);
+        //发送到kafka originalSeqId发送不同的topic
+        Object originalSeqId = item.getContext().getFieldValues().get("originalSeqId");
+        if (Objects.nonNull(originalSeqId)) {
+            sendChallengerToKafka(actitivyMsg);
+        } else {
+            sendToKafka(actitivyMsg);
+        }
     }
 
 
@@ -81,5 +90,10 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     private void sendToKafka(IActitivyMsg actitivyMsg) {
 //        logger.info("GenerateActivityExt....................msgKey={}", actitivyMsg.getMessageKey());
         msgProducer.produce(KUNPENG_API_RAW_ACTIVITY, actitivyMsg.getMessageKey(), actitivyMsg.toJsonString());
+    }
+
+    private void sendChallengerToKafka(IActitivyMsg actitivyMsg) {
+//        logger.info("GenerateActivityExt....................msgKey={}", actitivyMsg.getMessageKey());
+        msgProducer.produce(KUNPENG_API_RAW_CHALLENGER_ACTIVITY, actitivyMsg.getMessageKey(), actitivyMsg.toJsonString());
     }
 }

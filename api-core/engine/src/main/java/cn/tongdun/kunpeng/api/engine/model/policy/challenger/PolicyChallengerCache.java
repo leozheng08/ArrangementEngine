@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.model.policy.challenger;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
+import cn.tongdun.kunpeng.api.engine.model.policy.challenger.constant.ChallengerTypeEnum;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -90,6 +92,12 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
         if(policyChallenger == null){
             return null;
         }
+        /**
+         * 复制类型不处理
+         */
+        if(Objects.nonNull(policyChallenger.getChallengerType()) && ChallengerTypeEnum.COPY.getType().equals(policyChallenger.getChallengerType())){
+            return null;
+        }
         //还未生效
         if(policyChallenger.getStartTime() != null && System.currentTimeMillis()<policyChallenger.getStartTime().getTime()){
             return null;
@@ -99,7 +107,7 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
             return null;
         }
         //暂停、关闭等
-        if(policyChallenger.getStatus() == null || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()){
+        if(policyChallenger.getStatus() == null || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()|| policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()){
             return null;
         }
         List<PolicyChallenger.Config> configs = policyChallenger.getChallengerConfig();

@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application;
 
+import cn.tongdun.kunpeng.api.application.challenger.ChallengerService;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.application.ext.ICreateRiskRequestExtPt;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
@@ -50,6 +51,9 @@ public class RiskService implements IRiskService {
     private ExtensionExecutor extensionExecutor;
 
     @Autowired
+    private ChallengerService challengerService;
+
+    @Autowired
     private IMetrics metrics;
 
     @Override
@@ -59,9 +63,10 @@ public class RiskService implements IRiskService {
         RiskRequest riskRequest = extensionExecutor.execute(ICreateRiskRequestExtPt.class,
                 bizScenario,
                 extension -> extension.createRiskRequest(request));
-
-
-        return riskService(riskRequest, bizName);
+        IRiskResponse riskResponse = riskService(riskRequest, bizName);
+        riskRequest.getFieldValues().put("originalSeqId",riskResponse.getSeqId());
+        challengerService.invoke(riskRequest,bizName);
+        return riskResponse;
     }
 
     @Override
