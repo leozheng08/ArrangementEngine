@@ -103,9 +103,7 @@ public class GenerateActivityExt implements IGenerateActivityExtPt {
         }
         Object originalSeqId = context.getFieldValues().get("originalSeqId");
         if (Objects.nonNull(originalSeqId)) {
-            result.put("challengerType", "COPY");
-        } else {
-            result.put("challengerType", "SPLITFLOW");
+            result.put("challengerType", "copy");
         }
         return result;
     }
