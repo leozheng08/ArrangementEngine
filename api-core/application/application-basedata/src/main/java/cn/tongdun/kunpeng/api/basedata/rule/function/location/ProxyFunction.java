@@ -26,7 +26,6 @@ public class ProxyFunction extends AbstractFunction {
 
     private String proxyIpType;
 
-
     @Override
     public String getName() {
         return Constant.Function.LOCATION_PROXY;
