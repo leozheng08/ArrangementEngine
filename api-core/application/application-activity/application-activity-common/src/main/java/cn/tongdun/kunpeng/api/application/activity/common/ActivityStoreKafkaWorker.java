@@ -71,9 +71,9 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
         //生成activity消息
         IActitivyMsg actitivyMsg = generateActivity(item);
 
-        //发送到kafka challengerTypeS发送不同的topic
-        Object challengerType = item.getContext().getFieldValues().get("challengerType");
-        if (Objects.nonNull(challengerType)) {
+        //发送到kafka originalSeqId发送不同的topic
+        Object originalSeqId = item.getContext().getFieldValues().get("originalSeqId");
+        if (Objects.nonNull(originalSeqId)) {
             sendChallengerToKafka(actitivyMsg);
         } else {
             sendToKafka(actitivyMsg);
