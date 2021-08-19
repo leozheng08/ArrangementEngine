@@ -20,7 +20,9 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.pipeline.Step;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,13 +87,12 @@ public class ChallengerCopyStep implements IRiskStep {
      */
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
-        RiskRequest riskRequest = new RiskRequest();
-        BeanUtils.copyProperties(riskRequest, request);
+        RiskRequest riskRequest = JSON.parseObject(JSON.toJSONString(request), RiskRequest.class);
         String partnerCode = request.getPartnerCode();
         String appName = request.getAppName();
         String eventId = request.getEventId();
-        Object originalSeqId = context.getFieldValues().get("originalSeqId");
-        if (Objects.nonNull(originalSeqId)) {
+        Object challengerType = riskRequest.getFieldValues().get("challengerType");
+        if (Objects.nonNull(challengerType)) {
             return true;
         }
         PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
@@ -128,10 +129,11 @@ public class ChallengerCopyStep implements IRiskStep {
         if (CollectionUtils.isNotEmpty(configs)) {
             for (PolicyChallenger.Config config : configs) {
                 if (StringUtils.isNotEmpty(config.getChallengerTag()) && !"champion".equals(config.getChallengerTag())) {
-                    riskRequest.getFieldValues().put("originalSeqId", context);
+                    riskRequest.getFieldValues().put("originalSeqId", context.getSeqId());
+                    riskRequest.getFieldValues().put("challengerType", "copy");
                     if (StringUtils.isNotEmpty(config.getVersionUuid())) {
                         Policy policy = policyCache.get(config.getVersionUuid());
-                        request.setPolicyVersion(policy.getVersion());
+                        riskRequest.setPolicyVersion(policy.getVersion());
                         executeThreadPool.submit(new Callable<Boolean>() {
                             @Override
                             public Boolean call() {
@@ -151,5 +153,14 @@ public class ChallengerCopyStep implements IRiskStep {
         }
 
         return true;
+    }
+
+    public static void main(String[] args) {
+        RiskRequest request = new RiskRequest();
+        request.setSeqId("1111");
+        RiskRequest riskRequest = new RiskRequest();
+        BeanUtils.copyProperties(request, riskRequest);
+        request.setSeqId("222");
+        System.out.println();
     }
 }
