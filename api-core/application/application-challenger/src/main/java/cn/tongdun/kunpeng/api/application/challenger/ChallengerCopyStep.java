@@ -92,7 +92,11 @@ public class ChallengerCopyStep implements IRiskStep {
         String appName = request.getAppName();
         String eventId = request.getEventId();
         Object challengerType = riskRequest.getFieldValues().get("challengerType");
+        Object challengerTag = riskRequest.getFieldValues().get("challengerTag");
         if (Objects.nonNull(challengerType)) {
+            if (Objects.nonNull(challengerTag)) {
+                context.setChallengerTag(challengerTag.toString());
+            }
             return true;
         }
         PolicyDefinition policyDefinition = policyDefinitionCache.getPolicyDefinition(partnerCode, appName, eventId);
@@ -131,6 +135,7 @@ public class ChallengerCopyStep implements IRiskStep {
                 if (StringUtils.isNotEmpty(config.getChallengerTag()) && !"champion".equals(config.getChallengerTag())) {
                     riskRequest.getFieldValues().put("originalSeqId", context.getSeqId());
                     riskRequest.getFieldValues().put("challengerType", "copy");
+                    riskRequest.getFieldValues().put("challengerTag", config.getChallengerTag());
                     if (StringUtils.isNotEmpty(config.getVersionUuid())) {
                         Policy policy = policyCache.get(config.getVersionUuid());
                         riskRequest.setPolicyVersion(policy.getVersion());
@@ -148,6 +153,8 @@ public class ChallengerCopyStep implements IRiskStep {
                         });
                     }
 
+                } else {
+                    context.setChallengerTag(config.getChallengerTag());
                 }
             }
         }
