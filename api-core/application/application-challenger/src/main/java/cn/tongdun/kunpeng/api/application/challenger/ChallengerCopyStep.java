@@ -78,7 +78,7 @@ public class ChallengerCopyStep implements IRiskStep {
     }
 
     /**
-     * 分流形式
+     * 流量复制形式
      *
      * @param context
      * @param response
@@ -87,12 +87,11 @@ public class ChallengerCopyStep implements IRiskStep {
      */
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
-        RiskRequest riskRequest = JSON.parseObject(JSON.toJSONString(request), RiskRequest.class);
         String partnerCode = request.getPartnerCode();
         String appName = request.getAppName();
         String eventId = request.getEventId();
-        Object challengerType = riskRequest.getFieldValues().get("challengerType");
-        Object challengerTag = riskRequest.getFieldValues().get("challengerTag");
+        Object challengerType = request.getFieldValues().get("challengerType");
+        Object challengerTag = request.getFieldValues().get("challengerTag");
         if (Objects.nonNull(challengerType)) {
             if (Objects.nonNull(challengerTag)) {
                 context.setChallengerTag(challengerTag.toString());
@@ -133,17 +132,18 @@ public class ChallengerCopyStep implements IRiskStep {
         if (CollectionUtils.isNotEmpty(configs)) {
             for (PolicyChallenger.Config config : configs) {
                 if (StringUtils.isNotEmpty(config.getChallengerTag()) && !"champion".equals(config.getChallengerTag())) {
-                    riskRequest.getFieldValues().put("originalSeqId", context.getSeqId());
-                    riskRequest.getFieldValues().put("challengerType", "copy");
-                    riskRequest.getFieldValues().put("challengerTag", config.getChallengerTag());
+                    RiskRequest requestData = JSON.parseObject(JSON.toJSONString(request), RiskRequest.class);
+                    requestData.getFieldValues().put("originalSeqId", context.getSeqId());
+                    requestData.getFieldValues().put("challengerType", "copy");
+                    requestData.getFieldValues().put("challengerTag", config.getChallengerTag());
                     if (StringUtils.isNotEmpty(config.getVersionUuid())) {
                         Policy policy = policyCache.get(config.getVersionUuid());
-                        riskRequest.setPolicyVersion(policy.getVersion());
+                        requestData.setPolicyVersion(policy.getVersion());
                         executeThreadPool.submit(new Callable<Boolean>() {
                             @Override
                             public Boolean call() {
                                 try {
-                                    riskService.riskService(riskRequest, Risk.NAME);
+                                    riskService.riskService(requestData, Risk.NAME);
                                     return true;
                                 } catch (Exception e) {
                                     logger.error(" executeThreadPool.submit execute 执行异常:{}", e);
@@ -160,14 +160,5 @@ public class ChallengerCopyStep implements IRiskStep {
         }
 
         return true;
-    }
-
-    public static void main(String[] args) {
-        RiskRequest request = new RiskRequest();
-        request.setSeqId("1111");
-        RiskRequest riskRequest = new RiskRequest();
-        BeanUtils.copyProperties(request, riskRequest);
-        request.setSeqId("222");
-        System.out.println();
     }
 }
