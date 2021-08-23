@@ -122,7 +122,7 @@ public class ChallengerCopyStep implements IRiskStep {
             return true;
         }
         //暂停、关闭等
-        if (policyChallenger.getStatus() == null || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode() || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()) {
+        if (policyChallenger.getStatus() == null || policyChallenger.getStatus() == CommonStatusEnum.STOP.getCode() || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()) {
             return true;
         }
         List<PolicyChallenger.Config> configs = policyChallenger.getChallengerConfig();
