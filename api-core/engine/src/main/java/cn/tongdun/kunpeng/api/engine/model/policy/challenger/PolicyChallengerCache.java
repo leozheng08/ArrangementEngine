@@ -55,9 +55,13 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
         if (!checkConfig(policyChallenger.getChallengerConfig(), weights)) {
             return ;
         }
-        WeightRoundRobin weightRoundRobin = new WeightRoundRobin();
-        weightRoundRobin.init(weights);
-        weightRoundRobinMap.put(policyDefinitionUuid, weightRoundRobin);
+        try {
+            WeightRoundRobin weightRoundRobin = new WeightRoundRobin();
+            weightRoundRobin.init(weights);
+            weightRoundRobinMap.put(policyDefinitionUuid, weightRoundRobin);
+        }catch (Exception e){
+            logger.error("WeightRoundRobin 初始化异常:{}",e);
+        }
     }
 
     public void add(PolicyChallenger policyChallenger){
