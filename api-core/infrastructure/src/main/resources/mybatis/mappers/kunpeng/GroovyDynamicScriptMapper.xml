@@ -15,7 +15,7 @@
         <result column="status" property="status" jdbcType="TINYINT"/>
         <result column="is_deleted" property="deleted" jdbcType="BIT"/>
         <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER"/>
-        <result column="field_data_type" property="fieldDataType" jdbcType="VARCHAR"/>
+        <result column="data_type" property="dataType" jdbcType="VARCHAR"/>
     </resultMap>
     <resultMap id="ResultMapWithBLOBs" type="cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO"
                extends="BaseResultMap">
@@ -24,7 +24,7 @@
     <sql id="Base_Column_List">
         id
         , gmt_create, gmt_modify, creator, operator, uuid, script_name,
-    assign_field, description, event_type, status, is_deleted, concurrency_version, field_data_type
+    assign_field, description, event_type, status, is_deleted, concurrency_version, data_type
     </sql>
     <sql id="Blob_Column_List">
         script_code
@@ -49,7 +49,7 @@
 
     <select id="selectGroovyByPartners" resultMap="ResultMapWithBLOBs" parameterType="java.util.Set">
         select t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.script_name, t.assign_field, t.description,
-        t.event_type, t.status, t.is_deleted, t.concurrency_version, t.field_data_type, t.script_code
+        t.event_type, t.status, t.is_deleted, t.concurrency_version, t.data_type, t.script_code
         from dynamic_script t join dynamic_script_partner t2 on t.uuid=t2.dynamic_script_uuid
         where t.is_deleted = 0 and t.status=1
         and t2.partner_code in

@@ -34,7 +34,7 @@ public class DynamicScript extends StatusEntity {
     /**
      * 脚本字段类型 string、int、double等
      */
-    private String fieldDataType;
+    private String dataType;
 
     /**
      * 代码 script_code

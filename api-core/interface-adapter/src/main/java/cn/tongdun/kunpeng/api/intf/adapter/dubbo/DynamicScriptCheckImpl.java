@@ -31,9 +31,9 @@ public class DynamicScriptCheckImpl implements IDynamicScriptCheck {
 //            if(StringUtils.equals(scriptType, "groovy")){
 //                GroovyClassGenerator.compileMethod(id, code);
 //            }
-            String fieldDataType = dynamicScriptDTO.getFieldDataType();
-            if (ScriptType.isValid(fieldDataType)) {
-                return SingleResult.failure(400, String.format("script fieldDataType [%s] is invalid", fieldDataType));
+            String dataType = dynamicScriptDTO.getDataType();
+            if (ScriptType.isValid(dataType)) {
+                return SingleResult.failure(400, String.format("script dataType [%s] is invalid", dataType));
             }
             return SingleResult.success(true);
         } catch (Exception e) {
