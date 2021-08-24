@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.convertor.batch.evidence;
 
-import cn.tongdun.kunpeng.api.engine.constant.Scope;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.AbstractBatchRemoteCallData;
 import lombok.Data;
 

@@ -70,9 +70,12 @@ public class AddressMatchFunction extends AbstractFunction {
         if (StringUtils.isBlank(addrOne) || StringUtils.isBlank(addrTwo)) {
             return new FunctionResult(false);
         }
+
         boolean ret = StringUtils.equalsIgnoreCase(addrOne, addrTwo);
         DetailCallable detailCallable = null;
-        if (ret) {
+
+        int result = ret ? 1 : 0;
+        if (isMatch == result) {
             detailCallable = () -> {
                 MatchAddressDetail detail = new MatchAddressDetail();
                 detail.setAddressA(addressA);
@@ -83,8 +86,10 @@ public class AddressMatchFunction extends AbstractFunction {
                 detail.setAddressBDisplayName(AddressDisplayNameUtils.getAddressDisplayName(addressB));
                 return detail;
             };
+            return new FunctionResult(true, detailCallable);
         }
-        return new FunctionResult(ret, detailCallable);
+
+        return new FunctionResult(false);
     }
 
 
@@ -92,11 +97,11 @@ public class AddressMatchFunction extends AbstractFunction {
         String lowCaseAddress = address.toLowerCase();
         String lowCaseScope = scope.toLowerCase();
         // IP地理位置 OR True IP地理位置
-        if (BasedataConstant.IP_ADDRESS.equals(lowCaseAddress) || BasedataConstant.TRUE_IP_ADDRESS.equals(lowCaseAddress)) {
+        if (BasedataConstant.IP_ADDRESS.equalsIgnoreCase(lowCaseAddress) || BasedataConstant.TRUE_IP_ADDRESS.equalsIgnoreCase(lowCaseAddress)) {
             GeoipEntity geoInfo;
             String trueIp;
 
-            if (BasedataConstant.TRUE_IP_ADDRESS.equals(lowCaseAddress)) {
+            if (BasedataConstant.TRUE_IP_ADDRESS.equalsIgnoreCase(lowCaseAddress)) {
                 trueIp = (String) context.getDeviceInfo().get("trueIp");
                 if (StringUtils.isBlank(trueIp)) {
                     return null;
@@ -145,8 +150,8 @@ public class AddressMatchFunction extends AbstractFunction {
                     return StringUtils.isBlank(city) ? null : city.endsWith("市") ? city : city + "市";
             }
             // 身份证归属地
-        } else if (BasedataConstant.SN_ADDRESS.equals(lowCaseAddress)) {
-            if (StringUtils.isBlank(context.getFieldToString("IdNumber"))) {
+        } else if (BasedataConstant.SN_ADDRESS.equalsIgnoreCase(lowCaseAddress)) {
+            if (StringUtils.isBlank(context.getFieldToString("idNumber"))) {
                 return null;
             }
             IdInfo idInfo;
@@ -154,7 +159,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 case "country":
                     return "中国";
                 case "province":
-                    String provinceCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
+                    String provinceCode = getDiffCode(scope, context.getFieldToString("idNumber"));
                     idInfo = extensionExecutor.execute(IdInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getIdInfo(provinceCode));
                     if (null == idInfo) {
                         return null;
@@ -162,7 +167,7 @@ public class AddressMatchFunction extends AbstractFunction {
                     String province = idInfo.getProvince();
                     return StringUtils.isBlank(province) ? null : province.endsWith("省") ? province : province + "省";
                 default:
-                    String cityCode = getDiffCode(scope, context.getFieldToString("IdNumber"));
+                    String cityCode = getDiffCode(scope, context.getFieldToString("idNumber"));
                     idInfo = extensionExecutor.execute(IdInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getIdInfo(cityCode));
                     if (null == idInfo) {
                         return null;
@@ -178,7 +183,7 @@ public class AddressMatchFunction extends AbstractFunction {
             }
             return null == binInfo || !"country".equals(lowCaseScope) ? null : binInfo.getCountry();
             // 账单地址
-        } else if (BasedataConstant.BILL_ADDRESS.equals(lowCaseAddress)) {
+        } else if (BasedataConstant.BILL_ADDRESS.equalsIgnoreCase(lowCaseAddress)) {
             switch (lowCaseScope) {
                 case "country":
                     return (String) context.get("billingAddressCountry");

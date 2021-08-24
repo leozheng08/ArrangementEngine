@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.basedata.rule.function.location;
 
 import cn.fraudmetrix.horde.biz.common.Utils;
 import cn.fraudmetrix.horde.biz.entity.IpReputationRulesObj;
-import cn.fraudmetrix.module.riskbase.constant.ProxyType;
 import cn.fraudmetrix.module.riskbase.service.intf.ProxyIpService;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
@@ -25,7 +24,6 @@ public class ProxyFunction extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(ProxyFunction.class);
 
     private String proxyIpType;
-
 
     @Override
     public String getName() {
@@ -50,7 +48,7 @@ public class ProxyFunction extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
-        ProxyIpService proxyIpService = SpringContextHolder.getBean("proxyIpService", ProxyIpService.class);
+//        ProxyIpService proxyIpService = SpringContextHolder.getBean("proxyIpService", ProxyIpService.class);
         String ip = context.getIpAddress();
         if (StringUtils.isNotBlank(ip)) {
             boolean isProxyIp = false;
@@ -63,16 +61,16 @@ public class ProxyFunction extends AbstractFunction {
                     isProxyIp = Utils.isProxy(ipReputationRulesObj.getProxyHistoryObj(), proxyType);
                 }
             }
-            else {
-                ProxyType proxyType = null;
-                try {
-                    proxyType = ProxyType.valueOf(proxyIpType);
-                }
-                catch (Exception e) {
-                    logger.error(TraceUtils.getFormatTrace()+"isProxyIp proxyType convert failed proxyIpType {}", proxyIpType, e);
-                }
-                isProxyIp = proxyIpService.isProxy(ip, proxyType);
-            }
+//            else {
+//                ProxyType proxyType = null;
+//                try {
+//                    proxyType = ProxyType.valueOf(proxyIpType);
+//                }
+//                catch (Exception e) {
+//                    logger.error(TraceUtils.getFormatTrace()+"isProxyIp proxyType convert failed proxyIpType {}", proxyIpType, e);
+//                }
+//                isProxyIp = proxyIpService.isProxy(ip, proxyType);
+//            }
             if (isProxyIp) {
                 return new FunctionResult(true);
             }

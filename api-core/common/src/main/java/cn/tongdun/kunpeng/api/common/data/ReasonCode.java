@@ -49,6 +49,7 @@ public enum ReasonCode {
     DATA_NOT_READY("507", "部分数据未准备好"),
     SERVICE_FLOW_ERROR("508", "子服务流量不足"),
     ENCRYPTION_FIELD_NOT_READY("509","字段获取失败，部分数据获取不全"),
+    TDID_DECRYPT_FAIL("510", "TDID反解失败"),
     RATE_LIMITING("600", "限流"),
     // 600~:其它
     NO_RESULT("666", "666"),
