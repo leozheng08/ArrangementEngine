@@ -138,19 +138,21 @@ public class ChallengerCopyStep implements IRiskStep {
                     requestData.getFieldValues().put("challengerTag", config.getChallengerTag());
                     if (StringUtils.isNotEmpty(config.getVersionUuid())) {
                         Policy policy = policyCache.get(config.getVersionUuid());
-                        requestData.setPolicyVersion(policy.getVersion());
-                        executeThreadPool.submit(new Callable<Boolean>() {
-                            @Override
-                            public Boolean call() {
-                                try {
-                                    riskService.riskService(requestData, Risk.NAME);
-                                    return true;
-                                } catch (Exception e) {
-                                    logger.error(" executeThreadPool.submit execute 执行异常:{}", e);
-                                    return false;
+                        if (Objects.nonNull(policy)) {
+                            requestData.setPolicyVersion(policy.getVersion());
+                            executeThreadPool.submit(new Callable<Boolean>() {
+                                @Override
+                                public Boolean call() {
+                                    try {
+                                        riskService.riskService(requestData, Risk.NAME);
+                                        return true;
+                                    } catch (Exception e) {
+                                        logger.error(" executeThreadPool.submit execute 执行异常:{}", e);
+                                        return false;
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
 
                 } else {
