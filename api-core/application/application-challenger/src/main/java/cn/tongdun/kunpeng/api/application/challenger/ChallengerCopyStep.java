@@ -77,16 +77,16 @@ public class ChallengerCopyStep implements IRiskStep {
                 "challengerExecute");
     }
 
+
     /**
-     * 流量复制形式
+     * 复制流量执行
      *
      * @param context
      * @param response
      * @param request
      * @return
      */
-    @Override
-    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
+    private boolean execute(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String partnerCode = request.getPartnerCode();
         String appName = request.getAppName();
         String eventId = request.getEventId();
@@ -148,7 +148,7 @@ public class ChallengerCopyStep implements IRiskStep {
                                         return true;
                                     } catch (Exception e) {
                                         logger.error(" executeThreadPool.submit execute 执行异常:{}", e);
-                                        return false;
+                                        return true;
                                     }
                                 }
                             });
@@ -160,7 +160,24 @@ public class ChallengerCopyStep implements IRiskStep {
                 }
             }
         }
+        return true;
+    }
 
+    /**
+     * 流量复制形式
+     *
+     * @param context
+     * @param response
+     * @param request
+     * @return
+     */
+    @Override
+    public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
+        try {
+            return execute(context, response, request);
+        } catch (Exception e) {
+            logger.error("ChallengerCopyStep execute执行异常:{}", e);
+        }
         return true;
     }
 }
