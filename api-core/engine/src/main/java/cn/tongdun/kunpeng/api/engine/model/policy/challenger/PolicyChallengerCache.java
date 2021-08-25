@@ -111,7 +111,7 @@ public class PolicyChallengerCache extends AbstractLocalCache<String,PolicyChall
             return null;
         }
         //暂停、关闭等
-        if(policyChallenger.getStatus() == null || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()|| policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()){
+        if(policyChallenger.getStatus() == null || policyChallenger.getStatus() == CommonStatusEnum.CLOSE.getCode()|| policyChallenger.getStatus() == CommonStatusEnum.STOP.getCode()){
             return null;
         }
         List<PolicyChallenger.Config> configs = policyChallenger.getChallengerConfig();
