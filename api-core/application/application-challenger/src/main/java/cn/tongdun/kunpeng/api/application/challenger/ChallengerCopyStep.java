@@ -133,6 +133,7 @@ public class ChallengerCopyStep implements IRiskStep {
             for (PolicyChallenger.Config config : configs) {
                 if (StringUtils.isNotEmpty(config.getChallengerTag()) && !"champion".equals(config.getChallengerTag())) {
                     RiskRequest requestData = JSON.parseObject(JSON.toJSONString(request), RiskRequest.class);
+                    requestData.setSeqId(null);
                     requestData.getFieldValues().put("originalSeqId", context.getSeqId());
                     requestData.getFieldValues().put("challengerType", "copy");
                     requestData.getFieldValues().put("challengerTag", config.getChallengerTag());
