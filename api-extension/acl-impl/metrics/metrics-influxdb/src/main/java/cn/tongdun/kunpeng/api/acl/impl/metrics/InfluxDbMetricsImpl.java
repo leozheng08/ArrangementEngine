@@ -6,13 +6,14 @@ import cn.fraudmetrix.metrics.MetricTimer;
 import cn.fraudmetrix.metrics.Registry;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
 /**
- * 监控统计的空实现
+ * 监控统计的influxdb实现
  * @Author: liang.chen
  * @Date: 2020/3/27 下午5:24
  */
@@ -27,9 +28,13 @@ public class InfluxDbMetricsImpl implements IMetrics{
     @Override
     public void counter(String counterName,String... tags){
         MeasurementKey.MeasurementKeyBuilder builder = new MeasurementKey.MeasurementKeyBuilder(counterName);
-        if (tags != null && tags.length > 0) {
-            builder.addTag(tags[0], tags[1]);
+
+        if (ArrayUtils.isNotEmpty(tags)){
+            for (int i = 0; i < tags.length - 1; i += 2) {
+                builder.addTag(tags[i], tags[i+1]);
+            }
         }
+
         Measurement measurement = registry.getMeasurement(builder.build());
         measurement.counter("count").mark(1L);
     }
@@ -51,9 +56,13 @@ public class InfluxDbMetricsImpl implements IMetrics{
     @Override
     public ITimeContext metricTimer(String timerName, String... tags){
         MeasurementKey.MeasurementKeyBuilder builder = new MeasurementKey.MeasurementKeyBuilder(timerName);
-        if (tags != null && tags.length > 0) {
-            builder.addTag(tags[0], tags[1]);
+
+        if (ArrayUtils.isNotEmpty(tags)){
+            for (int i = 0; i < tags.length - 1; i += 2) {
+                builder.addTag(tags[i], tags[i+1]);
+            }
         }
+
         Measurement measurement = registry.getMeasurement(builder.build());
         return new ITimeContext() {
             long start = System.currentTimeMillis();
