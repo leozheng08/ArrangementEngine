@@ -20,7 +20,7 @@ v1.3.17(2021-07-29) 陈庆然
 - 清除starters里的starter-sea模块
 对其他版本无影响
   
-v1.3.19(2021-08-23)
+v1.3.21(2021-08-31)
 - 该版本主要更新了 ReasonCode 的配置监控和WIKI对齐
 - 补充了一些监控的业务信息如partner_code
 - 修改InfluxDbMetricsImpl的实现，之前只能实现一个tag打点，现支持多个tag
