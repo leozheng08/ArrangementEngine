@@ -5,6 +5,10 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @author liupei
+ * @Date 2021-08-30
+ */
 public interface PolicyScriptConfigDAO {
 
     List<PolicyScriptConfigDO> selectAll();

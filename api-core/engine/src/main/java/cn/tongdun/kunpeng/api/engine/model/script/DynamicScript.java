@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.script;
 
 import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
-import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import lombok.Data;
 
 /**
@@ -15,6 +14,21 @@ public class DynamicScript extends StatusEntity {
      * 名称 script_name
      */
     private String scriptName;
+
+    /**
+     * 合作方 partner_code
+     */
+    private String partnerCode;
+
+    /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
+     * 产品 product_code
+     */
+    private String productCode;
 
     /**
      * 赋值字段 assign_field
@@ -32,12 +46,20 @@ public class DynamicScript extends StatusEntity {
     private String eventType;
 
     /**
-     * 脚本字段类型 string、int、double等
+     * 脚本类型 groovy script_type
      */
-    private String dataType;
+    private String scriptType;
 
     /**
      * 代码 script_code
      */
     private String scriptCode;
+
+
+    /**
+     * 脚本字段数据类型 data_type
+     */
+    private String dataType;
+
+
 }

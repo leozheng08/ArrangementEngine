@@ -19,7 +19,6 @@ import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
-import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
@@ -52,13 +51,13 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private IPlatformIndexRepository platformIndexRepository;
 
-    private IPolicyScriptConfigRepository policyScriptConfigRepository;
-
     private PlatformIndexCache platformIndexCache;
 
-    private GroovyObjectCache groovyObjectCache;
-
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
+
+    private IPolicyScriptConfigRepository policyScriptConfigRepository;
+
+    private GroovyObjectCache groovyObjectCache;
 
 
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,

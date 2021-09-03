@@ -1,13 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
-import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyIndicatrixItemEventDO;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyScriptConfigEventDO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.slf4j.Logger;

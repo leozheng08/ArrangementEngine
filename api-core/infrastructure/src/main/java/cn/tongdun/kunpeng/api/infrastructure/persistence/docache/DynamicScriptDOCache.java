@@ -2,8 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.docache;
 
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.reload.docache.AbstractDataObjectCache;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.GroovyDynamicScriptDAO;
-import cn.tongdun.kunpeng.share.dataobject.DecisionFlowDO;
+import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DynamicScriptDAO;
 import cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,18 +17,18 @@ import java.util.List;
 public class DynamicScriptDOCache extends AbstractDataObjectCache<DynamicScriptDO> {
 
     @Autowired
-    private GroovyDynamicScriptDAO groovyDynamicScriptDAO;
+    private DynamicScriptDAO dynamicScriptDAO;
 
 
     @Override
     public void refresh(String uuid) {
-        DynamicScriptDO dynamicScriptDO = groovyDynamicScriptDAO.selectByUuid(uuid);
+        DynamicScriptDO dynamicScriptDO = dynamicScriptDAO.selectByUuid(uuid);
         set(dynamicScriptDO);
     }
 
     @Override
     public void refreshAll() {
-        List<DynamicScriptDO> list = groovyDynamicScriptDAO.selectAll();
+        List<DynamicScriptDO> list = dynamicScriptDAO.selectAll();
         if (list == null || list.isEmpty()) {
             return;
         }

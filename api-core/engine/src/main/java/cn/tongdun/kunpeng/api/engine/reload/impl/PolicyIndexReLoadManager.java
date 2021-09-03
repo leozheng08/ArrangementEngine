@@ -92,7 +92,7 @@ public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO>
             //刷新引用到的平台指标
             policyIndicatrixItemReloadManager.reload(policyUuid);
 
-            //属性引用到的动态脚本
+            //刷新引用到的动态脚本
             policyScriptConfigReloadManager.reload(policyUuid);
 
         } catch (Exception e) {

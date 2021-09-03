@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.GroovyDynamicScriptDAO">
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.DynamicScriptDAO">
     <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP"/>
@@ -9,13 +9,16 @@
         <result column="operator" property="operator" jdbcType="VARCHAR"/>
         <result column="uuid" property="uuid" jdbcType="CHAR"/>
         <result column="script_name" property="scriptName" jdbcType="VARCHAR"/>
+        <result column="partner_code" property="partnerCode" jdbcType="VARCHAR"/>
+        <result column="product_code" property="productCode" jdbcType="VARCHAR"/>
+        <result column="app_name" property="appName" jdbcType="VARCHAR"/>
         <result column="assign_field" property="assignField" jdbcType="VARCHAR"/>
         <result column="description" property="description" jdbcType="VARCHAR"/>
         <result column="event_type" property="eventType" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="TINYINT"/>
         <result column="is_deleted" property="deleted" jdbcType="BIT"/>
+        <result column="script_type" property="scriptType" jdbcType="VARCHAR"/>
         <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER"/>
-        <result column="data_type" property="dataType" jdbcType="VARCHAR"/>
     </resultMap>
     <resultMap id="ResultMapWithBLOBs" type="cn.tongdun.kunpeng.share.dataobject.DynamicScriptDO"
                extends="BaseResultMap">
@@ -23,12 +26,14 @@
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , gmt_create, gmt_modify, creator, operator, uuid, script_name,
-    assign_field, description, event_type, status, is_deleted, concurrency_version, data_type
+        , gmt_create, gmt_modify, creator, operator, uuid, script_name, partner_code, product_code, app_name,
+    assign_field, description, event_type, status, is_deleted, script_type,
+    concurrency_version
     </sql>
     <sql id="Blob_Column_List">
         script_code
     </sql>
+
 
     <select id="selectAll" resultMap="ResultMapWithBLOBs">
         select
@@ -47,12 +52,15 @@
         where uuid = #{uuid,jdbcType=CHAR}
     </select>
 
-    <select id="selectGroovyByPartners" resultMap="ResultMapWithBLOBs" parameterType="java.util.Set">
-        select t.id, t.gmt_create, t.gmt_modify, t.creator, t.operator, t.uuid, t.script_name, t.assign_field, t.description,
-        t.event_type, t.status, t.is_deleted, t.concurrency_version, t.data_type, t.script_code
-        from dynamic_script t join dynamic_script_partner t2 on t.uuid=t2.dynamic_script_uuid
-        where t.is_deleted = 0 and t.status=1
-        and t2.partner_code in
+    <select id="selectGroovyByPartners" resultMap="BaseResultMap" parameterType="java.util.Set">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from dynamic_script
+        where
+        is_deleted = 0 and status=1 and script_type='groovy'
+        and partner_code in
         <foreach collection="collection" item="partner" index="index" open="(" separator="," close=")">
             #{partner}
         </foreach>

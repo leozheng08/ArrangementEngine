@@ -1,9 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
-import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
+import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import groovy.lang.GroovyObject;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,7 @@ public class GroovyCompileManager {
 
 
     @Autowired
-    private GroovyObjectCache groovyObjectCache;
+    private GroovyObjectCache groovyFieldCache;
 
 
     /**
@@ -66,23 +66,23 @@ public class GroovyCompileManager {
         groovyField.setSource(generator.getSource().toString());
         groovyField.setUuid(script.getUuid());
         groovyField.setGmtModify(script.getGmtModify());
-        //TODO --刘佩 待删除注释
-//        groovyField.setPartnerCode(script.getPartnerCode());
+        groovyField.setPartnerCode(script.getPartnerCode());
+        groovyField.setAppName(script.getAppName());
         groovyField.setEventType(script.getEventType());
         groovyField.setAssignField(script.getAssignField());
         groovyField.setFieldMethodName(methodName);
 
-        groovyObjectCache.put(script.getUuid(), groovyField);
+        groovyFieldCache.put(script.getUuid(), groovyField);
     }
 
     public void remove(String uuid) {
-        groovyObjectCache.remove(uuid);
+        groovyFieldCache.remove(uuid);
     }
 
 
     public void warmAllGroovyFields() {
-        Collection<WrappedGroovyObject> allGroovyObjs = groovyObjectCache.getAll();
-        for (WrappedGroovyObject groovyField : allGroovyObjs) {
+        Collection<WrappedGroovyObject> allGooovyObjs = groovyFieldCache.getAll();
+        for (WrappedGroovyObject groovyField : allGooovyObjs) {
             warmGroovyField(groovyField);
         }
     }
@@ -146,6 +146,7 @@ public class GroovyCompileManager {
         for (String fieldName : field.getFieldMethods().keySet()) {
             String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(fieldName);
             Object value;
+
 
             try {
                 long t1 = System.currentTimeMillis();
