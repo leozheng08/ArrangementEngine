@@ -24,6 +24,11 @@ public class PolicyChallenger extends StatusEntity {
     private String policyDefinitionUuid;
 
     /**
+     * challengerType
+     */
+    private String challengerType;
+
+    /**
      * 开始 start_time
      */
     private Date startTime;

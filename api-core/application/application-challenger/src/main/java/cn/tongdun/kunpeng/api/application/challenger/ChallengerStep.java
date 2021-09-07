@@ -43,6 +43,13 @@ public class ChallengerStep implements IRiskStep {
     @Autowired
     private PolicyCache policyCache;
 
+    /**
+     * 分流形式
+     * @param context
+     * @param response
+     * @param request
+     * @return
+     */
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String partnerCode = context.getPartnerCode();

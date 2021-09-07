@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author: liang.chen
@@ -99,6 +100,10 @@ public class GenerateActivityExt implements IGenerateActivityExtPt {
         if (StringUtils.isNotBlank(context.getChallengerTag())) {
             result.put("isChallenger", context.isChallenger());
             result.put("challengerTag", context.getChallengerTag());
+        }
+        Object originalSeqId = context.getFieldValues().get("originalSeqId");
+        if (Objects.nonNull(originalSeqId)) {
+            result.put("challengerType", "copy");
         }
         return result;
     }
