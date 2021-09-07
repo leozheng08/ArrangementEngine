@@ -1,7 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.field;
 
-import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import lombok.Data;
 
 /**
@@ -81,6 +81,10 @@ public class FieldDefinition extends StatusEntity implements IFieldDefinition {
      */
     private String usageScene;
 
+    /**
+     * 是否es字段 is_es_field
+     */
+    private boolean esField;
 
     @Override
     public boolean isExtField() {

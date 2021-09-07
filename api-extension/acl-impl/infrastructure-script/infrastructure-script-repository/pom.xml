@@ -22,6 +22,10 @@
             <artifactId>kunpeng-share-dataobject</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.tongdun.kunpeng</groupId>
+            <artifactId>kunpeng-share-common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>engine</artifactId>
         </dependency>

@@ -7,10 +7,8 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.api.common.util.DateUtil;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDataType;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.partner.PartnerCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
@@ -74,12 +72,6 @@ public class AssignFieldValueStep implements IRiskStep {
 
     @Autowired
     private PartnerCache partnerCache;
-
-    @Autowired
-    private PolicyCache policyCache;
-
-    @Autowired
-    private FieldDefinitionCache fieldDefinitionCache;
 
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {

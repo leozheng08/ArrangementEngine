@@ -26,7 +26,7 @@ import java.util.concurrent.*;
  *
  * @Author: huangjin
  */
-@Component
+@Component("dynamicScriptManager")
 public class DefaultDynamicScriptManager implements DynamicScriptManager {
     private final static Logger logger = LoggerFactory.getLogger(DefaultDynamicScriptManager.class);
 
