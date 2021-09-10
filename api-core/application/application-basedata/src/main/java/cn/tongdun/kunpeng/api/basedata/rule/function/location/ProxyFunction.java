@@ -52,25 +52,14 @@ public class ProxyFunction extends AbstractFunction {
         String ip = context.getIpAddress();
         if (StringUtils.isNotBlank(ip)) {
             boolean isProxyIp = false;
-            boolean switchCfg = true;               // FIXME: 2/7/20 shutter switch
-            if (switchCfg) {
-                IpReputationRulesObj ipReputationRulesObj = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION,IpReputationRulesObj.class);
-                // IP画像只处理VPN、HTTP、SOCKS三种，为了兼容历史，转一下再调IP画像的方法
-                String proxyType = getProxyTypeByProtocol(proxyIpType);
-                if (ipReputationRulesObj != null && StringUtils.isNotBlank(proxyType)) {
-                    isProxyIp = Utils.isProxy(ipReputationRulesObj.getProxyHistoryObj(), proxyType);
-                }
+
+            IpReputationRulesObj ipReputationRulesObj = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION,IpReputationRulesObj.class);
+            // IP画像只处理VPN、HTTP、SOCKS三种，为了兼容历史，转一下再调IP画像的方法
+            String proxyType = getProxyTypeByProtocol(proxyIpType);
+            if (ipReputationRulesObj != null && StringUtils.isNotBlank(proxyType)) {
+                isProxyIp = Utils.isProxy(ipReputationRulesObj.getProxyHistoryObj(), proxyType);
             }
-//            else {
-//                ProxyType proxyType = null;
-//                try {
-//                    proxyType = ProxyType.valueOf(proxyIpType);
-//                }
-//                catch (Exception e) {
-//                    logger.error(TraceUtils.getFormatTrace()+"isProxyIp proxyType convert failed proxyIpType {}", proxyIpType, e);
-//                }
-//                isProxyIp = proxyIpService.isProxy(ip, proxyType);
-//            }
+
             if (isProxyIp) {
                 return new FunctionResult(true);
             }
