@@ -87,8 +87,6 @@ public class RedisDomainEventRepository extends AbstractDomainEventRepository {
             if(StringUtils.isBlank(uuid)){
                 continue;
             }
-
-
         }
     }
 }
