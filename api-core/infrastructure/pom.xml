@@ -22,11 +22,11 @@
         <!-- 动态脚本 -->
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>infrastructure-script-mysql</artifactId>
+            <artifactId>script-engine</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>infrastructure-script-repository</artifactId>
+            <artifactId>script-infrastructure</artifactId>
         </dependency>
         <!-- 动态脚本 -->
         <dependency>

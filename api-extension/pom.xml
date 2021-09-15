@@ -24,6 +24,7 @@
 
     <modules>
         <module>acl-impl</module>
+        <module>acl-impl/script</module>
     </modules>
 
     <dependencyManagement>

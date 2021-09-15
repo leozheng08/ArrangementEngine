@@ -159,12 +159,12 @@
             <!-- 动态脚本处理-->
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>infrastructure-script-mysql</artifactId>
+                <artifactId>script-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
-                <artifactId>infrastructure-script-repository</artifactId>
+                <artifactId>script-infrastructure</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
