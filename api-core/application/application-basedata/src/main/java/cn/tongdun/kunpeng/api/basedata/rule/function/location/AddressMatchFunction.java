@@ -30,8 +30,6 @@ import org.springframework.util.Assert;
 public class AddressMatchFunction extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(AddressMatchFunction.class);
 
-    private static final String DESC = "%s%s";
-
     private String addressA;
     private String addressB;
     private String scope;
