@@ -66,6 +66,9 @@ public class ProxyFunction extends AbstractFunction {
                 detailCallable = () -> {
                     ProxyIpDetail detail = new ProxyIpDetail();
                     detail.setProxyIpType(proxyIpType);
+                    detail.setConditionUuid(this.conditionUuid);
+                    detail.setRuleUuid(this.ruleUuid);
+                    detail.setDescription(this.description);
                     return detail;
                 };
                 return new FunctionResult(true, detailCallable);
@@ -84,6 +87,9 @@ public class ProxyFunction extends AbstractFunction {
                 detailCallable = () -> {
                     ProxyIpDetail detail = new ProxyIpDetail();
                     detail.setProxyIpType(proxyIpType);
+                    detail.setConditionUuid(this.conditionUuid);
+                    detail.setRuleUuid(this.ruleUuid);
+                    detail.setDescription(this.description);
                     return detail;
                 };
                 return new FunctionResult(true, detailCallable);
