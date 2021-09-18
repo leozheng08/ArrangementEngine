@@ -28,6 +28,8 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.Objects;
 
+import static cn.tongdun.kunpeng.api.common.MetricsConstant.*;
+
 /**
  * @Author: liang.chen
  * @Date: 2019/12/18 下午5:16
@@ -66,17 +68,17 @@ public class RiskService implements IRiskService {
 
     @Override
     public IRiskResponse riskService(RiskRequest riskRequest, String bizName) {
-        metrics.counter("kunpeng.api.riskservice.qps");
+        metrics.counter(METRICS_API_RISK_SERVICE_QPS_KEY);
 
 
-        ITimeContext timeContext = metrics.metricTimer("kunpeng.api.riskservice.rt");
+        ITimeContext timeContext = metrics.metricTimer(METRICS_API_RISK_SERVICE_RT_KEY);
         if (StringUtils.isEmpty(riskRequest.getPartnerCode())) {
             riskRequest.setPartnerCode("NULL_partnerCode");
         }
         String[] tags = {
-                "partner_code", riskRequest.getPartnerCode()};
-        metrics.counter("kunpeng.api.riskservice.partner.qps", tags);
-        ITimeContext timePartner = metrics.metricTimer("kunpeng.api.riskservice.partner.rt", tags);
+                METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()};
+        metrics.counter(METRICS_API_RISK_SERVICE_PARTNER_QPS_KEY, tags);
+        ITimeContext timePartner = metrics.metricTimer(METRICS_API_RISK_SERVICE_PARTNER_RT_KEY, tags);
 
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
@@ -143,23 +145,30 @@ public class RiskService implements IRiskService {
      * @param riskResponse
      */
     private void printCode(RiskRequest riskRequest, IRiskResponse riskResponse) {
-        if (Objects.nonNull(riskResponse.getReasonCode())) {
-            String[] tags = {
-                    "reason_code", riskResponse.getReasonCode()};
-            metrics.counter("kunpeng.api.reasonCode", tags);
-        }
-        if (Objects.nonNull(riskResponse.getSubReasonCodes())) {
-            String[] tags = {
-                    "sub_reason_code", riskResponse.getSubReasonCodes()};
-            metrics.counter("kunpeng.api.subReasonCode", tags);
-        }
         /**
          * 按照合作方异常打点
          */
+        if (Objects.nonNull(riskResponse.getReasonCode()) && Objects.nonNull(riskRequest.getPartnerCode())) {
+            String[] tags = {
+                    METRICS_TAG_REASON_CODE, riskResponse.getReasonCode(),
+                    METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()
+            };
+            metrics.counter(METRICS_TAG_REASON_KEY, tags);
+        }
+
+        if (Objects.nonNull(riskResponse.getSubReasonCodes())) {
+            String[] tags = {
+                    METRICS_TAG_SUB_REASON_CODE, riskResponse.getSubReasonCodes(),
+                    METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()};
+            metrics.counter(METRICS_TAG_SUB_REASON_KEY, tags);
+        }
+
         if (Objects.nonNull(riskRequest.getPartnerCode()) && Objects.nonNull(riskResponse.getSubReasonCodes())) {
             String[] tags = {
-                    "partner_code", riskRequest.getPartnerCode()};
-            metrics.counter("kunpeng.api.partner.code", tags);
+                    METRICS_TAG_SUB_REASON_CODE, riskResponse.getSubReasonCodes(),
+                    METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()
+            };
+            metrics.counter(METRICS_TAG_PARTNER_KEY, tags);
         }
     }
 

@@ -18,8 +18,8 @@ public enum ReasonCode {
     QUERY_TIME_INTERVAL_INVALID("105", "参数范围不正确"), //
     PARAM_DATA_NOT_EXIST_ERROR("106", "枚举值不存在"), //
     PARAM_RECALL_SEQID_ILLEGAL("108", "重试验证失败,重试seqId不合法"),
-    PARAM_RECALL_HAVE_SUCCESS("109", "已重试成功,无法再次重试"),
-    RECALL_TIME_TOO_LONG("110", "重试时间太久远,超过3个月"),
+    PARAM_RECALL_HAVE_SUCCESS("109", "贷后业务:添加监控的编号不存在"),
+    RECALL_TIME_TOO_LONG("110", "贷后业务:当天离线计算任务未完成，30分钟后尝试重试"),
 
 
     LOAN_APPLY_ID_BLANK_ERROR("130", "申请编号不存在"),
@@ -45,7 +45,7 @@ public enum ReasonCode {
     // 500~599:服务器内部错误
     INTERNAL_ERROR("500", "服务器内部异常"),
     ENGINE_EXECUTE_ERROR("505", "505"),
-    ENGINE_EXECUTE_TIMEOUT("506", "决策引擎运行异常"),
+    ENGINE_EXECUTE_TIMEOUT("506", "决策引擎执行超时"),
     DATA_NOT_READY("507", "部分数据未准备好"),
     SERVICE_FLOW_ERROR("508", "子服务流量不足"),
     ENCRYPTION_FIELD_NOT_READY("509","字段获取失败，部分数据获取不全"),
@@ -53,7 +53,7 @@ public enum ReasonCode {
     RATE_LIMITING("600", "限流"),
     // 600~:其它
     NO_RESULT("666", "666"),
-    CALCULATE_ERROR("701", "数据查询失败"),
+    CALCULATE_ERROR("701", "决策引擎自定义输出数据查询失败"),
 
 
     PARAM_NECESSARY_FIELD_NULL("10101", "缺少必传字段"),
@@ -96,8 +96,8 @@ public enum ReasonCode {
     CASSANDRA_QUERY_TIMEOUT("50705", "信贷事件查询数据超时"),
     THIRD_SERVICE_CALL_ERROR("50706", "三方调用出错"),
     THIRD_SERVICE_CALL_TIMEOUT("50707", "三方调用超时"),
-    LINK_ASSOCIATION_QUERY_ERROR("50708", "复杂网络风险群体关联失败"),
-    LINK_ASSOCIATION_QUERY_TIMEOUT("50709", "复杂网络风险群体关联超时"),
+    LINK_ASSOCIATION_QUERY_ERROR("50708", "复杂网络团队欺诈关联失败"),
+    LINK_ASSOCIATION_QUERY_TIMEOUT("50709", "复杂网络团队欺诈关联超时"),
     MODEL_RUN_ERROR("50710", "模型执行失败"),
     MODEL_RUN_TIMEOUT("50711", "模型执行超时"),
     FP_QUERY_ERROR("50712", "设备指纹查询失败"),
@@ -130,13 +130,14 @@ public enum ReasonCode {
     CREDIT_LIST_DETAIL_SERVICE_CALL_ERROR("50736", "信贷名单库详情服务调用出错"),
     INDICATRIX_QUERY_LIMITING("50737", "指标平台限流"),
 
-    MAIL_PARAM_NOT_FOUND("50738", "用户未传递邮箱参数"),
-    MAIL_MODEL_TIMEOUT_ERROR("50739", "邮件模型服务超时"),
-    MAIL_MODEL_RANDOM_TIMEOUT_ERROR("50740", "邮件模型随机率服务超时"),
-    MAIL_MODEL_REQUEST_FAILED("50741", "邮件模型服务请求5XX"),
+    MAIL_PARAM_NOT_FOUND("50738", "反欺诈名单库查询出错"),
+    MAIL_MODEL_TIMEOUT_ERROR("50739", "反欺诈名单库查询超时"),
+    MAIL_MODEL_RANDOM_TIMEOUT_ERROR("50740", "反欺诈业务安全三方接口调用超时"),
+    MAIL_MODEL_REQUEST_FAILED("50741", "反欺诈内容安全三方接口调用超时"),
     MAIL_MODEL_RANDOM_REQUEST_FAILED("50742", "邮件模型随机率服务请求5XX"),
     MAIL_MODEL_NOT_AVAILABLE_ERROR("50743", "邮件模型服务不可用"),
-    MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR("50744", "邮件模型随机率服务不可用"),
+    MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR("50744", "邮件模型随机率服务不" +
+            "可用"),
     MAIL_MODEL_OTHER_EXCEPTION("50745", "邮箱模型服务其他异常"),
 
 

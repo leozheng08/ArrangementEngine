@@ -35,6 +35,7 @@
             <list>
                 <value>${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}</value>
                 <value>${kunpeng.business.topic:kunpeng_business_event}</value>
+                <value>${kafka.kunpeng.activity.challenge.topic:kunpeng_api_challenger_activity}</value>
             </list>
         </property>
         <property name="configCenter" ref="activityNaiveConfigCenter"/>
