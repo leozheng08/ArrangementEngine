@@ -6,7 +6,7 @@
         <artifactId>autoconfigure</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.3.23-api</version>
+        <version>1.3.23-api-SNAPSHOT</version>
 
 
 
