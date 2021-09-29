@@ -7,7 +7,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.16-SNAPSHOT</version>
+    <version>1.3.23-api-SNAPSHOT</version>
     <name>kunpeng-api</name>
 
     <modules>

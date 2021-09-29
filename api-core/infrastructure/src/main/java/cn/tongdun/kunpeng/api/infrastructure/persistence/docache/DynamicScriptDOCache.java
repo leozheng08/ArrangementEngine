@@ -45,9 +45,7 @@ public class DynamicScriptDOCache extends AbstractDataObjectCache<DynamicScriptD
     @Override
     public void setByIdx(DynamicScriptDO dataObject) {
         //添加合作方索引. 索引按zadd(idex_name,分数固定为0,索引值:uuid)方式添加，通过zrangebylex来按索引查询
-        //TODO 去掉合作方 --刘佩
-//        scoreKVRepository.zadd(cacheKey+"_partner",0,dataObject.getPartnerCode()+":"+dataObject.getUuid());
-
+        scoreKVRepository.zadd(cacheKey + "_partner", 0, dataObject.getPartnerCode() + ":" + dataObject.getUuid());
     }
 
     /**
@@ -57,8 +55,7 @@ public class DynamicScriptDOCache extends AbstractDataObjectCache<DynamicScriptD
      */
     @Override
     public void removeIdx(DynamicScriptDO dataObject) {
-        //TODO 去掉合作方 --刘佩
-//        scoreKVRepository.zrem(cacheKey + "_partner", dataObject.getPartnerCode() + ":" + dataObject.getUuid());
+        scoreKVRepository.zrem(cacheKey + "_partner", dataObject.getPartnerCode() + ":" + dataObject.getUuid());
     }
 
 

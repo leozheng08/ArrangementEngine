@@ -120,7 +120,7 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                         fieldDefinition = context.getExtendFieldMap().get(fieldDetail.getName());
                     }
                     if (null != fieldDefinition) {
-                        fieldCustomDetail.setName(fieldDefinition.getFieldName());
+                        fieldCustomDetail.setName(fieldDefinition.getDisplayName());
                     }
                     conditions.add(fieldCustomDetail);
                 } else {
