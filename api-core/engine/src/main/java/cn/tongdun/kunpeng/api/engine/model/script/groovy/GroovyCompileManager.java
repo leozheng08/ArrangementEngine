@@ -4,8 +4,10 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
+import cn.tongdun.kunpeng.api.engine.model.script.DynamicScriptField;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import groovy.lang.GroovyObject;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.slf4j.Logger;
@@ -46,33 +48,67 @@ public class GroovyCompileManager {
             InstantiationException,
             IllegalAccessException,
             IOException {
-        String field = script.getAssignField();
-        String methodBody = script.getScriptCode();
 
-        if (StringUtils.isAnyBlank(field, methodBody)) {
-            return;
+        //国内反欺诈
+        if (CollectionUtils.isNotEmpty(script.getScriptFieldList())) {
+            for (DynamicScriptField scriptField : script.getScriptFieldList()) {
+                String field = scriptField.getFieldCode();
+                String methodBody = script.getScriptCode();
+                if (StringUtils.isAnyBlank(field, methodBody)) {
+                    return;
+                }
+
+                WrappedGroovyObject groovyField = new WrappedGroovyObject();
+                String className = "groovy_" + script.getUuid();
+                GroovyClassGenerator generator = new GroovyClassGenerator(className);
+                generator.init();
+                String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(field);
+                generator.appendMethod(methodName, methodBody);
+
+                GroovyObject groovyObject = generator.compileGroovySource();
+                groovyField.setGroovyObject(groovyObject);
+                groovyField.getFieldMethods().put(field, methodBody);
+                groovyField.setSource(generator.getSource().toString());
+                groovyField.setUuid(script.getUuid());
+                groovyField.setGmtModify(script.getGmtModify());
+                groovyField.setPartnerCode(scriptField.getPartnerCode());
+                groovyField.setAppName(scriptField.getAppName());
+                groovyField.setEventType(scriptField.getEventType());
+                groovyField.setAssignField(field);
+                groovyField.setFieldMethodName(methodName);
+
+                groovyFieldCache.put(script.getUuid(), groovyField);
+            }
+        } else {//老逻辑不动
+            String field = script.getAssignField();
+            String methodBody = script.getScriptCode();
+
+            if (StringUtils.isAnyBlank(field, methodBody)) {
+                return;
+            }
+
+            WrappedGroovyObject groovyField = new WrappedGroovyObject();
+            String className = "groovy_" + script.getUuid();
+            GroovyClassGenerator generator = new GroovyClassGenerator(className);
+            generator.init();
+            String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(field);
+            generator.appendMethod(methodName, methodBody);
+
+            GroovyObject groovyObject = generator.compileGroovySource();
+            groovyField.setGroovyObject(groovyObject);
+            groovyField.getFieldMethods().put(field, methodBody);
+            groovyField.setSource(generator.getSource().toString());
+            groovyField.setUuid(script.getUuid());
+            groovyField.setGmtModify(script.getGmtModify());
+            groovyField.setPartnerCode(script.getPartnerCode());
+            groovyField.setAppName(script.getAppName());
+            groovyField.setEventType(script.getEventType());
+            groovyField.setAssignField(script.getAssignField());
+            groovyField.setFieldMethodName(methodName);
+
+            groovyFieldCache.put(script.getUuid(), groovyField);
         }
 
-        WrappedGroovyObject groovyField = new WrappedGroovyObject();
-        String className = "groovy_" + script.getUuid();
-        GroovyClassGenerator generator = new GroovyClassGenerator(className);
-        generator.init();
-        String methodName = KunpengStringUtils.replaceJavaVarNameNotSupportChar(field);
-        generator.appendMethod(methodName, methodBody);
-
-        GroovyObject groovyObject = generator.compileGroovySource();
-        groovyField.setGroovyObject(groovyObject);
-        groovyField.getFieldMethods().put(field, methodBody);
-        groovyField.setSource(generator.getSource().toString());
-        groovyField.setUuid(script.getUuid());
-        groovyField.setGmtModify(script.getGmtModify());
-        groovyField.setPartnerCode(script.getPartnerCode());
-        groovyField.setAppName(script.getAppName());
-        groovyField.setEventType(script.getEventType());
-        groovyField.setAssignField(script.getAssignField());
-        groovyField.setFieldMethodName(methodName);
-
-        groovyFieldCache.put(script.getUuid(), groovyField);
     }
 
     public void remove(String uuid) {

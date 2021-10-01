@@ -19,16 +19,13 @@ import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
-import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
-import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,14 +52,9 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
-    private IPolicyScriptConfigRepository policyScriptConfigRepository;
-
-    private GroovyObjectCache groovyObjectCache;
-
 
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
-                          IPlatformIndexRepository platformIndexRepository, PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache,
-                          IPolicyScriptConfigRepository policyScriptConfigRepository, GroovyObjectCache groovyObjectCache) {
+                          IPlatformIndexRepository platformIndexRepository, PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache) {
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
@@ -70,8 +62,6 @@ public class PolicyLoadTask implements Callable<Boolean> {
         this.platformIndexRepository = platformIndexRepository;
         this.platformIndexCache = platformIndexCache;
         this.batchRemoteCallDataCache = batchRemoteCallDataCache;
-        this.policyScriptConfigRepository = policyScriptConfigRepository;
-        this.groovyObjectCache = groovyObjectCache;
     }
 
     /**
@@ -146,14 +136,8 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
             //加载平台指标
             List<String> gaeaIds = platformIndexRepository.queryByPolicyUuid(policyUuid);
-            if (CollectionUtils.isNotEmpty(gaeaIds)) {
+            if (!CollectionUtils.isEmpty(gaeaIds)) {
                 platformIndexCache.putList(policyUuid, gaeaIds);
-            }
-
-            //加载动态脚本
-            List<String> scriptUuids = policyScriptConfigRepository.queryByPolicyUuid(policyUuid);
-            if (CollectionUtils.isNotEmpty(scriptUuids)) {
-                groovyObjectCache.putList(policyUuid, scriptUuids);
             }
 
             //缓存运行模式
@@ -177,7 +161,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
      */
     private void addBatchRemoteCallDataToCache(String subPolicyUuid, RuleDTO ruleDTO) {
         Map<String, List<Object>> batchdatas = BatchRemoteCallDataManager.buildData(policyUuid, subPolicyUuid, ruleDTO);
-        if (MapUtils.isNotEmpty(batchdatas)) {
+        if (!CollectionUtils.isEmpty(batchdatas)) {
             Set<Map.Entry<String, List<Object>>> entries = batchdatas.entrySet();
             for (Map.Entry<String, List<Object>> entry : entries) {
                 batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());

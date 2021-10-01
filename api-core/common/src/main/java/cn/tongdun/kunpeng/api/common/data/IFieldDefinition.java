@@ -21,5 +21,4 @@ public interface IFieldDefinition {
 
     boolean isExtField();
 
-
 }

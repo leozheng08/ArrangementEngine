@@ -14,8 +14,6 @@ import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.IPolicyChallengerRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallenger;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallengerCache;
-import cn.tongdun.kunpeng.api.engine.model.script.IPolicyScriptConfigRepository;
-import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyChallengerEventDO;
@@ -67,10 +65,6 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
     private PlatformIndexCache platformIndexCache;
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
-    @Autowired
-    private IPolicyScriptConfigRepository policyScriptConfigRepository;
-    @Autowired
-    private GroovyObjectCache groovyObjectCache;
 
 
     @PostConstruct
@@ -185,7 +179,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
                 }
 
                 //加载策略各个子对象信息
-                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, policyScriptConfigRepository, groovyObjectCache);
+                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache);
                 task.call();
             }
         }

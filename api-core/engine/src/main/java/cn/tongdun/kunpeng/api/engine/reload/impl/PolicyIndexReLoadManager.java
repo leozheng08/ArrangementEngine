@@ -39,9 +39,6 @@ public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO>
     @Autowired
     private PolicyIndicatrixItemReloadManager policyIndicatrixItemReloadManager;
 
-    @Autowired
-    private PolicyScriptConfigReloadManager policyScriptConfigReloadManager;
-
     @PostConstruct
     public void init() {
         reloadFactory.register(IndexDefinitionEventDO.class, this);
@@ -91,9 +88,6 @@ public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO>
 
             //刷新引用到的平台指标
             policyIndicatrixItemReloadManager.reload(policyUuid);
-
-            //刷新引用到的动态脚本
-            policyScriptConfigReloadManager.reload(policyUuid);
 
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "PolicyIndex reload failed, policyUuid:{}", policyUuid, e);

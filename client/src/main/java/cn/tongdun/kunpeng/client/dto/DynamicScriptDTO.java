@@ -47,9 +47,4 @@ public class DynamicScriptDTO extends CommonDTO {
      * 代码 script_code
      */
     private String scriptCode;
-
-    /**
-     * 脚本字段数据类型 data_type
-     */
-    private String dataType;
 }

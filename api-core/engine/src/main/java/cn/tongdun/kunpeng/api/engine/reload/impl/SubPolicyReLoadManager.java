@@ -56,9 +56,6 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
-    @Autowired
-    private PolicyScriptConfigReloadManager policyScriptConfigReloadManager;
-
     @PostConstruct
     public void init() {
         reloadFactory.register(SubPolicyEventDO.class, this);
@@ -122,8 +119,6 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
         this.addBatchRemoteCallDataToCache(subPolicy.getPolicyUuid(), subPolicyUuid, subPolicyDTO);
         //刷新引用到的平台指标
         policyIndicatrixItemReloadManager.reload(subPolicyDTO.getPolicyUuid());
-        //刷新引用到的动态脚本
-        policyScriptConfigReloadManager.reload(subPolicyDTO.getPolicyUuid());
     }
 
 

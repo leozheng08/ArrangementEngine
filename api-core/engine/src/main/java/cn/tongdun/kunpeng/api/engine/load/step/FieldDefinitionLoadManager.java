@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.engine.load.step;
 
 import cn.tongdun.kunpeng.api.engine.load.ILoad;
 import cn.tongdun.kunpeng.api.engine.load.LoadPipeline;
-import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
@@ -32,9 +31,6 @@ public class FieldDefinitionLoadManager implements ILoad {
 
     @Autowired
     FieldDefinitionCache fieldDefinitionCache;
-
-    @Autowired
-    EventTypeCache eventTypeCacheRepository;
 
     @Override
     public boolean load() {
