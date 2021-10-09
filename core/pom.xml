@@ -101,6 +101,11 @@
             <artifactId>application-riskbase</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>output</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

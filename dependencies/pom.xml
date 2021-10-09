@@ -566,6 +566,12 @@
                 <version>${jcache-provider.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>output</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
         </dependencies>
 
 
