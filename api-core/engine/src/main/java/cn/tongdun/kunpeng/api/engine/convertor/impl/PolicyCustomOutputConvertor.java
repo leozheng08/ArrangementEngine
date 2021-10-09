@@ -1,14 +1,18 @@
 package cn.tongdun.kunpeng.api.engine.convertor.impl;
 
+import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyCustomOutputDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyCustomOutputElementDTO;
+import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutput;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutputElement;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +24,26 @@ import java.util.List;
 @Component
 @DependsOn(value = "defaultConvertorFactory")
 public class PolicyCustomOutputConvertor implements IConvertor<PolicyCustomOutputDTO, PolicyCustomOutput> {
+
+    @Autowired
+    DefaultConvertorFactory convertorFactory;
+
+    @Autowired
+    private RuleConvertor convertor;
+
+    @PostConstruct
+    public void init(){
+        convertorFactory.register(PolicyCustomOutputDTO.class,this);
+    }
+
     @Override
     public PolicyCustomOutput convert(PolicyCustomOutputDTO policyCustomOutputDTO) {
 
         PolicyCustomOutput policyCustomOutput = new PolicyCustomOutput();
         BeanUtils.copyProperties(policyCustomOutputDTO,policyCustomOutput);
+        if(policyCustomOutputDTO.isConditionConfig()){
+            policyCustomOutput.setRule(convertor.convert(policyCustomOutputDTO.getRuleDTO()));
+        }
         policyCustomOutput.setPolicyCustomOutputElements(buildCustomOutputElement(policyCustomOutputDTO.getPolicyCustomOutputElementDTOS()));
         return policyCustomOutput;
     }

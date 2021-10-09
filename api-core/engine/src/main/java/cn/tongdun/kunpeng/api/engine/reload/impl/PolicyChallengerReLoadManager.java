@@ -8,6 +8,7 @@ import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
+import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutputCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
@@ -65,6 +66,8 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
     private PlatformIndexCache platformIndexCache;
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
+    @Autowired
+    private PolicyCustomOutputCache outputCache;
 
 
     @PostConstruct
@@ -179,7 +182,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
                 }
 
                 //加载策略各个子对象信息
-                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache);
+                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache,outputCache);
                 task.call();
             }
         }

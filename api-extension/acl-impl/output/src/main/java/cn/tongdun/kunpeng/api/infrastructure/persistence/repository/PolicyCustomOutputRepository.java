@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.dto.PolicyCustomOutputDTO;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.IPolicyCustomOutputRepository;
-import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutput;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,17 +17,12 @@ import java.util.Set;
 public class PolicyCustomOutputRepository implements IPolicyCustomOutputRepository {
 
     @Override
-    public PolicyCustomOutput queryByUuid(String uuid) {
+    public PolicyCustomOutputDTO queryByUuid(String uuid) {
         return null;
     }
 
     @Override
-    public List<PolicyCustomOutput> selectByPolicyDefinitionUuid(String policyDefinitionUuid) {
-        return null;
-    }
-
-    @Override
-    public List<PolicyCustomOutput> selectByPartners(Set<String> partners) {
-        return null;
+    public List<PolicyCustomOutputDTO> selectByPolicyDefinitionUuid(String policyDefinitionUuid) {
+        return new ArrayList<>();
     }
 }

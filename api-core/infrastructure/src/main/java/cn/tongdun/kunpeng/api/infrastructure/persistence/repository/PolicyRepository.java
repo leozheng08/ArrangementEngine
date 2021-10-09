@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 
 import cn.tongdun.kunpeng.api.engine.dto.*;
+import cn.tongdun.kunpeng.api.engine.model.customoutput.IPolicyCustomOutputRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.*;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
@@ -43,6 +44,9 @@ public class PolicyRepository implements IPolicyRepository{
     private PolicyFieldDAO policyFieldDAO;
     @Autowired
     private  DecisionFlowRepository decisionFlowRepository;
+
+    @Autowired
+    private IPolicyCustomOutputRepository outputRepository;
 
 
     //根据合作列表，取得运行版本的策略清单
@@ -153,6 +157,8 @@ public class PolicyRepository implements IPolicyRepository{
         //查询决策流
         policyDTO.setDecisionFlowDTO(decisionFlowRepository.queryByUuid(policyUuid));
 
+        //查询自定义输出
+        policyDTO.setPolicyCustomOutputDTOList(outputRepository.selectByPolicyDefinitionUuid(policyDTO.getPolicyDefinitionUuid()));
 
         return policyDTO;
     }

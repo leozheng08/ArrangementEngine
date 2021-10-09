@@ -13,15 +13,9 @@ import java.util.Set;
  */
 public interface IPolicyCustomOutputRepository {
 
-    PolicyCustomOutput queryByUuid(String uuid);
+    PolicyCustomOutputDTO queryByUuid(String uuid);
 
 
-    List<PolicyCustomOutput> selectByPolicyDefinitionUuid(String policyDefinitionUuid);
+    List<PolicyCustomOutputDTO> selectByPolicyDefinitionUuid(String policyDefinitionUuid);
 
-    /**
-     * 根据合作方查询自定义输出
-     * @param partners
-     * @return
-     */
-    List<PolicyCustomOutput> selectByPartners(Set<String> partners);
 }
