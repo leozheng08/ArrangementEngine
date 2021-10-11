@@ -57,7 +57,7 @@ public class GroovyObjectCache {
         groovyMap.put(uuid, wrappedGroovyObject);
 
         List<String> keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
-        if (!CollectionUtils.isEmpty(keys)) {
+        if (CollectionUtils.isNotEmpty(keys)) {
             keys.forEach(key -> {
                 Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
                 if (dynamicScriptUuidSet == null) {
@@ -80,9 +80,15 @@ public class GroovyObjectCache {
             return null;
         }
 
-        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
-        Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-        dynamicScriptUuidSet.remove(uuid);
+        List<String> keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
+        if (CollectionUtils.isNotEmpty(keys)) {
+            keys.forEach(key -> {
+                Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
+                if (dynamicScriptUuidSet != null) {
+                    dynamicScriptUuidSet.remove(uuid);
+                }
+            });
+        }
 
         return wrappedGroovyObject;
     }
