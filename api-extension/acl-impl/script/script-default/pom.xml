@@ -27,7 +27,8 @@
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>engine</artifactId>
+            <artifactId>application-groovy</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

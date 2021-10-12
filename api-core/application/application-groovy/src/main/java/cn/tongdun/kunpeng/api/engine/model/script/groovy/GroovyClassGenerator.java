@@ -1,5 +1,16 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
+import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.fraudmetrix.module.riskbase.object.CardBinNewDO;
+import cn.fraudmetrix.module.riskbase.object.DistrictDO;
+import cn.fraudmetrix.module.riskbase.object.IdInfo;
+import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
+import cn.fraudmetrix.module.riskbase.service.intf.CardBinNewService;
+import cn.fraudmetrix.module.riskbase.service.intf.MobileInfoQueryService;
+import cn.tongdun.kunpeng.api.basedata.service.elfin.ElfinBaseDataService;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.danmaku.DanmakuApi;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.image.GleanerImageApi;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -11,20 +22,33 @@ import java.util.Map;
 
 public class GroovyClassGenerator {
 
-    private StringBuilder source            = new StringBuilder(); // 存储构建源代码
-    private String        className;
+    private StringBuilder source = new StringBuilder(); // 存储构建源代码
+    private String className;
     private static String GROOVY_CLASS_TAIL = "\n}";
 
     private static String IMPORT;
+
     static {
         StringBuilder builder = new StringBuilder();
+        builder.append("import ").append(AbstractFraudContext.class.getName()).append("\n");
         builder.append("import ").append(Map.class.getName()).append("\n");
         builder.append("import ").append(SimpleDateFormat.class.getName()).append("\n");
         builder.append("import ").append(StaticObjects.class.getName()).append("\n");
 
+        builder.append("import ").append(DistrictDO.class.getName()).append("\n");
+        builder.append("import ").append(IdInfo.class.getName()).append("\n");
+        builder.append("import ").append(MobileInfoDO.class.getName()).append("\n");
+        builder.append("import ").append(MobileInfoQueryService.class.getName()).append("\n");
+        builder.append("import ").append(GeoipEntity.class.getName()).append("\n");
+        builder.append("import ").append(DanmakuApi.class.getName()).append("\n");
+        builder.append("import ").append(GleanerImageApi.class.getName()).append("\n");
+        builder.append("import ").append(CardBinNewDO.class.getName()).append("\n");
+        builder.append("import ").append(CardBinNewService.class.getName()).append("\n");
+        builder.append("import ").append(ElfinBaseDataService.class.getName()).append("\n");
+
         IMPORT = builder.toString();
     }
-    
+
     public StringBuilder getSource() {
         return source;
     }
@@ -41,7 +65,7 @@ public class GroovyClassGenerator {
         this.className = "Groovy" + className;
     }
 
-    public GroovyClassGenerator(String className){
+    public GroovyClassGenerator(String className) {
         this.className = "Groovy" + className;
     }
 
@@ -55,7 +79,7 @@ public class GroovyClassGenerator {
      * @throws IllegalAccessException
      */
     public GroovyObject compileGroovySource() throws CompilationFailedException, IOException, InstantiationException,
-                                             IllegalAccessException {
+            IllegalAccessException {
         GroovyClassLoader classLoader = new GroovyClassLoader();
         GroovyObject instance = null;
         try {
@@ -71,27 +95,13 @@ public class GroovyClassGenerator {
         return instance;
     }
 
-    /**
-     * 编译方法
-     */
-    public static boolean compileMethod(String methodName, String methodBody) {
-        GroovyClassGenerator genrator = new GroovyClassGenerator("CompileTest");
-        genrator.init();
-        genrator.appendMethod(methodName, methodBody);
-        try {
-            genrator.compileGroovySource();
-        } catch (CompilationFailedException | InstantiationException | IllegalAccessException | IOException e) {
-            return false;
-        }
-        return true;
-    }
 
     /**
      * 编译方法
      * 编译检查用，异常抛给外部处理，用于确认排查问题
      */
     public static void compileMethod(Long id, String methodBody) throws Exception {
-        String className = "compile_test_groovy_"+ id;
+        String className = "compile_test_groovy_" + id;
         GroovyClassGenerator generator = new GroovyClassGenerator(className);
         generator.init();
         generator.appendMethod("func_" + id, methodBody);
@@ -104,6 +114,7 @@ public class GroovyClassGenerator {
 
     /**
      * 追加方法体
+     *
      * @param methodName
      * @param methodBody
      * @return 追加方法代码后的完整代码
@@ -113,7 +124,7 @@ public class GroovyClassGenerator {
         StringBuilder method = new StringBuilder();
         method.append("static ").append(methodName)
                 .append(" (context")
-                //.append(",mobileQueryService,idService,districtService,binService,modelService,gaeaCallerService,cardBinNewService,elfinBaseDataService")
+                .append(",mobileQueryService,idService,cardBinNewService,elfinBaseDataService")
                 .append(") {\n")
                 .append(methodBody)
                 .append("\n}\n");

@@ -1,8 +1,13 @@
 package cn.tongdun.kunpeng.api.engine.model.script;
 
+import cn.fraudmetrix.module.riskbase.service.intf.CardBinNewService;
+import cn.fraudmetrix.module.riskbase.service.intf.IdInfoQueryService;
+import cn.fraudmetrix.module.riskbase.service.intf.MobileInfoQueryService;
+import cn.tongdun.kunpeng.api.basedata.service.elfin.ElfinBaseDataService;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyContext;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
@@ -38,6 +43,18 @@ public class DynamicScriptManager {
     @Autowired
     private ThreadService threadService;
 
+    @Autowired
+    private MobileInfoQueryService mobileInfoQueryService;
+
+    @Autowired
+    private IdInfoQueryService idInfoQueryService;
+
+    @Autowired
+    private CardBinNewService cardBinNewService;
+
+    @Autowired
+    private ElfinBaseDataService elfinBaseDataService;
+
     @PostConstruct
     public void init() {
         this.executeThreadPool = threadService.createThreadPool(
@@ -51,7 +68,8 @@ public class DynamicScriptManager {
 
     public boolean execute(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         try {
-            handleField(context);
+            GroovyContext groovyContext = createGroovyContext();
+            handleField(context, groovyContext);
         } catch (Exception e) {
             // 暂不处理动态脚本执行超时的状态码，以日志为准
             if (!ReasonCodeUtil.isTimeout(e)) {
@@ -62,7 +80,7 @@ public class DynamicScriptManager {
         return true;
     }
 
-    private void handleField(AbstractFraudContext context) {
+    private void handleField(AbstractFraudContext context, GroovyContext groovyContext) {
         List<WrappedGroovyObject> groovyObjectList = new ArrayList<>(50);
         String classKey = null;
         /**
@@ -120,7 +138,7 @@ public class DynamicScriptManager {
 
         List<Callable<Boolean>> tasks = new ArrayList<>(groovyObjectList.size());
         for (WrappedGroovyObject wrappedGroovyObject : groovyObjectList) {
-            tasks.add(TaskWrapLoader.getTaskWrapper().wrap(new GroovyRunTask(context, wrappedGroovyObject)));
+            tasks.add(TaskWrapLoader.getTaskWrapper().wrap(new GroovyRunTask(context, wrappedGroovyObject, groovyContext)));
         }
         List<Future<Boolean>> futures = null;
         long t1 = System.currentTimeMillis();
@@ -153,14 +171,14 @@ public class DynamicScriptManager {
         }
     }
 
-    private boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject) {
+    public boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject, GroovyContext groovyContext) {
         String fieldName = wrappedGroovyObject.getAssignField();
         String methodName = wrappedGroovyObject.getFieldMethodName();
         Object value;
         try {
             long t1 = System.currentTimeMillis();
             GroovyObject groovyObject = wrappedGroovyObject.getGroovyObject();
-            value = executeGroovy(context, groovyObject, methodName);
+            value = executeGroovy(context, groovyObject, methodName, groovyContext);
             long t2 = System.currentTimeMillis();
             if (t2 - t1 > 30) {
                 logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
@@ -174,8 +192,10 @@ public class DynamicScriptManager {
         return true;
     }
 
-    private Object executeGroovy(AbstractFraudContext context, GroovyObject groovyObject, String methodName) {
-        Object[] args = new Object[]{context};
+    private Object executeGroovy(AbstractFraudContext context, GroovyObject groovyObject, String methodName, GroovyContext groovyContext) {
+        Object[] args = new Object[]{context, groovyContext.getMobileInfoQueryService(), groovyContext.getIdInfoQueryService(),
+                groovyContext.getCardBinNewService(),
+                groovyContext.getElfinBaseDataService()};
         Object value = groovyObject.invokeMethod(methodName, args);
         return value;
     }
@@ -183,15 +203,28 @@ public class DynamicScriptManager {
     class GroovyRunTask implements Callable<Boolean> {
         private AbstractFraudContext context;
         private WrappedGroovyObject wrappedGroovyObject;
+        private GroovyContext groovyContext;
 
-        public GroovyRunTask(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject) {
+        public GroovyRunTask(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject, GroovyContext groovyContext) {
             this.context = context;
             this.wrappedGroovyObject = wrappedGroovyObject;
+            this.groovyContext = groovyContext;
         }
 
         @Override
         public Boolean call() throws Exception {
-            return executeGroovyField(context, wrappedGroovyObject);
+            return executeGroovyField(context, wrappedGroovyObject, groovyContext);
         }
     }
+
+    public GroovyContext createGroovyContext() {
+        GroovyContext result = new GroovyContext();
+        result.setMobileInfoQueryService(mobileInfoQueryService);
+        result.setIdInfoQueryService(idInfoQueryService);
+        result.setCardBinNewService(cardBinNewService);
+        result.setElfinBaseDataService(elfinBaseDataService);
+        return result;
+    }
+
+
 }
