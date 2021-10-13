@@ -3,7 +3,8 @@ package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.engine.model.script.DynamicScriptField;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import groovy.lang.GroovyObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: liang.chen
@@ -68,16 +70,27 @@ public class GroovyCompileManager {
             groovyField.setUuid(script.getUuid());
             groovyField.setGmtModify(script.getGmtModify());
             groovyField.setFieldMethodName(methodName);
-            groovyField.setFieldCodes(script.getScriptFieldList().stream().map(f -> f.getFieldCode()).collect(Collectors.toList()));
 
-            List<String> keys = Lists.newArrayList();
+            Set<String> keys = Sets.newHashSet();
+            Map<String, Set<String>> scopeFields = Maps.newHashMap();
             for (DynamicScriptField scriptField : script.getScriptFieldList()) {
                 String partnerCode = scriptField.getPartnerCode();
                 String appName = scriptField.getAppName();
                 String eventType = scriptField.getEventType();
-                keys.addAll(CacheKeyGenerator.getkey(partnerCode, appName, eventType));
+                List<String> subKeys = CacheKeyGenerator.getkey(partnerCode, appName, eventType);
+                keys.addAll(subKeys);
+                subKeys.forEach(key -> {
+                    Set<String> fieldCodes = scopeFields.get(key);
+                    if (fieldCodes == null) {
+                        fieldCodes = Sets.newHashSet();
+                        scopeFields.put(key, fieldCodes);
+                    }
+                    fieldCodes.add(scriptField.getFieldCode());
+                });
+
             }
             groovyField.setKeys(keys);
+            groovyField.setScopeFields(scopeFields);
 
             groovyFieldCache.put(script.getUuid(), groovyField);
         } else {//老逻辑不动

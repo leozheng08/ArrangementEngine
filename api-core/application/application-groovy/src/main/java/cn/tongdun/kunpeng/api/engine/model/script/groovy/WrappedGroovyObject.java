@@ -4,8 +4,8 @@ import cn.tongdun.kunpeng.api.engine.model.VersionedEntity;
 import groovy.lang.GroovyObject;
 import lombok.Data;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
@@ -34,8 +34,9 @@ public class WrappedGroovyObject extends VersionedEntity {
     private String assignField;                                 // 赋值的字段名
 
     //国内反欺诈拆分
-    private List<String> keys;                                  //scopeKey
-    private List<String> fieldCodes;                            //分配的字段
+    private Set<String> keys;                                  //scopeKey
+    //国内反欺诈拆分 scope(partnerCode-appName-eventType):fieldCode
+    private Map<String, Set<String>> scopeFields;                            //分配的字段
 
     private Map<String, String> fieldMethods = new ConcurrentHashMap<>();    // 字段和方法体
 

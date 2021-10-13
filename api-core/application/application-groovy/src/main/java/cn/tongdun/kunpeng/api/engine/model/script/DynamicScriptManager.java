@@ -16,8 +16,9 @@ import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import groovy.lang.GroovyObject;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
 
 /**
@@ -174,12 +176,6 @@ public class DynamicScriptManager {
     }
 
     public boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject, GroovyContext groovyContext) {
-        List<String> fieldCodes = Lists.newArrayList();
-        if (CollectionUtils.isEmpty(wrappedGroovyObject.getFieldCodes())) {
-            fieldCodes.add(wrappedGroovyObject.getAssignField());
-        } else {
-            fieldCodes.addAll(wrappedGroovyObject.getFieldCodes());
-        }
         String methodName = wrappedGroovyObject.getFieldMethodName();
         Object value;
         try {
@@ -188,9 +184,23 @@ public class DynamicScriptManager {
             value = executeGroovy(context, groovyObject, methodName, groovyContext);
             long t2 = System.currentTimeMillis();
             if (t2 - t1 > 30) {
-                logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldCodes, methodName);
+                logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间过长, fieldName : {}, methodName : {}", wrappedGroovyObject.getAssignField(), methodName);
             }
-            fieldCodes.forEach(f -> context.setField(f, value));
+            if (MapUtils.isNotEmpty(wrappedGroovyObject.getScopeFields())) {//国内反欺诈拆分
+                List<String> scopes = getGroovyScopes(context);
+                for (String scope : wrappedGroovyObject.getScopeFields().keySet()) {
+                    if (scopes.contains(scope)) {
+                        Set<String> fieldCodes = wrappedGroovyObject.getScopeFields().get(scope);
+                        fieldCodes.forEach(fieldCode -> {
+                            context.setField(fieldCode, value);
+                        });
+                    }
+                }
+            } else {
+                context.setField(wrappedGroovyObject.getAssignField(), value);
+            }
+
+
         } catch (Throwable ex) {
 //            logger.error(TraceUtils.getFormatTrace() + "动态脚本执行失败, fieldName :{}, methodName :{}", fieldName, methodName);
             throw ex;
@@ -222,6 +232,7 @@ public class DynamicScriptManager {
         public Boolean call() throws Exception {
             return executeGroovyField(context, wrappedGroovyObject, groovyContext);
         }
+
     }
 
     public GroovyContext createGroovyContext() {
@@ -231,6 +242,37 @@ public class DynamicScriptManager {
         result.setCardBinNewService(cardBinNewService);
         result.setElfinBaseDataService(elfinBaseDataService);
         return result;
+    }
+
+    private List<String> getGroovyScopes(AbstractFraudContext context) {
+        Set<String> scopes = Sets.newHashSet();
+        /**
+         * 合作方指定应用指定事件类型
+         */
+        scopes.add(context.getPartnerCode() + "-" + context.getAppName() + "-" + context.getEventType());
+        /**
+         * 合作方指定应用全部事件类型
+         */
+        scopes.add(context.getPartnerCode() + "-" + context.getAppName() + "-all");
+        /**
+         * 合作方全部应用指定事件类型
+         */
+        scopes.add(context.getPartnerCode() + "-" + "all" + "-" + context.getEventType());
+
+        /**
+         * 合作方全部应用全部事件类型
+         */
+        scopes.add(context.getPartnerCode() + "-all" + "-all");
+        /**
+         * 全部合作方全部应用指定事件类型
+         */
+        scopes.add("all-all-" + context.getEventType());
+        /**
+         *全部合作方全部应用全部事件类型
+         */
+        scopes.add("all" + "-all" + "-all");
+        return Lists.newArrayList(scopes);
+
     }
 
 
