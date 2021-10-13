@@ -15,7 +15,9 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.util.TaskWrapLoader;
+import com.google.common.collect.Lists;
 import groovy.lang.GroovyObject;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,7 +174,12 @@ public class DynamicScriptManager {
     }
 
     public boolean executeGroovyField(AbstractFraudContext context, WrappedGroovyObject wrappedGroovyObject, GroovyContext groovyContext) {
-        String fieldName = wrappedGroovyObject.getAssignField();
+        List<String> fieldCodes = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(wrappedGroovyObject.getFieldCodes())) {
+            fieldCodes.add(wrappedGroovyObject.getAssignField());
+        } else {
+            fieldCodes.addAll(wrappedGroovyObject.getFieldCodes());
+        }
         String methodName = wrappedGroovyObject.getFieldMethodName();
         Object value;
         try {
@@ -181,9 +188,9 @@ public class DynamicScriptManager {
             value = executeGroovy(context, groovyObject, methodName, groovyContext);
             long t2 = System.currentTimeMillis();
             if (t2 - t1 > 30) {
-                logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldName, methodName);
+                logger.warn(TraceUtils.getFormatTrace() + "动态脚本执行时间过长, fieldName : {}, methodName : {}", fieldCodes, methodName);
             }
-            context.setField(fieldName, value);
+            fieldCodes.forEach(f -> context.setField(f, value));
         } catch (Throwable ex) {
 //            logger.error(TraceUtils.getFormatTrace() + "动态脚本执行失败, fieldName :{}, methodName :{}", fieldName, methodName);
             throw ex;

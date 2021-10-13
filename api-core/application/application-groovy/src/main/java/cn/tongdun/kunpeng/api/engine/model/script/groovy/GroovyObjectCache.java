@@ -56,7 +56,12 @@ public class GroovyObjectCache {
     public void put(String uuid, WrappedGroovyObject wrappedGroovyObject) {
         groovyMap.put(uuid, wrappedGroovyObject);
 
-        List<String> keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
+        List<String> keys;
+        if (CollectionUtils.isNotEmpty(wrappedGroovyObject.getKeys())) {
+            keys = wrappedGroovyObject.getKeys();
+        } else {
+            keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
+        }
         if (CollectionUtils.isNotEmpty(keys)) {
             keys.forEach(key -> {
                 Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
