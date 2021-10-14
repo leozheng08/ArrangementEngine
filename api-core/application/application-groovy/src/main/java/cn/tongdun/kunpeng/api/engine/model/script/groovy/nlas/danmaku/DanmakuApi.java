@@ -1,9 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.danmaku;
 
+import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.text.TextAnalysServiceSPI;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.tfp.SampleSimilarServiceSPI;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * nlas服务 for Groovy
@@ -14,20 +13,17 @@ import org.springframework.web.context.WebApplicationContext;
 public class DanmakuApi {
 
     public static DanmakuServiceSPI getInstance() {
-        WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-        DanmakuServiceSPI result = (DanmakuServiceSPI) context.getBean("danmakuServiceSPI");
+        DanmakuServiceSPI result = (DanmakuServiceSPI) SpringContextHolder.getBean("danmakuServiceSPI");
         return result;
     }
 
     public static TextAnalysServiceSPI getTextAnalysServiceInstance() {
-        WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-        TextAnalysServiceSPI result = (TextAnalysServiceSPI) context.getBean("textAnalysServiceSPI");
+        TextAnalysServiceSPI result = (TextAnalysServiceSPI) SpringContextHolder.getBean("textAnalysServiceSPI");
         return result;
     }
 
     public static SampleSimilarServiceSPI getSampleSimilarServiceInstance() {
-        WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-        SampleSimilarServiceSPI result = (SampleSimilarServiceSPI) context.getBean("sampleSimilarServiceSPI");
+        SampleSimilarServiceSPI result = (SampleSimilarServiceSPI) SpringContextHolder.getBean("sampleSimilarServiceSPI");
         return result;
     }
 }

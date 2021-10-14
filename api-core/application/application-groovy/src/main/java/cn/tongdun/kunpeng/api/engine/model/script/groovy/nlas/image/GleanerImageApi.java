@@ -1,7 +1,6 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.image;
 
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
+import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 
 /**
  * Created by wangrenjie on 16/10/19.
@@ -10,8 +9,7 @@ import org.springframework.web.context.WebApplicationContext;
 public class GleanerImageApi {
 
     public static GleanerImageService getInstance() {
-        WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-        GleanerImageService result = (GleanerImageService) context.getBean("gleanerImageService");
+        GleanerImageService result = (GleanerImageService) SpringContextHolder.getBean("gleanerImageService");
         return result;
     }
 }
