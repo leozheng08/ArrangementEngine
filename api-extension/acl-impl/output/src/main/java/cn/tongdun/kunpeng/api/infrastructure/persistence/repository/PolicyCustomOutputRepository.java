@@ -22,7 +22,7 @@ public class PolicyCustomOutputRepository implements IPolicyCustomOutputReposito
     }
 
     @Override
-    public List<PolicyCustomOutputDTO> selectByPolicyDefinitionUuid(String policyDefinitionUuid) {
+    public List<PolicyCustomOutputDTO> selectByPolicyUuid(String policyUuid) {
         return new ArrayList<>();
     }
 }

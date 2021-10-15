@@ -158,7 +158,7 @@ public class PolicyRepository implements IPolicyRepository{
         policyDTO.setDecisionFlowDTO(decisionFlowRepository.queryByUuid(policyUuid));
 
         //查询自定义输出
-        policyDTO.setPolicyCustomOutputDTOList(outputRepository.selectByPolicyDefinitionUuid(policyDTO.getPolicyDefinitionUuid()));
+        policyDTO.setPolicyCustomOutputDTOList(outputRepository.selectByPolicyUuid(policyDTO.getUuid()));
 
         return policyDTO;
     }

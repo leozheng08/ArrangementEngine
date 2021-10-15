@@ -28,21 +28,11 @@
         where uuid = #{uuid}
     </select>
 
-    <select id="queryByPolicyDefinitionUuid" resultMap="BaseResultMap">
+    <select id="queryByPolicyUuid" resultMap="BaseResultMap">
         select
           id, uuid, policy_uuid, name, partner_code, is_condition_config, status, is_deleted, gmt_create, gmt_modify, creator, operator,concurrency_version,policy_definition_uuid
         from policy_custom_output
-        where policy_definition_uuid = #{uuid}
-    </select>
-
-    <select id="queryByPartner" resultMap="BaseResultMap" parameterType="java.util.Set">
-        select
-          id, uuid, policy_uuid, name, partner_code, is_condition_config, status, is_deleted, gmt_create, gmt_modify, creator, operator,concurrency_version,policy_definition_uuid
-        from policy_custom_output
-        where is_deleted = 0 and  partner_code in
-        <foreach collection="collection" item="partner" index="index"  open="(" separator="," close=")">
-            #{partner}
-        </foreach>
+        where policy_uuid = #{uuid}
     </select>
 
     <select id="queryAll" resultMap="BaseResultMap">

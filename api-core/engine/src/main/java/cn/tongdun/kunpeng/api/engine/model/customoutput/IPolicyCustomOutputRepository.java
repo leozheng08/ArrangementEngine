@@ -16,6 +16,6 @@ public interface IPolicyCustomOutputRepository {
     PolicyCustomOutputDTO queryByUuid(String uuid);
 
 
-    List<PolicyCustomOutputDTO> selectByPolicyDefinitionUuid(String policyDefinitionUuid);
+    List<PolicyCustomOutputDTO> selectByPolicyUuid(String policyUuid);
 
 }

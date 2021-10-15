@@ -16,9 +16,7 @@ public interface PolicyCustomOutputDAO {
 
     PolicyCustomOutputDO queryByUuid(String uuid);
 
-    List<PolicyCustomOutputDO> queryByPolicyDefinitionUuid(String uuid);
-
-    List<PolicyCustomOutputDO> queryByPartner(Set<String> partner);
+    List<PolicyCustomOutputDO> queryByPolicyUuid(String uuid);
 
     List<PolicyCustomOutputDO> queryAll();
 }
