@@ -5,6 +5,7 @@ import groovy.lang.GroovyObject;
 import lombok.Data;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
@@ -31,6 +32,11 @@ public class WrappedGroovyObject extends VersionedEntity {
     private String source;                                      // 源代码
     private String fieldMethodName;                             // 方法名
     private String assignField;                                 // 赋值的字段名
+
+    //国内反欺诈拆分
+    private Set<String> keys;                                  //scopeKey
+    //国内反欺诈拆分 scope(partnerCode-appName-eventType):fieldCode
+    private Map<String, Set<String>> scopeFields;                            //分配的字段
 
     private Map<String, String> fieldMethods = new ConcurrentHashMap<>();    // 字段和方法体
 

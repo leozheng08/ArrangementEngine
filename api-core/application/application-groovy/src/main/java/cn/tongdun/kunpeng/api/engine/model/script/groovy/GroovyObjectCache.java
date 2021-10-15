@@ -2,6 +2,7 @@ package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -36,28 +37,16 @@ public class GroovyObjectCache {
      * @param wrappedGroovyObject
      * @return
      */
-//    private Map<String, Map<String,WrappedGroovyObject>> groovyFields = new ConcurrentHashMap<String, Map<String,WrappedGroovyObject>>(30); // 缓存编译后的对象
-
-
-//    public void put(String uuid, WrappedGroovyObject wrappedGroovyObject) {
-//        groovyMap.put(uuid, wrappedGroovyObject);
-//
-//        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
-//        Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-//        if (dynamicScriptUuidSet == null) {
-//            dynamicScriptUuidSet = new ConcurrentHashSet();
-//            Set oldDynamicScriptUuidSet = scopeToGroovyMap.putIfAbsent(key, dynamicScriptUuidSet);
-//            if (oldDynamicScriptUuidSet != null) {
-//                dynamicScriptUuidSet = oldDynamicScriptUuidSet;
-//            }
-//        }
-//        dynamicScriptUuidSet.add(uuid);
-//    }
     public void put(String uuid, WrappedGroovyObject wrappedGroovyObject) {
         groovyMap.put(uuid, wrappedGroovyObject);
 
-        List<String> keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
-        if (!CollectionUtils.isEmpty(keys)) {
+        List<String> keys;
+        if (CollectionUtils.isNotEmpty(wrappedGroovyObject.getKeys())) {
+            keys = Lists.newArrayList(wrappedGroovyObject.getKeys());
+        } else {
+            keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
+        }
+        if (CollectionUtils.isNotEmpty(keys)) {
             keys.forEach(key -> {
                 Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
                 if (dynamicScriptUuidSet == null) {
@@ -79,10 +68,21 @@ public class GroovyObjectCache {
         if (wrappedGroovyObject == null) {
             return null;
         }
+        List<String> keys;
+        if (CollectionUtils.isNotEmpty(wrappedGroovyObject.getKeys())) {
+            keys = Lists.newArrayList(wrappedGroovyObject.getKeys());
+        } else {
+            keys = CacheKeyGenerator.getkey(wrappedGroovyObject);
+        }
 
-        String key = generateKey(wrappedGroovyObject.getPartnerCode(), wrappedGroovyObject.getEventType());
-        Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
-        dynamicScriptUuidSet.remove(uuid);
+        if (CollectionUtils.isNotEmpty(keys)) {
+            keys.forEach(key -> {
+                Set dynamicScriptUuidSet = scopeToGroovyMap.get(key);
+                if (dynamicScriptUuidSet != null) {
+                    dynamicScriptUuidSet.remove(uuid);
+                }
+            });
+        }
 
         return wrappedGroovyObject;
     }

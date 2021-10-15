@@ -27,7 +27,6 @@ public class DynamicScriptLoadManager implements ILoad {
 
     private Logger logger = LoggerFactory.getLogger(DynamicScriptLoadManager.class);
 
-
     @Autowired
     IDynamicScriptRepository dynamicScriptRepository;
 
@@ -52,8 +51,8 @@ public class DynamicScriptLoadManager implements ILoad {
                 groovyCompileManager.addOrUpdate(script);
             } catch (Exception e) {
                 failedCount++;
-                logger.warn(TraceUtils.getFormatTrace() + "Groovy编译失败,partnerCode:{},eventType:{},assignField:{},script:{},message:{}",
-                        script.getPartnerCode(), script.getEventType(), script.getAssignField(), script.getScriptCode(), e.getMessage());
+                logger.warn(TraceUtils.getFormatTrace() + "Groovy编译失败,partnerCode:{},eventType:{},assignField:{},scriptName:{}, scriptCode:{},message:{}",
+                        script.getPartnerCode(), script.getEventType(), script.getAssignField(), script.getScriptName(), script.getScriptCode(), e);
             }
         }
 

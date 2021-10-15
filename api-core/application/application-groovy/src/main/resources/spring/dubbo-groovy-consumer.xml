@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+       default-autowire="byName">
+
+    <!-- nlas(自然语言分析服务) -->
+    <dubbo:reference id="danmakuService" interface="cn.fraudmetrix.nlas.dubbo.service.danmaku.DanmakuService"
+                     version="${nlas.dubbo.version:1.0.0}" retries="0" timeout="${nlas.dubbo.danmaku.timeout:100}"
+                     connections="2" check="false" stub="${DanmakuService.stub:false}">
+    </dubbo:reference>
+
+    <dubbo:reference id="gleanerForApiService"
+                     interface="cn.fraudmetrix.gleaner.service.GleanerForApiService"
+                     version="${gleanerForApi.version:1.0.0}" group="${gleanerForApi.group:gleaner}"
+                     timeout="${gleaner.dubbo.timeout:100}" retries="0" check="false"
+                     stub="${GleanerForApiService.stub:false}"/>
+
+    <dubbo:reference id="sampleSimilarService" interface="cn.fraudmetrix.nlas.dubbo.service.tfp.SampleSimilarService"
+                     version="${nlas.dubbo.version:1.0.0}" retries="0" timeout="${nlas.dubbo.tfp.timeout:100}"
+                     stub="${SampleSimilarService.stub:false}">
+    </dubbo:reference>
+
+    <dubbo:reference id="textAnalysService" interface="cn.fraudmetrix.nlas.dubbo.service.text.TextAnalysService"
+                     version="${nlas.dubbo.version:1.0.0}" retries="0" timeout="${nlas.dubbo.text.timeout:100}"
+                     stub="${TextAnalysService.stub:false}">
+    </dubbo:reference>
+
+</beans>

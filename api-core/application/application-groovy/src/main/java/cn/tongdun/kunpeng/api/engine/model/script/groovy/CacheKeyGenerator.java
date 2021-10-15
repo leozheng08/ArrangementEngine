@@ -8,6 +8,15 @@ import java.util.Objects;
 
 public class CacheKeyGenerator {
 
+
+    public static List<String> getkey(String partnerCode, String appName, String eventType) {
+        WrappedGroovyObject wrappedGroovyObject = new WrappedGroovyObject();
+        wrappedGroovyObject.setPartnerCode(partnerCode);
+        wrappedGroovyObject.setAppName(appName);
+        wrappedGroovyObject.setEventType(eventType);
+        return getkey(wrappedGroovyObject);
+    }
+
     /**
      * scope(适用范围) -> fieldName(字段名) -> WrappedGroovyObject(包含编译后groovy对象)
      * scope(适用范围)包含：
@@ -23,7 +32,6 @@ public class CacheKeyGenerator {
      * @param wrappedGroovyObject
      * @return
      */
-
     public static List<String> getkey(WrappedGroovyObject wrappedGroovyObject) {
         List<String> keys = new ArrayList<>();
         if (Objects.nonNull(wrappedGroovyObject)) {
