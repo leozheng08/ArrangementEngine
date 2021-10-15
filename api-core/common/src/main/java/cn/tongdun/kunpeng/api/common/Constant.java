@@ -78,6 +78,8 @@ public class Constant {
         public static final String KEYWORD_WORDLIST = "keyword/wordList";
         public static final String CONTENT_IMAGE = "content/image";
         public static final String COMNON_CUSTOM = "common/custom";
+
+        public static final String EVIDENCE_EVIDENCE = "evidence/evidence";
     }
 
 

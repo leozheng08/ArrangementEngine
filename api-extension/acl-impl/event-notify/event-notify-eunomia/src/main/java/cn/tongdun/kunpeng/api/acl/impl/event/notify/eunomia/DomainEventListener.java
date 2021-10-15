@@ -42,7 +42,6 @@ public class DomainEventListener implements EunomiaListener {
             log.info("DomainEventListener start.................................rowData={}", JSON.toJSONString(rowData));
         }
 
-
         if (rowData == null) {
             log.error("eunomia(DomainEventListener) client rowData not allowed null");
             return true;
@@ -53,15 +52,7 @@ public class DomainEventListener implements EunomiaListener {
         if (StringUtils.isBlank(tableName) || !"domain_event".equalsIgnoreCase(tableName)) {
             log.error("eunomia(DomainEventListener) client table name not allowed null");
             return true;
-
         }
-
-        if (StringUtils.isBlank(tableName) || !"domain_event".equalsIgnoreCase(tableName)) {
-            log.error("eunomia(DomainEventListener) client table name not allowed null");
-            return true;
-
-        }
-
         if (!"INSERT".equals(row.getEventType())) {
             log.error("eunomia(DomainEventListener) client eventType not allowed !insert");
             return true;

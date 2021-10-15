@@ -2,18 +2,16 @@ package cn.tongdun.kunpeng.api.basedata.rule.function.location;
 
 import cn.fraudmetrix.horde.biz.common.Utils;
 import cn.fraudmetrix.horde.biz.entity.IpReputationRulesObj;
-import cn.fraudmetrix.module.riskbase.constant.ProxyType;
-import cn.fraudmetrix.module.riskbase.service.intf.ProxyIpService;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
 import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
-import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
+import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import cn.tongdun.kunpeng.api.ruledetail.ProxyIpDetail;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,7 +23,6 @@ public class ProxyFunction extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(ProxyFunction.class);
 
     private String proxyIpType;
-
 
     @Override
     public String getName() {
@@ -50,31 +47,32 @@ public class ProxyFunction extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         AbstractFraudContext context = (AbstractFraudContext) executeContext;
 
-        ProxyIpService proxyIpService = SpringContextHolder.getBean("proxyIpService", ProxyIpService.class);
+        DetailCallable detailCallable = null;
+
+//        ProxyIpService proxyIpService = SpringContextHolder.getBean("proxyIpService", ProxyIpService.class);
         String ip = context.getIpAddress();
         if (StringUtils.isNotBlank(ip)) {
             boolean isProxyIp = false;
-            boolean switchCfg = true;               // FIXME: 2/7/20 shutter switch
-            if (switchCfg) {
-                IpReputationRulesObj ipReputationRulesObj = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION,IpReputationRulesObj.class);
-                // IP画像只处理VPN、HTTP、SOCKS三种，为了兼容历史，转一下再调IP画像的方法
-                String proxyType = getProxyTypeByProtocol(proxyIpType);
-                if (ipReputationRulesObj != null && StringUtils.isNotBlank(proxyType)) {
-                    isProxyIp = Utils.isProxy(ipReputationRulesObj.getProxyHistoryObj(), proxyType);
-                }
+
+            IpReputationRulesObj ipReputationRulesObj = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION,IpReputationRulesObj.class);
+            // IP画像只处理VPN、HTTP、SOCKS三种，为了兼容历史，转一下再调IP画像的方法
+            String proxyType = getProxyTypeByProtocol(proxyIpType);
+            if (ipReputationRulesObj != null && StringUtils.isNotBlank(proxyType)) {
+                isProxyIp = Utils.isProxy(ipReputationRulesObj.getProxyHistoryObj(), proxyType);
             }
-            else {
-                ProxyType proxyType = null;
-                try {
-                    proxyType = ProxyType.valueOf(proxyIpType);
-                }
-                catch (Exception e) {
-                    logger.error(TraceUtils.getFormatTrace()+"isProxyIp proxyType convert failed proxyIpType {}", proxyIpType, e);
-                }
-                isProxyIp = proxyIpService.isProxy(ip, proxyType);
-            }
+
+
             if (isProxyIp) {
-                return new FunctionResult(true);
+                detailCallable = () -> {
+                    ProxyIpDetail detail = new ProxyIpDetail();
+                    detail.setProxyIpType(proxyIpType);
+                    detail.setConditionUuid(this.conditionUuid);
+                    detail.setRuleUuid(this.ruleUuid);
+                    detail.setDescription(this.description);
+                    return detail;
+                };
+                return new FunctionResult(true, detailCallable);
+
             }
         }
 
@@ -86,11 +84,20 @@ public class ProxyFunction extends AbstractFunction {
             Object isUseHttpProxy = deviceInfo.get("proxyHeaders");
             if (isUseHttpProxy != null && StringUtils.isNotBlank(isUseHttpProxy.toString())) {
 
-                return new FunctionResult(true);
+                detailCallable = () -> {
+                    ProxyIpDetail detail = new ProxyIpDetail();
+                    detail.setProxyIpType(proxyIpType);
+                    detail.setConditionUuid(this.conditionUuid);
+                    detail.setRuleUuid(this.ruleUuid);
+                    detail.setDescription(this.description);
+                    return detail;
+                };
+                return new FunctionResult(true, detailCallable);
             }
         }
 
         return new FunctionResult(false);
+
     }
 
 

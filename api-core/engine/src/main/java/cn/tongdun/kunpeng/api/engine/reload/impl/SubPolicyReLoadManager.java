@@ -57,112 +57,116 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
     @PostConstruct
-    public void init(){
-        reloadFactory.register(SubPolicyEventDO.class,this);
+    public void init() {
+        reloadFactory.register(SubPolicyEventDO.class, this);
     }
 
     @Override
-    public boolean create(SubPolicyEventDO eventDO){
+    public boolean create(SubPolicyEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
+
     @Override
-    public boolean update(SubPolicyEventDO eventDO){
+    public boolean update(SubPolicyEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
+
     @Override
-    public boolean activate(SubPolicyEventDO eventDO){
+    public boolean activate(SubPolicyEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
 
 
     /**
      * 更新事件类型
+     *
      * @return
      */
-    public boolean addOrUpdate(SubPolicyEventDO eventDO){
+    public boolean addOrUpdate(SubPolicyEventDO eventDO) {
         String uuid = eventDO.getUuid();
-        logger.debug(TraceUtils.getFormatTrace()+"SubPolicy reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "SubPolicy reload start, uuid:{}", uuid);
         try {
             Long timestamp = eventDO.getGmtModify().getTime();
             SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
-            if(timestamp != null && oldSubPolicy != null && timestampCompare(oldSubPolicy.getModifiedVersion(), timestamp) >= 0) {
-                logger.debug(TraceUtils.getFormatTrace()+"SubPolicy reload localCache is newest, ignore uuid:{}",uuid);
+            if (timestamp != null && oldSubPolicy != null && timestampCompare(oldSubPolicy.getModifiedVersion(), timestamp) >= 0) {
+                logger.debug(TraceUtils.getFormatTrace() + "SubPolicy reload localCache is newest, ignore uuid:{}", uuid);
                 return true;
             }
 
             reloadByUuid(uuid);
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"SubPolicy reload failed, uuid:{}",uuid,e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "SubPolicy reload failed, uuid:{}", uuid, e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace()+"SubPolicy reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "SubPolicy reload success, uuid:{}", uuid);
         return true;
     }
 
-    public void reloadByUuid(String subPolicyUuid){
+    public void reloadByUuid(String subPolicyUuid) {
         SubPolicyDTO subPolicyDTO = subPolicyRepository.queryFullByUuid(subPolicyUuid);
 
         //如果失效则删除缓存 及 该子策略下相关规则的批量远程调用数据
-        if(subPolicyDTO == null || !subPolicyDTO.isValid()){
+        if (subPolicyDTO == null || !subPolicyDTO.isValid()) {
             removeSubPolicy(subPolicyUuid);
             return;
         }
 
         SubPolicy subPolicy = subPolicyConvertor.convert(subPolicyDTO);
-        subPolicyCache.put(subPolicyUuid,subPolicy);
+        subPolicyCache.put(subPolicyUuid, subPolicy);
 
         //新增/更新该子策略下相关规则的批量远程调用数据
-        this.addBatchRemoteCallDataToCache(subPolicy.getPolicyUuid(),subPolicyUuid,subPolicyDTO);
+        this.addBatchRemoteCallDataToCache(subPolicy.getPolicyUuid(), subPolicyUuid, subPolicyDTO);
         //刷新引用到的平台指标
         policyIndicatrixItemReloadManager.reload(subPolicyDTO.getPolicyUuid());
     }
 
 
-
     /**
      * 删除事件类型
+     *
      * @param eventDO
      * @return
      */
     @Override
-    public boolean remove(SubPolicyEventDO eventDO){
+    public boolean remove(SubPolicyEventDO eventDO) {
         try {
             boolean result = removeSubPolicy(eventDO.getUuid());
-            logger.debug(TraceUtils.getFormatTrace()+"SubPolicy remove success, uuid:{}",eventDO.getUuid());
+            logger.debug(TraceUtils.getFormatTrace() + "SubPolicy remove success, uuid:{}", eventDO.getUuid());
             return result;
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"SubPolicy remove failed, uuid:{}",eventDO.getUuid(),e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "SubPolicy remove failed, uuid:{}", eventDO.getUuid(), e);
             return false;
         }
     }
 
     /**
      * 关闭状态
+     *
      * @param eventDO
      * @return
      */
     @Override
-    public boolean deactivate(SubPolicyEventDO eventDO){
+    public boolean deactivate(SubPolicyEventDO eventDO) {
         return remove(eventDO);
     }
 
-    public boolean removeSubPolicy(String subPolicyUuid){
+    public boolean removeSubPolicy(String subPolicyUuid) {
         SubPolicy subPolicy = subPolicyCache.remove(subPolicyUuid);
-        if(subPolicy == null){
+        if (subPolicy == null) {
             return true;
         }
 
         List<Rule> ruleList = ruleCache.getRuleBySubPolicyUuid(subPolicy.getUuid());
-        if(ruleList == null) {
+        if (ruleList == null) {
             return true;
         }
-        for(Rule rule:ruleList) {
+        for (Rule rule : ruleList) {
             //删除规则
             ruleCache.remove(rule.getUuid());
             if (BatchRemoteCallDataBuilderFactory.supportBatchRemoteCall(rule.getTemplate())) {
                 //删除该规则批量远程调用数据
-                batchRemoteCallDataCache.remove(subPolicy.getPolicyUuid(),rule.getTemplate(),rule.getUuid());
+                batchRemoteCallDataCache.remove(subPolicy.getPolicyUuid(), rule.getTemplate(), rule.getUuid());
             }
         }
         return true;
@@ -171,16 +175,18 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
 
     /**
      * 子策略排序，对当前执行暂无影响，不处理
+     *
      * @param list
      * @return
      */
     @Override
-    public boolean sort(List<SubPolicyEventDO> list){
+    public boolean sort(List<SubPolicyEventDO> list) {
         return true;
     }
 
     /**
      * 添加/更新批量调用数据到cache
+     *
      * @param policyUuid
      * @param subPolicyUuid
      * @param subPolicyDTO

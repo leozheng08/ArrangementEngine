@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.FieldDefinitionDAO">
+    <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.FieldDefinitionDO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="uuid" jdbcType="CHAR" property="uuid"/>
+        <result column="field_type" jdbcType="VARCHAR" property="fieldType"/>
+        <result column="partner_code" jdbcType="VARCHAR" property="partnerCode"/>
+        <result column="field_code" jdbcType="VARCHAR" property="fieldCode"/>
+        <result column="field_name" jdbcType="VARCHAR" property="fieldName"/>
+        <result column="display_name" jdbcType="VARCHAR" property="displayName"/>
+        <result column="property" jdbcType="VARCHAR" property="property"/>
+        <result column="event_type" jdbcType="VARCHAR" property="eventType"/>
+        <result column="data_type" jdbcType="VARCHAR" property="dataType"/>
+        <result column="max_length" jdbcType="SMALLINT" property="maxLength"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="is_velocity_field" jdbcType="BIT" property="velocityField"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="auditor" jdbcType="VARCHAR" property="auditor"/>
+        <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime"/>
+        <result column="usage_scene" jdbcType="VARCHAR" property="usageScene"/>
+        <result column="concurrency_version" jdbcType="INTEGER" property="concurrencyVersion"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modify" jdbcType="TIMESTAMP" property="gmtModify"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, uuid, field_type, partner_code, field_code, field_name, display_name,
+        property, event_type, data_type, max_length, description, is_velocity_field,
+        status, auditor, audit_time, usage_scene, concurrency_version, is_deleted, gmt_create,
+        gmt_modify, creator, operator
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from field_definition
+    </select>
+
+    <select id="selectByFieldType" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from field_definition
+        where is_deleted = 0 and status = 1
+        and field_type = #{fieldType}
+    </select>
+
+
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from field_definition
+        where uuid = #{uuid,jdbcType=CHAR}
+    </select>
+
+</mapper>

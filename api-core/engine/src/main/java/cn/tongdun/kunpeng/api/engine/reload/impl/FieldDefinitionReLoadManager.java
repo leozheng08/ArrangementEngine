@@ -1,14 +1,12 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
-import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
 import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.model.field.IFieldDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.FieldDefinitionEventDO;
-import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.slf4j.Logger;

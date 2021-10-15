@@ -55,10 +55,10 @@ public class PolicyLoadByPartnerService {
     private LocalCacheService localCacheService;
 
     @Autowired
-    private PlatformIndexCache policyIndicatrixItemCache;
+    private PlatformIndexCache platformIndexCache;
 
     @Autowired
-    private IPlatformIndexRepository policyIndicatrixItemRepository;
+    private IPlatformIndexRepository platformIndexRepository;
 
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
@@ -75,47 +75,47 @@ public class PolicyLoadByPartnerService {
     }
 
 
-    public boolean loadByPartner(String partnerCode){
+    public boolean loadByPartner(String partnerCode) {
         return loadByPartner(Sets.newHashSet(partnerCode));
     }
 
-    public boolean loadByPartner(Set<String> partners){
+    public boolean loadByPartner(Set<String> partners) {
         //取得默认策略列表
         List<PolicyModifiedDTO> policyList = policyRepository.queryDefaultPolicyByPartners(partners);
 
         //取得挑战者策略列表
         List<PolicyModifiedDTO> challengerPolicyList = policyRepository.queryChallengerPolicyByPartners(partners);
-        if(challengerPolicyList != null && !challengerPolicyList.isEmpty()) {
+        if (challengerPolicyList != null && !challengerPolicyList.isEmpty()) {
             policyList.addAll(challengerPolicyList);
         }
 
         List<PolicyLoadTask> tasks = new ArrayList<>();
-        for(PolicyModifiedDTO policyModifiedDO : policyList){
-            if(CommonStatusEnum.CLOSE.getCode() == policyModifiedDO.getStatus()||
-                    DeleteStatusEnum.INVALID.getCode() == policyModifiedDO.isDeleted() ){
+        for (PolicyModifiedDTO policyModifiedDO : policyList) {
+            if (CommonStatusEnum.CLOSE.getCode() == policyModifiedDO.getStatus() ||
+                    DeleteStatusEnum.INVALID.getCode() == policyModifiedDO.isDeleted()) {
                 //缓存不在用状态，便于返回404子码
                 Policy policy = convertor(policyModifiedDO);
-                policyCache.put(policy.getUuid(),policy);
+                policyCache.put(policy.getUuid(), policy);
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache,batchRemoteCallDataCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache);
             tasks.add(task);
         }
 
         try {
             executeThreadPool.invokeAll(tasks);
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"加载策略异常",  e);
+            logger.error(TraceUtils.getFormatTrace() + "加载策略异常", e);
             return false;
         }
 
         return true;
     }
 
-    private Policy convertor(PolicyModifiedDTO policyModifiedDTO){
+    private Policy convertor(PolicyModifiedDTO policyModifiedDTO) {
         Policy policy = new Policy();
-        BeanUtils.copyProperties(policyModifiedDTO,policy);
+        BeanUtils.copyProperties(policyModifiedDTO, policy);
         return policy;
     }
 }

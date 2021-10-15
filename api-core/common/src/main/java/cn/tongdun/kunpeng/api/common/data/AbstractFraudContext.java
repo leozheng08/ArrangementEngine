@@ -307,6 +307,16 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private List<Map<String, Object>> outputIndicatrixes = Lists.newArrayList();
 
     /**
+     * 信贷名单库批量调用结果
+     */
+    private Map<String, Object> creditNornsBulkResultMap;
+
+    /**
+     * 反欺诈名单库批量调用结果
+     */
+    private Map<String, Object> antiFraudNornsBulkResultMap;
+
+    /**
      * 添加异常子码及对应外部系统的原因码
      *
      * @param subReasonCode

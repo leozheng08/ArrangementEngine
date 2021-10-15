@@ -1,9 +1,6 @@
 package cn.tongdun.kunpeng.api.intf.adapter.dubbo;
 
-import cn.tongdun.ddd.common.exception.BasicErrorCode;
-import cn.tongdun.ddd.common.result.Result;
 import cn.tongdun.ddd.common.result.SingleResult;
-import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyClassGenerator;
 import cn.tongdun.kunpeng.client.api.IDynamicScriptCheck;
 import cn.tongdun.kunpeng.client.data.ScriptType;
@@ -21,18 +18,18 @@ public class DynamicScriptCheckImpl implements IDynamicScriptCheck {
 
     @Override
     public SingleResult<Boolean> checkDynamicScript(DynamicScriptDTO dynamicScriptDTO) {
-        try{
+        try {
             String code = dynamicScriptDTO.getScriptCode();
             Long id = dynamicScriptDTO.getId();
             String scriptType = dynamicScriptDTO.getScriptType();
-            if(ScriptType.isValid(scriptType)){
+            if (ScriptType.isValid(scriptType)) {
                 return SingleResult.failure(400, String.format("script type [%s] is invalid", scriptType));
             }
-            if(StringUtils.equals(scriptType, "groovy")){
+            if (StringUtils.equals(scriptType, "groovy")) {
                 GroovyClassGenerator.compileMethod(id, code);
             }
             return SingleResult.success(true);
-        }catch (Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);

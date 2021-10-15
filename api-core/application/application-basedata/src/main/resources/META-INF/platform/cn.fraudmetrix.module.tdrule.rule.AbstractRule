@@ -22,3 +22,4 @@ android/fpException=cn.tongdun.kunpeng.api.basedata.rule.template.android.Androi
 keyword/wordList=cn.tongdun.kunpeng.api.application.keyword.rule.KeywordRule
 content/image=cn.tongdun.kunpeng.api.application.content.rule.image.ImageRule
 location/addressMatch=cn.tongdun.kunpeng.api.basedata.rule.template.location.AddressMatchRule
+location/proxy=cn.tongdun.kunpeng.api.basedata.rule.template.location.ProxyRule

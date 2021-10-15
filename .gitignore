@@ -51,3 +51,4 @@ application-parent/application-ruledata/target
 application-parent/application-runengine/target
 /output
 ${shutter.output}
+*.puml

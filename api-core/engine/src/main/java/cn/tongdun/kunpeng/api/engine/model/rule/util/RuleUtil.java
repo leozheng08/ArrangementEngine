@@ -1,13 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.model.rule.util;
 
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinition;
-import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Collection;
 
 /**
  * @Author: liang.chen
@@ -17,12 +14,12 @@ public class RuleUtil {
 
     private static FieldDefinitionCache fieldDefinitionCache;
 
-    private static FieldDefinitionCache getFieldDefinitionCache(){
-        if(fieldDefinitionCache != null){
+    private static FieldDefinitionCache getFieldDefinitionCache() {
+        if (fieldDefinitionCache != null) {
             return fieldDefinitionCache;
         }
 
-        fieldDefinitionCache = SpringContextHolder.getBean("fieldDefinitionCache",FieldDefinitionCache.class);
+        fieldDefinitionCache = SpringContextHolder.getBean("fieldDefinitionCache", FieldDefinitionCache.class);
         return fieldDefinitionCache;
     }
 
@@ -33,20 +30,17 @@ public class RuleUtil {
      * @param context
      * @return null fieldName 或者查询不到，否则返回查询到的显示名
      */
-    public static String getDisplayName(String fieldCode, AbstractFraudContext context){
+    public static String getDisplayName(String fieldCode, AbstractFraudContext context) {
         if (StringUtils.isBlank(fieldCode)) {
             return fieldCode;
         }
 
-        IFieldDefinition fieldDefinition=context.getFieldDefinition(fieldCode);
-        if (null!=fieldDefinition){
+        IFieldDefinition fieldDefinition = context.getFieldDefinition(fieldCode);
+        if (null != fieldDefinition) {
             return fieldDefinition.getDisplayName();
         }
         return fieldCode;
     }
-
-
-
 
 
 }

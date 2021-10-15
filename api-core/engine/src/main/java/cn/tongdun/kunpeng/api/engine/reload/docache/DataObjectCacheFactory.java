@@ -34,6 +34,7 @@ public class DataObjectCacheFactory {
         put("policy_challenger",PolicyChallengerDO.class);
         put("event_type",EventTypeDO.class);
         put("custom_list_value",CustomListValueDO.class);
+        put("policy_custom_output",PolicyCustomOutputDO.class);
     }};
 
     public void register(Class clazz, IDataObjectCache doCache) {

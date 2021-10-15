@@ -3,15 +3,15 @@ package cn.tongdun.kunpeng.api.common.data;
 
 public interface IFieldDefinition {
 
-    String getFieldType() ;
+    String getFieldType();
 
     String getFieldCode();
 
-    String getDisplayName() ;
+    String getDisplayName();
 
-    String getProperty() ;
+    String getProperty();
 
-    String getDataType() ;
+    String getDataType();
 
     Integer getMaxLength();
 

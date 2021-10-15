@@ -6,7 +6,7 @@
     <parent>
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.3.22-api</version>
+        <version>1.3.29</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -75,7 +75,6 @@
             <artifactId>rule-detail</artifactId>
             <version>${project.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

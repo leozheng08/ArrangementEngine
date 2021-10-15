@@ -33,10 +33,10 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     DictionaryManager dictionaryManager;
 
     @Value("${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}")
-    private String KUNPENG_API_RAW_ACTIVITY = "kunpeng_api_raw_activity";
+    private String KUNPENG_API_RAW_ACTIVITY;
 
-    @Value("${kafka.kunpeng.consumer.activity.challenge.topic:${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}}")
-    private String KUNPENG_API_RAW_CHALLENGER_ACTIVITY = "kunpeng_api_challenger_activity";
+    @Value("${kafka.kunpeng.activity.challenge.topic:${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}}")
+    private String KUNPENG_API_RAW_CHALLENGER_ACTIVITY;
 
 
     @Override

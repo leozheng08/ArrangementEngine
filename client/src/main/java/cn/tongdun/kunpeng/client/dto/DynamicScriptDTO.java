@@ -7,7 +7,7 @@ import lombok.Data;
  * @Date: 2020/4/20 上午10:16
  */
 @Data
-public class DynamicScriptDTO extends CommonDTO{
+public class DynamicScriptDTO extends CommonDTO {
     /**
      * 名称 script_name
      */

@@ -2,42 +2,30 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
-import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
-import cn.tongdun.kunpeng.api.engine.dto.PolicyChallengerDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
-import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
-import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
-import cn.tongdun.kunpeng.api.engine.model.partner.Partner;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.IPolicyChallengerRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallenger;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallengerCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
-import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyChallengerEventDO;
-import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import cn.tongdun.tdframework.core.concurrent.ThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @Author: liang.chen
@@ -72,43 +60,45 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
     @Autowired
     private LocalCacheService localCacheService;
     @Autowired
-    private IPlatformIndexRepository policyIndicatrixItemRepository;
+    private IPlatformIndexRepository platformIndexRepository;
     @Autowired
-    private PlatformIndexCache policyIndicatrixItemCache;
+    private PlatformIndexCache platformIndexCache;
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
 
     @PostConstruct
-    public void init(){
-        reloadFactory.register(PolicyChallengerEventDO.class,this);
+    public void init() {
+        reloadFactory.register(PolicyChallengerEventDO.class, this);
     }
 
     @Override
-    public boolean create(PolicyChallengerEventDO eventDO){
-        return addOrUpdate(eventDO);
-    }
-    @Override
-    public boolean update(PolicyChallengerEventDO eventDO){
-        return addOrUpdate(eventDO);
-    }
-    @Override
-    public boolean activate(PolicyChallengerEventDO eventDO){
+    public boolean create(PolicyChallengerEventDO eventDO) {
         return addOrUpdate(eventDO);
     }
 
     @Override
-    public boolean remove(PolicyChallengerEventDO eventDO){
+    public boolean update(PolicyChallengerEventDO eventDO) {
+        return addOrUpdate(eventDO);
+    }
+
+    @Override
+    public boolean activate(PolicyChallengerEventDO eventDO) {
+        return addOrUpdate(eventDO);
+    }
+
+    @Override
+    public boolean remove(PolicyChallengerEventDO eventDO) {
         try {
             return removeByPolicyChallenger(policyChallengerRepository.queryByUuid(eventDO.getUuid()));
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"PolicyChallenger removeByPolicyChallenger failed", e);
+            logger.error(TraceUtils.getFormatTrace() + "PolicyChallenger removeByPolicyChallenger failed", e);
             return false;
         }
     }
 
     @Override
-    public boolean deactivate(PolicyChallengerEventDO eventDO){
+    public boolean deactivate(PolicyChallengerEventDO eventDO) {
         return remove(eventDO);
     }
 
@@ -122,7 +112,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
         return remove(eventDO);
     }
 
-    private boolean removeByPolicyChallenger(PolicyChallenger policyChallenger){
+    private boolean removeByPolicyChallenger(PolicyChallenger policyChallenger) {
         if (policyChallenger == null) {
             return true;
         }
@@ -132,62 +122,64 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
 
     /**
      * 更新事件类型
+     *
      * @return
      */
-    public boolean addOrUpdate(PolicyChallengerEventDO eventDO){
+    public boolean addOrUpdate(PolicyChallengerEventDO eventDO) {
         String uuid = eventDO.getUuid();
-        logger.debug(TraceUtils.getFormatTrace()+"PolicyChallenger reload start, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "PolicyChallenger reload start, uuid:{}", uuid);
         boolean result = false;
         try {
             PolicyChallenger policyChallenger = policyChallengerRepository.queryByUuid(uuid);
             //如果失效则删除缓存
-            if(policyChallenger == null || !policyChallenger.isValid()){
+            if (policyChallenger == null || !policyChallenger.isValid()) {
                 return remove(eventDO);
             }
 
-            policyChallengerCache.put(policyChallenger.getPolicyDefinitionUuid(),policyChallenger);
+            policyChallengerCache.put(policyChallenger.getPolicyDefinitionUuid(), policyChallenger);
 
             //加载挑战者策略信息
             loadPolicy(policyChallenger);
             result = true;
-        } catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"PolicyChallenger reload failed, uuid:{}",uuid,e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "PolicyChallenger reload failed, uuid:{}", uuid, e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace()+"PolicyChallenger reload success, uuid:{}",uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "PolicyChallenger reload success, uuid:{}", uuid);
         return result;
     }
 
 
     /**
      * 加载挑战者策略信息
+     *
      * @param policyChallenger
      */
-    private void loadPolicy(PolicyChallenger policyChallenger ){
+    private void loadPolicy(PolicyChallenger policyChallenger) {
         List<PolicyChallenger.Config> configs = policyChallenger.getChallengerConfig();
-        if(configs == null || configs.isEmpty()){
+        if (configs == null || configs.isEmpty()) {
             return;
         }
 
-        for(PolicyChallenger.Config config:configs){
-            if(StringUtils.isBlank(config.getVersionUuid())){
+        for (PolicyChallenger.Config config : configs) {
+            if (StringUtils.isBlank(config.getVersionUuid())) {
                 continue;
             }
             Policy policy = policyCache.get(config.getVersionUuid());
-            if(policy == null){ //如果原先策略未加载过，则加载到内存
+            if (policy == null) { //如果原先策略未加载过，则加载到内存
                 PolicyDTO policyDTO = policyRepository.queryByUuid(config.getVersionUuid());
-                if(policyDTO == null){
+                if (policyDTO == null) {
                     continue;
                 }
                 //如果失效仍缓存，便于返回404子码
-                if(!policyDTO.isValid()){
+                if (!policyDTO.isValid()) {
                     policy = policyConvertor.convert(policyDTO);
-                    policyCache.put(policy.getUuid(),policy);
+                    policyCache.put(policy.getUuid(), policy);
                     continue;
                 }
 
                 //加载策略各个子对象信息
-                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(),policyRepository,defaultConvertorFactory,localCacheService, policyIndicatrixItemRepository, policyIndicatrixItemCache,batchRemoteCallDataCache);
+                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache);
                 task.call();
             }
         }

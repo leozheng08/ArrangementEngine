@@ -20,5 +20,6 @@ android/deviceStatusAbnormal=cn.tongdun.kunpeng.api.basedata.rule.function.andro
 android/deviceAnomaly=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidDeviceLostFunction
 android/fpException=cn.tongdun.kunpeng.api.basedata.rule.function.android.AndroidFpFetchExceptionFunction
 location/addressMatch=cn.tongdun.kunpeng.api.basedata.rule.function.location.AddressMatchFunction
+location/proxy=cn.tongdun.kunpeng.api.basedata.rule.function.location.ProxyFunction
 keyword/wordList=cn.tongdun.kunpeng.api.application.keyword.function.KeywordFunction
 content/image=cn.tongdun.kunpeng.api.application.content.function.image.functionV1.ImageFunctionV1

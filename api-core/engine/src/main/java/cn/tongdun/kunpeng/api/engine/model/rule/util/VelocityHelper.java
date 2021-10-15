@@ -75,8 +75,8 @@ public class VelocityHelper {
         if (StringUtils.isBlank(fieldCode)) {
             return fieldCode;
         }
-        IFieldDefinition fieldDefinition=context.getFieldDefinition(fieldCode);
-        if (null!=fieldDefinition){
+        IFieldDefinition fieldDefinition = context.getFieldDefinition(fieldCode);
+        if (null != fieldDefinition) {
             return fieldDefinition.getDisplayName();
         }
         return fieldCode;
