@@ -40,6 +40,9 @@ public class AssignmentAction implements Action {
             case "context":
                 right = new Field(rightValue, "object");
                 break;
+            case "indicatrix":
+                right = new PlatformIndex(rightValue, false, null);
+                break;
             default:
                 throw new ParseException("AssignmentAction parse error!");
         }

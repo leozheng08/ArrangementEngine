@@ -65,7 +65,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
             ITimeContext timeContext = metrics.metricTimer(METRICS_API_RT_KEY,tags);
 
             String[] partnerTags = {
-                    METRICS_TAG_PARTNER_KEY, indicatrixRequest.getPartnerCode()};
+                    METRICS_TAG_PARTNER_CODE, indicatrixRequest.getPartnerCode()};
             ITimeContext timePartner = metrics.metricTimer(METRICS_API_PARTNER_RT_KEY,partnerTags);
 
             // 具体指标接口实现
