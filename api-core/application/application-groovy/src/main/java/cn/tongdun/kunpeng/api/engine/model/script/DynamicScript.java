@@ -3,8 +3,6 @@ package cn.tongdun.kunpeng.api.engine.model.script;
 import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @Author: liang.chen
  * @Date: 2019/12/16 下午3:21
@@ -56,6 +54,4 @@ public class DynamicScript extends StatusEntity {
      * 代码 script_code
      */
     private String scriptCode;
-
-    List<DynamicScriptField> scriptFieldList;
 }

@@ -77,7 +77,7 @@
         </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>script-default</artifactId>
+            <artifactId>field-default</artifactId>
             <version>${api-core.version}</version>
         </dependency>
 

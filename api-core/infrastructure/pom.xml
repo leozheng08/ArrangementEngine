@@ -19,12 +19,11 @@
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>engine</artifactId>
         </dependency>
-        <!-- 动态脚本 -->
+        <!-- 字段 -->
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
-            <artifactId>script-default</artifactId>
+            <artifactId>field-default</artifactId>
         </dependency>
-        <!-- 动态脚本 -->
         <dependency>
             <groupId>cn.tongdun</groupId>
             <artifactId>tdframework-core</artifactId>
