@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.client.data.impl.us;
 import cn.tongdun.kunpeng.client.data.IHitRule;
 import cn.tongdun.kunpeng.client.data.ISubPolicyResult;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,8 @@ import java.util.Map;
  * @author: yuanhang
  * @date: 2020-06-17 12:03
  **/
-public class PolicyResult {
+public class PolicyResult implements Serializable {
+    private static final long serialVersionUID = -76323123144234L;
 
     private boolean success;
 
