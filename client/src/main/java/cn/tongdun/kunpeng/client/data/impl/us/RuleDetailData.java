@@ -7,7 +7,6 @@ import java.io.Serializable;
  * @date: 2020-06-17 15:54
  **/
 public class RuleDetailData  implements Serializable {
-    private static final long serialVersionUID = -76322312312234L;
 
     private String description;
 

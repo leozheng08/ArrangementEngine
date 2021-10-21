@@ -12,7 +12,6 @@ import java.util.Map;
  * @date: 2020-06-17 12:03
  **/
 public class PolicyResult implements Serializable {
-    private static final long serialVersionUID = -76323123144234L;
 
     private boolean success;
 
