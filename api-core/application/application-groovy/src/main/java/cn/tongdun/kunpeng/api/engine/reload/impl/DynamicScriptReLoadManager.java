@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyObjectCache;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.WrappedGroovyObject;
+import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicyCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.DynamicScriptEventDO;
@@ -25,10 +26,13 @@ import javax.annotation.PostConstruct;
 @Component
 public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO> {
 
-    private Logger logger = LoggerFactory.getLogger(DynamicScriptReLoadManager.class);
+    private Logger logger = LoggerFactory.getLogger(SubPolicyReLoadManager.class);
 
     @Autowired
     private IDynamicScriptRepository dynamicScriptRepository;
+
+    @Autowired
+    private SubPolicyCache subPolicyCache;
 
     @Autowired
     GroovyCompileManager groovyCompileManager;
@@ -84,6 +88,7 @@ public class DynamicScriptReLoadManager implements IReload<DynamicScriptEventDO>
             if (dynamicScript == null || !dynamicScript.isValid()) {
                 return remove(eventDO);
             }
+
             groovyCompileManager.addOrUpdate(dynamicScript);
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "DynamicScript reload failed, uuid:{}", uuid, e);
