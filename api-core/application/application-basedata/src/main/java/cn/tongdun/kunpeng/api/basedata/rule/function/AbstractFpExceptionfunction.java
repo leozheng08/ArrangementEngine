@@ -33,7 +33,7 @@ import java.util.Set;
  **/
 public abstract class AbstractFpExceptionfunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebFpFetchExceptionFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractFpExceptionfunction.class);
 
     private Set<String> codeSet;
 
