@@ -41,7 +41,11 @@ public class AssignmentAction implements Action {
                 right = new Field(rightValue, "object");
                 break;
             case "indicatrix":
-                right = new PlatformIndex(rightValue, false, null);
+                String rightValueDataType = JsonUtil.getString(json,"rightValueDataType");
+                if(null != rightValueDataType){
+                    rightValueDataType = rightValueDataType.toLowerCase();
+                }
+                right = new PlatformIndex(rightValue, false, rightValueDataType);
                 break;
             case "index":
                 right = new PolicyIndex(rightValue);
