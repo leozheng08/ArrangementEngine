@@ -34,3 +34,12 @@ v1.3.21(2021-08-31)
 v1.3.22(2021-09-07)
 - 合并代码
 
+v1.3.33(2021-10-22)
+- bugfix:解决dubbo调用的序列化问题
+  client包下新增两个类USRiskResponse，USRiskResponseFactory
+  client包下部分类实现序列化接口
+备注：本次发布业务层仅涉及kunpeng-saas-api，仅升级类client包版本，未做其他变更
+
+
+v1.3.34(2021-10-27)
+- bugfix:修复规则不生效

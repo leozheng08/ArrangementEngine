@@ -1,10 +1,12 @@
 package cn.tongdun.kunpeng.client.data.impl.us;
 
+import java.io.Serializable;
+
 /**
  * @author: yuanhang
  * @date: 2020-06-17 15:54
  **/
-public class RuleDetailData {
+public class RuleDetailData  implements Serializable {
 
     private String description;
 

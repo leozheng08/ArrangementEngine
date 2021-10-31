@@ -1,16 +1,5 @@
 package cn.tongdun.kunpeng.api.engine.model.script.groovy;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
-import cn.fraudmetrix.module.riskbase.object.CardBinNewDO;
-import cn.fraudmetrix.module.riskbase.object.DistrictDO;
-import cn.fraudmetrix.module.riskbase.object.IdInfo;
-import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
-import cn.fraudmetrix.module.riskbase.service.intf.CardBinNewService;
-import cn.fraudmetrix.module.riskbase.service.intf.MobileInfoQueryService;
-import cn.tongdun.kunpeng.api.basedata.service.elfin.ElfinBaseDataService;
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
-import cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.danmaku.DanmakuApi;
-import cn.tongdun.kunpeng.api.engine.model.script.groovy.nlas.image.GleanerImageApi;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -30,21 +19,9 @@ public class GroovyClassGenerator {
 
     static {
         StringBuilder builder = new StringBuilder();
-        builder.append("import ").append(AbstractFraudContext.class.getName()).append("\n");
         builder.append("import ").append(Map.class.getName()).append("\n");
         builder.append("import ").append(SimpleDateFormat.class.getName()).append("\n");
         builder.append("import ").append(StaticObjects.class.getName()).append("\n");
-
-        builder.append("import ").append(DistrictDO.class.getName()).append("\n");
-        builder.append("import ").append(IdInfo.class.getName()).append("\n");
-        builder.append("import ").append(MobileInfoDO.class.getName()).append("\n");
-        builder.append("import ").append(MobileInfoQueryService.class.getName()).append("\n");
-        builder.append("import ").append(GeoipEntity.class.getName()).append("\n");
-        builder.append("import ").append(DanmakuApi.class.getName()).append("\n");
-        builder.append("import ").append(GleanerImageApi.class.getName()).append("\n");
-        builder.append("import ").append(CardBinNewDO.class.getName()).append("\n");
-        builder.append("import ").append(CardBinNewService.class.getName()).append("\n");
-        builder.append("import ").append(ElfinBaseDataService.class.getName()).append("\n");
 
         IMPORT = builder.toString();
     }
@@ -95,6 +72,20 @@ public class GroovyClassGenerator {
         return instance;
     }
 
+    /**
+     * 编译方法
+     */
+    public static boolean compileMethod(String methodName, String methodBody) {
+        GroovyClassGenerator genrator = new GroovyClassGenerator("CompileTest");
+        genrator.init();
+        genrator.appendMethod(methodName, methodBody);
+        try {
+            genrator.compileGroovySource();
+        } catch (CompilationFailedException | InstantiationException | IllegalAccessException | IOException e) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 编译方法
@@ -124,7 +115,7 @@ public class GroovyClassGenerator {
         StringBuilder method = new StringBuilder();
         method.append("static ").append(methodName)
                 .append(" (context")
-                .append(",mobileQueryService,idService,cardBinNewService,elfinBaseDataService")
+                //.append(",mobileQueryService,idService,districtService,binService,modelService,gaeaCallerService,cardBinNewService,elfinBaseDataService")
                 .append(") {\n")
                 .append(methodBody)
                 .append("\n}\n");

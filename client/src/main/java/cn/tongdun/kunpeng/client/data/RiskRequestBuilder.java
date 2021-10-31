@@ -1,12 +1,13 @@
 package cn.tongdun.kunpeng.client.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @Author: liang.chen
  * @Date: 2020/3/2 下午1:11
  */
-public class RiskRequestBuilder {
+public class RiskRequestBuilder  implements Serializable {
     private RiskRequest riskRequest = new RiskRequest();
     
 

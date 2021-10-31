@@ -14,13 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StaticObjects {
 
-    private static ConcurrentHashMap<String, Object> objects            = new ConcurrentHashMap<>();
-    private static final String                      ROOT               = "groovy/";
-    private static Logger logger             = LoggerFactory.getLogger(StaticObjects.class);
+    private static ConcurrentHashMap<String, Object> objects = new ConcurrentHashMap<>();
+    private static final String ROOT = "groovy/";
+    private static Logger logger = LoggerFactory.getLogger(StaticObjects.class);
     private static Logger emailFeatureLogger = LoggerFactory.getLogger("emailFeature");
-    private static ConcurrentHashSet<String>         englishList;
-    private static ConcurrentHashSet<String>         nameList;
-    private static ConcurrentHashSet<String>         pinyinList;
+    private static ConcurrentHashSet<String> englishList;
+    private static ConcurrentHashSet<String> nameList;
+    private static ConcurrentHashSet<String> pinyinList;
 
     public static void load() {
         englishList = loadSet("english.txt");
@@ -35,7 +35,7 @@ public class StaticObjects {
 
     public static void saveFeature(AbstractFraudContext context, String feature) {
         String id = context.getSeqId();
-        emailFeatureLogger.info(TraceUtils.getFormatTrace()+id + ": " + feature);
+        emailFeatureLogger.info(TraceUtils.getFormatTrace() + id + ": " + feature);
     }
 
     private static ConcurrentHashSet<String> loadSet(String file) {
@@ -51,7 +51,7 @@ public class StaticObjects {
             }
             return result;
         } catch (IOException e) {
-            logger.error(TraceUtils.getFormatTrace()+"动态脚本加载静态文件", file, e.getMessage());
+            logger.error(TraceUtils.getFormatTrace() + "动态脚本加载静态文件", file, e.getMessage());
             return new ConcurrentHashSet<>();
         }
     }

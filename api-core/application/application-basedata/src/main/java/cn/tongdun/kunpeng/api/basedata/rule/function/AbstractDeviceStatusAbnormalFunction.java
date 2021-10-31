@@ -28,7 +28,7 @@ import java.util.*;
  */
 public abstract class AbstractDeviceStatusAbnormalFunction extends AbstractFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebDeviceStatusAbnormalFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDeviceStatusAbnormalFunction.class);
     protected Set<String> abnomalTagSet;
 
     @Override
