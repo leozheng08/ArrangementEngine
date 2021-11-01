@@ -44,6 +44,8 @@ public class AssignmentAction implements Action {
                 String rightValueDataType = JsonUtil.getString(json,"rightValueDataType");
                 if(null != rightValueDataType){
                     rightValueDataType = rightValueDataType.toLowerCase();
+                }else {
+                    rightValueDataType = "double";
                 }
                 right = new PlatformIndex(rightValue, false, rightValueDataType);
                 break;
