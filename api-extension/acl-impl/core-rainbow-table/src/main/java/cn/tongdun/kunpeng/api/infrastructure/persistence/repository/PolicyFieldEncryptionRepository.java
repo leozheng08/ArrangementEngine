@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 import cn.tongdun.kunpeng.api.engine.dto.PolicyFieldEncryptionDTO;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.IPolicyFieldEncryptionRepository;
-import cn.tongdun.kunpeng.share.dataobject.PolicyFieldEncryptionDO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

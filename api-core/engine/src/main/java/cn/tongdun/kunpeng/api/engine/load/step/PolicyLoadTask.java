@@ -196,8 +196,8 @@ public class PolicyLoadTask implements Callable<Boolean> {
                     policyFieldEncryptionList.add(policyFieldEncryption);
                 }
             }
-            // key：策略uuid value：该策略uuid下所有的加密字段
-            fieldEncryptionCache.put(policyUuid, policyFieldEncryptionList);
+            // key：策略集uuid value：该策略uuid下所有的加密字段
+            fieldEncryptionCache.put(policyDTO.getPolicyDefinitionUuid(), policyFieldEncryptionList);
 
             // 缓存必传参数
             IConvertor<PolicyFieldNecessaryDTO, PolicyFieldNecessary> fieldNecessaryIConvertor = convertorFactory.getConvertor(PolicyFieldEncryptionDTO.class);
@@ -207,8 +207,8 @@ public class PolicyLoadTask implements Callable<Boolean> {
                 PolicyFieldNecessary policyFieldNecessary = fieldNecessaryIConvertor.convert(policyFieldNecessaryDTO);
                 policyFieldNecessaryList.add(policyFieldNecessary);
             }
-            // key：策略uuid value：该策略uuid下所有的必传字段
-            fieldNecessaryCache.put(policyUuid, policyFieldNecessaryList);
+            // key：策略集uuid value：该策略uuid下所有的必传字段
+            fieldNecessaryCache.put(policyDTO.getPolicyDefinitionUuid(), policyFieldNecessaryList);
 
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
