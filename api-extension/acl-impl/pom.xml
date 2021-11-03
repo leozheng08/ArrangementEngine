@@ -19,6 +19,7 @@
         <module>admin-application</module>
         <module>partner-cluster</module>
         <module>output</module>
+        <module>core-rainbow-table</module>
         <module>field</module>
     </modules>
 

@@ -16,6 +16,10 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeType;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryption;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryptionCache;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessary;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessaryCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
@@ -50,8 +54,20 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private PolicyCustomOutputCache outputCache;
 
+    /**
+     * 加密字段的缓存
+     */
+    private PolicyFieldEncryptionCache fieldEncryptionCache;
+
+    /**
+     * 必传字段的缓存
+     */
+    private PolicyFieldNecessaryCache fieldNecessaryCache;
+
+
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
-                          IPlatformIndexRepository platformIndexRepository, PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache,PolicyCustomOutputCache outputCache) {
+                          IPlatformIndexRepository platformIndexRepository, PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache, PolicyCustomOutputCache outputCache, PolicyFieldNecessaryCache fieldNecessaryCache
+    , PolicyFieldEncryptionCache fieldEncryptionCache) {
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
@@ -60,6 +76,8 @@ public class PolicyLoadTask implements Callable<Boolean> {
         this.platformIndexCache = platformIndexCache;
         this.batchRemoteCallDataCache = batchRemoteCallDataCache;
         this.outputCache = outputCache;
+        this.fieldEncryptionCache = fieldEncryptionCache;
+        this.fieldNecessaryCache = fieldNecessaryCache;
     }
 
     /**
@@ -144,33 +162,57 @@ public class PolicyLoadTask implements Callable<Boolean> {
             localCacheService.put(Policy.class, policy.getUuid(), policy);
             //缓存自定义输出，平台层有默认实现，不会进行缓存
             List<PolicyCustomOutputDTO> list = policyDTO.getPolicyCustomOutputDTOList();
-            if(!CollectionUtils.isEmpty(list)){
-                for (PolicyCustomOutputDTO dto:
+            if (!CollectionUtils.isEmpty(list)) {
+                for (PolicyCustomOutputDTO dto :
                         list) {
-                    if(dto.isDeleted()){
+                    if (dto.isDeleted()) {
                         continue;
                     }
                     IConvertor<PolicyCustomOutputDTO, PolicyCustomOutput> convertor = convertorFactory.getConvertor(PolicyCustomOutputDTO.class);
                     PolicyCustomOutput output = convertor.convert(dto);
                     //缓存自定义输出
                     List<PolicyCustomOutput> policyCustomOutputList = outputCache.get(output.getPolicyUuid());
-                    if(null == policyCustomOutputList){
+                    if (null == policyCustomOutputList) {
                         policyCustomOutputList = new ArrayList<>();
                     }
                     //缓存规则
-                    if(output.isConditionConfig()){
+                    if (output.isConditionConfig()) {
                         Rule rule = output.getRule();
-                        localCacheService.put(Rule.class,rule.getUuid(),rule);
+                        localCacheService.put(Rule.class, rule.getUuid(), rule);
                         output.setRuleUuid(rule.getUuid());
                     }
                     policyCustomOutputList.add(output);
                     //key:策略uuid   value:该策略uuid下所有自定义输出对象
-                    outputCache.put(output.getPolicyUuid(),policyCustomOutputList);
+                    outputCache.put(output.getPolicyUuid(), policyCustomOutputList);
                 }
             }
-        }catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
-                    policyUuid, policyDTO!=null?policyDTO.getPartnerCode():"",policyDTO != null? policyDTO.getEventId():"",
+            // 缓存加密字段
+            List<PolicyFieldEncryptionDTO> policyFieldEncryptionDTOList = policyDTO.getPolicyFieldEncryptionDTOList();
+            List<PolicyFieldEncryption> policyFieldEncryptionList = new ArrayList<>();
+            IConvertor<PolicyFieldEncryptionDTO, PolicyFieldEncryption> fieldEncryptionIConvertor = convertorFactory.getConvertor(PolicyFieldEncryptionDTO.class);
+            if (!CollectionUtils.isEmpty(policyFieldEncryptionDTOList)) {
+                for (PolicyFieldEncryptionDTO policyFieldEncryptionDTO : policyFieldEncryptionDTOList) {
+                    PolicyFieldEncryption policyFieldEncryption = fieldEncryptionIConvertor.convert(policyFieldEncryptionDTO);
+                    policyFieldEncryptionList.add(policyFieldEncryption);
+                }
+            }
+            // key：策略uuid value：该策略uuid下所有的加密字段
+            fieldEncryptionCache.put(policyUuid, policyFieldEncryptionList);
+
+            // 缓存必传参数
+            IConvertor<PolicyFieldNecessaryDTO, PolicyFieldNecessary> fieldNecessaryIConvertor = convertorFactory.getConvertor(PolicyFieldEncryptionDTO.class);
+            List<PolicyFieldNecessaryDTO> policyFieldNecessaryDTOList = policyDTO.getPolicyFieldNecessaryDTOList();
+            List<PolicyFieldNecessary> policyFieldNecessaryList = new ArrayList<>();
+            for (PolicyFieldNecessaryDTO policyFieldNecessaryDTO : policyFieldNecessaryDTOList) {
+                PolicyFieldNecessary policyFieldNecessary = fieldNecessaryIConvertor.convert(policyFieldNecessaryDTO);
+                policyFieldNecessaryList.add(policyFieldNecessary);
+            }
+            // key：策略uuid value：该策略uuid下所有的必传字段
+            fieldNecessaryCache.put(policyUuid, policyFieldNecessaryList);
+
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",
+                    policyUuid, policyDTO != null ? policyDTO.getPartnerCode() : "", policyDTO != null ? policyDTO.getEventId() : "",
                     e);
             return false;
         }

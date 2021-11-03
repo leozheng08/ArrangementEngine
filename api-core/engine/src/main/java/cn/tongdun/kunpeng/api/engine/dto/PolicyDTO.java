@@ -22,7 +22,7 @@ public class PolicyDTO extends CommonDTO {
 
     private String name;
 
-    private List<SubPolicyDTO>  subPolicyList;
+    private List<SubPolicyDTO> subPolicyList;
     private List<PolicyIndicatrixItemDTO> policyIndicatrixItemList;
     private List<PolicyFieldDTO> policyFieldList;
 
@@ -30,6 +30,16 @@ public class PolicyDTO extends CommonDTO {
     private DecisionFlowDTO decisionFlowDTO;
     private List<IndexDefinitionDTO> indexDefinitionList;
     private List<PolicyCustomOutputDTO> policyCustomOutputDTOList;
+    /**
+     * 必传字段
+     */
+    private List<PolicyFieldNecessaryDTO> policyFieldNecessaryDTOList;
+
+    /**
+     * 加密字段
+     */
+    private List<PolicyFieldEncryptionDTO> policyFieldEncryptionDTOList;
+
     /**
      * 合作方
      */

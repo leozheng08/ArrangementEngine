@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyFieldNecessaryDAO">
+
+    <resultMap id="BaseResultMap"
+               type="cn.tongdun.kunpeng.share.dataobject.PolicyFieldNecessaryDO">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+        <result property="policyDefinitionUuid" column="policy_definition_uuid" jdbcType="VARCHAR"/>
+        <result property="fieldCode" column="field_code" jdbcType="VARCHAR"/>
+        <result property="fieldName" column="field_name" jdbcType="VARCHAR"/>
+        <result property="property" column="property" jdbcType="VARCHAR"/>
+        <result property="fieldType" column="field_type" jdbcType="VARCHAR"/>
+        <result property="necessary" column="necessary" jdbcType="TINYINT"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="gmtModify" column="gmt_modify" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , uuid, policy_definition_uuid, field_code, field_name, property, field_type, necessary, gmt_create, gmt_modify, creator, operator
+    </sql>
+
+    <select id="selectByPolicyDefinitionUuid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from policy_field_necessary
+        where policy_definition_uuid = #{policyDefinitionUuid}
+    </select>
+</mapper>

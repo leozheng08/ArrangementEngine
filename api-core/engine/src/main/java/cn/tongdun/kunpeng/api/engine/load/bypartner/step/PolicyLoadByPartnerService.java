@@ -13,6 +13,8 @@ import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutputCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryptionCache;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessaryCache;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import com.google.common.collect.Sets;
@@ -67,6 +69,12 @@ public class PolicyLoadByPartnerService {
     @Autowired
     private PolicyCustomOutputCache outputCache;
 
+    @Autowired
+    private PolicyFieldNecessaryCache fieldNecessaryCache;
+
+    @Autowired
+    private PolicyFieldEncryptionCache fieldEncryptionCache;
+
     @PostConstruct
     public void init() {
         this.executeThreadPool = threadService.createThreadPool(
@@ -103,7 +111,7 @@ public class PolicyLoadByPartnerService {
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache,outputCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache,outputCache, fieldNecessaryCache, fieldEncryptionCache);
             tasks.add(task);
         }
 
