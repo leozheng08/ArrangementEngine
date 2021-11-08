@@ -5,7 +5,7 @@
     <parent>
         <artifactId>event-notify</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.3.34-api</version>
+        <version>1.3.35-api</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
