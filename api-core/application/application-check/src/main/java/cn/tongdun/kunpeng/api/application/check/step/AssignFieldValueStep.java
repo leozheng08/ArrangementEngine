@@ -106,13 +106,13 @@ public class AssignFieldValueStep implements IRiskStep {
         //如果客户有传事件发生时间，为客户传的为准
         try {
             Object eventOccurTime = request.getFieldValues().get("eventOccurTime");
-            if (eventOccurTime != null && eventOccurTime instanceof String) {
+            if (eventOccurTime != null && StringUtils.isNotEmpty(String.valueOf(eventOccurTime)) && eventOccurTime instanceof String) {
                 Date date = DateUtil.parseDateTimeUTC(eventOccurTime.toString());
                 if (KUNPENG_PARTNER_TIME.contains(context.getPartnerCode())) {
                     date = DateUtil.parseDateTimeBeiJing(eventOccurTime.toString());
                 }
                 context.setEventOccurTime(date);
-            } else if (eventOccurTime != null && eventOccurTime instanceof Date) {
+            } else if (eventOccurTime != null && StringUtils.isNotEmpty(String.valueOf(eventOccurTime)) && eventOccurTime instanceof Date) {
                 context.setEventOccurTime((Date) eventOccurTime);
             }
         } catch (Exception e) {
