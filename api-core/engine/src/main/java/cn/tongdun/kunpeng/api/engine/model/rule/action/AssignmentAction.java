@@ -40,6 +40,18 @@ public class AssignmentAction implements Action {
             case "context":
                 right = new Field(rightValue, "object");
                 break;
+            case "indicatrix":
+                String rightValueDataType = JsonUtil.getString(json,"rightValueDataType");
+                if(null != rightValueDataType){
+                    rightValueDataType = rightValueDataType.toLowerCase();
+                }else {
+                    rightValueDataType = "double";
+                }
+                right = new PlatformIndex(rightValue, false, rightValueDataType);
+                break;
+            case "index":
+                right = new PolicyIndex(rightValue);
+                break;
             default:
                 throw new ParseException("AssignmentAction parse error!");
         }
