@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.common.data;
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.client.data.IOutputField;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
@@ -315,6 +316,11 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 反欺诈名单库批量调用结果
      */
     private Map<String, Object> antiFraudNornsBulkResultMap;
+
+    /**
+     * 加密字段信息 key: fieldName value:明文##密文
+     */
+    private ConcurrentHashMap<String, String> encryptionFields = new ConcurrentHashMap<>();
 
     /**
      * 添加异常子码及对应外部系统的原因码
@@ -647,4 +653,23 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         }
     }
 
+    public ConcurrentHashMap<String, String> getEncryptionFields() {
+        return encryptionFields;
+    }
+
+    public void setEncryptionFields(ConcurrentHashMap<String, String> encryptionFields) {
+        this.encryptionFields = encryptionFields;
+    }
+
+    public void appendEncryptionField(String fieldName, String fieldValue, String encryptionValue) {
+        if (StringUtils.isAnyBlank(fieldName, encryptionValue)) {
+            return;
+        }
+        if (StringUtils.isBlank(fieldValue)) {
+            this.encryptionFields.put(fieldName, encryptionValue);
+        } else {
+            this.encryptionFields.put(fieldName, fieldValue + Constant.EncryptionField.POUND_SIGN + encryptionValue);
+        }
+
+    }
 }
