@@ -11,10 +11,13 @@
     <result column="cluster" property="cluster" jdbcType="VARCHAR" />
     <result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="version" property="version" jdbcType="VARCHAR"/>
+    <result column="is_new" property="isNew" jdbcType="TINYINT" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,
+    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,status,version,is_new
     status
   </sql>
 
@@ -30,5 +33,52 @@
     <include refid="Base_Column_List" />
     from partner_cluster
     where status = 1
+  </select>
+
+  <update id="update">
+    update partner_cluster
+    <set>
+      <if test="uuid != null and uuid != ''">
+        uuid = #{uuid},
+      </if>
+      <if test="isNew != null and isNew != ''">
+        is_new = #{isNew},
+      </if>
+      <if test="version != null and version != ''">
+        version = #{version},
+      </if>
+      <if test="status != null and status != ''">
+        status = #{status},
+      </if>
+      <if test="partnerCode != null and partnerCode != ''">
+        partner_code = #{partnerCode},
+      </if>
+      <if test="cluster != null and cluster != ''">
+        cluster = #{cluster},
+      </if>
+      <if test="bizCode != null and bizCode != ''">
+        biz_code = #{bizCode},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate},
+      </if>
+      <if test="gmtModify != null">
+        gmt_modify = #{gmtModify},
+      </if>
+      <if test="creator != null and creator != ''">
+        creator = #{creator},
+      </if>
+      <if test="operator != null and operator != ''">
+        operator = #{operator},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <select id="selectByUuid" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from partner_cluster
+    where uuid = #{uuid} status = 1
   </select>
 </mapper>

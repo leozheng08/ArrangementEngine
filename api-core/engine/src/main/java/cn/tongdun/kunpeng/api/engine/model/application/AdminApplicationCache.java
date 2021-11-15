@@ -107,13 +107,26 @@ public class AdminApplicationCache extends AbstractLocalCache<String,AdminApplic
     }
 
     @Override
-    public AdminApplication remove(String uuid) {
-        return null;
+    public AdminApplication remove(String key) {
+        try {
+            AdminApplication adminApplication = adminApplicationTimingCache.get(key);
+            appNameToSecretKey.remove(key);
+            adminApplicationTimingCache.refresh(key);
+            return adminApplication;
+        } catch (ExecutionException e) {
+            logger.error(TraceUtils.getFormatTrace() + "adminApplicationTimingCache.get error", e);
+            return null;
+        }
     }
 
 
     public void put(String partnerCode, String appName, AdminApplication adminApplication){
         put(generateKey(partnerCode,appName),adminApplication);
+    }
+
+    public void remove(AdminApplication adminApplication){
+        String key = generateKey(adminApplication.getPartnerCode(),adminApplication.getAppName());
+        remove(key);
     }
 
 
