@@ -10,7 +10,7 @@
     <dubbo:provider>
         <dubbo:parameter key="remote.timestamp" value="#{ T(java.lang.System).currentTimeMillis() }"/>
         <dubbo:parameter key="warmup" value="360000"/>
-        <dubbo:parameter key="cluster" value="${CLUSTER}"/>
+        <dubbo:parameter key="clusterName" value="${CLUSTER}"/>
     </dubbo:provider>
 
     <bean id="smartServerHelper" class="cn.tongdun.arch.dubbo.SmartServerHelper" init-method="init">
