@@ -32,7 +32,7 @@ public interface PartnerClusterDAO {
      * 更新
      * @param partnerClusterDO
      */
-    void update(PartnerClusterDO partnerClusterDO);
+    int update(PartnerClusterDO partnerClusterDO);
 
 
 }

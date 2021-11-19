@@ -14,11 +14,11 @@
     <result column="version" property="version" jdbcType="VARCHAR"/>
     <result column="is_new" property="isNew" jdbcType="TINYINT" />
     <result column="uuid" property="uuid" jdbcType="VARCHAR"/>
+    <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,status,version,is_new
-    status
+    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,status,version,is_new,status,concurrency_version
   </sql>
 
   <select id="selectAvailableByCluster" resultMap="BaseResultMap" >
@@ -38,9 +38,6 @@
   <update id="update">
     update partner_cluster
     <set>
-      <if test="uuid != null and uuid != ''">
-        uuid = #{uuid},
-      </if>
       <if test="isNew != null and isNew != ''">
         is_new = #{isNew},
       </if>
@@ -71,14 +68,17 @@
       <if test="operator != null and operator != ''">
         operator = #{operator},
       </if>
+      <if test="concurrencyVersion != null and concurrencyVersion != ''">
+        concurrency_version = #{concurrencyVersion} + 1,
+      </if>
     </set>
-    where id = #{id}
+    where id = #{id} and concurrency_version = #{concurrencyVersion}
   </update>
 
   <select id="selectByUuid" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from partner_cluster
-    where uuid = #{uuid} status = 1
+    where uuid = #{uuid} and status = 1
   </select>
 </mapper>

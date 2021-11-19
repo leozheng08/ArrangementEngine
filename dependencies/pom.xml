@@ -578,6 +578,12 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.fraudmetrix</groupId>
+                <artifactId>chassis-api-partner</artifactId>
+                <version>1.1.16</version>
+            </dependency>
+
         </dependencies>
 
 
