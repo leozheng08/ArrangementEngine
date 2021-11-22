@@ -35,6 +35,7 @@ public class DataObjectCacheFactory {
         put("event_type",EventTypeDO.class);
         put("custom_list_value",CustomListValueDO.class);
         put("policy_custom_output",PolicyCustomOutputDO.class);
+        put("partner_cluster",PartnerClusterDO.class);
     }};
 
     public void register(Class clazz, IDataObjectCache doCache) {

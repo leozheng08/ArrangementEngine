@@ -44,6 +44,7 @@ public class EventMsgParser {
         put("app", AdminApplication.class);
         put("audit_rule", AuditRuleEventDO.class);
         put("policy_custom_output",PolicyCustomOutputEventDO.class);
+        put("partner_cluster",PartnerClusterEventDO.class);
         put("policy_field_encryption", PolicyFieldEncryptionEventDO.class);
         put("policy_field_necessary", PolicyFieldNecessaryEventDO.class);
     }};
