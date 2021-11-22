@@ -195,20 +195,22 @@ public class PolicyLoadTask implements Callable<Boolean> {
                     PolicyFieldEncryption policyFieldEncryption = fieldEncryptionIConvertor.convert(policyFieldEncryptionDTO);
                     policyFieldEncryptionList.add(policyFieldEncryption);
                 }
+                // key：策略集uuid value：该策略uuid下所有的加密字段
+                fieldEncryptionCache.put(policyDTO.getPolicyDefinitionUuid(), policyFieldEncryptionList);
             }
-            // key：策略集uuid value：该策略uuid下所有的加密字段
-            fieldEncryptionCache.put(policyDTO.getPolicyDefinitionUuid(), policyFieldEncryptionList);
 
             // 缓存必传参数
-            IConvertor<PolicyFieldNecessaryDTO, PolicyFieldNecessary> fieldNecessaryIConvertor = convertorFactory.getConvertor(PolicyFieldEncryptionDTO.class);
+            IConvertor<PolicyFieldNecessaryDTO, PolicyFieldNecessary> fieldNecessaryIConvertor = convertorFactory.getConvertor(PolicyFieldNecessaryDTO.class);
             List<PolicyFieldNecessaryDTO> policyFieldNecessaryDTOList = policyDTO.getPolicyFieldNecessaryDTOList();
             List<PolicyFieldNecessary> policyFieldNecessaryList = new ArrayList<>();
-            for (PolicyFieldNecessaryDTO policyFieldNecessaryDTO : policyFieldNecessaryDTOList) {
-                PolicyFieldNecessary policyFieldNecessary = fieldNecessaryIConvertor.convert(policyFieldNecessaryDTO);
-                policyFieldNecessaryList.add(policyFieldNecessary);
+            if (!CollectionUtils.isEmpty(policyFieldNecessaryDTOList)) {
+                for (PolicyFieldNecessaryDTO policyFieldNecessaryDTO : policyFieldNecessaryDTOList) {
+                    PolicyFieldNecessary policyFieldNecessary = fieldNecessaryIConvertor.convert(policyFieldNecessaryDTO);
+                    policyFieldNecessaryList.add(policyFieldNecessary);
+                }
+                // key：策略集uuid value：该策略uuid下所有的必传字段
+                fieldNecessaryCache.put(policyDTO.getPolicyDefinitionUuid(), policyFieldNecessaryList);
             }
-            // key：策略集uuid value：该策略uuid下所有的必传字段
-            fieldNecessaryCache.put(policyDTO.getPolicyDefinitionUuid(), policyFieldNecessaryList);
 
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "LoadPolicyTask error, policyUuid:{}, partnerCode:{}, eventId:{}",

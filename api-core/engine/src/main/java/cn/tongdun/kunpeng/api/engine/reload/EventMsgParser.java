@@ -44,6 +44,8 @@ public class EventMsgParser {
         put("app", AdminApplication.class);
         put("audit_rule", AuditRuleEventDO.class);
         put("policy_custom_output",PolicyCustomOutputEventDO.class);
+        put("policy_field_encryption", PolicyFieldEncryptionEventDO.class);
+        put("policy_field_necessary", PolicyFieldNecessaryEventDO.class);
     }};
 
     public void registerMsgEntity(String key, Class entityClass){
