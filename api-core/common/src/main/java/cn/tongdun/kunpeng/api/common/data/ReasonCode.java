@@ -61,6 +61,7 @@ public enum ReasonCode {
     PARAM_NECESSARY_FIELD_ATTRIBUTE_ERROR("10103", "字段属性读取失败"),
     PARAM_NECESSARY_FIELD_TIMEOUT("10104", "必传字段获取超时"),
     PARAM_NECESSARY_FIELD_ERROR("10105", "必传字段获取失败"),
+    PARAM_ENCRYPTION_FIELD_SIZE_OUT("10106", "彩虹表调用参数过多"),
 
 
 
