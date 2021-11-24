@@ -18,7 +18,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,status,version,is_new,status,concurrency_version
+    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,version,is_new,status,concurrency_version
   </sql>
 
   <select id="selectAvailableByCluster" resultMap="BaseResultMap" >
@@ -72,7 +72,7 @@
         concurrency_version = #{concurrencyVersion} + 1,
       </if>
     </set>
-    where id = #{id} and concurrency_version = #{concurrencyVersion}
+    where uuid = #{uuid} and concurrency_version = #{concurrencyVersion}
   </update>
 
   <select id="selectByUuid" resultMap="BaseResultMap">
