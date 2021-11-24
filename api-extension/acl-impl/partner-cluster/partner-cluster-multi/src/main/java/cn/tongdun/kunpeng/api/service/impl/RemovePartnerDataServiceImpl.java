@@ -69,9 +69,9 @@ public class RemovePartnerDataServiceImpl implements IRemovePartnerDataService {
         Set<String> partners = new HashSet<>();
         partners.add(partnerCode);
         //判断该集群下有无此合作方，有删除缓存，无跳过
-//        if(!partnerClusterCache.contains(partnerCode)){
-//            return;
-//        }
+        if(!partnerClusterCache.contains(partnerCode)){
+            return;
+        }
         //刷新合作方集群缓存
         partnerClusterCache.remove(partnerCode);
         //应用对象数据

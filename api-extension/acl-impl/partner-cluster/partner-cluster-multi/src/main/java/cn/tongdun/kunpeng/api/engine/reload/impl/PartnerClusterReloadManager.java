@@ -120,9 +120,9 @@ public class PartnerClusterReloadManager implements IReload<PartnerClusterEventD
             removePartnerDataServiceImpl.remove(partnerClusterDO.getPartnerCode());
             //上线
             //校验是否在该集群加载
-//            if (!partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
-//                return false;
-//            }
+            if (!partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
+                return false;
+            }
             loadPartnerDataServiceImpl.load(partnerClusterDO.getPartnerCode());
             //加载完成
             partnerClusterDO.setIsNew(0);
