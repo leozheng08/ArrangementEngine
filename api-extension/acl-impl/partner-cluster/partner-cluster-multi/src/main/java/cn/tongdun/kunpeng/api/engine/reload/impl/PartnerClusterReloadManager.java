@@ -114,16 +114,17 @@ public class PartnerClusterReloadManager implements IReload<PartnerClusterEventD
             if (partnerClusterDO.getIsNew() != 1) {
                 return true;
             }
+            //下掉
+            removePartnerDataServiceImpl.remove(partnerClusterDO.getPartnerCode());
+            int update = 0;
             //上线
             //校验是否在该集群加载
-            int update = 0;
             if (partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
                 loadPartnerDataServiceImpl.load(partnerClusterDO.getPartnerCode());
                 //加载完成
                 update = partnerClusterDAO.upCluster(partnerClusterDO.getUuid());
             }
-            //下掉
-            removePartnerDataServiceImpl.remove(partnerClusterDO.getPartnerCode());
+
             if(update != 1){
                 logger.error(TraceUtils.getFormatTrace() + "update partner data failed, uuid:{}", eventDO.getUuid());
             }
