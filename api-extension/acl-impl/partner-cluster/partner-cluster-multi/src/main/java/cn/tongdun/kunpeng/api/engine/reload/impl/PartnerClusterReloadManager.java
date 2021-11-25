@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.service.IRemovePartnerDataService;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PartnerClusterDAO;
 import cn.tongdun.kunpeng.share.dataobject.PartnerClusterDO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import org.codehaus.groovy.runtime.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +56,7 @@ public class PartnerClusterReloadManager implements IReload<PartnerClusterEventD
             if (partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
                 loadPartnerDataServiceImpl.load(partnerClusterDO.getPartnerCode());
                 //加载完成
-                partnerClusterDO.setIsNew(0);
-                partnerClusterDAO.update(partnerClusterDO);
+                partnerClusterDAO.upCluster(partnerClusterDO.getUuid());
             }
             return true;
         }catch (Exception e){
@@ -73,8 +73,7 @@ public class PartnerClusterReloadManager implements IReload<PartnerClusterEventD
             if (partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
                 removePartnerDataServiceImpl.remove(partnerClusterDO.getPartnerCode());
                 //设置不可用
-                partnerClusterDO.setIsNew(1);
-                partnerClusterDAO.update(partnerClusterDO);
+                partnerClusterDAO.downCluster(partnerClusterDO.getUuid());
             }
             return true;
         }catch (Exception e){
@@ -99,8 +98,7 @@ public class PartnerClusterReloadManager implements IReload<PartnerClusterEventD
             if (partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
                 loadPartnerDataServiceImpl.load(partnerClusterDO.getPartnerCode());
                 //加载完成
-                partnerClusterDO.setIsNew(0);
-                partnerClusterDAO.update(partnerClusterDO);
+                partnerClusterDAO.upCluster(partnerClusterDO.getUuid());
             }
             return true;
         }catch (Exception e){
@@ -116,23 +114,22 @@ public class PartnerClusterReloadManager implements IReload<PartnerClusterEventD
             if (partnerClusterDO.getIsNew() != 1) {
                 return true;
             }
-            //先下掉
-            removePartnerDataServiceImpl.remove(partnerClusterDO.getPartnerCode());
             //上线
             //校验是否在该集群加载
-            if (!partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
-                return false;
+            int update = 0;
+            if (partnerClusterDO.getCluster().equals(localEnvironment.getCluster())) {
+                loadPartnerDataServiceImpl.load(partnerClusterDO.getPartnerCode());
+                //加载完成
+                update = partnerClusterDAO.upCluster(partnerClusterDO.getUuid());
             }
-            loadPartnerDataServiceImpl.load(partnerClusterDO.getPartnerCode());
-            //加载完成
-            partnerClusterDO.setIsNew(0);
-            int update = partnerClusterDAO.update(partnerClusterDO);
+            //下掉
+            removePartnerDataServiceImpl.remove(partnerClusterDO.getPartnerCode());
             if(update != 1){
                 logger.error(TraceUtils.getFormatTrace() + "update partner data failed, uuid:{}", eventDO.getUuid());
             }
             return true;
         }catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace() + "update partner data failed, uuid:{}", eventDO.getUuid());
+            logger.error(TraceUtils.getFormatTrace() + "update partner data failed, uuid:{},e={}", eventDO.getUuid(), e.getStackTrace());
             return false;
         }
     }

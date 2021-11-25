@@ -28,11 +28,9 @@ public interface PartnerClusterDAO {
      */
     PartnerClusterDO selectByUuid(String uuid);
 
-    /**
-     * 更新
-     * @param partnerClusterDO
-     */
-    int update(PartnerClusterDO partnerClusterDO);
+    int downCluster(String uuid);
+
+    int upCluster(String uuid);
 
 
 }
