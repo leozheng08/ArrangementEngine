@@ -112,7 +112,7 @@ public class PartnerClusterReloadManager implements IReload<PartnerClusterEventD
         try {
             PartnerClusterDO partnerClusterDO = partnerClusterDAO.selectByUuid(eventDO.getUuid());
             if (partnerClusterDO.getIsNew() != 1) {
-                return true;
+                return false;
             }
             //下掉
             removePartnerDataServiceImpl.remove(partnerClusterDO.getPartnerCode());

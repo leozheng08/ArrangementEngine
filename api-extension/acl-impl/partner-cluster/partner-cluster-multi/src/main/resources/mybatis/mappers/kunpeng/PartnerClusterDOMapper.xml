@@ -18,7 +18,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,version,is_new,status,concurrency_version
+    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code, status, version, is_new,concurrency_version
   </sql>
 
   <select id="selectAvailableByCluster" resultMap="BaseResultMap" >
