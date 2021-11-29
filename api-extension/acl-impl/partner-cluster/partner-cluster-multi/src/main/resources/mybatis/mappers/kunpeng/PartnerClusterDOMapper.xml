@@ -39,7 +39,7 @@
     select
     <include refid="Base_Column_List" />
     from partner_cluster
-    where uuid = #{uuid} and status = 1
+    where uuid = #{uuid}
   </select>
 
   <update id="upCluster">
