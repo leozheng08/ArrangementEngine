@@ -7,6 +7,8 @@ import cn.tongdun.kunpeng.api.engine.dto.PolicyCustomOutputElementDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutput;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutputElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -25,6 +27,8 @@ import java.util.List;
 @DependsOn(value = "defaultConvertorFactory")
 public class PolicyCustomOutputConvertor implements IConvertor<PolicyCustomOutputDTO, PolicyCustomOutput> {
 
+    private Logger logger = LoggerFactory.getLogger(PolicyCustomOutputConvertor.class);
+
     @Autowired
     DefaultConvertorFactory convertorFactory;
 
@@ -42,7 +46,10 @@ public class PolicyCustomOutputConvertor implements IConvertor<PolicyCustomOutpu
         PolicyCustomOutput policyCustomOutput = new PolicyCustomOutput();
         BeanUtils.copyProperties(policyCustomOutputDTO,policyCustomOutput);
         if(policyCustomOutputDTO.isConditionConfig()){
-            policyCustomOutput.setRule(convertor.convert(policyCustomOutputDTO.getRuleDTO()));
+            if(null != policyCustomOutputDTO.getRuleDTO()) {
+                policyCustomOutput.setRule(convertor.convert(policyCustomOutputDTO.getRuleDTO()));
+            }
+            logger.error("policyCustomOutput query fail!policyCustomOutputUuid={}",policyCustomOutputDTO.getUuid());
         }
         policyCustomOutput.setPolicyCustomOutputElements(buildCustomOutputElement(policyCustomOutputDTO.getPolicyCustomOutputElementDTOS()));
         return policyCustomOutput;
