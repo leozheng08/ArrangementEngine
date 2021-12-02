@@ -33,4 +33,10 @@ public interface PartnerClusterDAO {
     int upCluster(String uuid);
 
 
+    /**
+     * 根据合作方名称查询合作方信息
+     * @param partnerCode
+     * @return
+     */
+    PartnerClusterDO selectByPartnerCode(String partnerCode);
 }

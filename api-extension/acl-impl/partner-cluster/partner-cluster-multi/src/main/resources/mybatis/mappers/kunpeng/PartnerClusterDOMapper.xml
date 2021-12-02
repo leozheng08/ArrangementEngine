@@ -49,4 +49,11 @@
   <update id="downCluster">
     update partner_cluster set is_new = 1 where uuid = #{uuid}
   </update>
+
+  <select id="selectByPartnerCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from partner_cluster
+    where partner_code = #{partnerCode};
+  </select>
 </mapper>
