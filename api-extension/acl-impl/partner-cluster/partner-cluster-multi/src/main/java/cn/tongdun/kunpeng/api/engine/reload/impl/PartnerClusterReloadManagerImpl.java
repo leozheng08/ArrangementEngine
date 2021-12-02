@@ -38,12 +38,12 @@ public class PartnerClusterReloadManagerImpl implements IPartnerClusterReloadMan
 
     @Override
     public PartnerClusterResponse reload(ReloadData reloadData) {
-        logger.info("Received a message partnerCode={},isCreate={}",reloadData.getPartnerCode(),reloadData.isCreate());
+        logger.info("Received a message partnerCode={},isCreate={}",reloadData.getPartnerCode(),reloadData.getIsCreate());
         PartnerClusterDO partnerClusterDO = partnerClusterDAO.selectByPartnerCode(reloadData.getPartnerCode());
         if(null == partnerClusterDO){
             return new PartnerClusterResponse(false);
         }
-        if(reloadData.isCreate()){
+        if(reloadData.getIsCreate() == 1){
             return new PartnerClusterResponse(load(partnerClusterDO));
         }else {
             return new PartnerClusterResponse(remove(partnerClusterDO));

@@ -5,7 +5,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IPartnerClusterReloadManager;
 import cn.tongdun.kunpeng.api.util.PartnerClusterResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.*;
  * @create: 2021-12-01 15:25
  */
 
-@RestController
-@RequestMapping(value = "partner_cluster")
+@Controller
+@RequestMapping(value = "/partner_cluster")
 public class PartnerClusterController {
 
     @Autowired
     private IPartnerClusterReloadManager reloadManager;
 
-    @RequestMapping(value = "reload",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/reload")
+    @ResponseBody
     public PartnerClusterResponse reload(@RequestBody ReloadData reloadData){
         //校验参数
-        if(StringUtils.isEmpty(reloadData.getPartnerCode())){
+        if(StringUtils.isEmpty(reloadData.getPartnerCode()) || null == reloadData.getIsCreate()){
             return new PartnerClusterResponse(false);
         }
         return reloadManager.reload(reloadData);

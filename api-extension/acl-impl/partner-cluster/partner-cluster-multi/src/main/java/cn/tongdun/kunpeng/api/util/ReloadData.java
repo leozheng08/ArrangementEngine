@@ -10,5 +10,5 @@ import lombok.Data;
 @Data
 public class ReloadData {
     private String partnerCode;
-    private boolean isCreate;
+    private Integer isCreate;
 }
