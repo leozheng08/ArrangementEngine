@@ -47,3 +47,7 @@ v1.3.34(2021-10-27)
 v1.3.35(2021-11-04)
 - bugfix:修复操作配置赋值问题
 - 邮箱模型50601问题修改
+
+v1.3.36(2021-11-09)
+- bugfix:DefaultRuleDetailOutputExt.java，对于指标查询逻辑调整，判断非空 
+- AssignFieldValueStep.java，对于eventOccurTime传入空串进行处理
