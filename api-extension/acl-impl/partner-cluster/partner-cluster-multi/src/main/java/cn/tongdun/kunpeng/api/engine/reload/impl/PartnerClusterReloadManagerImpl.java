@@ -1,12 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
-import cn.tongdun.kunpeng.api.util.ReloadData;
 import cn.tongdun.kunpeng.api.engine.reload.IPartnerClusterReloadManager;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PartnerClusterDAO;
 import cn.tongdun.kunpeng.api.service.ILoadPartnerDataService;
 import cn.tongdun.kunpeng.api.service.IRemovePartnerDataService;
-import cn.tongdun.kunpeng.api.util.PartnerClusterResponse;
 import cn.tongdun.kunpeng.share.dataobject.PartnerClusterDO;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -37,16 +35,16 @@ public class PartnerClusterReloadManagerImpl implements IPartnerClusterReloadMan
     ILocalEnvironment localEnvironment;
 
     @Override
-    public PartnerClusterResponse reload(ReloadData reloadData) {
-        logger.info("Received a message partnerCode={},isCreate={}",reloadData.getPartnerCode(),reloadData.getIsCreate());
-        PartnerClusterDO partnerClusterDO = partnerClusterDAO.selectByPartnerCode(reloadData.getPartnerCode());
+    public Boolean reload(String partnerCode,Integer isCreate) {
+        logger.info("Received a message partnerCode={},isCreate={}",partnerCode,isCreate);
+        PartnerClusterDO partnerClusterDO = partnerClusterDAO.selectByPartnerCode(partnerCode);
         if(null == partnerClusterDO){
-            return new PartnerClusterResponse(false);
+            return false;
         }
-        if(reloadData.getIsCreate() == 1){
-            return new PartnerClusterResponse(load(partnerClusterDO));
+        if(isCreate == 1){
+            return load(partnerClusterDO);
         }else {
-            return new PartnerClusterResponse(remove(partnerClusterDO));
+            return remove(partnerClusterDO);
         }
     }
 
