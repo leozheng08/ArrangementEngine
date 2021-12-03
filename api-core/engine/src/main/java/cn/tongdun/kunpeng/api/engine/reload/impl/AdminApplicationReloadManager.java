@@ -55,7 +55,8 @@ public class AdminApplicationReloadManager implements IReload<AdminApplication> 
 
     @Override
     public boolean remove(AdminApplication adminApplication) {
-        return false;
+        adminApplicationCache.remove(adminApplication);
+        return true;
     }
 
     /**

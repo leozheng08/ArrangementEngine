@@ -34,6 +34,10 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>engine</artifactId>
+        </dependency>
 
 
         <!-- test start -->
@@ -65,6 +69,10 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>chassis-api-partner</artifactId>
         </dependency>
         <!-- test end -->
     </dependencies>
