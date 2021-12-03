@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.3.36-api</version>
+        <version>1.3.36-api-SNAPSHOT</version>
 
 
     </parent>
