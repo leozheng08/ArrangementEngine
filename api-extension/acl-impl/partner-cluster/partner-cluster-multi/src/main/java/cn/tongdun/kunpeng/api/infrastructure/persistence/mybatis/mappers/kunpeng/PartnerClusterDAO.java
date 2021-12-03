@@ -20,18 +20,12 @@ public interface PartnerClusterDAO {
      */
     List<PartnerClusterDO> selectAllAvailable();
 
-
     /**
      * 根据uuid查询数据
      * @param uuid
      * @return
      */
     PartnerClusterDO selectByUuid(String uuid);
-
-    int downCluster(String uuid);
-
-    int upCluster(String uuid);
-
 
     /**
      * 根据合作方名称查询合作方信息

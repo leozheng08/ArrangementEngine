@@ -48,6 +48,11 @@ public class PartnerClusterReloadManagerImpl implements IPartnerClusterReloadMan
         }
     }
 
+    /**
+     * load缓存
+     * @param clusterDO
+     * @return
+     */
     public boolean load(PartnerClusterDO clusterDO){
         try{
             //校验集群
@@ -62,6 +67,11 @@ public class PartnerClusterReloadManagerImpl implements IPartnerClusterReloadMan
         return false;
     }
 
+    /**
+     * remove缓存
+     * @param clusterDO
+     * @return
+     */
     public boolean remove(PartnerClusterDO clusterDO){
         try{
             removePartnerDataService.remove(clusterDO.getPartnerCode());

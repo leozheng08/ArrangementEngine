@@ -42,14 +42,6 @@
     where uuid = #{uuid};
   </select>
 
-  <update id="upCluster">
-    update partner_cluster set is_new = 0 where uuid = #{uuid}
-  </update>
-
-  <update id="downCluster">
-    update partner_cluster set is_new = 1 where uuid = #{uuid}
-  </update>
-
   <select id="selectByPartnerCode" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
