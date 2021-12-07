@@ -18,7 +18,13 @@ import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallengerCac
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
+import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
+import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.service.ILoadPartnerDataService;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +42,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class LoadPartnerDataServiceServiceImpl implements ILoadPartnerDataService {
+
+    private final static Logger logger = LoggerFactory.getLogger(LoadPartnerDataServiceServiceImpl.class);
 
     @Autowired
     AccessBusinessCache accessBusinessCache;
@@ -73,6 +81,12 @@ public class LoadPartnerDataServiceServiceImpl implements ILoadPartnerDataServic
     @Autowired
     private PolicyChallengerCache policyChallengerCache;
 
+    @Autowired
+    IDynamicScriptRepository dynamicScriptRepository;
+
+    @Autowired
+    GroovyCompileManager groovyCompileManager;
+
     @Override
     public void load(String partnerCode){
         Set<String> partners = new HashSet<>();
@@ -83,6 +97,8 @@ public class LoadPartnerDataServiceServiceImpl implements ILoadPartnerDataServic
         loadAdminApplication(partners);
         //合作方缓存
         loadPartner(partners);
+        //动态脚本
+        loadDynamicScript(partners);
         //策略定义缓存
         loadPolicyDefinition(partners);
         //加载挑战者策略
@@ -135,5 +151,16 @@ public class LoadPartnerDataServiceServiceImpl implements ILoadPartnerDataServic
         for(Partner partner:partnerList){
             partnerCache.put(partner.getPartnerCode(),partner);
        }
+    }
+
+    private void loadDynamicScript(Set<String> partners){
+        List<DynamicScript> scripts = dynamicScriptRepository.queryGroovyByPartners(partners);
+        for (DynamicScript script : scripts) {
+            try {
+                groovyCompileManager.addOrUpdate(script);
+            } catch (Exception e) {
+                logger.info("load DynamicScript fail!e={}", ExceptionUtils.getStackTrace(e));
+            }
+        }
     }
 }

@@ -10,6 +10,9 @@ import cn.tongdun.kunpeng.api.engine.model.policy.challenger.IPolicyChallengerRe
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallenger;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
+import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
+import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
+import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyChallengerEventDO;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.PolicyDefinitionEventDO;
 import cn.tongdun.kunpeng.api.engine.reload.impl.AccessBusinessReloadManager;
@@ -17,6 +20,9 @@ import cn.tongdun.kunpeng.api.engine.reload.impl.AdminApplicationReloadManager;
 import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyChallengerReLoadManager;
 import cn.tongdun.kunpeng.api.engine.reload.impl.PolicyDefinitionReLoadManager;
 import cn.tongdun.kunpeng.api.service.IRemovePartnerDataService;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +39,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class RemovePartnerDataServiceImpl implements IRemovePartnerDataService {
+
+    private final static Logger logger = LoggerFactory.getLogger(RemovePartnerDataServiceImpl.class);
 
     @Autowired
     PartnerClusterCache partnerClusterCache;
@@ -64,6 +72,12 @@ public class RemovePartnerDataServiceImpl implements IRemovePartnerDataService {
     @Autowired
     private IPolicyChallengerRepository policyChallengerRepository;
 
+    @Autowired
+    IDynamicScriptRepository dynamicScriptRepository;
+
+    @Autowired
+    GroovyCompileManager groovyCompileManager;
+
     @Override
     public void remove(String partnerCode){
         Set<String> partners = new HashSet<>();
@@ -78,10 +92,23 @@ public class RemovePartnerDataServiceImpl implements IRemovePartnerDataService {
         removeAdminApplication(partners);
         //合作方缓存
         removePartner(partners);
+        //删除动态脚本
+        removeDynamicScript(partners);
         //策略定义缓存,级联删除策略下所有缓存
         removePolicyDefinition(partners);
         //挑战者策略
         removePolicyChallenger(partners);
+    }
+
+    private void removeDynamicScript(Set<String> partners) {
+        List<DynamicScript> scripts = dynamicScriptRepository.queryGroovyByPartners(partners);
+        for (DynamicScript script : scripts) {
+            try {
+                groovyCompileManager.remove(script.getUuid());
+            } catch (Exception e) {
+                logger.info("remove DynamicScript fail!e={}", ExceptionUtils.getStackTrace(e));
+            }
+        }
     }
 
     private void removeAdminApplication(Set<String> partners){

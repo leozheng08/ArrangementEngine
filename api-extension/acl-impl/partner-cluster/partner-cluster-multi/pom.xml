@@ -74,6 +74,11 @@
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>chassis-api-partner</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-groovy</artifactId>
+        </dependency>
         <!-- test end -->
     </dependencies>
 </project>
