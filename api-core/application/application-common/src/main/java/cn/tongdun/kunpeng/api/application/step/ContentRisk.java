@@ -27,8 +27,8 @@ public class ContentRisk {
 //    public final static String RULE_DATA = "ruleData";
 
 //    @Phase(parallel = false, order = 5000)
-    @ReferencePhase(originPipeline = Risk.NAME, originPhase = Risk.POLICY_INDEX, order = 5000)
-    public final static String POLICY_INDEX = "policyIndex";
+//    @ReferencePhase(originPipeline = Risk.NAME, originPhase = Risk.POLICY_INDEX, order = 5000)
+//    public final static String POLICY_INDEX = "policyIndex";
 
 //    @Phase(parallel = false, order = 6000)
     @ReferencePhase(originPipeline = Risk.NAME, originPhase = Risk.RUN_ENGINE, order = 6000)

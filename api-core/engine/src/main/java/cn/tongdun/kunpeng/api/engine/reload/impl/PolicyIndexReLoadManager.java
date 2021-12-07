@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.IndexDefinitionEventDO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: liang.chen
@@ -79,11 +82,12 @@ public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO>
             //缓存策略指标
             if (null != indexDefinitionDTOList && !indexDefinitionDTOList.isEmpty()) {
                 List<PolicyIndex> policyIndexList = policyIndexConvertor.convert(indexDefinitionDTOList);
-                if (null != policyIndexList && !policyIndexList.isEmpty()) {
-                    policyIndexCache.putList(policyUuid, policyIndexList);
+                Map<String,PolicyIndex> policyIndexMap = policyIndexList.stream().collect(Collectors.toMap(PolicyIndex::getUuid,policyIndex -> policyIndex));
+                if(MapUtils.isNotEmpty(policyIndexMap)){
+                    policyIndexCache.put(policyUuid, policyIndexMap);
                 }
             } else {
-                policyIndexCache.removeList(policyUuid);
+                policyIndexCache.remove(policyUuid);
             }
 
             //刷新引用到的平台指标

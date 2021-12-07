@@ -198,7 +198,7 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
         //删除策略运行模式
         decisionModeCache.remove(policyUuid);
 
-        policyIndexCache.removeList(policyUuid);
+        policyIndexCache.remove(policyUuid);
 
         //删除策略下相关规则的批量远程调用数据
         batchRemoteCallDataCache.remove(policyUuid);
