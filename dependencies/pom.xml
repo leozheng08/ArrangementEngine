@@ -7,7 +7,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.38-api</version>
+    <version>1.3.39-api</version>
 
     <name>dependencies-bom</name>
 
@@ -575,6 +575,12 @@
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>application-groovy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>output</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
