@@ -22,11 +22,11 @@ public class PartnerClusterController {
 
     @RequestMapping(value = "reload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Boolean reload(String partnerCode,Integer isCreate){
+    public Boolean reload(String partnerCode,String cluster,Integer isCreate){
         //校验参数
-        if(StringUtils.isEmpty(partnerCode) || null == isCreate){
+        if(StringUtils.isEmpty(partnerCode) || null == isCreate || null == cluster){
             return false;
         }
-        return reloadManager.reload(partnerCode,isCreate);
+        return reloadManager.reload(partnerCode,cluster,isCreate);
     }
 }

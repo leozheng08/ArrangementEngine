@@ -13,5 +13,5 @@ public interface IPartnerClusterReloadManager {
      * @param isCreate
      * @return
      */
-    Boolean reload(String partnerCode,Integer isCreate);
+    Boolean reload(String partnerCode,String cluster,Integer isCreate);
 }

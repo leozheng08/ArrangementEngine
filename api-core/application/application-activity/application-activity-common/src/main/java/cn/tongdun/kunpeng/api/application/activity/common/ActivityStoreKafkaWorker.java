@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -38,6 +38,8 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     @Value("${kafka.kunpeng.activity.challenge.topic:${kafka.kunpeng.activity.topic:kunpeng_api_raw_activity}}")
     private String KUNPENG_API_RAW_CHALLENGER_ACTIVITY;
 
+    @Value("${no.send.kafka.partnerCode:}")
+    private String partnerCodes;
 
     @Override
     public String getName() {
@@ -68,6 +70,10 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
             return;
         }
 
+        //gateway 压测白名单，以下合作方无需发送消息
+        if(notSendKafka().contains(item.getContext().getPartnerCode())){
+            return;
+        }
         //生成activity消息
         IActitivyMsg actitivyMsg = generateActivity(item);
 
@@ -95,5 +101,13 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
     private void sendChallengerToKafka(IActitivyMsg actitivyMsg) {
 //        logger.info("GenerateActivityExt....................msgKey={}", actitivyMsg.getMessageKey());
         msgProducer.produce(KUNPENG_API_RAW_CHALLENGER_ACTIVITY, actitivyMsg.getMessageKey(), actitivyMsg.toJsonString());
+    }
+
+    private Set<String> notSendKafka(){
+        Set<String> set = new HashSet<>();
+        if(null != partnerCodes){
+            return new HashSet<>(Arrays.asList(partnerCodes.split(",")));
+        }
+        return set;
     }
 }
