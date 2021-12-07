@@ -24,8 +24,11 @@ public class Risk {
     @Phase(parallel = true, timeOut = 800, poolSize = 100, order = 4000)
     public final static String RULE_DATA = "ruleData";
 
+    /**
+     * 策略指标不能事先计算好，因为策略指标可能会依赖三方/模型的结果，下沉到context.getPolicyIndex获取
     @Phase(parallel = false, order = 5000)
     public final static String POLICY_INDEX = "policyIndex";
+     **/
 
     @Phase(parallel = false, order = 6000)
     public final static String RUN_ENGINE = "runEngine";

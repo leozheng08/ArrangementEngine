@@ -12,6 +12,7 @@ import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import com.google.common.collect.Sets;
@@ -63,6 +64,9 @@ public class PolicyLoadByPartnerService {
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
+    @Autowired
+    private PolicyIndexCache policyIndexCache;
+
     @PostConstruct
     public void init() {
         this.executeThreadPool = threadService.createThreadPool(
@@ -99,7 +103,7 @@ public class PolicyLoadByPartnerService {
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, policyIndexCache);
             tasks.add(task);
         }
 

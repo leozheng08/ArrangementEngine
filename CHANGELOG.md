@@ -51,3 +51,11 @@ v1.3.35(2021-11-04)
 v1.3.36(2021-11-09)
 - bugfix:DefaultRuleDetailOutputExt.java，对于指标查询逻辑调整，判断非空 
 - AssignFieldValueStep.java，对于eventOccurTime传入空串进行处理
+
+v1.3.37(2021-12-07)
+- 策略指标计算优化：去除step，优化缓存数据结构，真正的计算逻辑下沉到context.getPolicyIndex中
+- 集群管理包变更，集群分配
+- 发送Kafka消息时白名单合作方不分配，用于gateway压测
+
+v1.3.38(2021-12-07)
+-集群管理，动态脚本修改

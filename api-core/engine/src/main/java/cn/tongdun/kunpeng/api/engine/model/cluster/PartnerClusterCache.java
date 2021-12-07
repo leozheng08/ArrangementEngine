@@ -35,4 +35,12 @@ public class PartnerClusterCache {
     public boolean contains(String partner){
         return partners.contains(partner);
     }
+
+    /**
+     * 删除该集群下合作方
+     * @param partner
+     */
+    public void remove(String partner){
+        partners.remove(partner);
+    }
 }
