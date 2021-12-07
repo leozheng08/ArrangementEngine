@@ -11,11 +11,14 @@
     <result column="cluster" property="cluster" jdbcType="VARCHAR" />
     <result column="partner_code" property="partnerCode" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="version" property="version" jdbcType="VARCHAR"/>
+    <result column="is_new" property="isNew" jdbcType="TINYINT" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR"/>
+    <result column="concurrency_version" property="concurrencyVersion" jdbcType="INTEGER"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,
-    status
+    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code, status, version, is_new,concurrency_version
   </sql>
 
   <select id="selectAvailableByCluster" resultMap="BaseResultMap" >
@@ -30,5 +33,19 @@
     <include refid="Base_Column_List" />
     from partner_cluster
     where status = 1
+  </select>
+
+  <select id="selectByUuid" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from partner_cluster
+    where uuid = #{uuid};
+  </select>
+
+  <select id="selectByPartnerCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from partner_cluster
+    where partner_code = #{partnerCode};
   </select>
 </mapper>
