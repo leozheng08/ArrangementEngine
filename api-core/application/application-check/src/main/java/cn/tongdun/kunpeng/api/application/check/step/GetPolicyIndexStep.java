@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.tdframework.core.pipeline.Step;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +35,21 @@ public class GetPolicyIndexStep implements IRiskStep {
     @Override
     public boolean invoke(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         Map<String, PolicyIndex> policyIndexMap = policyIndexCache.get(context.getPolicyUuid());
-        Map<String, Function> policyIndexFunMap = new HashMap<>(policyIndexMap.size());
-        for (String policyIndexUuid : policyIndexMap.keySet()
-             ) {
-            PolicyIndex policyIndex = policyIndexMap.get(policyIndexUuid);
-            if (policyIndex != null && policyIndex.getCalculateFunction() != null){
-                policyIndexFunMap.put(policyIndexUuid,policyIndex.getCalculateFunction());
-            }else {
-                log.error("GetPolicyIndexStep error , policyIndexUuid : {} ",policyIndexUuid);
+        if (MapUtils.isNotEmpty(policyIndexMap)){
+            Map<String, Function> policyIndexFunMap = new HashMap<>(policyIndexMap.size());
+            for (String policyIndexUuid : policyIndexMap.keySet()
+            ) {
+                PolicyIndex policyIndex = policyIndexMap.get(policyIndexUuid);
+                if (policyIndex != null && policyIndex.getCalculateFunction() != null){
+                    policyIndexFunMap.put(policyIndexUuid,policyIndex.getCalculateFunction());
+                }else {
+                    log.error("GetPolicyIndexStep error , policyIndexUuid : {} ",policyIndexUuid);
+                }
+            }
+            if (policyIndexFunMap.size() != 0){
+                context.setPolicyIndexFunMap(policyIndexFunMap);
             }
         }
-        context.setPolicyIndexFunMap(policyIndexFunMap);
         return true;
     }
 }

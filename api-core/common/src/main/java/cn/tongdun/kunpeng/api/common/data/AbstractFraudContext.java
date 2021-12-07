@@ -453,9 +453,13 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         }
         if (policyIndexMap.get(policyIndexUuid) == null){
             Function function = policyIndexFunMap.get(policyIndexUuid);
-            Object val = function.eval(this);
-            if(val != null){
-                policyIndexMap.put(policyIndexUuid, convertPolicyIndexVal2Double(val,policyIndexUuid));
+            if (function != null){
+                Object val = function.eval(this);
+                if(val != null){
+                    policyIndexMap.put(policyIndexUuid, convertPolicyIndexVal2Double(val,policyIndexUuid));
+                }
+            }else{
+                logger.error("policyIndexFunMap no contains policyIndexUuid : {} ",policyIndexUuid);
             }
         }
         return policyIndexMap.get(policyIndexUuid);
