@@ -6,6 +6,7 @@ import cn.tongdun.kunpeng.api.engine.convertor.impl.PolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
+import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutputCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
@@ -66,6 +67,9 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
 
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
+
+    @Autowired
+    private PolicyCustomOutputCache outputCache;
 
     @PostConstruct
     public void init(){
@@ -211,6 +215,8 @@ public class PolicyReLoadManager implements IReload<PolicyEventDO> {
         for(SubPolicy subPolicy:subPolicyList){
             subPolicyReLoadManager.removeSubPolicy(subPolicy.getUuid());
         }
+        //删除策略下自定义输出
+        outputCache.remove(policyUuid);
         return true;
     }
 
