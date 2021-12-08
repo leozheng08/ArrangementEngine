@@ -18,7 +18,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code,version,is_new,status,concurrency_version
+    id,uuid, gmt_create, gmt_modify, creator, operator, biz_code, cluster, partner_code, status, version, is_new,concurrency_version
   </sql>
 
   <select id="selectAvailableByCluster" resultMap="BaseResultMap" >
@@ -35,50 +35,17 @@
     where status = 1
   </select>
 
-  <update id="update">
-    update partner_cluster
-    <set>
-      <if test="isNew != null and isNew != ''">
-        is_new = #{isNew},
-      </if>
-      <if test="version != null and version != ''">
-        version = #{version},
-      </if>
-      <if test="status != null and status != ''">
-        status = #{status},
-      </if>
-      <if test="partnerCode != null and partnerCode != ''">
-        partner_code = #{partnerCode},
-      </if>
-      <if test="cluster != null and cluster != ''">
-        cluster = #{cluster},
-      </if>
-      <if test="bizCode != null and bizCode != ''">
-        biz_code = #{bizCode},
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate},
-      </if>
-      <if test="gmtModify != null">
-        gmt_modify = #{gmtModify},
-      </if>
-      <if test="creator != null and creator != ''">
-        creator = #{creator},
-      </if>
-      <if test="operator != null and operator != ''">
-        operator = #{operator},
-      </if>
-      <if test="concurrencyVersion != null and concurrencyVersion != ''">
-        concurrency_version = #{concurrencyVersion} + 1,
-      </if>
-    </set>
-    where uuid = #{uuid} and concurrency_version = #{concurrencyVersion}
-  </update>
-
   <select id="selectByUuid" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from partner_cluster
-    where uuid = #{uuid} and status = 1
+    where uuid = #{uuid};
+  </select>
+
+  <select id="selectByPartnerCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from partner_cluster
+    where partner_code = #{partnerCode};
   </select>
 </mapper>
