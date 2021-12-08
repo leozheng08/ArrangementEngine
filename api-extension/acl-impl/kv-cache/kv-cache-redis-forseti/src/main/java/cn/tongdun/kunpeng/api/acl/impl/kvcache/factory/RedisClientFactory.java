@@ -2,7 +2,6 @@ package cn.tongdun.kunpeng.api.acl.impl.kvcache.factory;
 
 import cn.fraudmetrix.common.client.redis.RedisClient;
 import cn.fraudmetrix.common.client.redis.SimpleRedisClient;
-import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import io.codis.jodis.JedisResourcePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +20,12 @@ public class RedisClientFactory implements InitializingBean, FactoryBean<RedisCl
 
     private static Logger logger = LoggerFactory.getLogger(RedisClientFactory.class);
 
-    ILocalEnvironment environment;
 
     String masterName;
 
     String sentinels;
 
     String namespace;
-
-    String clientName;
-
-    String servers;
 
     String password;
 
@@ -49,13 +43,6 @@ public class RedisClientFactory implements InitializingBean, FactoryBean<RedisCl
         this.pool = new RedisSentinelPoolAdapter(this.getMasterName(), new HashSet(Arrays.asList(sentinels)), new JedisPoolConfig(), socketTimeOut, this.getPassword());
     }
 
-    public ILocalEnvironment getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(ILocalEnvironment environment) {
-        this.environment = environment;
-    }
 
     public JedisResourcePool getPool() {
         return pool;
@@ -81,21 +68,6 @@ public class RedisClientFactory implements InitializingBean, FactoryBean<RedisCl
         this.sentinels = sentinels;
     }
 
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
-    public String getServers() {
-        return servers;
-    }
-
-    public void setServers(String servers) {
-        this.servers = servers;
-    }
 
     @Override
     public RedisClient getObject() throws Exception {

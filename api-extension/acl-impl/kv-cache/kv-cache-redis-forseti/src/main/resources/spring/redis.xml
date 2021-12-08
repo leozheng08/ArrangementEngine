@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.tongdun.cn/schema/redis http://www.tongdun.cn/schema/redis/redis.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd"
-       xmlns:redis="http://www.tongdun.cn/schema/redis"
+       xmlns="http://www.springframework.org/schema/beans" xmlns:redis="http://www.tongdun.cn/schema/redis"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.tongdun.cn/schema/redis http://www.tongdun.cn/schema/redis/redis.xsd"
        default-autowire="byName">
 
-    <bean id="kunPengRedisClient" class="cn.tongdun.kunpeng.api.acl.impl.kvcache.factory.RedisClientFactory">
-        <property name="environment" ref="localEnvironment"/>
-        <property name="masterName" value="${kunpeng-api.redis.master}"/>
-        <property name="sentinels" value="${kunpeng-api.redis.sentinels}"/>
-        <property name="namespace" value="${kunpeng-api.redis.namespace}"/>
-        <property name="clientName" value="kunpengRedisClient"/>
-        <property name="servers" value="${kunpeng-api.redis.sentinels}"/>
-        <property name="password" value="${kunpeng-api.redis.password}"/>
-        <property name="monitorCenter" value="${kunpeng-api.redis.monitor.center}"/>
-    </bean>
+    <!--    <bean id="kunPengRedisClient" class="cn.tongdun.kunpeng.api.acl.impl.kvcache.factory.RedisClientFactory">-->
+    <!--        <property name="masterName" value="${forseti-api.redis.master}"/>-->
+    <!--        <property name="sentinels" value="${forseti-api.redis.sentinels}"/>-->
+    <!--        <property name="namespace" value="${forseti-api.redis.namespace}"/>-->
+    <!--        <property name="password" value="${forseti-api.redis.password}"/>-->
+    <!--        <property name="monitorCenter" value="${forseti-api.redis.monitor.center}"/>-->
+    <!--    </bean>-->
+    <redis:sentinel id="kunPengRedisClient" master-name="${forseti-api.redis.master}"
+                    sentinels="${forseti-api.redis.sentinels}"
+                    namespace="${forseti-api.redis.namespace}" password="${forseti-api.redis.password}"
+                    monitor-center="${forseti-api.redis.monitor.center}"/>
+
 
 </beans>
