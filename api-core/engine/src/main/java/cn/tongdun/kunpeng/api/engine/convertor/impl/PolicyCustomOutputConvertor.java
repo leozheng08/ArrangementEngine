@@ -47,8 +47,9 @@ public class PolicyCustomOutputConvertor implements IConvertor<PolicyCustomOutpu
         if(policyCustomOutputDTO.isConditionConfig()){
             if(null != policyCustomOutputDTO.getRuleDTO()) {
                 policyCustomOutput.setRule(convertor.convert(policyCustomOutputDTO.getRuleDTO()));
+            }else {
+                logger.error("policyCustomOutput query fail!policyCustomOutputUuid={}",policyCustomOutputDTO.getUuid());
             }
-            logger.error("policyCustomOutput query fail!policyCustomOutputUuid={}",policyCustomOutputDTO.getUuid());
         }
         policyCustomOutput.setPolicyCustomOutputElements(buildCustomOutputElement(policyCustomOutputDTO.getPolicyCustomOutputElementDTOS()));
         return policyCustomOutput;
