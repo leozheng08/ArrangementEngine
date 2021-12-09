@@ -2,10 +2,8 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 
 import cn.tongdun.kunpeng.api.common.config.ILocalEnvironment;
 import cn.tongdun.kunpeng.api.engine.reload.IPartnerClusterReloadManager;
-import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PartnerClusterDAO;
 import cn.tongdun.kunpeng.api.service.ILoadPartnerDataService;
 import cn.tongdun.kunpeng.api.service.IRemovePartnerDataService;
-import cn.tongdun.kunpeng.share.dataobject.PartnerClusterDO;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,37 +27,30 @@ public class PartnerClusterReloadManagerImpl implements IPartnerClusterReloadMan
     private IRemovePartnerDataService removePartnerDataService;
 
     @Autowired
-    private PartnerClusterDAO partnerClusterDAO;
-
-    @Autowired
     ILocalEnvironment localEnvironment;
 
     @Override
-    public Boolean reload(String partnerCode,Integer isCreate) {
-        logger.info("Received a message partnerCode={},isCreate={}",partnerCode,isCreate);
-        PartnerClusterDO partnerClusterDO = partnerClusterDAO.selectByPartnerCode(partnerCode);
-        if(null == partnerClusterDO){
-            return false;
-        }
+    public Boolean reload(String partnerCode,String cluster,Integer isCreate) {
+        logger.info("Received a message partnerCode={},cluster={},isCreate={}",partnerCode,cluster,isCreate);
         if(isCreate == 1){
-            return load(partnerClusterDO);
+            return load(partnerCode,cluster);
         }else {
-            return remove(partnerClusterDO);
+            return remove(partnerCode);
         }
     }
 
     /**
      * load缓存
-     * @param clusterDO
+     * @param
      * @return
      */
-    public boolean load(PartnerClusterDO clusterDO){
+    public boolean load(String partnerCode,String cluster){
         try{
             //校验集群
-            if(!localEnvironment.getCluster().equals(clusterDO.getCluster())){
+            if(!localEnvironment.getCluster().equals(cluster)){
                 return false;
             }
-            loadPartnerDataService.load(clusterDO.getPartnerCode());
+            loadPartnerDataService.load(partnerCode);
             return true;
         }catch (Exception e){
             logger.error("load partner cluster cache fail!e={}", ExceptionUtils.getStackTrace(e));
@@ -69,12 +60,11 @@ public class PartnerClusterReloadManagerImpl implements IPartnerClusterReloadMan
 
     /**
      * remove缓存
-     * @param clusterDO
      * @return
      */
-    public boolean remove(PartnerClusterDO clusterDO){
+    public boolean remove(String partnerCode){
         try{
-            removePartnerDataService.remove(clusterDO.getPartnerCode());
+            removePartnerDataService.remove(partnerCode);
             return true;
         }catch (Exception e){
             logger.error("remove partner cluster cache fail!e={}", ExceptionUtils.getStackTrace(e));

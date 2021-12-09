@@ -8,23 +8,23 @@
        default-autowire="byName">
 
     <dubbo:provider>
-        <dubbo:parameter key="remote.timestamp" value="#{ T(java.lang.System).currentTimeMillis() }"/>
-        <dubbo:parameter key="warmup" value="360000"/>
+        <dubbo:parameter key="remote.timestamp" value="#{ T(java.lang.System).currentTimeMillis() }" />
+        <dubbo:parameter key="warmup" value="360000" />
         <dubbo:parameter key="clusterName" value="${CLUSTER}"/>
     </dubbo:provider>
 
     <bean id="smartServerHelper" class="cn.tongdun.arch.dubbo.SmartServerHelper" init-method="init">
-        <property name="zk" value="${dubbo.zookeeper.host}"/><!--dubbo的zk地址-->
-        <property name="group" value="${dubbo.zookeeper.root}"/><!--dubbo的root-->
+        <property name="zk" value="${dubbo.zookeeper.host}" /><!--dubbo的zk地址-->
+        <property name="group" value="${dubbo.zookeeper.root}" /><!--dubbo的root-->
         <!--若业务服务设置了group请启用下面这个配置，请注意不要跟上面的group混淆-->
         <!--
         <property name="serviceGroup" value="${service.group}" />
         -->
-        <property name="port" value="${dubbo.port}"/><!--dubbo的port，一般是20880-->
+        <property name="port" value="${dubbo.port}" /><!--dubbo的port，一般是20880-->
         <property name="services">
             <map>
                 <!-- 所有接入优雅上下线的服务列表 -->
-                <entry key="cn.tongdun.kunpeng.client.api.IRiskService" value="${kunpeng.api.dubbo.version}"/>
+                <entry key="cn.tongdun.kunpeng.client.api.IRiskService" value="${kunpeng.api.dubbo.version}" />
                 <entry key="cn.tongdun.kunpeng.client.api.IPolicyParseCheck" value="${kunpeng.api.dubbo.version}"/>
             </map>
         </property>

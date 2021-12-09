@@ -1,11 +1,10 @@
 package cn.tongdun.kunpeng.api.engine.model.policyindex;
 
-import cn.tongdun.kunpeng.api.engine.cache.AbstractBatchLocalCache;
-import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
+import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -14,9 +13,9 @@ import java.util.concurrent.ConcurrentMap;
  * @Date: 2020/2/18 10:49 AM
  */
 @Component
-public class PolicyIndexCache extends AbstractBatchLocalCache<String, PolicyIndex> {
-
-    private ConcurrentMap<String, List<PolicyIndex>> policyUuid2PolicyIndex = new ConcurrentHashMap<>();
+public class PolicyIndexCache extends AbstractLocalCache<String, Map<String, PolicyIndex>> {
+    // <policyUuid,<policyIndexUuid,PolicyIndex>>
+    private ConcurrentMap<String, Map<String,PolicyIndex>> policyUuid2PolicyIndexMap = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void init(){
@@ -24,17 +23,17 @@ public class PolicyIndexCache extends AbstractBatchLocalCache<String, PolicyInde
     }
 
     @Override
-    public List<PolicyIndex> getList(String policyUuid) {
-        return policyUuid2PolicyIndex.get(policyUuid);
+    public Map<String, PolicyIndex> get(String policyUuid) {
+        return policyUuid2PolicyIndexMap.get(policyUuid);
     }
 
     @Override
-    public void putList(String policyUuid, List<PolicyIndex> policyIndexList) {
-        policyUuid2PolicyIndex.put(policyUuid, policyIndexList);
+    public void put(String policyUuid, Map<String, PolicyIndex> policyIndexMap) {
+        policyUuid2PolicyIndexMap.put(policyUuid, policyIndexMap);
     }
 
     @Override
-    public List<PolicyIndex> removeList(String policyUuid) {
-        return policyUuid2PolicyIndex.remove(policyUuid);
+    public Map<String, PolicyIndex> remove(String policyUuid) {
+        return policyUuid2PolicyIndexMap.remove(policyUuid);
     }
 }

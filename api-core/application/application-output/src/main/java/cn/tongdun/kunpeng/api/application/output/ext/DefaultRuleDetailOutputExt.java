@@ -85,8 +85,8 @@ public class DefaultRuleDetailOutputExt implements IRuleDetailOutputExtPt {
                     IndexCustomDetail resultDetail = new IndexCustomDetail();
                     String indexId = ((PlatformIndexDetail) iDetail).getIndexId();
                     PlatformIndexData platformIndexData = context.getPlatformIndexMap().get(indexId);
-                    ShenWeiConditionDetail indexDataDetail = (ShenWeiConditionDetail) platformIndexData.getDetail();
                     if (platformIndexData != null) {
+                        ShenWeiConditionDetail indexDataDetail = (ShenWeiConditionDetail) platformIndexData.getDetail();
                         resultDetail.setConditionUuid(conditionEntry.getKey());
                         resultDetail.setIndexDesc(indexDataDetail.getDesc());
                         if (StringUtils.isNotEmpty(((PlatformIndexDetail) iDetail).getDescription())) {

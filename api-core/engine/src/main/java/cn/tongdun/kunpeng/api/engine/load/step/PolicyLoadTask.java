@@ -21,6 +21,7 @@ import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncr
 import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessary;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessaryCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndex;
+import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
@@ -32,6 +33,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 /**
  * @Author: liang.chen
@@ -64,10 +66,13 @@ public class PolicyLoadTask implements Callable<Boolean> {
      */
     private PolicyFieldNecessaryCache fieldNecessaryCache;
 
+    private PolicyIndexCache policyIndexCache;
+
+
 
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
                           IPlatformIndexRepository platformIndexRepository, PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache, PolicyCustomOutputCache outputCache, PolicyFieldNecessaryCache fieldNecessaryCache
-    , PolicyFieldEncryptionCache fieldEncryptionCache) {
+    , PolicyFieldEncryptionCache fieldEncryptionCache,PolicyIndexCache policyIndexCache) {
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
@@ -78,6 +83,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
         this.outputCache = outputCache;
         this.fieldEncryptionCache = fieldEncryptionCache;
         this.fieldNecessaryCache = fieldNecessaryCache;
+        this.policyIndexCache = policyIndexCache;
     }
 
     /**
@@ -128,8 +134,9 @@ public class PolicyLoadTask implements Callable<Boolean> {
             if (!indexDefinitionDTOList.isEmpty()) {
                 IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor = convertorFactory.getConvertor(IndexDefinitionDTO.class);
                 List<PolicyIndex> policyIndexList = policyIndexConvertor.convert(indexDefinitionDTOList);
-                if (null != policyIndexList && !policyIndexList.isEmpty()) {
-                    localCacheService.putList(PolicyIndex.class, policyDTO.getUuid(), policyIndexList);
+                if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(policyIndexList)) {
+                    Map<String,PolicyIndex> policyIndexMap = policyIndexList.stream().collect(Collectors.toMap(PolicyIndex::getUuid, policyIndex -> policyIndex));
+                    policyIndexCache.put(policyDTO.getUuid(),policyIndexMap);
                 }
             }
 

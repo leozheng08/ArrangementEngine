@@ -1,8 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.customoutput;
 
 import cn.tongdun.kunpeng.api.engine.model.StatusEntity;
-import lombok.Data;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
+import lombok.Data;
 
 import java.util.List;
 

@@ -2,12 +2,14 @@ package cn.tongdun.kunpeng.api.common.data;
 
 import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
+import cn.fraudmetrix.module.tdrule.function.Function;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.client.data.IOutputField;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.client.data.impl.underline.OutputField;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.google.common.collect.Lists;
@@ -228,10 +230,16 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private ConcurrentHashSet<SubReasonCode> subReasonCodes = new ConcurrentHashSet();
 
     /**
-     * 策略指标
+     * 缓存策略指标值
      * Key: policyIndexUuid
      */
     private Map<String, Double> policyIndexMap = new ConcurrentHashMap<>(20);
+
+    /**
+     * 策略指标都会被转化成一个fun
+     * Key: policyIndexUuid
+     */
+    private Map<String, Function> policyIndexFunMap = new HashMap<>(20);
 
     /**
      * Key: IndicatrixId，指标ID(指标平台的指标ID)
@@ -440,17 +448,43 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     }
 
     /**
-     * 取得策略指标的结果值
-     *
+     * 取得策略指标的结果值，当决策模式为决策流时，如果策略指标依赖三方/模型的出参则会计算出错，因为计算策略指标的step在5的阶段而决策执行在6
+     * 采用惰性加载好处也有 就是丑了点
      * @param policyIndexUuid
-     * @return
      */
     @Override
     public Double getPolicyIndex(String policyIndexUuid) {
-        if (null == policyIndexMap) {
+        if (null == policyIndexMap || policyIndexFunMap == null) {
             return null;
         }
+        if (policyIndexMap.get(policyIndexUuid) == null){
+            Function function = policyIndexFunMap.get(policyIndexUuid);
+            if (function != null){
+                Object val = function.eval(this);
+                if(val != null){
+                    policyIndexMap.put(policyIndexUuid, convertPolicyIndexVal2Double(val,policyIndexUuid));
+                }
+            }else{
+                logger.error("policyIndexFunMap no contains policyIndexUuid : {} ",policyIndexUuid);
+            }
+        }
         return policyIndexMap.get(policyIndexUuid);
+    }
+
+    private Double convertPolicyIndexVal2Double(Object indexValue, String policyIndexUuid) {
+        if (null == indexValue) {
+            return null;
+        }
+        if (indexValue instanceof Double) {
+            return (Double) indexValue;
+        }
+        String valueStr = indexValue.toString();
+        try {
+            return Double.parseDouble(valueStr);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "PolicyIndexManager convert2Double error,valueString:" + valueStr + ",policyIndexUuid:" + policyIndexUuid);
+            throw e;
+        }
     }
 
     /**
