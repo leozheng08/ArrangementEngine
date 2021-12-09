@@ -8,7 +8,7 @@
        default-autowire="byName">
 
 
-    <dubbo:service interface="cn.tongdun.kunpeng.client.api.IRiskService" ref="riskService" group="${CLUSTER:${app.name}}"
+    <dubbo:service interface="cn.tongdun.kunpeng.client.api.IRiskService" ref="riskService" group="${APPNAME}"
                    version="${kunpeng.api.dubbo.version}"
                    timeout="${kunpeng.api.dubbo.timeout:5000}" />
 
