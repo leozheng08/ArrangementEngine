@@ -191,7 +191,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
                 }
 
                 //加载策略各个子对象信息
-                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache，policyIndexCache);
+                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache,policyIndexCache);
                 task.call();
             }
         }

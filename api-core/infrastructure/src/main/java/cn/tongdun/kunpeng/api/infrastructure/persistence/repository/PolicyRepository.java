@@ -2,7 +2,10 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
 
 import cn.tongdun.kunpeng.api.engine.dto.*;
+import cn.tongdun.kunpeng.api.engine.model.customoutput.IPolicyCustomOutputRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.IPolicyFieldEncryptionRepository;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.IPolicyFieldNecessaryRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.*;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
