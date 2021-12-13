@@ -2,12 +2,14 @@ package cn.tongdun.kunpeng.api.ruledetail;
 
 
 import cn.fraudmetrix.module.tdrule.rule.ConditionDetail;
+import lombok.Data;
 
 /**
  * 设备规则-验证码校验详情
  * @Author: liang.chen
  * @Date: 2020/2/6 下午4:37
  */
+@Data
 public class ValidateTokenDetail extends ConditionDetail {
 
     /**

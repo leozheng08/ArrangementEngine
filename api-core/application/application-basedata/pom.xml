@@ -26,6 +26,12 @@
         </dependency>
 
         <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>sphinx-client</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+
+        <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>common</artifactId>
         </dependency>

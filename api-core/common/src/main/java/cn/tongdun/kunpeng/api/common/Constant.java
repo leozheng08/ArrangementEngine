@@ -51,6 +51,7 @@ public class Constant {
         public static final String ANOMALY_FP_EXCEPTION = "anomaly/fpException";
         public static final String ANOMALY_PROFILE = "anomaly/profile";
         public static final String ANOMALY_DEVICE_STATUS_ABNORMAL = "anomaly/deviceStatusAbnormal";
+        public static final String VERIFICATION_CODE_ABNORMAL = "anomaly/verificationCode";
 
 
         public static final String IOS_IS_CHEAT = "ios/isCheat";
