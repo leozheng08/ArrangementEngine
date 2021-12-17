@@ -69,7 +69,7 @@ public class KeywordFunction extends AbstractFunction {
      */
     @Override
     protected FunctionResult run(ExecuteContext executeContext) {
-        if (null == ((AbstractFraudContext) executeContext).get(calcField)){
+        if (null == ((AbstractFraudContext) executeContext).get(calcField)) {
             return new FunctionResult(false, null);
         }
         String dimValuesStr = ((AbstractFraudContext) executeContext).get(calcField).toString();
@@ -194,13 +194,17 @@ public class KeywordFunction extends AbstractFunction {
         }
         for (SearchedWord word : words) {
             Map<String, Object> temp = Maps.newHashMapWithExpectedSize(3);
-            temp.put(KEY_KEYWORD, word.getWord());
-            if (null != word.getWordAttributes() || !CollectionUtils.isEmpty(word.getWordAttributes().getValues())) {
+            if (null == word.getWordAttributes() || null == word.getWordAttributes().getValues()) {
+                temp.put(KEY_KEYWORD, word.getWord());
+            }
+            if (word.getWordAttributes() != null && word.getWordAttributes().getValues() != null) {
                 boolean flag = NlasAttrExpUtil.calc(context, word.getWordAttributes().getValues(), attrExps);
                 if (flag) {
+                    temp.put(KEY_KEYWORD, word.getWord());
                     temp.put(PARAM_KEY_ATTR_INFO, word.getWordAttributes().getValues());
                 }
             }
+
             if (!temp.isEmpty()) {
                 data.add(temp);
             }
