@@ -40,6 +40,7 @@ public class RegexFunction extends AbstractFunction {
             TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_SIZE),
             new ThreadFactoryBuilder().setNameFormat("regex-function-thread-%d").build());
 
+
     private String property;
     /**
      * 匹配模式是匹配(true)还是不匹配(false)
@@ -50,6 +51,8 @@ public class RegexFunction extends AbstractFunction {
      * 正则表达式编译后的结果
      */
     private Pattern regexPattern;
+
+    private String iterateType;
 
     @Override
     public String getName() {
@@ -76,6 +79,9 @@ public class RegexFunction extends AbstractFunction {
             }
             if (StringUtils.equals("regex", functionParam.getName())) {
                 regexString = functionParam.getValue();
+            }
+            if(StringUtils.equals("iterateType",functionParam.getName())){
+                iterateType = functionParam.getValue();
             }
         }
         if (StringUtils.isBlank(regexString)) {
@@ -123,6 +129,11 @@ public class RegexFunction extends AbstractFunction {
             try {
                 regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
                 Boolean matchResult = regularMatchData.getResult();
+                //数据类型匹配是否是全部模式,若为全部，全为true才返回true,有一个false直接返回false
+                if("all".equals(iterateType) && !matchResult){
+                    ret = false;
+                    break;
+                }
                 if (matchResult) {
                     String finalDimValue= regularMatchData.getDimValue();
                     String propertyDisplayName = VelocityHelper.getFieldDisplayName(property,(AbstractFraudContext) executeContext);
@@ -137,7 +148,9 @@ public class RegexFunction extends AbstractFunction {
                         return detail;
                     };
                     ret = true;
-                    break;
+                    if("any".equals(iterateType)){
+                        break;
+                    }
                 }
             } catch (Exception e) {
                 logger.error(TraceUtils.getFormatTrace()+"RegexFunction error", e);
