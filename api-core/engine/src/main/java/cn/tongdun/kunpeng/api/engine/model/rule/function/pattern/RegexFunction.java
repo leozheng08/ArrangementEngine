@@ -7,11 +7,11 @@ import cn.fraudmetrix.module.tdrule.function.FunctionDesc;
 import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
+import cn.tongdun.kunpeng.api.common.Constant;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.InterruptibleCharSequence;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.RegexDetail;
-import cn.tongdun.kunpeng.api.common.Constant;
-import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import com.google.common.collect.Lists;
@@ -34,10 +34,10 @@ public class RegexFunction extends AbstractFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(RegexFunction.class);
 
-    private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() + 1;
-    private static final int QUEUE_SIZE = 100;
-    private static ThreadPoolExecutor regexThreadPool = new ThreadPoolExecutor(THREAD_NUM, THREAD_NUM, 10,
-            TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_SIZE),
+    private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() * 4;
+    private static final int QUEUE_SIZE = 1000;
+    private static ThreadPoolExecutor regexThreadPool = new ThreadPoolExecutor(THREAD_NUM, THREAD_NUM, 30,
+            TimeUnit.MINUTES, new ArrayBlockingQueue<>(QUEUE_SIZE),
             new ThreadFactoryBuilder().setNameFormat("regex-function-thread-%d").build());
 
 
@@ -80,7 +80,7 @@ public class RegexFunction extends AbstractFunction {
             if (StringUtils.equals("regex", functionParam.getName())) {
                 regexString = functionParam.getValue();
             }
-            if(StringUtils.equals("iterateType",functionParam.getName())){
+            if (StringUtils.equals("iterateType", functionParam.getName())) {
                 iterateType = functionParam.getValue();
             }
         }
@@ -98,7 +98,7 @@ public class RegexFunction extends AbstractFunction {
     @Override
     public FunctionResult run(ExecuteContext executeContext) {
 
-        List<String> dimValues = VelocityHelper.getDimensionValues((AbstractFraudContext)executeContext, property);
+        List<String> dimValues = VelocityHelper.getDimensionValues((AbstractFraudContext) executeContext, property);
         if (null == dimValues || dimValues.isEmpty()) {
             return new FunctionResult(false);
         }
@@ -106,7 +106,7 @@ public class RegexFunction extends AbstractFunction {
         // 匹配字段可选数组，采用多线程
         List<Callable<RegularMatchData>> tasks = Lists.newArrayListWithCapacity(dimValues.size());
         for (String dimValue : dimValues) {
-            if(StringUtils.isBlank(dimValue)){
+            if (StringUtils.isBlank(dimValue)) {
                 continue;
             }
             tasks.add(TaskWrapLoader.getTaskWrapper().wrap(new AsynRegularMatch(dimValue)));
@@ -116,7 +116,7 @@ public class RegexFunction extends AbstractFunction {
         try {
             futures = regexThreadPool.invokeAll(tasks, 100, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"RegexFunction error", e);
+            logger.error(TraceUtils.getFormatTrace() + "RegexFunction error", e);
         }
         if (null == futures || futures.isEmpty()) {
             return new FunctionResult(false);
@@ -124,19 +124,19 @@ public class RegexFunction extends AbstractFunction {
 
         Boolean ret = false;
         DetailCallable detailCallable = null;
-        for(Future<RegularMatchData> future : futures) {
+        for (Future<RegularMatchData> future : futures) {
             RegularMatchData regularMatchData = null;
             try {
                 regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
                 Boolean matchResult = regularMatchData.getResult();
                 //数据类型匹配是否是全部模式,若为全部，全为true才返回true,有一个false直接返回false
-                if("all".equals(iterateType) && !matchResult){
+                if ("all".equals(iterateType) && !matchResult) {
                     ret = false;
                     break;
                 }
                 if (matchResult) {
-                    String finalDimValue= regularMatchData.getDimValue();
-                    String propertyDisplayName = VelocityHelper.getFieldDisplayName(property,(AbstractFraudContext) executeContext);
+                    String finalDimValue = regularMatchData.getDimValue();
+                    String propertyDisplayName = VelocityHelper.getFieldDisplayName(property, (AbstractFraudContext) executeContext);
                     detailCallable = () -> {
                         RegexDetail detail = new RegexDetail();
                         detail.setRuleUuid(ruleUuid);
@@ -148,12 +148,12 @@ public class RegexFunction extends AbstractFunction {
                         return detail;
                     };
                     ret = true;
-                    if("any".equals(iterateType)){
+                    if ("any".equals(iterateType)) {
                         break;
                     }
                 }
             } catch (Exception e) {
-                logger.error(TraceUtils.getFormatTrace()+"RegexFunction error", e);
+                logger.error(TraceUtils.getFormatTrace() + "RegexFunction error", e);
                 future.cancel(true);
             }
         }
@@ -167,7 +167,6 @@ public class RegexFunction extends AbstractFunction {
         }
         return new FunctionResult(ret, detailCallable);
     }
-
 
 
     private class AsynRegularMatch implements Callable {
