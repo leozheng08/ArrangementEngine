@@ -34,9 +34,10 @@ public class RegexFunction extends AbstractFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(RegexFunction.class);
 
-    private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() * 4;
-    private static final int QUEUE_SIZE = 1000;
-    private static ThreadPoolExecutor regexThreadPool = new ThreadPoolExecutor(THREAD_NUM, THREAD_NUM, 30,
+    private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() * 8;
+    private static final int THREAD_NUM_MAX = Runtime.getRuntime().availableProcessors() * 16;
+    private static final int QUEUE_SIZE = 50;
+    private static ThreadPoolExecutor regexThreadPool = new ThreadPoolExecutor(THREAD_NUM, THREAD_NUM_MAX, 30,
             TimeUnit.MINUTES, new ArrayBlockingQueue<>(QUEUE_SIZE),
             new ThreadFactoryBuilder().setNameFormat("regex-function-thread-%d").build());
 

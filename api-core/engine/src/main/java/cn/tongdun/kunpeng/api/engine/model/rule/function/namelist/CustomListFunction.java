@@ -65,7 +65,7 @@ public class CustomListFunction extends AbstractFunction {
                 List<String> dims = Lists.newArrayList(dim.split(","));
                 Set<String> matchList = new HashSet<>();
                 MatchModeEnum matchModeEnum = MatchModeEnum.valueOf(matchMode);
-                logger.info("matchModeEnum:"+matchModeEnum+"---"+JSON.toJSONString(dims));
+//                logger.info("matchModeEnum:"+matchModeEnum+"---"+JSON.toJSONString(dims));
                 if (MatchModeEnum.EQUALS.equals(matchModeEnum) || MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
                     for (String dimValue : dims) {
                         processOneDimValue(definitionList, dimValue, matchList);
@@ -85,7 +85,7 @@ public class CustomListFunction extends AbstractFunction {
                     }
                 } else {
                     List<String> listDataList = customListValueCache.get(definitionList);
-                    if(listDataList == null){
+                    if (listDataList == null) {
                         return new FunctionResult(false, null);
                     }
                     for (String dimValue : dims) {
@@ -168,18 +168,18 @@ public class CustomListFunction extends AbstractFunction {
         if (isInCustomList(listNameUuid, dimValue)) {
             matchList.add(dimValue);
         }
-        logger.info("matchList:"+ JSON.toJSONString(matchList)+"---"+dimValue);
+        logger.info("matchList:" + JSON.toJSONString(matchList) + "---" + dimValue);
     }
 
     private boolean isInCustomList(String listNameUuid, String dimValue) {
         double score = customListValueCache.getZsetScore(listNameUuid, dimValue);
-        boolean flag=customListValueCache.isEffectiveValue(score, new Date());
-        logger.info("isInCustomList"+flag);
+        boolean flag = customListValueCache.isEffectiveValue(score, new Date());
+        logger.info("isInCustomList" + flag);
         return flag;
     }
 
     public static void main(String[] args) {
-        double score=1.597291199E12;
+        double score = 1.597291199E12;
         System.out.println(score >= System.currentTimeMillis());
     }
 }
