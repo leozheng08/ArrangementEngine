@@ -37,7 +37,7 @@ public class ElfinBaseDataService {
     public GeoipEntity getIpInfo(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get geoentity from elfin with params null");
+//                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get geoentity from elfin with params null");
                 return null;
             }
             GeoipEntity riskbaseGeoipEntity = geoipEntitycache.get(ip);
@@ -51,16 +51,15 @@ public class ElfinBaseDataService {
                 geoipEntitycache.put(ip, riskbaseGeoipEntity);
                 return riskbaseGeoipEntity;
             }
-        }
-        catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"ip query geoinfo failed ip {}", ip, e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "ip query geoinfo failed ip {}", ip, e);
         }
         return null;
     }
 
     public Map<String, GeoipEntity> getIpInfos(List<String> ips) {
         if (CollectionUtils.isEmpty(ips)) {
-            logger.warn(TraceUtils.getFormatTrace()+"getIpInfos from elfin with params empty");
+//            logger.warn(TraceUtils.getFormatTrace() + "getIpInfos from elfin with params empty");
             return Collections.emptyMap();
         }
 
@@ -73,8 +72,7 @@ public class ElfinBaseDataService {
             if (riskbaseGeoipEntity != null) {
                 inCacheIpList.add(ip);
                 inCacheMap.put(ip, riskbaseGeoipEntity);
-            }
-            else {
+            } else {
                 notInCacheIpList.add(ip);
             }
         }
@@ -91,9 +89,8 @@ public class ElfinBaseDataService {
         Map<String, cn.fraudmetrix.elfin.biz.entity.GeoipEntity> ipInfos = null;
         try {
             ipInfos = baseDataQueryService.getIpInfos(notInCacheIpList);
-        }
-        catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"getIpInfos error, ipList={}", ips, e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "getIpInfos error, ipList={}", ips, e);
             return finalResultMap;
         }
 
@@ -115,13 +112,12 @@ public class ElfinBaseDataService {
     public StationEntity getStationInfo(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get stationEngity from elfin with params null");
+//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get stationEngity from elfin with params null");
                 return null;
             }
             return baseDataQueryService.getStationInfo(ip);
-        }
-        catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"ip query stationinfo error ip {}", ip, e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "ip query stationinfo error ip {}", ip, e);
             return null;
         }
     }
@@ -129,13 +125,12 @@ public class ElfinBaseDataService {
     public boolean isStation(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get isStation from elfin with params null");
+//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get isStation from elfin with params null");
                 return false;
             }
             return baseDataQueryService.isStation(ip);
-        }
-        catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"ip check isstation error ip {}", ip, e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "ip check isstation error ip {}", ip, e);
             return false;
         }
     }
@@ -143,13 +138,12 @@ public class ElfinBaseDataService {
     public IdcEntity getIdcInfo(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get idcEntity from elfin with params null");
+//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get idcEntity from elfin with params null");
                 return null;
             }
             return baseDataQueryService.getIdcInfo(ip);
-        }
-        catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"ip query idcinfo error ip {}", ip, e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "ip query idcinfo error ip {}", ip, e);
 
             return null;
         }
@@ -158,13 +152,12 @@ public class ElfinBaseDataService {
     public boolean isIdc(String ip) {
         try {
             if (StringUtils.isBlank(ip)) {
-                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get idc from elfin with params null");
+//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get idc from elfin with params null");
                 return false;
             }
             return baseDataQueryService.isIdc(ip);
-        }
-        catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"ip check id idc error ip {}", ip, e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "ip check id idc error ip {}", ip, e);
             return false;
         }
     }
@@ -172,7 +165,7 @@ public class ElfinBaseDataService {
     public PhoneAttrEntity getPhoneInfo(String phone) {
         try {
             if (StringUtils.isBlank(phone)) {
-                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get phoneInfo from elfin with params null");
+//                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get phoneInfo from elfin with params null");
                 return null;
             }
 
@@ -187,16 +180,15 @@ public class ElfinBaseDataService {
                 return phoneAttrEntity;
             }
             return null;
-        }
-        catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"phone query detailinfo error phone {}", phone, e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "phone query detailinfo error phone {}", phone, e);
             return null;
         }
     }
 
     public MobileInfoDO getMobileInfo(String phone) {
         if (StringUtils.isBlank(phone)) {
-            logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get phoneInfo from elfin with params null");
+//            logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get phoneInfo from elfin with params null");
             return null;
         }
         PhoneAttrEntity phoneAttrEntity = getPhoneInfo(phone);
@@ -241,8 +233,7 @@ public class ElfinBaseDataService {
         if (StringUtils.isNoneBlank(phoneAttrEntity.getType())) {
             try {
                 mobileInfoDO.setType(Integer.valueOf(phoneAttrEntity.getType()));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
             }
         }
         return mobileInfoDO;
