@@ -3,6 +3,7 @@ package cn.tongdun.kunpeng.api.application.activity.common;
 import cn.tongdun.kunpeng.api.common.data.QueueItem;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +106,7 @@ public class ActivityStoreKafkaWorker implements IEventWorker {
 
     private Set<String> notSendKafka(){
         Set<String> set = new HashSet<>();
-        if(null != partnerCodes){
+        if(StringUtils.isNotEmpty(partnerCodes)){
             return new HashSet<>(Arrays.asList(partnerCodes.split(",")));
         }
         return set;
