@@ -22,7 +22,7 @@
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
         <mysql-connector.version>5.1.41</mysql-connector.version>
         <page-helper.version>4.1.6</page-helper.version>
-        <druid.version>1.0.0</druid.version>
+        <druid.version>1.2.8</druid.version>
         <mongo.java.driver.version>3.6.4</mongo.java.driver.version>
         <janino-version>3.0.6</janino-version>
 
