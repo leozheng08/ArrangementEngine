@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.application.output.ext;
 
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
@@ -44,6 +45,8 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
             policyDetailResult.setFinalDealTypeName("通过");
             policyDetailResult.setReasonCode(buildReasonCode(context));
             response.setPolicyDetailResult(policyDetailResult);
+            FraudContext fraudContext = (FraudContext)context;
+            response.setSpendTime(Long.valueOf(System.currentTimeMillis() - fraudContext.getRiskStartTime()).intValue());
             return true;
         }
 
@@ -89,6 +92,8 @@ public class USGeneralOutputExt implements IGeneralOutputExtPt {
         // 规则详情不要了
         policyDetailResult.setHitRules(null);
         response.setPolicyDetailResult(policyDetailResult);
+        FraudContext fraudContext = (FraudContext)context;
+        response.setSpendTime(Long.valueOf(System.currentTimeMillis() - fraudContext.getRiskStartTime()).intValue());
 
         return true;
     }
