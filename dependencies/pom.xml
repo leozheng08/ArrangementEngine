@@ -55,7 +55,7 @@
         <junit.version>4.12</junit.version>
         <jcache-provider.version>1.0.11</jcache-provider.version>
         <evan-client.version>1.0.4</evan-client.version>
-
+        <logback-classic-version>1.2.9</logback-classic-version>
     </properties>
 
     <dependencyManagement>
@@ -594,6 +594,17 @@
                 <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>mail-model</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback-classic-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback-classic-version}</version>
             </dependency>
 
         </dependencies>
