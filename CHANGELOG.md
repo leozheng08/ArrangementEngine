@@ -65,3 +65,10 @@ v1.3.39
 
 v1.3.49
 -集群分配正式发布
+
+v1.3.52
+- logback-core升级到1.2.9
+- fp-client升级到3.4.0
+- 批量调用调整，相关类放到module方便调用
+- druid包升级到1.2.8
+- RiskService.java,subReasonCode监控打点修改
