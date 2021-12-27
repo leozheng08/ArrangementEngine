@@ -71,3 +71,11 @@ v1.3.50(2021-12-20)
 
 v1.3.51(2021-12-23)
 - 输出详情新增spendTime
+-集群分配正式发布
+
+v1.3.52
+- logback-core升级到1.2.9
+- fp-client升级到3.4.0
+- 批量调用调整，相关类放到module方便调用
+- druid包升级到1.2.8
+- RiskService.java,subReasonCode监控打点修改
