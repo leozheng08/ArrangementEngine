@@ -23,6 +23,10 @@
             <artifactId>module-metrics</artifactId>
             <version>2.1.10</version>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

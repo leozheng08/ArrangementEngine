@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- metrics的集中管理中心,所有的metrics,如果需要汇报,都需要从这里获得(自动注册)-->
-    <bean id="registry" class="cn.fraudmetrix.metrics.Registry" />
+    <bean id="registry" class="cn.fraudmetrix.metrics.Registry"/>
 
     <!-- influxdb的client,用于往influxdb发送数据-->
     <bean id="influxDB" class="org.influxdb.InfluxDBFactory" factory-method="connect">
@@ -15,11 +15,12 @@
 
     <!-- 负责将metrics数据汇报给influxdb-->
     <bean id="influxDBReporter" class="cn.fraudmetrix.metrics.reporter.InfluxDBReporter">
-        <property name="influxDB" ref="influxDB" />
-        <property name="database" value="${influxdb.database}" />
+        <property name="influxDB" ref="influxDB"/>
+        <property name="database" value="${influxdb.database}"/>
         <property name="tagProviders">
             <list>
                 <ref bean="serverInfoProvider"/>
+                <ref bean="clusterInfoProvider"/>
             </list>
         </property>
     </bean>
@@ -38,7 +39,7 @@
     </bean>
 
     <!-- 给influxdbReporter添加公共tag-->
-    <bean id="serverInfoProvider"  class="cn.fraudmetrix.metrics.ServerInfoProvider" >
-    </bean>
+    <bean id="serverInfoProvider" class="cn.fraudmetrix.metrics.ServerInfoProvider"/>
+    <bean class="cn.tongdun.kunpeng.api.acl.impl.metrics.tag.ClusterInfoProvider" id="clusterInfoProvider"/>
 
 </beans>
