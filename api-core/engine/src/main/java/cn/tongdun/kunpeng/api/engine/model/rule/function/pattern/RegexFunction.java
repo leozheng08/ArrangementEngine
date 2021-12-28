@@ -193,7 +193,7 @@ public class RegexFunction extends AbstractFunction {
             regularMatchData.setResult(result);
             long spendTime = System.currentTimeMillis() - startTime;
             if (spendTime > 75) {
-                logger.info(TraceUtils.getFormatTrace() + "RegexFunction spend time > 75ms, may timeout.");
+                logger.info(TraceUtils.getFormatTrace() + "RegexFunction spend time={} ", spendTime);
             }
             return regularMatchData;
         }
