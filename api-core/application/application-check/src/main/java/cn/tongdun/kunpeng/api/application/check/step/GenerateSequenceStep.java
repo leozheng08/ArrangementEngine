@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.application.check.step;
 
+import cn.tongdun.arch.Constants;
+import cn.tongdun.arch.dubbo.SeqIdContext;
 import cn.tongdun.kunpeng.api.application.check.util.GenerateSeqIdUtil;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
@@ -40,6 +42,8 @@ public class GenerateSequenceStep implements IRiskStep {
         response.setSeqId(seqId);
         context.setSeqId(seqId);
         TraceUtils.setTrace(seqId);
+        SeqIdContext.addTag("seqid", seqId);
+        SeqIdContext.addTag(Constants.REQUEST_ID, request.getRequestId());
 
         //requestId
         context.setRequestId(request.getRequestId());
