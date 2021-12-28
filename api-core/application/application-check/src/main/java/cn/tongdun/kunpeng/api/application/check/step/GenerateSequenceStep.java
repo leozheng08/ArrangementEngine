@@ -17,6 +17,7 @@ import java.util.Date;
 
 /**
  * 从请求中获取seq_id,如果没有则生成seq_id
+ *
  * @Author: liang.chen
  * @Date: 2020/2/17 下午11:09
  */
@@ -51,7 +52,7 @@ public class GenerateSequenceStep implements IRiskStep {
             context.setEventOccurTime(new Date());
         }
 
-//        logger.info(TraceUtils.getFormatTrace()+"REQ: seq_id: {}, request: {}", seqId, request);
+        logger.info(TraceUtils.getFormatTrace() + "REQ: seq_id: {}", seqId);
         return true;
     }
 }

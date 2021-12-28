@@ -1,11 +1,10 @@
 package cn.tongdun.kunpeng.api.engine;
 
 import cn.tongdun.kunpeng.api.common.data.*;
-import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
-import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.AbstractDecisionMode;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
-import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeCache;
+import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
@@ -19,11 +18,13 @@ import cn.tongdun.tdframework.core.util.TaskWrapLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -48,9 +49,6 @@ public class ParallelEngine extends DecisionTool {
     private ThreadService threadService;
 
     @Autowired
-    private DecisionModeCache decisionModeCache;
-
-    @Autowired
     private PolicyCache policyCache;
 
     @Autowired
@@ -68,18 +66,27 @@ public class ParallelEngine extends DecisionTool {
     private long configCreditTimeout = 0;
     private long configExecuteTimeout = 0;
 
+    @Value("parallelEngine.thread.core.size:64")
+    private int corePoolSize;
+
+    @Value("parallelEngine.thread.max.size:256")
+    private int maxPoolSize;
+
+    @Value("parallelEngine.thread.queue.size:20")
+    private int queueSize;
+
 
     @PostConstruct
     public void init() {
         this.executeThreadPool = threadService.createThreadPool(
-                64,
-                256,
+                corePoolSize,
+                maxPoolSize,
                 30L,
                 TimeUnit.MINUTES,
-                20,
+                queueSize,
                 "ruleExecute");
-        configExecuteTimeout=configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT);
-        configCreditTimeout=configRepository.getLongProperty("rule.engine.execute.credit.timeout",configExecuteTimeout);
+        configExecuteTimeout = configRepository.getLongProperty("rule.engine.execute.timeout", DEFAULT_RULE_ENGINE_EXECUTE_TIMEOUT);
+        configCreditTimeout = configRepository.getLongProperty("rule.engine.execute.credit.timeout", configExecuteTimeout);
     }
 
 
@@ -115,7 +122,7 @@ public class ParallelEngine extends DecisionTool {
         Policy policy = policyCache.get(policyUuid);
 
         //检查策略配置，如果策略配置有误则生成404子码
-        if(!checkPolicyConfig(context,policy)){
+        if (!checkPolicyConfig(context, policy)) {
             return policyResponse;
         }
 
@@ -139,11 +146,11 @@ public class ParallelEngine extends DecisionTool {
                 futures = executeThreadPool.invokeAll(tasks, timeout, TimeUnit.MILLISECONDS);
             }
         } catch (InterruptedException | NullPointerException e) {
-            logger.error(TraceUtils.getFormatTrace()+"规则引擎执行被中断", e);
+            logger.error(TraceUtils.getFormatTrace() + "规则引擎执行被中断", e);
         } catch (RejectedExecutionException e) {
-            logger.error(TraceUtils.getFormatTrace()+"规则引擎执行被丢弃", e);
+            logger.error(TraceUtils.getFormatTrace() + "规则引擎执行被丢弃", e);
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"规则引擎执行异常", e);
+            logger.error(TraceUtils.getFormatTrace() + "规则引擎执行异常", e);
         }
 
         if (null == futures || futures.isEmpty()) {
@@ -155,25 +162,25 @@ public class ParallelEngine extends DecisionTool {
             if (future.isDone() && !future.isCancelled()) {
                 try {
                     SubPolicyResponse subPolicyResponse = future.get();
-                    if (logger.isDebugEnabled()){
-                        logger.debug(TraceUtils.getFormatTrace()+"seqId:{} subPolicyResponse:{} ",context.getSeqId(), JSON.toJSONString(subPolicyResponse));
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(TraceUtils.getFormatTrace() + "seqId:{} subPolicyResponse:{} ", context.getSeqId(), JSON.toJSONString(subPolicyResponse));
                     }
                     subPolicyResponseList.add(subPolicyResponse);
                 } catch (InterruptedException e) {
-                    logger.error(TraceUtils.getFormatTrace()+"获取规则引擎执行结果被中断", e);
+                    logger.error(TraceUtils.getFormatTrace() + "获取规则引擎执行结果被中断", e);
                 } catch (ExecutionException e) {
-                    logger.error(TraceUtils.getFormatTrace()+"获取规则引擎执行结果失败1", e);
-                } catch (Throwable e){
-                    logger.error(TraceUtils.getFormatTrace()+"获取规则引擎执行结果失败2", e);
+                    logger.error(TraceUtils.getFormatTrace() + "获取规则引擎执行结果失败1", e);
+                } catch (Throwable e) {
+                    logger.error(TraceUtils.getFormatTrace() + "获取规则引擎执行结果失败2", e);
                 }
             } else {
-                logger.warn(TraceUtils.getFormatTrace()+"规则引擎执行服务被cancel");
+                logger.warn(TraceUtils.getFormatTrace() + "规则引擎执行服务被cancel");
             }
         }
 
         // 超时的任务，结果不会添加到subPolicyResponseList中
         if (subPolicyResponseList.size() < futures.size()) {
-            logger.info(TraceUtils.getFormatTrace()+"subPolicyResponseList.size():{} futures.size():{}",subPolicyResponseList.size(),futures.size());
+            logger.info(TraceUtils.getFormatTrace() + "subPolicyResponseList.size():{} futures.size():{}", subPolicyResponseList.size(), futures.size());
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_TIMEOUT.getCode(), ReasonCode.RULE_ENGINE_TIMEOUT.getDescription(), "决策引擎执行"));
             policyResponse.setCostTime(System.currentTimeMillis() - start);
             return policyResponse;
@@ -195,47 +202,46 @@ public class ParallelEngine extends DecisionTool {
 
 
     //检查策略配置，生成404子码
-    private boolean checkPolicyConfig(AbstractFraudContext context,Policy policy){
+    private boolean checkPolicyConfig(AbstractFraudContext context, Policy policy) {
         //取得此策略配置的子策略，子策略并行执行。
         String policyUuid = policy.getUuid();
         List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
 
-        if(subPolicyList == null || subPolicyList.isEmpty()) {
-            logger.warn(TraceUtils.getFormatTrace()+"{},policyUuid:{}",ReasonCode.SUB_POLICY_NOT_EXIST.toString(), policyUuid);
+        if (subPolicyList == null || subPolicyList.isEmpty()) {
+            logger.warn(TraceUtils.getFormatTrace() + "{},policyUuid:{}", ReasonCode.SUB_POLICY_NOT_EXIST.toString(), policyUuid);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_EXIST.getCode(), ReasonCode.SUB_POLICY_NOT_EXIST.getDescription(), "决策引擎执行"));
             return false;
         }
 
         int ruleCount = 0;
-        for(SubPolicy subPolicy : subPolicyList) {
+        for (SubPolicy subPolicy : subPolicyList) {
             String subPolicyUuid = subPolicy.getUuid();
-            if(subPolicyUuid == null){
-                logger.warn(TraceUtils.getFormatTrace()+"{},policyUuid:{},subPolicyUuid:{}",ReasonCode.SUB_POLICY_LOAD_ERROR.toString(), policyUuid, subPolicyUuid);
+            if (subPolicyUuid == null) {
+                logger.warn(TraceUtils.getFormatTrace() + "{},policyUuid:{},subPolicyUuid:{}", ReasonCode.SUB_POLICY_LOAD_ERROR.toString(), policyUuid, subPolicyUuid);
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_LOAD_ERROR.getCode(), ReasonCode.SUB_POLICY_LOAD_ERROR.getDescription(), "决策引擎执行"));
                 return false;
             }
-            if(subPolicy.getRuleUuidList() == null){
+            if (subPolicy.getRuleUuidList() == null) {
                 continue;
             }
 
             ruleCount += subPolicy.getRuleUuidList().size();
-            for(String ruleUuid : subPolicy.getRuleUuidList()) {
+            for (String ruleUuid : subPolicy.getRuleUuidList()) {
                 Rule rule = ruleCache.get(ruleUuid);
-                if(rule == null){
-                    logger.warn(TraceUtils.getFormatTrace()+"{},policyUuid:{},subPolicyUuid:{},ruleUuid:{}",ReasonCode.RULE_LOAD_ERROR.toString(), policyUuid, subPolicyUuid, ruleUuid);
+                if (rule == null) {
+                    logger.warn(TraceUtils.getFormatTrace() + "{},policyUuid:{},subPolicyUuid:{},ruleUuid:{}", ReasonCode.RULE_LOAD_ERROR.toString(), policyUuid, subPolicyUuid, ruleUuid);
                     context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));
                     return false;
                 }
             }
         }
-        if(ruleCount == 0) {
-            logger.warn(TraceUtils.getFormatTrace()+"{},policyUuid:{}",ReasonCode.RULE_NOT_EXIST.toString(), policyUuid);
+        if (ruleCount == 0) {
+            logger.warn(TraceUtils.getFormatTrace() + "{},policyUuid:{}", ReasonCode.RULE_NOT_EXIST.toString(), policyUuid);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_NOT_EXIST.getCode(), ReasonCode.RULE_NOT_EXIST.getDescription(), "决策引擎执行"));
             return false;
         }
         return true;
     }
-
 
 
 }

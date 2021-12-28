@@ -9,6 +9,8 @@ import cn.fraudmetrix.module.tdrule.model.FunctionParam;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.InterruptibleCharSequence;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.RegexDetail;
@@ -35,8 +37,9 @@ public class RegexFunction extends AbstractFunction {
     private static final Logger logger = LoggerFactory.getLogger(RegexFunction.class);
 
     private static final int THREAD_NUM = Runtime.getRuntime().availableProcessors() * 8;
-    private static final int THREAD_NUM_MAX = Runtime.getRuntime().availableProcessors() * 16;
-    private static final int QUEUE_SIZE = 50;
+    private static final int THREAD_NUM_MAX = 256;
+    private static final int QUEUE_SIZE = 20;
+    private static final int THREAD_TIME_OUT = 80;
     private static ThreadPoolExecutor regexThreadPool = new ThreadPoolExecutor(THREAD_NUM, THREAD_NUM_MAX, 30,
             TimeUnit.MINUTES, new ArrayBlockingQueue<>(QUEUE_SIZE),
             new ThreadFactoryBuilder().setNameFormat("regex-function-thread-%d").build());
@@ -115,7 +118,7 @@ public class RegexFunction extends AbstractFunction {
 
         List<Future<RegularMatchData>> futures = null;
         try {
-            futures = regexThreadPool.invokeAll(tasks, 100, TimeUnit.MILLISECONDS);
+            futures = regexThreadPool.invokeAll(tasks, THREAD_TIME_OUT, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "RegexFunction error", e);
         }
@@ -128,7 +131,7 @@ public class RegexFunction extends AbstractFunction {
         for (Future<RegularMatchData> future : futures) {
             RegularMatchData regularMatchData = null;
             try {
-                regularMatchData = future.get(100, TimeUnit.MILLISECONDS);
+                regularMatchData = future.get(THREAD_TIME_OUT, TimeUnit.MILLISECONDS);
                 Boolean matchResult = regularMatchData.getResult();
                 //数据类型匹配是否是全部模式,若为全部，全为true才返回true,有一个false直接返回false
                 if ("all".equals(iterateType) && !matchResult) {
@@ -155,6 +158,8 @@ public class RegexFunction extends AbstractFunction {
                 }
             } catch (Exception e) {
                 logger.error(TraceUtils.getFormatTrace() + "RegexFunction error", e);
+                AbstractFraudContext fraudContext = (AbstractFraudContext) executeContext;
+                fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getCode(), ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getDescription(), "正则表达式执行"));
                 future.cancel(true);
             }
         }
@@ -180,11 +185,16 @@ public class RegexFunction extends AbstractFunction {
 
         @Override
         public RegularMatchData call() throws Exception {
+            long startTime = System.currentTimeMillis();
             RegularMatchData regularMatchData = new RegularMatchData();
             Matcher matcher = regexPattern.matcher(new InterruptibleCharSequence(dimValue));
             Boolean result = matcher.matches();
             regularMatchData.setDimValue(dimValue);
             regularMatchData.setResult(result);
+            long spendTime = System.currentTimeMillis() - startTime;
+            if (spendTime > 75) {
+                logger.info(TraceUtils.getFormatTrace() + "RegexFunction spend time > 75ms, may timeout.");
+            }
             return regularMatchData;
         }
     }
