@@ -123,44 +123,53 @@ public class RegexFunction extends AbstractFunction {
             logger.error(TraceUtils.getFormatTrace() + "RegexFunction error", e);
         }
         if (null == futures || futures.isEmpty()) {
+            AbstractFraudContext fraudContext = (AbstractFraudContext) executeContext;
+            fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_ERROR.getCode(), ReasonCode.BUDLE_SERVICE_CALL_ERROR.getDescription(), "决策引擎执行"));
             return new FunctionResult(false);
         }
 
         Boolean ret = false;
         DetailCallable detailCallable = null;
         for (Future<RegularMatchData> future : futures) {
-            RegularMatchData regularMatchData = null;
-            try {
-                regularMatchData = future.get(THREAD_TIME_OUT, TimeUnit.MILLISECONDS);
-                Boolean matchResult = regularMatchData.getResult();
-                //数据类型匹配是否是全部模式,若为全部，全为true才返回true,有一个false直接返回false
-                if ("all".equals(iterateType) && !matchResult) {
-                    ret = false;
-                    break;
-                }
-                if (matchResult) {
-                    String finalDimValue = regularMatchData.getDimValue();
-                    String propertyDisplayName = VelocityHelper.getFieldDisplayName(property, (AbstractFraudContext) executeContext);
-                    detailCallable = () -> {
-                        RegexDetail detail = new RegexDetail();
-                        detail.setRuleUuid(ruleUuid);
-                        detail.setConditionUuid(conditionUuid);
-                        detail.setDescription(description);
-                        detail.setDimType(property);
-                        detail.setDimTypeDisplayName(propertyDisplayName);
-                        detail.setValue(finalDimValue);
-                        return detail;
-                    };
-                    ret = true;
-                    if ("any".equals(iterateType)) {
+            if (future.isDone() && !future.isCancelled()) {
+                RegularMatchData regularMatchData = null;
+                try {
+                    regularMatchData = future.get();
+                    Boolean matchResult = regularMatchData.getResult();
+                    //数据类型匹配是否是全部模式,若为全部，全为true才返回true,有一个false直接返回false
+                    if ("all".equals(iterateType) && !matchResult) {
+                        ret = false;
                         break;
                     }
+                    if (matchResult) {
+                        String finalDimValue = regularMatchData.getDimValue();
+                        String propertyDisplayName = VelocityHelper.getFieldDisplayName(property, (AbstractFraudContext) executeContext);
+                        detailCallable = () -> {
+                            RegexDetail detail = new RegexDetail();
+                            detail.setRuleUuid(ruleUuid);
+                            detail.setConditionUuid(conditionUuid);
+                            detail.setDescription(description);
+                            detail.setDimType(property);
+                            detail.setDimTypeDisplayName(propertyDisplayName);
+                            detail.setValue(finalDimValue);
+                            return detail;
+                        };
+                        ret = true;
+                        if ("any".equals(iterateType)) {
+                            break;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    AbstractFraudContext fraudContext = (AbstractFraudContext) executeContext;
+                    fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getCode(), ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getDescription(), "正则表达式执行"));
+                    logger.error(TraceUtils.getFormatTrace() + "获取正则表达式执行结果被中断", e);
+                } catch (Exception e) {
+                    AbstractFraudContext fraudContext = (AbstractFraudContext) executeContext;
+                    fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_ERROR.getCode(), ReasonCode.BUDLE_SERVICE_CALL_ERROR.getDescription(), "正则表达式执行"));
+                    logger.error(TraceUtils.getFormatTrace() + "获取正则表达式执行结果失败", e);
                 }
-            } catch (Exception e) {
-                logger.error(TraceUtils.getFormatTrace() + "RegexFunction error", e);
-                AbstractFraudContext fraudContext = (AbstractFraudContext) executeContext;
-                fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getCode(), ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getDescription(), "正则表达式执行"));
-                future.cancel(true);
+            } else {
+                logger.warn(TraceUtils.getFormatTrace() + "正则表达式规则执行被cancel");
             }
         }
 
