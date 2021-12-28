@@ -66,13 +66,13 @@ public class ParallelEngine extends DecisionTool {
     private long configCreditTimeout = 0;
     private long configExecuteTimeout = 0;
 
-    @Value("parallelEngine.thread.core.size:64")
+    @Value("${parallelEngine.thread.core.size:64}")
     private int corePoolSize;
 
-    @Value("parallelEngine.thread.max.size:256")
+    @Value("${parallelEngine.thread.max.size:256}")
     private int maxPoolSize;
 
-    @Value("parallelEngine.thread.queue.size:20")
+    @Value("${parallelEngine.thread.queue.size:20}")
     private int queueSize;
 
 
