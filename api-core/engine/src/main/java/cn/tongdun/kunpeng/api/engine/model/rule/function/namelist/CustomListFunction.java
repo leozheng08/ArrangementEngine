@@ -11,7 +11,6 @@ import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
-import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -168,13 +167,13 @@ public class CustomListFunction extends AbstractFunction {
         if (isInCustomList(listNameUuid, dimValue)) {
             matchList.add(dimValue);
         }
-        logger.info("matchList:" + JSON.toJSONString(matchList) + "---" + dimValue);
+//        logger.info("matchList:" + JSON.toJSONString(matchList) + "---" + dimValue);
     }
 
     private boolean isInCustomList(String listNameUuid, String dimValue) {
         double score = customListValueCache.getZsetScore(listNameUuid, dimValue);
         boolean flag = customListValueCache.isEffectiveValue(score, new Date());
-        logger.info("isInCustomList" + flag);
+//        logger.info("isInCustomList" + flag);
         return flag;
     }
 

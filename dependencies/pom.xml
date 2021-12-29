@@ -32,7 +32,7 @@
         <tdrule.version>1.0.8-tmp</tdrule.version>
         <tdflow.version>1.0.2</tdflow.version>
         <kunpeng-share.version>1.4.5-share-20211013-SNAPSHOT</kunpeng-share.version>
-        <common.arch.version>2.0.2</common.arch.version>
+        <common.arch.version>2.1.1</common.arch.version>
         <module.kafka.version>3.2.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
         <fp.version>3.2.9</fp.version>
