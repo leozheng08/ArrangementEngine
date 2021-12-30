@@ -163,7 +163,6 @@ public class CustomListFunction extends AbstractFunction {
     }
 
     private void processOneDimValue(String listNameUuid, String dimValue, Set<String> matchList) {
-        logger.info("matchList");
         if (isInCustomList(listNameUuid, dimValue)) {
             matchList.add(dimValue);
         }
