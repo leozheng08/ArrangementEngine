@@ -157,14 +157,18 @@ public class RiskService implements IRiskService {
                     METRICS_TAG_REASON_CODE, riskResponse.getReasonCode(),
                     METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()
             };
-            metrics.counter(METRICS_TAG_REASON_KEY, tags);
+            metrics.counter(METRICS_TAG_REASON_KEY + ":" + riskResponse.getReasonCode(), tags);
         }
 
         if (Objects.nonNull(riskResponse.getSubReasonCodes())) {
-            String[] tags = {
-                    METRICS_TAG_SUB_REASON_CODE, riskResponse.getSubReasonCodes(),
-                    METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()};
-            metrics.counter(METRICS_TAG_SUB_REASON_KEY, tags);
+            for (String subReasonCode : riskResponse.getSubReasonCodes().split(",")) {
+                String[] tags = {
+                        METRICS_TAG_SUB_REASON_CODE, subReasonCode,
+                        METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()};
+                metrics.counter(METRICS_TAG_SUB_REASON_KEY + ":" + subReasonCode, tags);
+            }
+
+
         }
 
         if (Objects.nonNull(riskRequest.getPartnerCode()) && Objects.nonNull(riskResponse.getSubReasonCodes())) {
