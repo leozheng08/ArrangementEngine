@@ -21,6 +21,8 @@
         <module>output</module>
         <module>core-rainbow-table</module>
         <module>field</module>
+        <module>mail-model</module>
+        <module>batch-remote</module>
     </modules>
 
 

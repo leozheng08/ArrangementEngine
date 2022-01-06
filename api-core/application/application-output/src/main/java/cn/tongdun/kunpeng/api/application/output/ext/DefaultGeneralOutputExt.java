@@ -5,6 +5,7 @@ import cn.fraudmetrix.forseti.fp.model.constant.Android;
 import cn.fraudmetrix.forseti.fp.model.constant.Ios;
 import cn.fraudmetrix.forseti.fp.model.constant.Mini;
 import cn.fraudmetrix.forseti.fp.model.constant.Web;
+import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.data.*;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
@@ -96,8 +97,8 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             response.setCustomPolicyResult(external);
 
         }
-
-
+        FraudContext fraudContext = (FraudContext) context;
+        response.setSpendTime(Long.valueOf(System.currentTimeMillis() - fraudContext.getRiskStartTime()).intValue());
         return true;
     }
 

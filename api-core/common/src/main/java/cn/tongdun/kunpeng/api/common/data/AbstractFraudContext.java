@@ -309,6 +309,12 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private List<Object> keywordResultModels = new ArrayList<>();
 
+    /**
+     *邮箱模型规则执行结果
+     * key:mail,value:result
+     */
+    private Map<String,Object> mailModelResult = new HashMap<>();
+
     /*************外部接口返回结果 end******************/
 
     private List<IOutputField> outputFields = Lists.newArrayList();
@@ -705,5 +711,27 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
             this.encryptionFields.put(fieldName, fieldValue + Constant.EncryptionField.POUND_SIGN + encryptionValue);
         }
 
+    }
+    /**
+     * 邮箱模型结果存入context
+     * @param mail
+     * @param obj
+     */
+    public void putMailModelResult(String mail,Object obj){
+        if(null != mail && null != obj){
+            mailModelResult.put(mail,obj);
+        }
+    }
+
+    /**
+     * 邮箱模型获取
+     * @param mail
+     * @return
+     */
+    public Object getMailModelResult(String mail){
+        if(null == mail){
+            return null;
+        }
+        return mailModelResult.get(mail);
     }
 }

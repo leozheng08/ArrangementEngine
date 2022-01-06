@@ -214,6 +214,11 @@
             <artifactId>consumer-cassandra</artifactId>
             <version>${kunpeng-consumer.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>mail-model</artifactId>
+        </dependency>
     </dependencies>
 
 

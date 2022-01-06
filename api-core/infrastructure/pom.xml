@@ -192,6 +192,10 @@
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>output</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>mail-model</artifactId>
+        </dependency>
         <!-- test end -->
     </dependencies>
 
