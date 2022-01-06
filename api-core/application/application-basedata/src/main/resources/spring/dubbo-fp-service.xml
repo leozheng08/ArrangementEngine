@@ -45,4 +45,10 @@
         <dubbo:parameter key="threads" value="25" />
         <dubbo:parameter key="alive" value="600000" />
     </dubbo:reference>
+
+    <dubbo:reference id="validateTokenService" interface="cn.fraudmetrix.sphinx.client.service.ValidateTokenService"
+                     version="${sphinx.dubbo.version}"
+                     timeout="${sphinx.dubbo.timeout}"
+                     retries="0" stub="${ValidateTokenService.stub}">
+    </dubbo:reference>
 </beans>

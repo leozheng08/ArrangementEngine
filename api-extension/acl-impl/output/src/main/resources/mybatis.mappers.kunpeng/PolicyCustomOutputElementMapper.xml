@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.PolicyCustomOutputElementDAO">
+
+    <resultMap id="BaseResultMap" type="cn.tongdun.kunpeng.share.dataobject.PolicyCustomOutputElementDO">
+        <!--@Table policy_custom_output_element-->
+        <result property="id" column="id" jdbcType="OTHER"/>
+        <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+        <result property="policyCustomOutputUuid" column="policy_custom_output_uuid" jdbcType="VARCHAR"/>
+        <result property="leftProperty" column="left_property" jdbcType="VARCHAR"/>
+        <result property="leftPropertyType" column="left_property_type" jdbcType="VARCHAR"/>
+        <result property="leftPropertyDataType" column="left_property_data_type" jdbcType="VARCHAR"/>
+        <result property="rightValue" column="right_value" jdbcType="VARCHAR"/>
+        <result property="rightType" column="right_type" jdbcType="VARCHAR"/>
+        <result property="rightDataType" column="right_data_type" jdbcType="VARCHAR"/>
+        <result property="rightConfig" column="right_config" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="queryByCustomOutputUuid" resultMap="BaseResultMap">
+        select
+          id, uuid, policy_custom_output_uuid, left_property, left_property_type, left_property_data_type, right_value, right_type, right_data_type,right_config
+        from policy_custom_output_element
+        where policy_custom_output_uuid = #{uuid}
+    </select>
+</mapper>

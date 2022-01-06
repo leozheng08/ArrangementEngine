@@ -202,7 +202,7 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
      */
     public boolean addOrUpdate(RuleEventDO eventDO) {
         String uuid = eventDO.getUuid();
-        logger.debug(TraceUtils.getFormatTrace() + "Rule reload start, uuid:{}", uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "Rule reload start, uuid:{}, currentTime={}", uuid, System.currentTimeMillis());
         try {
             Long timestamp = eventDO.getGmtModify().getTime();
             Rule oldRule = ruleCache.get(uuid);
@@ -225,14 +225,13 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
             //处理需要批量远程调用的数据
             this.addBatchRemoteCallDataToCache(ruleDTO.getPolicyUuid(), ruleCache.getSubPolicyUuidByRuleUuid(uuid), ruleDTO);
 
-
             //刷新子策略下规则的执行顺序
             subPolicyReLoadManager.reloadByUuid(ruleDTO.getBizUuid());
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "Rule reload failed, uuid:{}", uuid, e);
             return false;
         }
-        logger.debug(TraceUtils.getFormatTrace() + "Rule reload success, uuid:{}", uuid);
+        logger.debug(TraceUtils.getFormatTrace() + "Rule reload success, uuid:{}, currentTime={}", uuid, System.currentTimeMillis());
         return true;
     }
 

@@ -79,3 +79,6 @@ v1.3.52
 - 批量调用调整，相关类放到module方便调用
 - druid包升级到1.2.8
 - RiskService.java,subReasonCode监控打点修改
+
+v1.3.53
+- 国内反欺诈拆分项目合并到master

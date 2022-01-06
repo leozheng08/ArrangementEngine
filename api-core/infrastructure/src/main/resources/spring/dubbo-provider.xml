@@ -17,9 +17,7 @@
         <property name="zk" value="${dubbo.zookeeper.host}" /><!--dubbo的zk地址-->
         <property name="group" value="${dubbo.zookeeper.root}" /><!--dubbo的root-->
         <!--若业务服务设置了group请启用下面这个配置，请注意不要跟上面的group混淆-->
-        <!--
-        <property name="serviceGroup" value="${service.group}" />
-        -->
+        <property name="serviceGroup" value="${APPNAME}" />
         <property name="port" value="${dubbo.port}" /><!--dubbo的port，一般是20880-->
         <property name="services">
             <map>

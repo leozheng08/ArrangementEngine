@@ -51,6 +51,7 @@ public class Constant {
         public static final String ANOMALY_FP_EXCEPTION = "anomaly/fpException";
         public static final String ANOMALY_PROFILE = "anomaly/profile";
         public static final String ANOMALY_DEVICE_STATUS_ABNORMAL = "anomaly/deviceStatusAbnormal";
+        public static final String VERIFICATION_CODE_ABNORMAL = "anomaly/verificationCode";
 
 
         public static final String IOS_IS_CHEAT = "ios/isCheat";
@@ -83,9 +84,12 @@ public class Constant {
     }
 
 
-
     public class Flow {
         public static final String FLOW_PRE_CHECK = "flowPreCheck";
+    }
+
+    public class EncryptionField {
+        public static final String POUND_SIGN = "##";
     }
 
 }

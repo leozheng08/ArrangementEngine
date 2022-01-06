@@ -8,7 +8,6 @@ import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
-import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import cn.tongdun.tdframework.core.pipeline.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -45,11 +44,11 @@ public class GeoIpStep implements IRiskStep {
             if (Objects.nonNull(geoip)) {
                 context.addExternalObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, geoip);
                 context.set("ipAddressCountry", geoip.getCountry());
-                context.set("ipAddressProvince",geoip.getProvince());
+                context.set("ipAddressProvince", geoip.getProvince());
                 context.set("ipProvince", geoip.getProvince());
                 context.set("ipAddressCity", geoip.getCity());
                 context.set("ipAddressCountryCode", geoip.getCountryId());
-                logger.info("geoip的数据结果:" + JSON.toJSONString(geoip));
+//                logger.info("geoip的数据结果:" + JSON.toJSONString(geoip));
             }
             String[] ipSegs = ip.split("\\.");
             if (ipSegs.length >= 3) {

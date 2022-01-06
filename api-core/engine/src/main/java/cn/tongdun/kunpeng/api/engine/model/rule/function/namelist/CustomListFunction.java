@@ -11,7 +11,6 @@ import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.engine.model.rule.util.VelocityHelper;
 import cn.tongdun.kunpeng.api.ruledetail.CustomListDetail;
-import cn.tongdun.kunpeng.share.json.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -65,7 +64,7 @@ public class CustomListFunction extends AbstractFunction {
                 List<String> dims = Lists.newArrayList(dim.split(","));
                 Set<String> matchList = new HashSet<>();
                 MatchModeEnum matchModeEnum = MatchModeEnum.valueOf(matchMode);
-                logger.info("matchModeEnum:"+matchModeEnum+"---"+JSON.toJSONString(dims));
+//                logger.info("matchModeEnum:"+matchModeEnum+"---"+JSON.toJSONString(dims));
                 if (MatchModeEnum.EQUALS.equals(matchModeEnum) || MatchModeEnum.NOT_EQUALS.equals(matchModeEnum)) {
                     for (String dimValue : dims) {
                         processOneDimValue(definitionList, dimValue, matchList);
@@ -85,7 +84,7 @@ public class CustomListFunction extends AbstractFunction {
                     }
                 } else {
                     List<String> listDataList = customListValueCache.get(definitionList);
-                    if(listDataList == null){
+                    if (listDataList == null) {
                         return new FunctionResult(false, null);
                     }
                     for (String dimValue : dims) {
@@ -164,22 +163,21 @@ public class CustomListFunction extends AbstractFunction {
     }
 
     private void processOneDimValue(String listNameUuid, String dimValue, Set<String> matchList) {
-        logger.info("matchList");
         if (isInCustomList(listNameUuid, dimValue)) {
             matchList.add(dimValue);
         }
-        logger.info("matchList:"+ JSON.toJSONString(matchList)+"---"+dimValue);
+//        logger.info("matchList:" + JSON.toJSONString(matchList) + "---" + dimValue);
     }
 
     private boolean isInCustomList(String listNameUuid, String dimValue) {
         double score = customListValueCache.getZsetScore(listNameUuid, dimValue);
-        boolean flag=customListValueCache.isEffectiveValue(score, new Date());
-        logger.info("isInCustomList"+flag);
+        boolean flag = customListValueCache.isEffectiveValue(score, new Date());
+//        logger.info("isInCustomList" + flag);
         return flag;
     }
 
     public static void main(String[] args) {
-        double score=1.597291199E12;
+        double score = 1.597291199E12;
         System.out.println(score >= System.currentTimeMillis());
     }
 }

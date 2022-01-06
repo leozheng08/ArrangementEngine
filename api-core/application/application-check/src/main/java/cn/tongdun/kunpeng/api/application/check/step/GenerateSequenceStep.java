@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.application.check.step;
 
+import cn.tongdun.arch.Constants;
+import cn.tongdun.arch.dubbo.SeqIdContext;
 import cn.tongdun.kunpeng.api.application.check.util.GenerateSeqIdUtil;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
@@ -17,6 +19,7 @@ import java.util.Date;
 
 /**
  * 从请求中获取seq_id,如果没有则生成seq_id
+ *
  * @Author: liang.chen
  * @Date: 2020/2/17 下午11:09
  */
@@ -39,6 +42,8 @@ public class GenerateSequenceStep implements IRiskStep {
         response.setSeqId(seqId);
         context.setSeqId(seqId);
         TraceUtils.setTrace(seqId);
+        SeqIdContext.addTag("seqid", seqId);
+        SeqIdContext.addTag(Constants.REQUEST_ID, request.getRequestId());
 
         //requestId
         context.setRequestId(request.getRequestId());
@@ -51,7 +56,7 @@ public class GenerateSequenceStep implements IRiskStep {
             context.setEventOccurTime(new Date());
         }
 
-        logger.info(TraceUtils.getFormatTrace()+"REQ: seq_id: {}, request: {}", seqId, request);
+        logger.info(TraceUtils.getFormatTrace() + "REQ: seq_id: {}", seqId);
         return true;
     }
 }

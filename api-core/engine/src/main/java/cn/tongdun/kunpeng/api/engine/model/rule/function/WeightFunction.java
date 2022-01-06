@@ -14,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+
 /**
  * @Author: liuq
  * @Date: 2020/2/12 5:27 PM
@@ -54,7 +56,9 @@ public class WeightFunction extends AbstractCalculateFunction {
             weight = lowerLimitScore;
         }
         Double total = baseWeight + weight;
-        return new FunctionResult(total.intValue());
+        BigDecimal bd = new BigDecimal(total).setScale(0, BigDecimal.ROUND_HALF_UP);
+        return new FunctionResult(Integer.valueOf(bd.toString()));
+        //return new FunctionResult(total.intValue());
     }
 
     @Override

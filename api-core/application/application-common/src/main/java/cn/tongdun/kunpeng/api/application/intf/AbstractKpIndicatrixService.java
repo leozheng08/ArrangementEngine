@@ -61,12 +61,12 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         try {
             String[] tags = {
                     METRICS_TAG_API_QPS_KEY, getApiTag()};
-            metrics.counter(METRICS_API_QPS_KEY,tags);
-            ITimeContext timeContext = metrics.metricTimer(METRICS_API_RT_KEY,tags);
+            metrics.counter(METRICS_API_QPS_KEY, tags);
+            ITimeContext timeContext = metrics.metricTimer(METRICS_API_RT_KEY, tags);
 
             String[] partnerTags = {
                     METRICS_TAG_PARTNER_CODE, indicatrixRequest.getPartnerCode()};
-            ITimeContext timePartner = metrics.metricTimer(METRICS_API_PARTNER_RT_KEY,partnerTags);
+            ITimeContext timePartner = metrics.metricTimer(METRICS_API_PARTNER_RT_KEY, partnerTags);
 
             // 具体指标接口实现
             apiResult = this.calculateByIds(indicatrixRequest);
@@ -80,11 +80,11 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
             } else {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, getApiTag());
             }
-            logger.error(TraceUtils.getFormatTrace()+"Error occurred when {} indicatrix result for {}.", indicatrixRequest.getBizId(), JSON.toJSONString(indicatrixRequest), e);
+            logger.error(TraceUtils.getFormatTrace() + "Error occurred when {} indicatrix result for {}.", indicatrixRequest.getBizId(), JSON.toJSONString(indicatrixRequest), e);
         }
 
         // 3. 重试
-        timeOutRetry(context, indicatrixRequest,apiResult);
+        timeOutRetry(context, indicatrixRequest, apiResult);
 
         // 4. 解析指标结果,并设置到上下文
         if (null != apiResult && apiResult.isSuccess()) {
@@ -102,12 +102,14 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     /**
      * 接口对接打点监控key生成
+     *
      * @return
      */
     protected abstract String getApiTag();
 
     /**
      * 重试逻辑
+     *
      * @param context
      * @param indicatrixRequest
      * @param apiResult
@@ -118,13 +120,14 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     /**
      * 解析单个指标结果
+     *
      * @param context
      * @param indicatrixVal
      */
-    protected void resolveGaeaValue(AbstractFraudContext context, PlatformIndexData indicatrixVal){
-        if (null==indicatrixVal){
+    protected void resolveGaeaValue(AbstractFraudContext context, PlatformIndexData indicatrixVal) {
+        if (null == indicatrixVal) {
             ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-            logger.warn(TraceUtils.getFormatTrace()+"指标读取异常,indicatrixVal值为null!");
+            logger.warn(TraceUtils.getFormatTrace() + "指标读取异常,indicatrixVal值为null!");
             return;
         }
 
@@ -132,22 +135,22 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         if (retCode < 500) {
             if (indicatrixVal.getIndicatrixId() == null) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.info(TraceUtils.getFormatTrace()+"指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
+                logger.info(TraceUtils.getFormatTrace() + "指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
                 return;
             }
 
             if (retCode == IndicatrixRetCode.PARAMS_ERROR.getCode()) {
-                logger.info(TraceUtils.getFormatTrace()+"指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
+                logger.info(TraceUtils.getFormatTrace() + "指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
                 return;
             }
 
             String indicatrixId = indicatrixVal.getIndicatrixId().toString();
             context.putPlatformIndexMap(indicatrixId, indicatrixVal);
             if (retCode == IndicatrixRetCode.INDEX_ERROR.getCode()) {
-                logger.info(TraceUtils.getFormatTrace()+"合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
+                logger.info(TraceUtils.getFormatTrace() + "合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
             }
         } else {
-            logger.error(TraceUtils.getFormatTrace()+"指标返回异常,gaea返回结果：{}", indicatrixVal.toString());
+            logger.error(TraceUtils.getFormatTrace() + "指标返回异常,gaea返回结果：{}", indicatrixVal.toString());
             String subReasonCode = dictionaryManager.getReasonCode("gaea", String.valueOf(retCode));
             // 针对字典表中未配置的状态子码，暂时不做处理
             if (StringUtils.isNotEmpty(subReasonCode)) {
@@ -170,24 +173,25 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     /**
      * 获取指标参数
+     *
      * @param context
      * @return
      */
     protected Map<String, Object> getGaeaFields(AbstractFraudContext context) {
         Map<String, Object> gaeaContext = new HashMap<>();
         //系统字段
-        Map<String, IFieldDefinition> systemFieldMap=context.getSystemFieldMap();
+        Map<String, IFieldDefinition> systemFieldMap = context.getSystemFieldMap();
         //扩展字段
-        Map<String,IFieldDefinition> extendFieldMap=context.getExtendFieldMap();
+        Map<String, IFieldDefinition> extendFieldMap = context.getExtendFieldMap();
 
         build(context, systemFieldMap, gaeaContext);
         build(context, extendFieldMap, gaeaContext);
         return gaeaContext;
     }
 
-    protected void build(AbstractFraudContext context, Map<String,IFieldDefinition> systemFieldMap, Map<String, Object> gaeaContext) {
-        if (null!=systemFieldMap&&!systemFieldMap.isEmpty()) {
-            systemFieldMap.forEach((k,v)-> {
+    protected void build(AbstractFraudContext context, Map<String, IFieldDefinition> systemFieldMap, Map<String, Object> gaeaContext) {
+        if (null != systemFieldMap && !systemFieldMap.isEmpty()) {
+            systemFieldMap.forEach((k, v) -> {
                 Object fieldValue = context.get(k);
                 if (null != fieldValue) {
                     gaeaContext.put(k, fieldValue);
@@ -198,15 +202,16 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     /**
      * 组装指标平台参数
+     *
      * @param context
      * @return
      */
-    protected IndicatrixRequest generateIndicatrixRequest(AbstractFraudContext context){
+    protected IndicatrixRequest generateIndicatrixRequest(AbstractFraudContext context) {
         // 1.取实时解析的gaea缓存
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
-        if(indicatrixs == null || indicatrixs.isEmpty()){
-            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
+        if (indicatrixs == null || indicatrixs.isEmpty()) {
+//            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return null;
         }
 
@@ -224,8 +229,8 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
             }
         }
 
-        if(indicatrixsParam.isEmpty()){
-            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
+        if (indicatrixsParam.isEmpty()) {
+            logger.info(TraceUtils.getFormatTrace() + "策略id:{}，从缓存中取指标数组为空", context.getPolicyUuid());
             return null;
         }
 
@@ -246,6 +251,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
     /**
      * 指标平台接口返回转换成统一结果对象
+     *
      * @param apiResult
      * @return
      */

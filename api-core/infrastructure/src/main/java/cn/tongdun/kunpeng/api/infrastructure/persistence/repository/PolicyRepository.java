@@ -4,6 +4,8 @@ package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 import cn.tongdun.kunpeng.api.engine.dto.*;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.IPolicyCustomOutputRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.IPolicyFieldEncryptionRepository;
+import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.IPolicyFieldNecessaryRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.*;
 import cn.tongdun.kunpeng.api.common.util.JsonUtil;
 import cn.tongdun.kunpeng.share.dataobject.*;
@@ -47,6 +49,12 @@ public class PolicyRepository implements IPolicyRepository{
 
     @Autowired
     private IPolicyCustomOutputRepository outputRepository;
+
+    @Autowired
+    private IPolicyFieldEncryptionRepository fieldEncryptionRepository;
+
+    @Autowired
+    private IPolicyFieldNecessaryRepository fieldNecessaryRepository;
 
 
     //根据合作列表，取得运行版本的策略清单
@@ -159,6 +167,12 @@ public class PolicyRepository implements IPolicyRepository{
 
         //查询自定义输出
         policyDTO.setPolicyCustomOutputDTOList(outputRepository.selectByPolicyUuid(policyDTO.getUuid()));
+
+        // 查询必传字段
+        policyDTO.setPolicyFieldNecessaryDTOList(fieldNecessaryRepository.queryByPolicyDefinitionUuid(policyDTO.getPolicyDefinitionUuid()));
+
+        // 查询加密字段
+        policyDTO.setPolicyFieldEncryptionDTOList(fieldEncryptionRepository.queryByPolicyDefinitionUuid(policyDTO.getPolicyDefinitionUuid()));
 
         return policyDTO;
     }

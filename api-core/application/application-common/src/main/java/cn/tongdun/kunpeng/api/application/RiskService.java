@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.application;
 
+import cn.tongdun.arch.Constants;
+import cn.tongdun.arch.dubbo.SeqIdContext;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.application.ext.ICreateRiskRequestExtPt;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
@@ -119,6 +121,8 @@ public class RiskService implements IRiskService {
         } finally {
             ThreadContext.clear();
             TraceUtils.removeTrace();
+            SeqIdContext.removeTag("seqid");
+            SeqIdContext.removeTag(Constants.REQUEST_ID);
         }
         timeContext.stop();
         timePartner.stop();
@@ -153,7 +157,7 @@ public class RiskService implements IRiskService {
                     METRICS_TAG_REASON_CODE, riskResponse.getReasonCode(),
                     METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()
             };
-            metrics.counter(METRICS_TAG_REASON_KEY, tags);
+            metrics.counter(METRICS_TAG_REASON_KEY + ":" + riskResponse.getReasonCode(), tags);
         }
 
         if (Objects.nonNull(riskResponse.getSubReasonCodes())) {

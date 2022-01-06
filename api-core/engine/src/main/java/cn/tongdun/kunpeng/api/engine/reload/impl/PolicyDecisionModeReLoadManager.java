@@ -96,7 +96,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
             if(DecisionModeType.FLOW.name().equalsIgnoreCase(policyDecisionModeDTO.getDecisionModeType())){
                 if(decisionMode instanceof DecisionFlow){
                     //缓存中的数据是相同版本或更新的，则不刷新
-                    if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) >= 0){
+                    if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) > 0){
                         logger.debug(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }
@@ -104,7 +104,7 @@ public class PolicyDecisionModeReLoadManager implements IReload<PolicyDecisionMo
             } else {
                 if(decisionMode instanceof ParallelSubPolicy){
                     //缓存中的数据是相同版本或更新的，则不刷新
-                    if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) >= 0){
+                    if(timestampCompare(decisionMode.getModifiedVersion(), timestamp) > 0){
                         logger.debug(TraceUtils.getFormatTrace()+"PolicyDecisionMode reload localCache is newest, ignore policyUuid:{}",policyUuid);
                         return true;
                     }

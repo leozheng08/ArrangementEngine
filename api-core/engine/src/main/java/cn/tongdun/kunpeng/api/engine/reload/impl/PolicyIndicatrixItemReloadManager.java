@@ -62,11 +62,11 @@ public class PolicyIndicatrixItemReloadManager implements IReload<PolicyIndicatr
     }
 
     public boolean reload(String policyUuid) {
-        logger.debug(TraceUtils.getFormatTrace() + "PlatformIndex reload start, policyUuid:{}", policyUuid);
+        logger.debug(TraceUtils.getFormatTrace() + "PlatformIndex reload start, policyUuid:{}, currentTime={}", policyUuid, System.currentTimeMillis());
         try {
             List<String> policyIndicatrixItemDTOList = platformIndexRepository.queryByPolicyUuid(policyUuid);
             platformIndexCache.putList(policyUuid, policyIndicatrixItemDTOList);
-
+            logger.debug(TraceUtils.getFormatTrace() + "PlatformIndex reload end, policyUuid:{}, currentTime={}", policyUuid, System.currentTimeMillis());
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "PlatformIndex reload failed, policyUuid:{}", policyUuid, e);
             return false;
