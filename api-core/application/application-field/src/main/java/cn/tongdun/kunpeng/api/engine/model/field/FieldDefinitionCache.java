@@ -1,7 +1,8 @@
 package cn.tongdun.kunpeng.api.engine.model.field;
 
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.IFieldDefinition;
-import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
+import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
@@ -21,9 +22,9 @@ import java.util.function.Consumer;
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:45
  */
-@Component("fieldDefinitionCache")
+@Component
 @Data
-public class DefaultFieldDefinitionCache implements FieldDefinitionCache<String, IFieldDefinition> {
+public class FieldDefinitionCache extends AbstractLocalCache<String, IFieldDefinition> {
 
     //uuid -> Policy
     private Map<String, IFieldDefinition> fieldDefinitionMap = new ConcurrentHashMap<>(500);
@@ -44,12 +45,9 @@ public class DefaultFieldDefinitionCache implements FieldDefinitionCache<String,
     @Autowired
     private EventTypeCache eventTypeCache;
 
-    @Autowired
-    LocalCacheService localCacheService;
-
     @PostConstruct
     public void init() {
-        localCacheService.register(IFieldDefinition.class, this);
+        register(IFieldDefinition.class);
     }
 
     @Override
@@ -83,19 +81,27 @@ public class DefaultFieldDefinitionCache implements FieldDefinitionCache<String,
         return fieldDefinition;
     }
 
-    @Override
+
+    public Map<String, IFieldDefinition> getSystemField(AbstractFraudContext context) {
+        return getSystemField(context.getEventType());
+    }
+
     public Map<String, IFieldDefinition> getSystemField(String eventType) {
         String key = getSystemFieldKey(eventType);
         Map<String, IFieldDefinition> sysFieldMap = systemFieldMap.get(key);
         return sysFieldMap;
     }
 
-    @Override
+    public Map<String, IFieldDefinition> getExtendField(AbstractFraudContext context) {
+        return getExtendField(context.getPartnerCode(), context.getEventType());
+    }
+
     public Map<String, IFieldDefinition> getExtendField(String partnerCode, String eventType) {
         String key = getExtendFieldKey(partnerCode, eventType);
         Map<String, IFieldDefinition> sysFieldMap = extendFieldMap.get(key);
         return sysFieldMap;
     }
+
 
     private Map<String, IFieldDefinition> getFieldMap(Map<String, Map<String, IFieldDefinition>> fieldMap, String key) {
         Map<String, IFieldDefinition> map = fieldMap.get(key);
@@ -109,8 +115,7 @@ public class DefaultFieldDefinitionCache implements FieldDefinitionCache<String,
         return map;
     }
 
-
-    private void addSystemField(IFieldDefinition field) {
+    public void addSystemField(IFieldDefinition field) {
         if (field == null) {
             return;
         }
@@ -141,7 +146,7 @@ public class DefaultFieldDefinitionCache implements FieldDefinitionCache<String,
         }
     }
 
-    private void addExtendField(IFieldDefinition field) {
+    public void addExtendField(IFieldDefinition field) {
         if (field == null) {
             return;
         }
@@ -178,7 +183,7 @@ public class DefaultFieldDefinitionCache implements FieldDefinitionCache<String,
      *
      * @param fieldCode
      */
-    private void removeSystemField(String eventType, String fieldCode, Map<String, Map<String, IFieldDefinition>> fieldMap) {
+    public void removeSystemField(String eventType, String fieldCode, Map<String, Map<String, IFieldDefinition>> fieldMap) {
 
         // 如果为null，是通用字段，放到所有事件类型列表中
         if (StringUtils.isBlank(eventType) || IEventTypeRepository.EVENT_TYPE_ALL.equalsIgnoreCase(eventType)) {
@@ -204,8 +209,8 @@ public class DefaultFieldDefinitionCache implements FieldDefinitionCache<String,
      * @param fieldCode
      * @param fieldMap
      */
-    private void removeExtendField(String partnerCode, String eventType, String fieldCode,
-                                   Map<String, Map<String, IFieldDefinition>> fieldMap) {
+    public void removeExtendField(String partnerCode, String eventType, String fieldCode,
+                                  Map<String, Map<String, IFieldDefinition>> fieldMap) {
 
         if (StringUtils.isBlank(partnerCode)) {
             return;
