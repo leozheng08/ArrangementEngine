@@ -21,4 +21,7 @@ public interface IFieldDefinition {
 
     boolean isExtField();
 
+    String getAppName();
+
+
 }
