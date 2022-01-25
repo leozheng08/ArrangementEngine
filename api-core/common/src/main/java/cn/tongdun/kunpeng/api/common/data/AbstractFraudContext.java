@@ -208,7 +208,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 原始请求入参Map
      */
-    private Map<String, String> requestParamsMap;
+    private Map<String, Object> requestParamsMap;
 
     private RiskRequest riskRequest;
 
