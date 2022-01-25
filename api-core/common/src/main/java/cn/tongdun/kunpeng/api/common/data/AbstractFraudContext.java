@@ -260,6 +260,9 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private transient PolicyResponse policyResponse;
 
+    //调用API时候在header中加入这个标志,可以补录遗失的事件详情
+    private boolean addMissingEventFlag = false;
+
 
     /*************外部接口返回结果 start******************/
 
@@ -335,6 +338,14 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 加密字段信息 key: fieldName value:明文##密文
      */
     private ConcurrentHashMap<String, String> encryptionFields = new ConcurrentHashMap<>();
+
+    public boolean isAddMissingEventFlag() {
+        return this.addMissingEventFlag;
+    }
+
+    public void setAddMissingEventFlag(boolean addMissingEventFlag) {
+        this.addMissingEventFlag = addMissingEventFlag;
+    }
 
     /**
      * 添加异常子码及对应外部系统的原因码
