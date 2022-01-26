@@ -56,10 +56,12 @@ public class RiskService implements IRiskService {
     @Autowired
     private IMetrics metrics;
 
+    public Map<String, Object> request;
+
     @Override
     public IRiskResponse riskService(Map<String, Object> request, String bizName) {
         BizScenario bizScenario = createBizScenario(request);
-
+        this.request = request;
         RiskRequest riskRequest = extensionExecutor.execute(ICreateRiskRequestExtPt.class,
                 bizScenario,
                 extension -> extension.createRiskRequest(request));
@@ -85,8 +87,9 @@ public class RiskService implements IRiskService {
         FraudContext context = new FraudContext();
         context.setRiskRequest(riskRequest);
         context.setRiskStartTime(System.currentTimeMillis());
-
-        //business 依赖event_id找到对应的event_type再确认，放
+        // 支持流量上报环节的businessParams
+        context.setRequestParamsMap(request);
+        // business 依赖event_id找到对应的event_type再确认，放
         // 到GetPolicyUuidStep步骤中实现。
         String partnerCode = riskRequest.getPartnerCode();
         if (StringUtils.isNotEmpty(partnerCode) && "derica".equals(partnerCode)) {
@@ -197,5 +200,4 @@ public class RiskService implements IRiskService {
         }
         return bizScenario;
     }
-
 }
