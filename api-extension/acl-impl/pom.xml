@@ -22,6 +22,7 @@
         <module>core-rainbow-table</module>
         <module>mail-model</module>
         <module>batch-remote</module>
+        <module>evidence</module>
     </modules>
 
 

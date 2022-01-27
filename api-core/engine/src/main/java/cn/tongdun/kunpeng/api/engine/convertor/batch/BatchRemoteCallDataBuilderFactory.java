@@ -1,7 +1,9 @@
 package cn.tongdun.kunpeng.api.engine.convertor.batch;
 
 import cn.tongdun.kunpeng.api.common.Constant;
-import cn.tongdun.kunpeng.api.engine.convertor.batch.evidence.EvidenceBatchRemoteCallDataBuilder;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.evidence.builder.FraudEvidenceBatchRemoteCallDataBuilder;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.evidence.builder.FuzzyEvidenceBatchRemoteCallDataBuilder;
+import cn.tongdun.kunpeng.api.engine.convertor.batch.evidence.builder.GreyListEvidenceBatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.keyword.KeywordBatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.mailmodel.MailModelBatchRemoteCallDataBuilder;
 import cn.tongdun.kunpeng.client.dto.RuleConditionElementDTO;
@@ -29,7 +31,9 @@ public class BatchRemoteCallDataBuilderFactory {
 
     static {
         builders.put(Constant.Function.KEYWORD_WORDLIST, new KeywordBatchRemoteCallDataBuilder());
-        builders.put(Constant.Function.EVIDENCE_EVIDENCE, new EvidenceBatchRemoteCallDataBuilder());
+        builders.put(Constant.Function.EVIDENCE_EVIDENCE, new FraudEvidenceBatchRemoteCallDataBuilder());
+        builders.put(Constant.Function.EVIDENCE_GREYLIST, new GreyListEvidenceBatchRemoteCallDataBuilder());
+        builders.put(Constant.Function.EVIDENCE_FUZZY, new FuzzyEvidenceBatchRemoteCallDataBuilder());
         builders.put(Constant.Function.MAIL_MODEL,new MailModelBatchRemoteCallDataBuilder());
     }
 
