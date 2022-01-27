@@ -43,7 +43,7 @@ public class PolicyRepository implements IPolicyRepository{
     @Autowired
     private PolicyIndicatrixItemDAO policyIndicatrixItemDAO;
     @Autowired
-    private PolicyFieldDAO policyFieldDAO;
+    private PolicyFieldItemDAO policyFieldItemDAO;
     @Autowired
     private  DecisionFlowRepository decisionFlowRepository;
 
@@ -198,7 +198,7 @@ public class PolicyRepository implements IPolicyRepository{
 
     //查询策略使用到的字段
     private List<PolicyFieldDTO> queryPolicyFieldDTOByPolicyUuid(String policyUuid){
-        List<PolicyFieldDO>  policyFieldDOList = policyFieldDAO.selectByPolicyUuid(policyUuid);
+        List<PolicyFieldItemDO>  policyFieldDOList = policyFieldItemDAO.selectByPolicyUuid(policyUuid);
         if(policyFieldDOList == null) {
             return null;
         }
