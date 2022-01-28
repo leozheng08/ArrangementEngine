@@ -19,7 +19,7 @@
     field_name, biz_uuid, biz_type, biz_item_type, biz_item_uuid, memo, status
   </sql>
 
-  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPolicyUuid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from policy_field_item
