@@ -358,6 +358,19 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private Set<String> standardAddressFieldSet = Sets.newHashSet();
 
+    /***
+     * 当前用户采用新的地址频度规则或是旧的
+     */
+    private transient boolean useNewAddressVelocityRule = false;
+
+    public boolean isUseNewAddressVelocityRule() {
+        return useNewAddressVelocityRule;
+    }
+
+    public void setUseNewAddressVelocityRule(boolean useNewAddressVelocityRule) {
+        this.useNewAddressVelocityRule = useNewAddressVelocityRule;
+    }
+
     public Table<String, String, String> getFormattedAddressTable() {
         return formattedAddressTable;
     }
