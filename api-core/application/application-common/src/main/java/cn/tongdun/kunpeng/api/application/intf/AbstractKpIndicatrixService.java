@@ -234,6 +234,9 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
             return null;
         }
 
+        //增加sequenceId，与forseti对齐
+        activityParam.put("sequenceId", context.getSeqId());
+
         IndicatrixRequest indicatrixRequest = new IndicatrixRequest();
         indicatrixRequest.setBizId(context.getSeqId());
         indicatrixRequest.setBizName("kunpeng-sea-api");
