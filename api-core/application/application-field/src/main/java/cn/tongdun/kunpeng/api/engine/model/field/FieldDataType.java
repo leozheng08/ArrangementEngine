@@ -9,11 +9,12 @@ package cn.tongdun.kunpeng.api.engine.model.field;
 
 /**
  * 类ExtendFieldType.java的实现描述：TODO 类实现描述
- * 
+ *
  * @author zhaoyao 2014年3月10日 下午7:03:19
  */
 public enum FieldDataType {
     INT("整数"),
+    LONG("长整数"),
     DOUBLE("小数"),
     STRING("字符串"),
     BOOLEAN("布尔类型"),
@@ -23,7 +24,7 @@ public enum FieldDataType {
 
     private String displayName;
 
-    FieldDataType(String displayName){
+    FieldDataType(String displayName) {
         this.displayName = displayName;
     }
 
