@@ -11,6 +11,9 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListenableFutureTask;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +23,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,6 +53,10 @@ public class AdminApplicationCache extends AbstractLocalCache<String, AdminAppli
     @Autowired
     private IAdminApplicationRepository iAdminApplicationRepository;
 
+    private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 30,
+            TimeUnit.MINUTES, new ArrayBlockingQueue<>(10),
+            new ThreadFactoryBuilder().setNameFormat("admin-application-thread-%d").build());
+
     @PostConstruct
     public void init() {
         register(AdminApplication.class);
@@ -55,7 +64,21 @@ public class AdminApplicationCache extends AbstractLocalCache<String, AdminAppli
         final CacheLoader<String, AdminApplication> loader = new CacheLoader<String, AdminApplication>() {
             @Override
             public AdminApplication load(String key) throws Exception {
+                logger.info("AdminApplicationCache::load key: {}", key);
                 return loadByKey(key);
+            }
+
+            //异步加载缓存
+            @Override
+            public ListenableFuture<AdminApplication> reload(String key, AdminApplication oldValue) throws Exception {
+                //定义任务。
+                ListenableFutureTask<AdminApplication> futureTask = ListenableFutureTask.create(() -> {
+                    logger.info("AdminApplicationCache::reload key: {}, partnerCode: {}, appName: {}", key, oldValue == null ? "" : oldValue.getPartnerCode(), oldValue == null ? "" : oldValue.getAppName());
+                    return loadByKey(key);
+                });
+                //异步执行任务
+                threadPoolExecutor.execute(futureTask);
+                return futureTask;
             }
         };
 
@@ -67,7 +90,7 @@ public class AdminApplicationCache extends AbstractLocalCache<String, AdminAppli
             }
         };
 
-        adminApplicationTimingCache = CacheBuilder.newBuilder().refreshAfterWrite(4, TimeUnit.HOURS).removalListener(removalListener).build(loader);
+        adminApplicationTimingCache = CacheBuilder.newBuilder().refreshAfterWrite(1, TimeUnit.HOURS).removalListener(removalListener).build(loader);
     }
 
     private AdminApplication loadByKey(String key) {
