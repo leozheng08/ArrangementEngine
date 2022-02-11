@@ -11,7 +11,7 @@ public class LongAssign extends AbstractAssign {
     public Object getFieldValue(Object requestValue) {
         Object fieldValue = null;
         if (requestValue instanceof Number) {
-            fieldValue = ((Number) requestValue).intValue();
+            fieldValue = ((Number) requestValue).longValue();
         } else if (StringUtils.isNotBlank(requestValue.toString())) {
             fieldValue = Long.valueOf(requestValue.toString());
         }
