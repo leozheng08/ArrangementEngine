@@ -140,7 +140,12 @@ public class KeywordStep implements IRiskStep {
             wordModel.setWordListCodes(Lists.newArrayList(definitionList));
             wordModels.add(wordModel);
         } else {
-            existWordModel.getWordListCodes().add(definitionList);
+            List<String> wordListCodes = existWordModel.getWordListCodes();
+            if (!CollectionUtils.isEmpty(wordListCodes)) {
+                if (!wordListCodes.contains(definitionList)) {
+                    existWordModel.getWordListCodes().add(definitionList);
+                }
+            }
         }
     }
 }

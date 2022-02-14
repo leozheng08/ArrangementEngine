@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.3.53-api</version>
+        <version>1.3.56-api</version>
 
 
 
@@ -35,6 +35,10 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.tongdun.kunpeng-api</groupId>
+            <artifactId>application-field</artifactId>
         </dependency>
     </dependencies>
 

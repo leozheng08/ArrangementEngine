@@ -1,5 +1,6 @@
 package cn.tongdun.kunpeng.api.infrastructure.persistence.repository;
 
+import cn.fraudmetrix.forseti.global.util.LogUtil;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.Dictionary;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.IDictionaryRepository;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.AdminDictionaryDO;
@@ -7,6 +8,7 @@ import cn.tongdun.kunpeng.api.infrastructure.persistence.dataobj.SelectDO;
 import cn.tongdun.kunpeng.api.infrastructure.persistence.mybatis.mappers.kunpeng.AdminDictionaryDAO;
 import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.tongdun.tdframework.core.pipeline.PipelineExecutor;
@@ -69,5 +71,35 @@ public class AdminDictionaryRepository implements IDictionaryRepository {
             BeanUtils.copyProperties(adminDictionaryDO, dictionary);
             return dictionary;
         }).collect(Collectors.toList());
+    }
+
+    public JSONObject getSubReasonCode() {
+        JSONObject jsonObject = getSpecialData("SubReasonCodeCacheData");
+        if(null == jsonObject){
+            return new JSONObject();
+        }
+        return jsonObject;
+    }
+
+    public JSONObject getSpecialData(String key) {
+        JSONObject result = new JSONObject();
+        if (StringUtils.isBlank(key)) {
+            return result;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("key", key);
+        List<AdminDictionaryDO> list = queryByParams(map);
+        if (list.isEmpty()) {
+            return result;
+        }
+
+        String value = list.get(0).getValue();
+        try {
+            result = com.alibaba.fastjson.JSON.parseObject(value);
+        } catch (Exception e) {
+            logger.warn( "解析字典配置异常,字典值json解析出错value:{}, message is {}", value, e.getMessage());
+        }
+        return result;
     }
 }

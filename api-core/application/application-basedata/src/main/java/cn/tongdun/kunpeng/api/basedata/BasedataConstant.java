@@ -25,6 +25,10 @@ public class BasedataConstant {
     public static final String BIN_ADDRESS = "binAddress";
     public static final String BILL_ADDRESS = "billAddress";
     public static final String DELIVERY_ADDRESS = "deliveryAddress";
+    /**
+     * 通过deviceinfo.trueip获得的访问ip对应的相关地理位置信息
+     */
+    public static final String EXTERNAL_OBJ_TRUE_IP_REPUTATION = "trueIPReputationRulesObj";
 
 
 }

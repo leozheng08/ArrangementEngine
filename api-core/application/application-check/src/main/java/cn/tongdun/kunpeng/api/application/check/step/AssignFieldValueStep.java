@@ -68,6 +68,7 @@ public class AssignFieldValueStep implements IRiskStep {
         dataTypeAssignMap.put(FieldDataType.DOUBLE.name(), new DoubleAssign());
         dataTypeAssignMap.put(FieldDataType.INT.name(), new IntAssign());
         dataTypeAssignMap.put(FieldDataType.STRING.name(), new StringAssign());
+        dataTypeAssignMap.put(FieldDataType.LONG.name(), new LongAssign());
     }
 
     @Autowired

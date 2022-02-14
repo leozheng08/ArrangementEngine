@@ -81,6 +81,8 @@ public class Constant {
         public static final String COMNON_CUSTOM = "common/custom";
 
         public static final String EVIDENCE_EVIDENCE = "evidence/evidence";
+        public static final String EVIDENCE_GREYLIST = "evidence/greylist";
+        public static final String EVIDENCE_FUZZY = "evidence/fuzzy";
     }
 
 

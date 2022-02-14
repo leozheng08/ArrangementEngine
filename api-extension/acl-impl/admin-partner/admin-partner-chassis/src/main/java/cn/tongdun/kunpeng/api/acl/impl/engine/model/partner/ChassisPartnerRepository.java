@@ -3,7 +3,6 @@ package cn.tongdun.kunpeng.api.acl.impl.engine.model.partner;
 import cn.fraudmetrix.chassis.api.common.ApiResult;
 import cn.fraudmetrix.chassis.api.partner.dto.PartnerResultDTO;
 import cn.fraudmetrix.chassis.api.partner.intf.PartnerQueryService;
-import cn.hutool.core.collection.CollectionUtil;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.IPartnerRepository;
 import cn.tongdun.kunpeng.api.acl.engine.model.partner.PartnerDTO;
 import cn.tongdun.kunpeng.api.common.Constant;
@@ -63,6 +62,8 @@ public class ChassisPartnerRepository implements IPartnerRepository {
         apiResult.getData().forEach(p -> {
             PartnerDTO partnerDTO = new PartnerDTO();
             BeanUtils.copyProperties(p, partnerDTO);
+            partnerDTO.setIndustryType(p.getIndustryTypeCode());
+            partnerDTO.setSecondIndustryType(p.getSecondIndustryTypeCode());
             partnerDTOList.add(partnerDTO);
         });
         return partnerDTOList;

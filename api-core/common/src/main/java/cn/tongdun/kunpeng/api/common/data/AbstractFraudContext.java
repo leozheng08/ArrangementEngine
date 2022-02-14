@@ -12,8 +12,10 @@ import cn.tongdun.kunpeng.client.data.impl.underline.OutputField;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.IBizScenario;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -208,7 +210,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 原始请求入参Map
      */
-    private Map<String, String> requestParamsMap;
+    private Map<String, Object> requestParamsMap;
 
     private RiskRequest riskRequest;
 
@@ -259,6 +261,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 策略运行结果，信息较为完整，决策结果应答时会再从此对象选取部分输出到RiskResponse中
      */
     private transient PolicyResponse policyResponse;
+
 
 
     /*************外部接口返回结果 start******************/
@@ -335,6 +338,71 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 加密字段信息 key: fieldName value:明文##密文
      */
     private ConcurrentHashMap<String, String> encryptionFields = new ConcurrentHashMap<>();
+
+    //调用API时候在header中加入这个标志,可以补录遗失的事件详情
+    private boolean addMissingEventFlag = false;
+
+    // e.g: 旧的地址标准化结果:<地址字段key，地址前缀(省-市-区), 规整化地址>
+    // <"home_address","浙江省杭州市余杭区xxx",{规整化后的地址Json}>
+    private volatile Table<String, String, String> formattedAddressTable = HashBasedTable.create();                                       // 规整化后的地址列表
+
+    // e.g: 新的地址标准化结果:<地址字段key，地址前缀, 规整化地址>
+    // <地址前缀>取决于当前地址的标准化最细的地址字段,取"省-市-道路"或者"省-市-建筑"
+    // 例如:(1)浙江省杭州市余杭区文一西路998号的<地址前缀>为"浙江省-杭州市-文一西路"
+    //     (2)浙江省杭州市余杭区文一西路998号海创园的<地址前缀>为"浙江省-杭州市-海创园"
+    // <"home_address","浙江省杭州市余杭区xxx",{规整化后的地址Json}>
+    private Table<String, String, String> standardAddressTable = HashBasedTable.create();
+
+    /***
+     * 存放新的标准化地址字段的key,例如homeAddress地址字段,这里存的是homeAddressStandard
+     */
+    private Set<String> standardAddressFieldSet = Sets.newHashSet();
+
+    /***
+     * 当前用户采用新的地址频度规则或是旧的
+     */
+    private transient boolean useNewAddressVelocityRule = false;
+
+    public boolean isUseNewAddressVelocityRule() {
+        return useNewAddressVelocityRule;
+    }
+
+    public void setUseNewAddressVelocityRule(boolean useNewAddressVelocityRule) {
+        this.useNewAddressVelocityRule = useNewAddressVelocityRule;
+    }
+
+    public Table<String, String, String> getFormattedAddressTable() {
+        return formattedAddressTable;
+    }
+
+    public void setFormattedAddressTable(Table<String, String, String> formattedAddressTable) {
+        this.formattedAddressTable = formattedAddressTable;
+    }
+
+    public Table<String, String, String> getStandardAddressTable() {
+        return standardAddressTable;
+    }
+
+    public void setStandardAddressTable(Table<String, String, String> standardAddressTable) {
+        this.standardAddressTable = standardAddressTable;
+    }
+
+    public Set<String> getStandardAddressFieldSet() {
+        return standardAddressFieldSet;
+    }
+
+    public void setStandardAddressFieldSet(Set<String> standardAddressFieldSet) {
+        this.standardAddressFieldSet = standardAddressFieldSet;
+    }
+
+
+    public boolean isAddMissingEventFlag() {
+        return this.addMissingEventFlag;
+    }
+
+    public void setAddMissingEventFlag(boolean addMissingEventFlag) {
+        this.addMissingEventFlag = addMissingEventFlag;
+    }
 
     /**
      * 添加异常子码及对应外部系统的原因码

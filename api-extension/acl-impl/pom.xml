@@ -5,7 +5,7 @@
     <parent>
         <artifactId>api-extension</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.3.53-api</version>
+        <version>1.3.56-api</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,9 +20,9 @@
         <module>partner-cluster</module>
         <module>output</module>
         <module>core-rainbow-table</module>
-        <module>field</module>
         <module>mail-model</module>
         <module>batch-remote</module>
+        <module>evidence</module>
     </modules>
 
 
