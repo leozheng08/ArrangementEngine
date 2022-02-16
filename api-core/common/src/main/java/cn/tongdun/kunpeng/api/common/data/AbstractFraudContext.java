@@ -263,7 +263,6 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private transient PolicyResponse policyResponse;
 
 
-
     /*************外部接口返回结果 start******************/
 
     /**
@@ -313,10 +312,10 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private List<Object> keywordResultModels = new ArrayList<>();
 
     /**
-     *邮箱模型规则执行结果
+     * 邮箱模型规则执行结果
      * key:mail,value:result
      */
-    private Map<String,Object> mailModelResult = new HashMap<>();
+    private Map<String, Object> mailModelResult = new HashMap<>();
 
     /*************外部接口返回结果 end******************/
 
@@ -362,6 +361,12 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      * 当前用户采用新的地址频度规则或是旧的
      */
     private transient boolean useNewAddressVelocityRule = false;
+
+    /**
+     * 信用分结果
+     */
+    private transient Map<String, Integer> tdScoreCardMap = new HashMap<>();
+
 
     public boolean isUseNewAddressVelocityRule() {
         return useNewAddressVelocityRule;
@@ -524,6 +529,7 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     /**
      * 取得策略指标的结果值，当决策模式为决策流时，如果策略指标依赖三方/模型的出参则会计算出错，因为计算策略指标的step在5的阶段而决策执行在6
      * 采用惰性加载好处也有 就是丑了点
+     *
      * @param policyIndexUuid
      */
     @Override
@@ -531,15 +537,15 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         if (null == policyIndexMap || policyIndexFunMap == null) {
             return null;
         }
-        if (policyIndexMap.get(policyIndexUuid) == null){
+        if (policyIndexMap.get(policyIndexUuid) == null) {
             Function function = policyIndexFunMap.get(policyIndexUuid);
-            if (function != null){
+            if (function != null) {
                 Object val = function.eval(this);
-                if(val != null){
-                    policyIndexMap.put(policyIndexUuid, convertPolicyIndexVal2Double(val,policyIndexUuid));
+                if (val != null) {
+                    policyIndexMap.put(policyIndexUuid, convertPolicyIndexVal2Double(val, policyIndexUuid));
                 }
-            }else{
-                logger.error("policyIndexFunMap no contains policyIndexUuid : {} ",policyIndexUuid);
+            } else {
+                logger.error("policyIndexFunMap no contains policyIndexUuid : {} ", policyIndexUuid);
             }
         }
         return policyIndexMap.get(policyIndexUuid);
@@ -780,24 +786,27 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
         }
 
     }
+
     /**
      * 邮箱模型结果存入context
+     *
      * @param mail
      * @param obj
      */
-    public void putMailModelResult(String mail,Object obj){
-        if(null != mail && null != obj){
-            mailModelResult.put(mail,obj);
+    public void putMailModelResult(String mail, Object obj) {
+        if (null != mail && null != obj) {
+            mailModelResult.put(mail, obj);
         }
     }
 
     /**
      * 邮箱模型获取
+     *
      * @param mail
      * @return
      */
-    public Object getMailModelResult(String mail){
-        if(null == mail){
+    public Object getMailModelResult(String mail) {
+        if (null == mail) {
             return null;
         }
         return mailModelResult.get(mail);
