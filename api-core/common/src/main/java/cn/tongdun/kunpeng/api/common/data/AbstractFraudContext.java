@@ -367,6 +367,13 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private transient Map<String, Integer> tdScoreCardMap = new HashMap<>();
 
+    public Map<String, Integer> getTdScoreCardMap() {
+        return tdScoreCardMap;
+    }
+
+    public void setTdScoreCardMap(Map<String, Integer> tdScoreCardMap) {
+        this.tdScoreCardMap = tdScoreCardMap;
+    }
 
     public boolean isUseNewAddressVelocityRule() {
         return useNewAddressVelocityRule;
