@@ -15,6 +15,7 @@ import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.concurrent.ThreadService;
 import cn.tongdun.tdframework.core.util.TaskWrapLoader;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -130,6 +132,19 @@ public class ParallelEngine extends DecisionTool {
         policyResponse.setPolicyName(policy.getName());
         context.setPolicyVersion(policy.getVersion());
         List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
+        //过滤没有规则的子策略
+        Iterator<SubPolicy> subPolicyListIterator = subPolicyList.iterator();
+        while (subPolicyListIterator.hasNext()) {
+            SubPolicy subPolicy = subPolicyListIterator.next();
+            if (CollectionUtils.isEmpty(ruleCache.getRuleBySubPolicyUuid(subPolicy.getUuid()))) {
+                subPolicyListIterator.remove();
+            }
+        }
+        if (CollectionUtils.isEmpty(subPolicyList)) {
+            logger.warn(TraceUtils.getFormatTrace() + "{},policyUuid:{}", ReasonCode.SUB_POLICY_NOT_EXIST.getCode(), policyUuid);
+            context.addSubReasonCode(new SubReasonCode(ReasonCode.SUB_POLICY_NOT_EXIST.getCode(), ReasonCode.SUB_POLICY_NOT_EXIST.getDescription(), "决策引擎执行"));
+        }
+
         List<Callable<SubPolicyResponse>> tasks = new ArrayList<>();
         for (SubPolicy subPolicy : subPolicyList) {
             SubPolicyExecuteAsyncTask task = new SubPolicyExecuteAsyncTask(subPolicyManager, subPolicy.getUuid(), context);

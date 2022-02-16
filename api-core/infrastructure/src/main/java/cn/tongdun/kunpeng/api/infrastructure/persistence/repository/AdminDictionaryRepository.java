@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Repository
 public class AdminDictionaryRepository implements IDictionaryRepository {
 
-    private Logger logger = LoggerFactory.getLogger(PipelineExecutor.class);
+    private Logger logger = LoggerFactory.getLogger(AdminDictionaryRepository.class);
 
     @Autowired
     private AdminDictionaryDAO adminDictionaryDAO;
