@@ -69,6 +69,7 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
             subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
             subPolicyResponse.setRiskType(subPolicy.getRiskType());
             subPolicyResponse.setSuccess(true);
+            context.set("policy_" + subPolicy.getPolicyUuid() + "_set", subPolicyResponse.getScore());
         } catch (Exception e) {
             subPolicyResponse.setSuccess(false);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
