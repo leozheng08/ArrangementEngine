@@ -43,6 +43,13 @@ public class SaaSModelService implements ModelServiceExtPt {
     @Override
     public boolean calculate(AbstractFraudContext fraudContext, ModelConfigInfo decisionFlowModel) {
 
+        //测试调用不调用三方接口，则屏蔽接口
+        if (fraudContext.isTestFlag()) {
+            logger.warn("SaaSModelService calculate of uuid:{} model testFlag is true",
+                    decisionFlowModel.getUuid());
+            return true;
+        }
+
         boolean newModel = decisionFlowModel.isNewModel();
         try {
             boolean result;
@@ -53,7 +60,7 @@ public class SaaSModelService implements ModelServiceExtPt {
             }
             return result;
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace()+"[Holmes] calculate error {}", e.getMessage());
+            logger.error(TraceUtils.getFormatTrace() + "[Holmes] calculate error {}", e.getMessage());
             return false;
         }
     }
@@ -71,18 +78,18 @@ public class SaaSModelService implements ModelServiceExtPt {
             } else {
                 ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             }
-            logger.error(TraceUtils.getFormatTrace()+"[Holmes] calculate catch error,modelUuid : {} ", modelUuid, e);
+            logger.error(TraceUtils.getFormatTrace() + "[Holmes] calculate catch error,modelUuid : {} ", modelUuid, e);
             return false;
         }
 
         if (modelCalResponse == null) {
-            logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is null");
+            logger.warn(TraceUtils.getFormatTrace() + "[Holmes] modelCalResponse is null");
             ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             return false;
         }
 
         if (!modelCalResponse.isSuccess()) {
-            logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
+            logger.warn(TraceUtils.getFormatTrace() + "[Holmes] modelCalResponse is failed");
             String subReasonCode = dictionaryManager.getReasonCode("holmes", modelCalResponse.getReasonCode());
             if (StringUtils.isNotEmpty(subReasonCode)) {
                 String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
@@ -109,18 +116,18 @@ public class SaaSModelService implements ModelServiceExtPt {
             } else {
                 ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
             }
-            logger.error(TraceUtils.getFormatTrace()+"[Holmes] predict catch error, modelUuid : {}", modelUuid, e);
+            logger.error(TraceUtils.getFormatTrace() + "[Holmes] predict catch error, modelUuid : {}", modelUuid, e);
             return false;
         }
 
         if (modelResponse == null) {
             ReasonCodeUtil.add(fraudContext, ReasonCode.MODEL_RUN_ERROR, "holmes-api");
-            logger.error(TraceUtils.getFormatTrace()+"[Holmes] modelResponse is null" );
+            logger.error(TraceUtils.getFormatTrace() + "[Holmes] modelResponse is null");
             return false;
         }
 
         if (!modelResponse.isSuccess()) {
-            logger.warn(TraceUtils.getFormatTrace()+"[Holmes] modelCalResponse is failed");
+            logger.warn(TraceUtils.getFormatTrace() + "[Holmes] modelCalResponse is failed");
             String subReasonCode = dictionaryManager.getReasonCode("holmes", modelResponse.getReasonCode());
             if (StringUtils.isNotEmpty(subReasonCode)) {
                 String subReasonCodeMessage = dictionaryManager.getMessage(subReasonCode);
@@ -144,7 +151,7 @@ public class SaaSModelService implements ModelServiceExtPt {
         reqParams.put("model_uuid", modelUuid);
         reqParams.put("seq_id", seqId);
         reqParams.put("partner_code", fraudContext.getPartnerCode());
-        reqParams.put("app_code",fraudContext.getAppName());
+        reqParams.put("app_code", fraudContext.getAppName());
         Map<String, String> inputsMap = mapInputs(fraudContext, decisionFlowModel.getInputList());
         reqParams.putAll(inputsMap);
 
@@ -164,16 +171,16 @@ public class SaaSModelService implements ModelServiceExtPt {
             String rightField = paramInfo.getRightField();
             // 指标需要去缓存中取对应信息
             if (StringUtils.equals(rightFieldType, RightFieldType.INDEX.getName())) {
-               Object obj =fraudContext.getPolicyIndex(rightField);
-               if (obj == null) {
-                   value = null;
-               } else {
-                   value = String.valueOf(obj);
-               }
+                Object obj = fraudContext.getPolicyIndex(rightField);
+                if (obj == null) {
+                    value = null;
+                } else {
+                    value = String.valueOf(obj);
+                }
             }
             // 平台指标去缓存中取对应信息
             else if (StringUtils.equalsIgnoreCase(rightFieldType, RightFieldType.GAEA_INDICATRIX.getName())) {
-                indexResult = fraudContext.getPlatformIndexByDataType(rightField,paramInfo.getRightDataType());
+                indexResult = fraudContext.getPlatformIndexByDataType(rightField, paramInfo.getRightDataType());
                 if (indexResult == null) {
                     value = null;
                 } else {
@@ -200,11 +207,11 @@ public class SaaSModelService implements ModelServiceExtPt {
         if (null == list) {
             return;
         }
-        for(ModelParam paramInfo : list) {
+        for (ModelParam paramInfo : list) {
             String fieldValue = paramInfo.getField();
             String rightFieldValue = paramInfo.getRightField();
             if (result.get(fieldValue) == null) {
-                logger.error(TraceUtils.getFormatTrace()+"[Holmes] calculate holmes calculate result is null");
+                logger.error(TraceUtils.getFormatTrace() + "[Holmes] calculate holmes calculate result is null");
                 continue;
             }
             fraudContext.set(rightFieldValue, result.get(fieldValue));
