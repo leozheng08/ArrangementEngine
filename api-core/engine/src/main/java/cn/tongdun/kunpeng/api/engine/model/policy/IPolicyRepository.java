@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.engine.model.policy;
 
 import cn.tongdun.kunpeng.api.engine.dto.PolicyDTO;
+import cn.tongdun.kunpeng.api.engine.dto.PolicyFieldDTO;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
 
 import java.util.List;
@@ -27,6 +28,8 @@ public interface IPolicyRepository {
 
     //查询单个策略信息，不包含各个子对象
     PolicyDTO queryByUuid(String uuid);
+
+    List<PolicyFieldDTO> queryPolicyFieldDTOByPolicyUuid(String policyUuid);
 
 
 }

@@ -17,6 +17,12 @@ public enum DictionaryEnum {
 
     PhoneSwitch("是否调用手机号三方接口key"),
 
+    fuzzyAddressDim("字典表地址字段"),
+
+    VelocityShouldSave("必存的Velocity字段"),
+
+    PartnerVelocityDims("合作方Velocity主属性配置"),
+
     SubReasonCodeCacheData("三方状态码配置");
 
 

@@ -15,6 +15,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.IPolicyChallengerRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallenger;
 import cn.tongdun.kunpeng.api.engine.model.policy.challenger.PolicyChallengerCache;
+import cn.tongdun.kunpeng.api.engine.model.policyfield.PolicyFieldCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryptionCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessaryCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
@@ -77,6 +78,8 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
     private PolicyFieldNecessaryCache fieldNecessaryCache;
     @Autowired
     private PolicyFieldEncryptionCache fieldEncryptionCache;
+    @Autowired
+    private PolicyFieldCache policyFieldCache;
 
 
     @PostConstruct
@@ -191,7 +194,7 @@ public class PolicyChallengerReLoadManager implements IReload<PolicyChallengerEv
                 }
 
                 //加载策略各个子对象信息
-                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache,policyIndexCache);
+                PolicyLoadTask task = new PolicyLoadTask(config.getVersionUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache,policyIndexCache, policyFieldCache);
                 task.call();
             }
         }
