@@ -73,33 +73,33 @@ public class AdminDictionaryRepository implements IDictionaryRepository {
         }).collect(Collectors.toList());
     }
 
-    public JSONObject getSubReasonCode() {
-        JSONObject jsonObject = getSpecialData("SubReasonCodeCacheData");
-        if(null == jsonObject){
-            return new JSONObject();
-        }
-        return jsonObject;
-    }
-
-    public JSONObject getSpecialData(String key) {
-        JSONObject result = new JSONObject();
-        if (StringUtils.isBlank(key)) {
-            return result;
-        }
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("key", key);
-        List<AdminDictionaryDO> list = queryByParams(map);
-        if (list.isEmpty()) {
-            return result;
-        }
-
-        String value = list.get(0).getValue();
-        try {
-            result = com.alibaba.fastjson.JSON.parseObject(value);
-        } catch (Exception e) {
-            logger.warn( "解析字典配置异常,字典值json解析出错value:{}, message is {}", value, e.getMessage());
-        }
-        return result;
-    }
+//    public JSONObject getSubReasonCode() {
+//        JSONObject jsonObject = getSpecialData("SubReasonCodeCacheData");
+//        if(null == jsonObject){
+//            return new JSONObject();
+//        }
+//        return jsonObject;
+//    }
+//
+//    public JSONObject getSpecialData(String key) {
+//        JSONObject result = new JSONObject();
+//        if (StringUtils.isBlank(key)) {
+//            return result;
+//        }
+//
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        map.put("key", key);
+//        List<AdminDictionaryDO> list = queryByParams(map);
+//        if (list.isEmpty()) {
+//            return result;
+//        }
+//
+//        String value = list.get(0).getValue();
+//        try {
+//            result = com.alibaba.fastjson.JSON.parseObject(value);
+//        } catch (Exception e) {
+//            logger.warn( "解析字典配置异常,字典值json解析出错value:{}, message is {}", value, e.getMessage());
+//        }
+//        return result;
+//    }
 }
