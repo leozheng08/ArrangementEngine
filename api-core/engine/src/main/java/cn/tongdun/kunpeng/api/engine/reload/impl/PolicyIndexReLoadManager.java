@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 /**
  * @Author: liang.chen
  * @Date: 2019/12/10 下午1:44
+ * 策略指标的缓存加载
  */
 @Component
 public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO> {
@@ -34,6 +35,9 @@ public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO>
 
     @Autowired
     private PolicyIndexCache policyIndexCache;
+
+    @Autowired
+    private PolicyFieldReloadManager policyFieldReloadManager;
 
     @Autowired
     private PolicyIndexConvertor policyIndexConvertor;
@@ -92,6 +96,9 @@ public class PolicyIndexReLoadManager implements IReload<IndexDefinitionEventDO>
 
             //刷新引用到的平台指标
             policyIndicatrixItemReloadManager.reload(policyUuid);
+            //刷新引用到的策略字段
+            policyFieldReloadManager.reload(policyUuid);
+
 
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "PolicyIndex reload failed, policyUuid:{}", policyUuid, e);
