@@ -1,14 +1,11 @@
 package cn.tongdun.kunpeng.api.engine.model.eventtype;
 
 import cn.tongdun.kunpeng.api.engine.cache.AbstractLocalCache;
-import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
-import com.google.common.collect.Lists;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
