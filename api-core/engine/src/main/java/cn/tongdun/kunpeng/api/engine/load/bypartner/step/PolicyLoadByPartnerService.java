@@ -87,7 +87,7 @@ public class PolicyLoadByPartnerService {
     public void init() {
         this.executeThreadPool = threadService.createThreadPool(
                 4,
-                4,
+                32,
                 30L,
                 TimeUnit.MINUTES,
                 Integer.MAX_VALUE,
