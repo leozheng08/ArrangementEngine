@@ -85,7 +85,7 @@ public class PolicyLoadByPartnerService {
     @Autowired
     private PolicyIndexCache policyIndexCache;
 
-    @Value("policy.load.thread.queue.size:200")
+    @Value("policy.load.thread.queue.size:300")
     private int policyLoadThreadQueueSize;
 
     @PostConstruct
