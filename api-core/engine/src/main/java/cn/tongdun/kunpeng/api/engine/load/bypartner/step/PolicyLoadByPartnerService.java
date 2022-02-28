@@ -5,7 +5,6 @@ import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
@@ -24,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -32,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -65,9 +62,6 @@ public class PolicyLoadByPartnerService {
     private PlatformIndexCache platformIndexCache;
 
     @Autowired
-    private IPlatformIndexRepository platformIndexRepository;
-
-    @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
     @Autowired
@@ -85,19 +79,15 @@ public class PolicyLoadByPartnerService {
     @Autowired
     private PolicyIndexCache policyIndexCache;
 
-    @Value("${policy.load.thread.queue.size:300}")
-    private int policyLoadThreadQueueSize;
-
     @PostConstruct
     public void init() {
-        ThreadPoolExecutor.CallerRunsPolicy callerRunsPolicy = new ThreadPoolExecutor.CallerRunsPolicy();
         this.executeThreadPool = threadService.createThreadPool(
                 4,
                 32,
                 30L,
                 TimeUnit.MINUTES,
-                policyLoadThreadQueueSize,
-                "loadPolicy", callerRunsPolicy);
+                Integer.MAX_VALUE,
+                "loadPolicy");
     }
 
 
@@ -125,7 +115,7 @@ public class PolicyLoadByPartnerService {
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache, policyIndexCache, policyFieldCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache, policyIndexCache, policyFieldCache);
             tasks.add(task);
         }
 
