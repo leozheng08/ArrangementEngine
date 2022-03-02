@@ -82,3 +82,7 @@ v1.3.52
 
 v1.3.53
 - 国内反欺诈拆分项目合并到master
+
+v1.4.1(2022-03-02)
+- 国内反欺诈拆分三期合并到master
+- 详细变动点wiki：http://wiki.tongdun.me/pages/viewpage.action?pageId=44729183
