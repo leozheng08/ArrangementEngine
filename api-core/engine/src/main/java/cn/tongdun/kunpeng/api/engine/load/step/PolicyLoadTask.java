@@ -6,7 +6,6 @@ import cn.tongdun.kunpeng.api.engine.convertor.IConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.IConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
 import cn.tongdun.kunpeng.api.engine.dto.*;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutput;
 import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutputCache;
@@ -16,6 +15,8 @@ import cn.tongdun.kunpeng.api.engine.model.decisionmode.DecisionModeType;
 import cn.tongdun.kunpeng.api.engine.model.decisionmode.ParallelSubPolicy;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
+import cn.tongdun.kunpeng.api.engine.model.policyfield.PolicyField;
+import cn.tongdun.kunpeng.api.engine.model.policyfield.PolicyFieldCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryption;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryptionCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessary;
@@ -27,11 +28,15 @@ import cn.tongdun.kunpeng.api.engine.model.subpolicy.SubPolicy;
 import cn.tongdun.kunpeng.client.dto.DecisionFlowDTO;
 import cn.tongdun.kunpeng.client.dto.RuleDTO;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -48,8 +53,6 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
     private IPolicyRepository policyRepository;
 
-    private IPlatformIndexRepository platformIndexRepository;
-
     private PlatformIndexCache platformIndexCache;
 
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
@@ -62,6 +65,11 @@ public class PolicyLoadTask implements Callable<Boolean> {
     private PolicyFieldEncryptionCache fieldEncryptionCache;
 
     /**
+     * 策略字段缓存
+     */
+    private PolicyFieldCache policyFieldCache;
+
+    /**
      * 必传字段的缓存
      */
     private PolicyFieldNecessaryCache fieldNecessaryCache;
@@ -69,21 +77,20 @@ public class PolicyLoadTask implements Callable<Boolean> {
     private PolicyIndexCache policyIndexCache;
 
 
-
     public PolicyLoadTask(String policyUuid, IPolicyRepository policyRepository, IConvertorFactory convertorFactory, LocalCacheService localCacheService,
-                          IPlatformIndexRepository platformIndexRepository, PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache, PolicyCustomOutputCache outputCache, PolicyFieldNecessaryCache fieldNecessaryCache
-    , PolicyFieldEncryptionCache fieldEncryptionCache,PolicyIndexCache policyIndexCache) {
+                          PlatformIndexCache platformIndexCache, BatchRemoteCallDataCache batchRemoteCallDataCache, PolicyCustomOutputCache outputCache, PolicyFieldNecessaryCache fieldNecessaryCache
+            , PolicyFieldEncryptionCache fieldEncryptionCache, PolicyIndexCache policyIndexCache, PolicyFieldCache policyFieldCache) {
         this.policyUuid = policyUuid;
         this.convertorFactory = convertorFactory;
         this.localCacheService = localCacheService;
         this.policyRepository = policyRepository;
-        this.platformIndexRepository = platformIndexRepository;
         this.platformIndexCache = platformIndexCache;
         this.batchRemoteCallDataCache = batchRemoteCallDataCache;
         this.outputCache = outputCache;
         this.fieldEncryptionCache = fieldEncryptionCache;
         this.fieldNecessaryCache = fieldNecessaryCache;
         this.policyIndexCache = policyIndexCache;
+        this.policyFieldCache = policyFieldCache;
     }
 
     /**
@@ -134,9 +141,9 @@ public class PolicyLoadTask implements Callable<Boolean> {
             if (!indexDefinitionDTOList.isEmpty()) {
                 IConvertor<List<IndexDefinitionDTO>, List<PolicyIndex>> policyIndexConvertor = convertorFactory.getConvertor(IndexDefinitionDTO.class);
                 List<PolicyIndex> policyIndexList = policyIndexConvertor.convert(indexDefinitionDTOList);
-                if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(policyIndexList)) {
-                    Map<String,PolicyIndex> policyIndexMap = policyIndexList.stream().collect(Collectors.toMap(PolicyIndex::getUuid, policyIndex -> policyIndex));
-                    policyIndexCache.put(policyDTO.getUuid(),policyIndexMap);
+                if (CollectionUtils.isNotEmpty(policyIndexList)) {
+                    Map<String, PolicyIndex> policyIndexMap = policyIndexList.stream().collect(Collectors.toMap(PolicyIndex::getUuid, policyIndex -> policyIndex));
+                    policyIndexCache.put(policyDTO.getUuid(), policyIndexMap);
                 }
             }
 
@@ -157,9 +164,9 @@ public class PolicyLoadTask implements Callable<Boolean> {
 
             }
 
-            //加载平台指标
-            List<String> gaeaIds = platformIndexRepository.queryByPolicyUuid(policyUuid);
-            if (!CollectionUtils.isEmpty(gaeaIds)) {
+            //缓存平台指标
+            if (CollectionUtils.isNotEmpty(policyDTO.getPolicyIndicatrixItemList())) {
+                List<String> gaeaIds = policyDTO.getPolicyIndicatrixItemList().stream().map(pi -> pi.getIndicatrixId()).collect(Collectors.toList());
                 platformIndexCache.putList(policyUuid, gaeaIds);
             }
 
@@ -170,8 +177,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
             //缓存自定义输出，平台层有默认实现，不会进行缓存
             List<PolicyCustomOutputDTO> list = policyDTO.getPolicyCustomOutputDTOList();
             if (!CollectionUtils.isEmpty(list)) {
-                for (PolicyCustomOutputDTO dto :
-                        list) {
+                for (PolicyCustomOutputDTO dto : list) {
                     if (dto.isDeleted()) {
                         continue;
                     }
@@ -193,6 +199,17 @@ public class PolicyLoadTask implements Callable<Boolean> {
                     outputCache.put(output.getPolicyUuid(), policyCustomOutputList);
                 }
             }
+            //缓存策略字段
+            List<PolicyFieldDTO> policyFieldDTOList = policyDTO.getPolicyFieldList();
+            List<PolicyField> policyFieldList = new ArrayList<>();
+            IConvertor<PolicyFieldDTO, PolicyField> fieldIConvertor = convertorFactory.getConvertor(PolicyFieldDTO.class);
+            if (!CollectionUtils.isEmpty(policyFieldDTOList)) {
+                for (PolicyFieldDTO policyFieldDTO : policyFieldDTOList) {
+                    PolicyField policyField = fieldIConvertor.convert(policyFieldDTO);
+                    policyFieldList.add(policyField);
+                }
+                policyFieldCache.put(policyUuid, policyFieldList);
+            }
             // 缓存加密字段
             List<PolicyFieldEncryptionDTO> policyFieldEncryptionDTOList = policyDTO.getPolicyFieldEncryptionDTOList();
             List<PolicyFieldEncryption> policyFieldEncryptionList = new ArrayList<>();
@@ -205,7 +222,6 @@ public class PolicyLoadTask implements Callable<Boolean> {
                 // key：策略集uuid value：该策略uuid下所有的加密字段
                 fieldEncryptionCache.put(policyDTO.getPolicyDefinitionUuid(), policyFieldEncryptionList);
             }
-
             // 缓存必传参数
             IConvertor<PolicyFieldNecessaryDTO, PolicyFieldNecessary> fieldNecessaryIConvertor = convertorFactory.getConvertor(PolicyFieldNecessaryDTO.class);
             List<PolicyFieldNecessaryDTO> policyFieldNecessaryDTOList = policyDTO.getPolicyFieldNecessaryDTOList();
@@ -236,7 +252,7 @@ public class PolicyLoadTask implements Callable<Boolean> {
      */
     private void addBatchRemoteCallDataToCache(String subPolicyUuid, RuleDTO ruleDTO) {
         Map<String, List<Object>> batchdatas = BatchRemoteCallDataManager.buildData(policyUuid, subPolicyUuid, ruleDTO);
-        if (!CollectionUtils.isEmpty(batchdatas)) {
+        if (MapUtils.isNotEmpty(batchdatas)) {
             Set<Map.Entry<String, List<Object>>> entries = batchdatas.entrySet();
             for (Map.Entry<String, List<Object>> entry : entries) {
                 batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());

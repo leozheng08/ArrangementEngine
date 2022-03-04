@@ -77,6 +77,11 @@ public class MockPolicyRepository implements IPolicyRepository{
         return policyDO;
     }
 
+    @Override
+    public List<PolicyFieldDTO> queryPolicyFieldDTOByPolicyUuid(String policyUuid) {
+        return null;
+    }
+
 
     @Override
 //    @Cacheable("policyDOCache")

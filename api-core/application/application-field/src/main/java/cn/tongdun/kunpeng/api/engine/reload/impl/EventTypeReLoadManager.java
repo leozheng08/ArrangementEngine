@@ -4,6 +4,7 @@ import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventType;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.EventTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.eventtype.IEventTypeRepository;
+import cn.tongdun.kunpeng.api.engine.model.field.FieldDefinitionCache;
 import cn.tongdun.kunpeng.api.engine.reload.IReload;
 import cn.tongdun.kunpeng.api.engine.reload.ReloadFactory;
 import cn.tongdun.kunpeng.api.engine.reload.dataobject.EventTypeEventDO;
@@ -30,6 +31,9 @@ public class EventTypeReLoadManager implements IReload<EventTypeEventDO> {
 
     @Autowired
     private EventTypeCache eventTypeCache;
+
+    @Autowired
+    private FieldDefinitionCache fieldDefinitionCache;
 
     @Autowired
     private ReloadFactory reloadFactory;
@@ -76,6 +80,7 @@ public class EventTypeReLoadManager implements IReload<EventTypeEventDO> {
             }
 
             eventTypeCache.put(uuid, newEventType);
+            fieldDefinitionCache.reloadFieldByEventType(newEventType.getEventCode());
         } catch (Exception e){
             logger.error(TraceUtils.getFormatTrace()+"EventType reload failed, uuid:{}",uuid,e);
             return false;

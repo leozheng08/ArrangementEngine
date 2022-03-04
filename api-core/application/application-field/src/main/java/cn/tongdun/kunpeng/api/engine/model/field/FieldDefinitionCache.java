@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.awt.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -231,6 +232,19 @@ public class FieldDefinitionCache extends AbstractLocalCache<String, IFieldDefin
             Map<String, IFieldDefinition> map = fieldMap.get(extKey);
             if (map != null) {
                 map.remove(fieldCode);
+            }
+        }
+    }
+
+    public void reloadFieldByEventType(String eventType) {
+        if (null == eventType) {
+            return;
+        }
+        for (Map.Entry<String, IFieldDefinition> field:fieldDefinitionMap.entrySet()) {
+            if ("sys".equalsIgnoreCase(field.getValue().getFieldType())) {
+                this.addSystemField(field.getValue());
+            } else {
+                this.addExtendField(field.getValue());
             }
         }
     }

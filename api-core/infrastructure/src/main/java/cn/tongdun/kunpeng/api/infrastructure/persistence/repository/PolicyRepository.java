@@ -197,7 +197,8 @@ public class PolicyRepository implements IPolicyRepository{
 
 
     //查询策略使用到的字段
-    private List<PolicyFieldDTO> queryPolicyFieldDTOByPolicyUuid(String policyUuid){
+    @Override
+    public List<PolicyFieldDTO> queryPolicyFieldDTOByPolicyUuid(String policyUuid){
         List<PolicyFieldItemDO>  policyFieldDOList = policyFieldItemDAO.selectByPolicyUuid(policyUuid);
         if(policyFieldDOList == null) {
             return null;

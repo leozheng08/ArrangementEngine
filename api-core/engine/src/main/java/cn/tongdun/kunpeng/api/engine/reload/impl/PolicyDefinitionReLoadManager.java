@@ -5,7 +5,6 @@ import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.constant.ReloadConstant;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
@@ -16,6 +15,7 @@ import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.IPolicyDefinitionRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinition;
 import cn.tongdun.kunpeng.api.engine.model.policy.definition.PolicyDefinitionCache;
+import cn.tongdun.kunpeng.api.engine.model.policyfield.PolicyFieldCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryptionCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessaryCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
@@ -64,8 +64,6 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
     @Autowired
     private LocalCacheService localCacheService;
     @Autowired
-    private IPlatformIndexRepository platformIndexRepository;
-    @Autowired
     private PlatformIndexCache platformIndexCache;
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
@@ -75,6 +73,8 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
     private PolicyFieldEncryptionCache fieldEncryptionCache;
     @Autowired
     private PolicyFieldNecessaryCache fieldNecessaryCache;
+    @Autowired
+    private PolicyFieldCache policyFieldCache;
     @Autowired
     private PolicyIndexCache policyIndexCache;
 
@@ -165,7 +165,7 @@ public class PolicyDefinitionReLoadManager implements IReload<PolicyDefinitionEv
                 result = true;
             } else {
                 //加载策略信息，包含各个子对象
-                PolicyLoadTask task = new PolicyLoadTask(newPolicyUuid, policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache,outputCache,fieldNecessaryCache, fieldEncryptionCache,policyIndexCache);
+                PolicyLoadTask task = new PolicyLoadTask(newPolicyUuid, policyRepository, defaultConvertorFactory, localCacheService, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache, policyIndexCache, policyFieldCache);
                 result = task.call();
             }
 

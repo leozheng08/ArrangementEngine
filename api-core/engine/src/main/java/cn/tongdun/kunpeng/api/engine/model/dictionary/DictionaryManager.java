@@ -229,4 +229,49 @@ public class DictionaryManager {
         }
         return dictionaries;
     }
+
+    public List<Dictionary> getFuzzyAddressDim(){
+        List<Dictionary> dictionaries = null;
+        try {
+            dictionaries = dict10MinuteCache.get(fuzzyAddressDim.name());
+            if (null == dictionaries) {
+                loadDictionary(fuzzyAddressDim.name());
+                return dict10MinuteCache.get(fuzzyAddressDim.name());
+            }
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "get fuzzyAddressDim dictionary failed");
+        }
+        return dictionaries;
+    }
+
+    public List<Dictionary> getVelocityShouldSave(){
+        List<Dictionary> dictionaries = null;
+        try {
+            dictionaries = dict10MinuteCache.get(VelocityShouldSave.name());
+            if (null == dictionaries) {
+                loadDictionary(VelocityShouldSave.name());
+                return dict10MinuteCache.get(VelocityShouldSave.name());
+            }
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "get VelocityShouldSave dictionary failed");
+        }
+        return dictionaries;
+    }
+
+    public List<Dictionary> getPartnerVelocityDims(){
+        List<Dictionary> dictionaries = null;
+        try {
+            dictionaries = dict10MinuteCache.get(PartnerVelocityDims.name());
+            if (null == dictionaries) {
+                loadDictionary(PartnerVelocityDims.name());
+                return dict10MinuteCache.get(PartnerVelocityDims.name());
+            }
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "get VelocityShouldSave dictionary failed");
+        }
+        return dictionaries;
+    }
+
+
+
 }

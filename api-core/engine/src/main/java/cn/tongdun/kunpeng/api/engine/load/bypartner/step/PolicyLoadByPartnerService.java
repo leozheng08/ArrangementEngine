@@ -5,7 +5,6 @@ import cn.tongdun.kunpeng.api.engine.cache.LocalCacheService;
 import cn.tongdun.kunpeng.api.engine.convertor.DefaultConvertorFactory;
 import cn.tongdun.kunpeng.api.engine.dto.PolicyModifiedDTO;
 import cn.tongdun.kunpeng.api.engine.load.step.PolicyLoadTask;
-import cn.tongdun.kunpeng.api.engine.model.Indicatrix.IPlatformIndexRepository;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.constant.CommonStatusEnum;
 import cn.tongdun.kunpeng.api.engine.model.constant.DeleteStatusEnum;
@@ -13,6 +12,7 @@ import cn.tongdun.kunpeng.api.engine.model.customoutput.PolicyCustomOutputCache;
 import cn.tongdun.kunpeng.api.engine.model.policy.IPolicyRepository;
 import cn.tongdun.kunpeng.api.engine.model.policy.Policy;
 import cn.tongdun.kunpeng.api.engine.model.policy.PolicyCache;
+import cn.tongdun.kunpeng.api.engine.model.policyfield.PolicyFieldCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldencryption.PolicyFieldEncryptionCache;
 import cn.tongdun.kunpeng.api.engine.model.policyfieldnecessary.PolicyFieldNecessaryCache;
 import cn.tongdun.kunpeng.api.engine.model.policyindex.PolicyIndexCache;
@@ -62,9 +62,6 @@ public class PolicyLoadByPartnerService {
     private PlatformIndexCache platformIndexCache;
 
     @Autowired
-    private IPlatformIndexRepository platformIndexRepository;
-
-    @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
     @Autowired
@@ -77,13 +74,16 @@ public class PolicyLoadByPartnerService {
     private PolicyFieldEncryptionCache fieldEncryptionCache;
 
     @Autowired
+    private PolicyFieldCache policyFieldCache;
+
+    @Autowired
     private PolicyIndexCache policyIndexCache;
 
     @PostConstruct
     public void init() {
         this.executeThreadPool = threadService.createThreadPool(
                 4,
-                4,
+                32,
                 30L,
                 TimeUnit.MINUTES,
                 Integer.MAX_VALUE,
@@ -115,7 +115,7 @@ public class PolicyLoadByPartnerService {
                 continue;
             }
 
-            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexRepository, platformIndexCache, batchRemoteCallDataCache,outputCache, fieldNecessaryCache, fieldEncryptionCache,policyIndexCache);
+            PolicyLoadTask task = new PolicyLoadTask(policyModifiedDO.getUuid(), policyRepository, defaultConvertorFactory, localCacheService, platformIndexCache, batchRemoteCallDataCache, outputCache, fieldNecessaryCache, fieldEncryptionCache, policyIndexCache, policyFieldCache);
             tasks.add(task);
         }
 
