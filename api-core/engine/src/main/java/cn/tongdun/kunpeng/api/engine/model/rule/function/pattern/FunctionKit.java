@@ -82,8 +82,11 @@ public class FunctionKit extends AbstractCalculateFunction {
                 }
             }
         } catch (Exception e) {
-            logger.warn(TraceUtils.getFormatTrace()+"FunctionKit eval error!", e);
+            logger.warn(TraceUtils.getFormatTrace() + "FunctionKit eval error!", e);
         }
+
+        //修复NPE问题，函数工具箱中，正常情况下这个值其实一直都是0
+        naturalValue = naturalValue == null ? 0 : naturalValue;
         result = statisticCalculate(values, funcType, naturalValue);
 
         /**
@@ -157,7 +160,7 @@ public class FunctionKit extends AbstractCalculateFunction {
                     return Double.NaN;
             }
         } catch (Exception e) {
-            logger.warn(TraceUtils.getFormatTrace()+"calculate error", e);
+            logger.warn(TraceUtils.getFormatTrace() + "calculate error", e);
             return Double.NaN;
         }
     }

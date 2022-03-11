@@ -127,7 +127,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
     protected void resolveGaeaValue(AbstractFraudContext context, PlatformIndexData indicatrixVal) {
         if (null == indicatrixVal) {
             ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-            logger.warn(TraceUtils.getFormatTrace() + "指标读取异常,indicatrixVal值为null!");
+//            logger.warn(TraceUtils.getFormatTrace() + "指标读取异常,indicatrixVal值为null!");
             return;
         }
 
@@ -135,22 +135,22 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         if (retCode < 500) {
             if (indicatrixVal.getIndicatrixId() == null) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, "gaea");
-                logger.info(TraceUtils.getFormatTrace() + "指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
+//                logger.info(TraceUtils.getFormatTrace() + "指标读取异常,gaea返回结果：{}，中indicatrixId值为空", indicatrixVal.toString());
                 return;
             }
 
             if (retCode == IndicatrixRetCode.PARAMS_ERROR.getCode()) {
-                logger.info(TraceUtils.getFormatTrace() + "指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
+//                logger.info(TraceUtils.getFormatTrace() + "指标获取异常,gaea返回结果：{}，参数错误", indicatrixVal.toString());
                 return;
             }
 
             String indicatrixId = indicatrixVal.getIndicatrixId().toString();
             context.putPlatformIndexMap(indicatrixId, indicatrixVal);
             if (retCode == IndicatrixRetCode.INDEX_ERROR.getCode()) {
-                logger.info(TraceUtils.getFormatTrace() + "合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
+//                logger.info(TraceUtils.getFormatTrace() + "合作方没有此指标,合作方：{}， 指标：{}", context.getPartnerCode(), indicatrixId);
             }
         } else {
-            logger.error(TraceUtils.getFormatTrace() + "指标返回异常,gaea返回结果：{}", indicatrixVal.toString());
+//            logger.error(TraceUtils.getFormatTrace() + "指标返回异常,gaea返回结果：{}", indicatrixVal.toString());
             String subReasonCode = dictionaryManager.getReasonCode("gaea", String.valueOf(retCode));
             // 针对字典表中未配置的状态子码，暂时不做处理
             if (StringUtils.isNotEmpty(subReasonCode)) {
@@ -211,7 +211,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
         if (indicatrixs == null || indicatrixs.isEmpty()) {
-//            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
+            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return null;
         }
 
