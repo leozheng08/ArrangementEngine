@@ -86,3 +86,7 @@ v1.3.53
 v1.4.1(2022-03-02)
 - 国内反欺诈拆分三期合并到master
 - 详细变动点wiki：http://wiki.tongdun.me/pages/viewpage.action?pageId=44729183
+
+v1.4.2(2022-03-11)
+- 函数工具箱规则模板NPE问题修复
+- 指标结果解析日志精简
