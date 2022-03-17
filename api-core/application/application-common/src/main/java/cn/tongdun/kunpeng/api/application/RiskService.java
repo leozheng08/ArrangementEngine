@@ -130,6 +130,7 @@ public class RiskService implements IRiskService {
         timeContext.stop();
         timePartner.stop();
         printCode(riskRequest, riskResponse);
+        riskResponse.setSpendTime(Long.valueOf(System.currentTimeMillis() - context.getRiskStartTime()).intValue());
         return riskResponse;
     }
 
