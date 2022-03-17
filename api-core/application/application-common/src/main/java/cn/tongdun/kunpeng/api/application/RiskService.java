@@ -160,7 +160,8 @@ public class RiskService implements IRiskService {
                     METRICS_TAG_REASON_CODE, riskResponse.getReasonCode(),
                     METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()
             };
-            metrics.counter(METRICS_TAG_REASON_KEY + ":" + riskResponse.getReasonCode(), tags);
+            metrics.counter(METRICS_TAG_REASON_KEY, tags);
+            metrics.counter(METRICS_TAG_REASON_KEY, riskResponse.getReasonCode(), tags);
         }
 
         if (Objects.nonNull(riskResponse.getSubReasonCodes())) {
