@@ -7,7 +7,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>dependencies-bom</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.2-api</version>
+    <version>1.4.3-api</version>
 
     <name>dependencies-bom</name>
 
@@ -27,7 +27,7 @@
         <janino-version>3.0.6</janino-version>
 
         <guava-version>20.0</guava-version>
-        <tdframework.version>1.1.5</tdframework.version>
+        <tdframework.version>1.1.7</tdframework.version>
         <ddd.version>1.0.6</ddd.version>
         <tdrule.version>1.0.8-tmp</tdrule.version>
         <tdflow.version>1.0.2</tdflow.version>

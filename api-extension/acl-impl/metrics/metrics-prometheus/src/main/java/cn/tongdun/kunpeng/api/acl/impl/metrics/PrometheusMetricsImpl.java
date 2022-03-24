@@ -21,39 +21,49 @@ import java.util.concurrent.TimeUnit;
  * @Date: 2020/3/27 下午5:24
  */
 @Component
-public class PrometheusMetricsImpl implements IMetrics{
+public class PrometheusMetricsImpl implements IMetrics {
 
-    private static final Logger logger                   = LoggerFactory.getLogger(PrometheusMetricsImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(PrometheusMetricsImpl.class);
 
 
     @Autowired
     private PrometheusTool prometheusTool;
 
     @Override
-    public void counter(String counterName,String... tags){
+    public void counter(String counterName, String... tags) {
         try {
-            PromCounter promCounter =prometheusTool.promeCounter(counterName, tags);
+            PromCounter promCounter = prometheusTool.promeCounter(counterName, tags);
             promCounter.mark();
-        }catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"counter error",e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "counter error", e);
         }
     }
 
 
     @Override
-    public void summary(String counterName,long num,String... tags){
+    public void counter(String counterName, String field, String... tags) {
         try {
-            PromDistributionSummary promDistributionSummary =prometheusTool.promeDistributionSummary(counterName,tags);
-            promDistributionSummary.record(num);
-        }catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"summary error",e);
+            PromCounter promCounter = prometheusTool.promeCounter(counterName, tags);
+            promCounter.mark();
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "counter error", e);
         }
     }
 
 
+    @Override
+    public void summary(String counterName, long num, String... tags) {
+        try {
+            PromDistributionSummary promDistributionSummary = prometheusTool.promeDistributionSummary(counterName, tags);
+            promDistributionSummary.record(num);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "summary error", e);
+        }
+    }
+
 
     @Override
-    public ITimeContext timer(String timerName, String... tags){
+    public ITimeContext timer(String timerName, String... tags) {
         try {
             PromTimer promTimer = prometheusTool.promTimer(timerName, tags);
 
@@ -68,8 +78,8 @@ public class PrometheusMetricsImpl implements IMetrics{
                     return time;
                 }
             };
-        }catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"summary error",e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "summary error", e);
         }
         return new ITimeContext() {
             @Override
@@ -81,7 +91,7 @@ public class PrometheusMetricsImpl implements IMetrics{
 
 
     @Override
-    public ITimeContext metricTimer(String timerName, String... tags){
+    public ITimeContext metricTimer(String timerName, String... tags) {
         try {
             PromTimer promTimer = prometheusTool.promHistogramTimer(timerName, tags);
 
@@ -96,8 +106,8 @@ public class PrometheusMetricsImpl implements IMetrics{
                     return time;
                 }
             };
-        }catch (Exception e){
-            logger.error(TraceUtils.getFormatTrace()+"summary error",e);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "summary error", e);
         }
         return new ITimeContext() {
             @Override
@@ -108,7 +118,7 @@ public class PrometheusMetricsImpl implements IMetrics{
     }
 
     @Override
-    public void gaugeCollectionSize(String name, Collection collection){
+    public void gaugeCollectionSize(String name, Collection collection) {
         prometheusTool.gaugeCollectionSize(name, Tags.empty(), collection);
     }
 }

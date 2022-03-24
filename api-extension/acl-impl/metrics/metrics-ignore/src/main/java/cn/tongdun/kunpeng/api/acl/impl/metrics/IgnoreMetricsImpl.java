@@ -8,11 +8,12 @@ import java.util.Collection;
 
 /**
  * 监控统计的空实现
+ *
  * @Author: liang.chen
  * @Date: 2020/3/27 下午5:24
  */
 @Component
-public class IgnoreMetricsImpl implements IMetrics{
+public class IgnoreMetricsImpl implements IMetrics {
 
     private final static ITimeContext IGNORE_TIME_CONTEXT = new ITimeContext() {
         @Override
@@ -22,31 +23,35 @@ public class IgnoreMetricsImpl implements IMetrics{
     };
 
     @Override
-    public void counter(String counterName,String... tags){
+    public void counter(String counterName, String... tags) {
+        //空操作
+    }
+
+    @Override
+    public void counter(String counterName, String field, String... tags) {
         //空操作
     }
 
 
     @Override
-    public void summary(String counterName,long num,String... tags){
+    public void summary(String counterName, long num, String... tags) {
         //空操作
     }
 
 
-
     @Override
-    public ITimeContext timer(String timerName, String... tags){
+    public ITimeContext timer(String timerName, String... tags) {
         return IGNORE_TIME_CONTEXT;
     }
 
 
     @Override
-    public ITimeContext metricTimer(String timerName, String... tags){
+    public ITimeContext metricTimer(String timerName, String... tags) {
         return IGNORE_TIME_CONTEXT;
     }
 
     @Override
-    public void gaugeCollectionSize(String name, Collection collection){
+    public void gaugeCollectionSize(String name, Collection collection) {
         //空操作
     }
 }

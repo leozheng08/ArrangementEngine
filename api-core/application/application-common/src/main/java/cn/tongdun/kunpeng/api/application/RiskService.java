@@ -130,6 +130,7 @@ public class RiskService implements IRiskService {
         timeContext.stop();
         timePartner.stop();
         printCode(riskRequest, riskResponse);
+        riskResponse.setSpendTime(Long.valueOf(System.currentTimeMillis() - context.getRiskStartTime()).intValue());
         return riskResponse;
     }
 
@@ -160,7 +161,8 @@ public class RiskService implements IRiskService {
                     METRICS_TAG_REASON_CODE, riskResponse.getReasonCode(),
                     METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()
             };
-            metrics.counter(METRICS_TAG_REASON_KEY + ":" + riskResponse.getReasonCode(), tags);
+            metrics.counter(METRICS_TAG_REASON_KEY, tags);
+            metrics.counter(METRICS_TAG_REASON_KEY, riskResponse.getReasonCode(), tags);
         }
 
         if (Objects.nonNull(riskResponse.getSubReasonCodes())) {

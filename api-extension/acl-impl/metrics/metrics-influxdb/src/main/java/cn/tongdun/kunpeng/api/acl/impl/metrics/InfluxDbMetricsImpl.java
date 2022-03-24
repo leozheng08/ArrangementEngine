@@ -28,9 +28,7 @@ public class InfluxDbMetricsImpl implements IMetrics {
 
     @Override
     public void counter(String counterName, String... tags) {
-        String[] counterNames = counterName.split(":");
-        MeasurementKey.MeasurementKeyBuilder builder = new MeasurementKey.MeasurementKeyBuilder(counterNames[0]);
-
+        MeasurementKey.MeasurementKeyBuilder builder = new MeasurementKey.MeasurementKeyBuilder(counterName);
         if (ArrayUtils.isNotEmpty(tags)) {
             for (int i = 0; i < tags.length - 1; i += 2) {
                 builder.addTag(tags[i], tags[i + 1]);
@@ -39,9 +37,19 @@ public class InfluxDbMetricsImpl implements IMetrics {
         Measurement measurement = registry.getMeasurement(builder.build());
         measurement.counter("count").mark(1L);
 
-        if (counterNames.length != 1) {
-            counter(measurement, counterNames[1]);
+    }
+
+    @Override
+    public void counter(String counterName, String field, String... tags) {
+        MeasurementKey.MeasurementKeyBuilder builder = new MeasurementKey.MeasurementKeyBuilder(counterName);
+
+        if (ArrayUtils.isNotEmpty(tags)) {
+            for (int i = 0; i < tags.length - 1; i += 2) {
+                builder.addTag(tags[i], tags[i + 1]);
+            }
         }
+        Measurement measurement = registry.getMeasurement(builder.build());
+        measurement.counter(field).mark(1L);
 
     }
 
