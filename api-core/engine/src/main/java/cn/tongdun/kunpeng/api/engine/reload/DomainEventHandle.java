@@ -50,7 +50,7 @@ public class DomainEventHandle {
                 1,
                 30L,
                 TimeUnit.MINUTES,
-                10000,
+                100000,
                 "DomainEventHandle-");
     }
 
