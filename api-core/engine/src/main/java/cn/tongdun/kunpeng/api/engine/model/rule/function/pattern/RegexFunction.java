@@ -119,12 +119,16 @@ public class RegexFunction extends AbstractFunction {
         List<Future<RegularMatchData>> futures = null;
         try {
             futures = regexThreadPool.invokeAll(tasks, THREAD_TIME_OUT, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "RegexFunction error", e);
-        }
-        if (null == futures || futures.isEmpty()) {
+        } catch (InterruptedException e) {
             AbstractFraudContext fraudContext = (AbstractFraudContext) executeContext;
-            fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_ERROR.getCode(), ReasonCode.BUDLE_SERVICE_CALL_ERROR.getDescription(), "决策引擎执行"));
+            fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getCode(), ReasonCode.BUDLE_SERVICE_CALL_TIMEOUT.getDescription(), "正则表达式执行"));
+            logger.error(TraceUtils.getFormatTrace() + "获取正则表达式执行结果被中断", e);
+        } catch (Exception e) {
+            AbstractFraudContext fraudContext = (AbstractFraudContext) executeContext;
+            fraudContext.addSubReasonCode(new SubReasonCode(ReasonCode.BUDLE_SERVICE_CALL_ERROR.getCode(), ReasonCode.BUDLE_SERVICE_CALL_ERROR.getDescription(), "正则表达式执行"));
+            logger.error(TraceUtils.getFormatTrace() + "获取正则表达式执行结果失败", e);
+        }
+        if (null == futures || futures.isEmpty() || futures.size() != tasks.size()) {
             return new FunctionResult(false);
         }
 
