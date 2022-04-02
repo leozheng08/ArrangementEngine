@@ -45,6 +45,7 @@ public class DictionaryManager {
 
     @PostConstruct
     public void init() {
+        dict10MinuteCache = new ConcurrentHashMap<>(10);
         appCache = new ConcurrentHashMap<>(5);
         subReasonCodeCache = new ConcurrentHashMap<>(10);
         //定时器10秒钟执行一次
@@ -85,9 +86,6 @@ public class DictionaryManager {
     public List<Dictionary> loadDictionary(String key) {
         if (StringUtils.isBlank(key)) {
             return Collections.emptyList();
-        }
-        if(dict10MinuteCache == null){
-            dict10MinuteCache = new ConcurrentHashMap<>(10);
         }
         List<Dictionary> dictionaryList = dictionaryRepository.getDictionary(key);
         for (Dictionary dictionary : dictionaryList) {
