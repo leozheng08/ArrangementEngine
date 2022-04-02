@@ -26,28 +26,28 @@ import java.util.stream.Collectors;
 @Repository
 public class ChassisAdminApplicationRepository implements IAdminApplicationRepository {
 
-    private Logger logger = LoggerFactory.getLogger(ChassisAdminApplicationRepository.class);
-
+    private final Logger logger = LoggerFactory.getLogger(ChassisAdminApplicationRepository.class);
 
     @Autowired
     private ProductService productService;
 
     @Override
     public List<AdminApplicationDTO> queryApplicationsByPartners(Set<String> partners) {
-        if (null == partners || partners.isEmpty()) {
+        if (CollectionUtils.isEmpty(partners)) {
             return Collections.emptyList();
         }
 
-        // 通过运用平台提供的dubbo接口获取app信息；如果获取失败，则采用原来的方式获取
+        // 通过运用平台提供的dubbo接口获取app信息
         List<AppProductDTO> appList = new ArrayList<>();
-        // 正常的话查询dubbo接口获取应用
-        ApiResult<List<AppProductDTO>> appProductList = productService.getAppProductList(null);
-        if (appProductList != null && appProductList.isSuccess() && appProductList.getData() != null) {
-            appList = appProductList.getData();
-        } else {
+        for (String partner : partners) {
+            ApiResult<List<AppProductDTO>> appProductList = productService.getAppList(partner, null);
+            if (appProductList != null && appProductList.isSuccess() && CollectionUtils.isNotEmpty(appProductList.getData())) {
+                appList.addAll(appProductList.getData());
+            }
+        }
+        if (CollectionUtils.isEmpty(appList)) {
             return Collections.emptyList();
         }
-
         return appList.stream().filter(x -> partners.contains(x.getPartnerCode())).map(appProductDTO -> {
             AdminApplicationDTO adminApplication = new AdminApplicationDTO();
             BeanUtils.copyProperties(appProductDTO, adminApplication);

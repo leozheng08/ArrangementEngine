@@ -22,6 +22,7 @@ import cn.tongdun.kunpeng.api.engine.model.script.DynamicScript;
 import cn.tongdun.kunpeng.api.engine.model.script.IDynamicScriptRepository;
 import cn.tongdun.kunpeng.api.engine.model.script.groovy.GroovyCompileManager;
 import cn.tongdun.kunpeng.api.service.ILoadPartnerDataService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,6 +128,9 @@ public class LoadPartnerDataServiceServiceImpl implements ILoadPartnerDataServic
         List<PolicyDefinition> PolicyModifiedDOList = policyDefinitionRepository.queryByPartners(partners);
         for(PolicyDefinition policyDefinition:PolicyModifiedDOList) {
             policyDefinitionCache.put(policyDefinition.getUuid(),policyDefinition);
+        }
+        if(CollectionUtils.isNotEmpty(PolicyModifiedDOList)) {
+            logger.info("partner cluster update,policyDefinitionSize={}", PolicyModifiedDOList.size());
         }
     }
 

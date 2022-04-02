@@ -48,7 +48,7 @@ public enum ReasonCode {
     ENGINE_EXECUTE_TIMEOUT("506", "决策引擎执行超时"),
     DATA_NOT_READY("507", "部分数据未准备好"),
     SERVICE_FLOW_ERROR("508", "子服务流量不足"),
-    ENCRYPTION_FIELD_NOT_READY("509","字段获取失败，部分数据获取不全"),
+    ENCRYPTION_FIELD_NOT_READY("509", "字段获取失败，部分数据获取不全"),
     TDID_DECRYPT_FAIL("510", "TDID反解失败"),
     RATE_LIMITING("600", "限流"),
     // 600~:其它
@@ -62,7 +62,6 @@ public enum ReasonCode {
     PARAM_NECESSARY_FIELD_TIMEOUT("10104", "必传字段获取超时"),
     PARAM_NECESSARY_FIELD_ERROR("10105", "必传字段获取失败"),
     PARAM_ENCRYPTION_FIELD_SIZE_OUT("10106", "彩虹表调用参数过多"),
-
 
 
     NO_PASS_DATA("20001", "客户没有传规则所需的参数"),
@@ -80,7 +79,7 @@ public enum ReasonCode {
     POLICY_NOT_EXIST_SUB("40401", "没有对应的策略配置"),
     POLICY_DELETED("40405", "策略已删除"),
     POLICY_CLOSED("40406", "策略已关闭"),
-    SUB_POLICY_NOT_EXIST("40404","对应的策略下没有子策略"),
+    SUB_POLICY_NOT_EXIST("40404", "对应的策略下没有子策略"),
     RULE_NOT_EXIST("40402", "对应的策略下没有规则"),
     POLICY_LOAD_ERROR("40403", "策略加载有误"),
     SUB_POLICY_LOAD_ERROR("40407", "子策略加载有误"),
@@ -131,10 +130,11 @@ public enum ReasonCode {
     CREDIT_LIST_DETAIL_SERVICE_CALL_ERROR("50736", "信贷名单库详情服务调用出错"),
     INDICATRIX_QUERY_LIMITING("50737", "指标平台限流"),
 
-    MAIL_PARAM_NOT_FOUND("50738", "反欺诈名单库查询出错"),
-    MAIL_MODEL_TIMEOUT_ERROR("50739", "反欺诈名单库查询超时"),
-    MAIL_MODEL_RANDOM_TIMEOUT_ERROR("50740", "反欺诈业务安全三方接口调用超时"),
-    MAIL_MODEL_REQUEST_FAILED("50741", "反欺诈内容安全三方接口调用超时"),
+    ANTIFRAUD_NAME_LIST_QUERY_ERROR("50738", "反欺诈名单库查询出错"),
+    ANTIFRAUD_NAME_LIST_QUERY_TIMEOUT("50739", "反欺诈名单库查询超时"),
+    ANTIFRAUD_BS_CALL_TIMEOUT("50740", "反欺诈业务安全三方接口调用超时"),
+    ANTIFRAUD_CS_CALL_TIMEOUT("50741", "反欺诈内容安全三方接口调用超时"),
+
     MAIL_MODEL_RANDOM_REQUEST_FAILED("50742", "邮件模型随机率服务请求5XX"),
     MAIL_MODEL_NOT_AVAILABLE_ERROR("50743", "邮件模型服务不可用"),
     MAIL_MODEL_RANDOM_NOT_AVAILABLE_ERROR("50744", "邮件模型随机率服务不" +
@@ -154,9 +154,9 @@ public enum ReasonCode {
     /**
      * 加密管理：针对非必传字段
      */
-    ENCRYPTION_FIELD_ATTRIBUTE_ERROR("50901","字段属性读取失败，置空"),
-    ENCRYPTION_FIELD_TYPE_ERROR("50902","字段格式校验失败，置空"),
-    ENCRYPTION_FIELD_QUERY_ERROR("50903","字段获取失败，置空"),
+    ENCRYPTION_FIELD_ATTRIBUTE_ERROR("50901", "字段属性读取失败，置空"),
+    ENCRYPTION_FIELD_TYPE_ERROR("50902", "字段格式校验失败，置空"),
+    ENCRYPTION_FIELD_QUERY_ERROR("50903", "字段获取失败，置空"),
 
 
     APPLICATION_RATE_LIMITING("60001", "forseti-api应用限流"),
@@ -166,18 +166,16 @@ public enum ReasonCode {
     NO_OUTPUT_FORMULA("70102", "决策结果自定义公式有误"),
     PART_CALCULATE_ERROR("70103", "部分计算失败"),
 
-    USBIN_ERROR_OTHER("50746","查询cardbin数据异常"),
-    USBIN_ERROR_TIMEOUT("50747","查询不到cardbin信息超时"),
+    USBIN_ERROR_OTHER("50746", "查询cardbin数据异常"),
+    USBIN_ERROR_TIMEOUT("50747", "查询不到cardbin信息超时"),
 
     GEOIP_SERVICE_CALL_ERROR("50720", "geoip服务调用失败"),
     GEOIP_SERVICE_CALL_TIMEOUT("50760", "geoip服务调用查询超时"),
-    GEOIP_ILLEGAL_ERROR("50761","查询geoip-us非法参数"),
-    GEOIP_PARAM_ERROR("50762","查询geoip-us必要参数为空"),
-    GEOIP_PERNISSION_ERROR("50763","查询geoip-us权限不足"),
-    GEOIP_SERRVER_ERROR("50764","查询geoip-us内部服务错误"),
+    GEOIP_ILLEGAL_ERROR("50761", "查询geoip-us非法参数"),
+    GEOIP_PARAM_ERROR("50762", "查询geoip-us必要参数为空"),
+    GEOIP_PERNISSION_ERROR("50763", "查询geoip-us权限不足"),
+    GEOIP_SERRVER_ERROR("50764", "查询geoip-us内部服务错误"),
 
-    ANTIFRAUD_NAME_LIST_QUERY_ERROR("50748", "反欺诈名单库查询出错"),
-    ANTIFRAUD_NAME_LIST_QUERY_TIMEOUT("50749", "反欺诈名单库查询超时"),
     ;
 
     private String code;
@@ -206,7 +204,7 @@ public enum ReasonCode {
 
     @Override
     public String toString() {
-        if(code.equals(description)){
+        if (code.equals(description)) {
             return code;
         }
 

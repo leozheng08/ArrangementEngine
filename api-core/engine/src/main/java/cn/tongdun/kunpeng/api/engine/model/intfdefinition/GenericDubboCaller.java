@@ -48,6 +48,7 @@ public class GenericDubboCaller implements IGenericDubboCaller {
     private static final Set<String> SPECIAL_THIRD_INTERFACE = Sets.newHashSet("cn.fraudmetrix.fuzzy.Service.intf.IAddressService", "cn.fraudmetrix.fuzzy.Service.intf.ICommunityService");
     private final String WATSON = "watson";
     private final String KUNTA = "kunta";
+    private final String ANTIFRAUND = "antiFraund";
 
     @Autowired
     private InterfaceDefinitionCache interfaceDefinitionCache;
@@ -164,6 +165,16 @@ public class GenericDubboCaller implements IGenericDubboCaller {
                         ReasonCodeUtil.add(fraudContext, ReasonCode.ADDRESS_SERVICE_CALL_TIMEOUT, WATSON);
                         logger.info(TraceUtils.getFormatTrace() + "地址服务调用超时:{}-{} timeout:{} 50718",
                                 interfaceDefinition.getName(), interfaceDefinition.getMethodName());
+                    } else if ("cn.fraudmetrix.nlas.dubbo.service.text.TextModelDubboService".equals(interfaceDefinition.getServiceName()) && "反欺诈服务".equals(interfaceDefinition.getApplication())) {
+                        ReasonCodeUtil.add(fraudContext, ReasonCode.ANTIFRAUD_CS_CALL_TIMEOUT, ANTIFRAUND);
+                        logger.info(TraceUtils.getFormatTrace() + "反欺诈名内容安全调用超时:{}-{} timeout:{} 50740",
+                                interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                                interfaceDefinition.getTimeout());
+                    } else if ("反欺诈服务".equals(interfaceDefinition.getApplication())) {
+                        ReasonCodeUtil.add(fraudContext, ReasonCode.ANTIFRAUD_BS_CALL_TIMEOUT, ANTIFRAUND);
+                        logger.info(TraceUtils.getFormatTrace() + "反欺诈名业务安全调用超时:{}-{} timeout:{} 50741",
+                                interfaceDefinition.getName(), interfaceDefinition.getMethodName(),
+                                interfaceDefinition.getTimeout());
                     } else {
                         ReasonCodeUtil.add(fraudContext, ReasonCode.THIRD_SERVICE_CALL_TIMEOUT, KUNTA);
                         logger.info(TraceUtils.getFormatTrace() + "三方调用超时:{}-{} timeout:{} 50707",
