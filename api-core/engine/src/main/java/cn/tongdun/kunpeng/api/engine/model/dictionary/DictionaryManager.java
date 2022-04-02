@@ -98,6 +98,7 @@ public class DictionaryManager {
             }
             dictionaries.add(dictionary);
         }
+        return dictionaryList;
     }
 
     /**
