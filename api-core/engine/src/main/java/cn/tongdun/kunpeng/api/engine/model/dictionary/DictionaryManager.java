@@ -86,6 +86,9 @@ public class DictionaryManager {
         if (StringUtils.isBlank(key)) {
             return Collections.emptyList();
         }
+        if(dict10MinuteCache == null){
+            dict10MinuteCache = new ConcurrentHashMap<>(10);
+        }
         List<Dictionary> dictionaryList = dictionaryRepository.getDictionary(key);
         for (Dictionary dictionary : dictionaryList) {
             if (dictionary == null) {
