@@ -4,7 +4,6 @@ import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import com.google.common.cache.*;
 import com.google.common.collect.Maps;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.*;
 
@@ -33,7 +33,7 @@ public class DictionaryManager {
     private IDictionaryRepository dictionaryRepository;
 
     //Dict层面的缓存
-    private ConcurrentHashMap<String, List<Dictionary>> dict10MinuteCache;
+    private LoadingCache<String, List<Dictionary>> dict10MinuteCache;
     //应用层面的缓存
     private ConcurrentMap<String, Object> appCache;
     // subReasonCodeCache
@@ -41,45 +41,27 @@ public class DictionaryManager {
     private final Object appCacheLock = new Object();
     private final Object subReasonCodeCacheLock = new Object();
 
-    ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
-
     @PostConstruct
     public void init() {
-        dict10MinuteCache = new ConcurrentHashMap<>(10);
         appCache = new ConcurrentHashMap<>(5);
         subReasonCodeCache = new ConcurrentHashMap<>(10);
-        //定时器10秒钟执行一次
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+        final CacheLoader<String, List<Dictionary>> loader = new CacheLoader<String, List<Dictionary>>() {
             @Override
-            public void run() {
-                try {
-                    loadDictionary(null);
-                    getSubReasonCodeMap();
-                    getFpResultMap();
-                } catch (Exception e) {
-                    logger.error(TraceUtils.getFormatTrace() + "定时刷新缓存异常", e);
-                }
+            public List<Dictionary> load(String key) throws Exception {
+                return loadDictionary(key);
             }
-        }, 1, 600, TimeUnit.SECONDS);
-
-
-//        final CacheLoader<String, List<Dictionary>> loader = new CacheLoader<String, List<Dictionary>>() {
-//            @Override
-//            public List<Dictionary> load(String key) throws Exception {
-//                return loadDictionary(key);
-//            }
-//        };
-//        RemovalListener<String, List<Dictionary>> removalListener = new RemovalListener<String, List<Dictionary>>() {
-//            @Override
-//            public void onRemoval(RemovalNotification<String, List<Dictionary>> removal) {
-//                appCache.remove(removal.getKey());
-//                if (SubReasonCodeCacheData.name().equals(removal.getKey())) {
-//                    subReasonCodeCache.clear();
-//                }
-//                logger.info("监听移除DictionaryManager cacheKey:" + removal.getKey());
-//            }
-//        };
-//        dict10MinuteCache = CacheBuilder.newBuilder().refreshAfterWrite(10, TimeUnit.MINUTES).removalListener(removalListener).build(loader);
+        };
+        RemovalListener<String, List<Dictionary>> removalListener = new RemovalListener<String, List<Dictionary>>() {
+            @Override
+            public void onRemoval(RemovalNotification<String, List<Dictionary>> removal) {
+                appCache.remove(removal.getKey());
+                if (SubReasonCodeCacheData.name().equals(removal.getKey())) {
+                    subReasonCodeCache.clear();
+                }
+                logger.info("监听移除DictionaryManager cacheKey:" + removal.getKey());
+            }
+        };
+        dict10MinuteCache = CacheBuilder.newBuilder().refreshAfterWrite(10, TimeUnit.MINUTES).removalListener(removalListener).build(loader);
 
     }
 
@@ -87,18 +69,8 @@ public class DictionaryManager {
         if (StringUtils.isBlank(key)) {
             return Collections.emptyList();
         }
-        List<Dictionary> dictionaryList = dictionaryRepository.getDictionary(key);
-        for (Dictionary dictionary : dictionaryList) {
-            if (dictionary == null) {
-                continue;
-            }
-            List<Dictionary> dictionaries = dict10MinuteCache.get(dictionary.getKey());
-            if(CollectionUtils.isEmpty(dictionaries)){
-                dictionaries = new ArrayList<>();
-            }
-            dictionaries.add(dictionary);
-        }
-        return dictionaryList;
+
+        return dictionaryRepository.getDictionary(key);
     }
 
     /**
@@ -111,7 +83,6 @@ public class DictionaryManager {
         if (null != ret) {
             return (Map<String, String>) ret;
         }
-        //todo：要不要下
         synchronized (appCacheLock) {
             ret = appCache.get(StarkDeviceResult.name());
             if (null != ret) {
@@ -164,11 +135,11 @@ public class DictionaryManager {
                 return Collections.emptyMap();
             }
 
-            Map<String, Object> serviceCodeMap = JSON.parseObject(dictionaryList.get(0).getValue(), Map.class);
+            Map<String,Object> serviceCodeMap = JSON.parseObject(dictionaryList.get(0).getValue(), Map.class);
             for (Map.Entry<String, Object> stringObjectEntry : serviceCodeMap.entrySet()) {
-                if ("message".equalsIgnoreCase(stringObjectEntry.getKey())) {
-                    Map<String, String> messages = (Map) serviceCodeMap.get("message");
-                    if (messages != null) {
+                if("message".equalsIgnoreCase(stringObjectEntry.getKey())) {
+                    Map<String,String> messages = (Map) serviceCodeMap.get("message");
+                    if(messages != null){
                         for (Map.Entry<String, String> message : messages.entrySet()) {
                             subReasonCodeCache.put("message" + message.getKey(), message.getValue());
                         }
@@ -176,7 +147,7 @@ public class DictionaryManager {
                     continue;
                 }
 
-                Map<String, Object> codeConfigValue = (Map<String, Object>) stringObjectEntry.getValue();
+                Map<String,Object> codeConfigValue = (Map<String, Object>) stringObjectEntry.getValue();
                 for (Map.Entry<String, Object> subCode : codeConfigValue.entrySet()) {
                     List<String> codes = (List<String>) subCode.getValue();
 
@@ -190,20 +161,20 @@ public class DictionaryManager {
         }
     }
 
-    public String getReasonCode(String subService, String subReasonCode) {
+    public String getReasonCode(String subService, String subReasonCode){
         Map<String, String> reasons = getSubReasonCodeMap();
         String result = reasons.get(subService + subReasonCode);
-        if (result != null) {
+        if(result != null){
             return result;
         }
         return "";
     }
 
 
-    public String getMessage(String riskServiceCode) {
+    public String getMessage(String riskServiceCode){
         Map<String, String> reasons = getSubReasonCodeMap();
         String result = reasons.get("message" + riskServiceCode);
-        if (result != null) {
+        if(result != null){
             return result;
         }
         return "";
@@ -211,7 +182,6 @@ public class DictionaryManager {
 
     /**
      * 获取租户邮箱对应的key命名
-     *
      * @return
      */
     public List<Dictionary> getMailKey() {
@@ -230,7 +200,6 @@ public class DictionaryManager {
 
     /**
      * 获取调用三方手机号接口配置
-     *
      * @return
      */
     public List<Dictionary> getPhoneSwitchKey() {
@@ -261,7 +230,7 @@ public class DictionaryManager {
         return dictionaries;
     }
 
-    public List<Dictionary> getFuzzyAddressDim() {
+    public List<Dictionary> getFuzzyAddressDim(){
         List<Dictionary> dictionaries = null;
         try {
             dictionaries = dict10MinuteCache.get(fuzzyAddressDim.name());
@@ -275,7 +244,7 @@ public class DictionaryManager {
         return dictionaries;
     }
 
-    public List<Dictionary> getVelocityShouldSave() {
+    public List<Dictionary> getVelocityShouldSave(){
         List<Dictionary> dictionaries = null;
         try {
             dictionaries = dict10MinuteCache.get(VelocityShouldSave.name());
@@ -289,7 +258,7 @@ public class DictionaryManager {
         return dictionaries;
     }
 
-    public List<Dictionary> getPartnerVelocityDims() {
+    public List<Dictionary> getPartnerVelocityDims(){
         List<Dictionary> dictionaries = null;
         try {
             dictionaries = dict10MinuteCache.get(PartnerVelocityDims.name());
@@ -302,6 +271,7 @@ public class DictionaryManager {
         }
         return dictionaries;
     }
+
 
 
 }
