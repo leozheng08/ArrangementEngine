@@ -14,9 +14,7 @@ import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryEnum.*;
 
@@ -40,6 +38,7 @@ public class DictionaryManager {
     private ConcurrentMap<String, String> subReasonCodeCache;
     private final Object appCacheLock = new Object();
     private final Object subReasonCodeCacheLock = new Object();
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     @PostConstruct
     public void init() {
@@ -61,9 +60,30 @@ public class DictionaryManager {
                 logger.info("监听移除DictionaryManager cacheKey:" + removal.getKey());
             }
         };
+        //guava cache的refreshAfterWrite，是懒加载，查询时才会refresh，所以初次查询时等于直接查库
         dict10MinuteCache = CacheBuilder.newBuilder().refreshAfterWrite(10, TimeUnit.MINUTES).removalListener(removalListener).build(loader);
 
+        //定期刷新缓存，在定期刷新时还没有加载到的数据，在refreshAfterWrite时会加载
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            this.loadAll();
+            logger.info("DictionaryManager定时刷新缓存成功");
+        },0,10,TimeUnit.MINUTES);
+
     }
+
+    private void loadAll() {
+        this.getPartnerVelocityDims();
+        this.getVelocityShouldSave();
+        this.getFuzzyAddressDim();
+        this.getChangeToNewModelKey();
+        this.getPhoneSwitchKey();
+        this.getMailKey();
+
+        //这2个是ConcurrentMap，防止缓存为空时的并发雪崩 内部加锁了
+        this.getSubReasonCodeMap();
+        this.getFpResultMap();
+    }
+
 
     public List<Dictionary> loadDictionary(String key) {
         if (StringUtils.isBlank(key)) {
