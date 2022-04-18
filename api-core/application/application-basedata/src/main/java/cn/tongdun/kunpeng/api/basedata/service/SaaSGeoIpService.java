@@ -1,20 +1,15 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
 import cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService;
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
-import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.*;
 
 /**
  * @Author: liuq
@@ -71,32 +66,5 @@ public class SaaSGeoIpService implements GeoIpServiceExtPt {
         oldGeoipEntity.setCounty(geoipEntity.getCounty());
         oldGeoipEntity.setCountyId(geoipEntity.getCountyId());
         return oldGeoipEntity;
-    }
-
-    @Override
-    public Map<String, GeoipEntity> batchGetIpInfo(List<String> ips) {
-        if (CollectionUtils.isEmpty(ips)) {
-            logger.warn(TraceUtils.getFormatTrace() + "getIpInfos from elfin with params empty");
-            return Collections.emptyMap();
-        }
-        final Map<String, GeoipEntity> finalResultMap = Maps.newHashMapWithExpectedSize(ips.size());
-        Map<String, cn.fraudmetrix.elfin.biz.entity.GeoipEntity> ipInfos = null;
-        try {
-            ipInfos = baseDataQueryService.getIpInfos(ips);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "getIpInfos error, ipList={}", ips, e);
-            return finalResultMap;
-        }
-        if (MapUtils.isEmpty(ipInfos)) {
-            return finalResultMap;
-        }
-        Set<Map.Entry<String, cn.fraudmetrix.elfin.biz.entity.GeoipEntity>> entries = ipInfos.entrySet();
-        for (Map.Entry<String, cn.fraudmetrix.elfin.biz.entity.GeoipEntity> entry : entries) {
-            cn.fraudmetrix.elfin.biz.entity.GeoipEntity value = entry.getValue();
-            GeoipEntity geoipEntity = this.copyGeoipEntityProperties(value);
-            finalResultMap.put(entry.getKey(), geoipEntity);
-        }
-
-        return finalResultMap;
     }
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fraudmetrix.module.riskbase.dao.MobileInfoDao">
+	<resultMap type="MobileInfoDO" id="MobileInfoDOMap">
+		<result property="id" column="id" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+		<result property="phoneNumber" column="phone_number" />
+		<result property="provinceCode" column="province_code" />
+		<result property="cityCode" column="city_code" />
+		<result property="operators" column="operators" />
+		<result property="type" column="type" />
+	</resultMap>
+
+	<insert id="insert" parameterType="MobileInfoDO"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into mobile_identity_number
+		(gmt_create,gmt_modified,phone_number,province_code,city_code,operators,type)
+		values
+		(#{gmtCreate},#{gmtModified},#{phoneNumber},#{provinceCode},#{cityCode},#{operators},#{type})
+	</insert>
+	
+	<update id="update" parameterType="MobileInfoDO">
+		update mobile_identity_number t
+		<set>
+			<if test="provinceCode != null">t.province_code=#{provinceCode},</if>
+			<if test="cityCode != null">t.city_code=#{cityCode},</if>
+			<if test="operators != null">t.operators=#{operators},</if>
+			<if test="type != null">t.operators=#{type},</if>
+			t.gmt_modified = #{gmtModified}
+		</set>
+		where t.phone_number=#{phoneNumber}
+	</update>
+	
+	<delete id="delete" parameterType="MobileInfoDO">
+			delete from mobile_identity_number
+			where id = #{id}
+	</delete>
+	
+	<select id="queryAll"  resultMap="MobileInfoDOMap">
+		select * from mobile_identity_number
+	</select>
+	
+	<select id="queryLatest" parameterType="Timestamp" resultMap="MobileInfoDOMap">
+		select * from mobile_identity_number
+		where gmt_modified <![CDATA[ > ]]> #{gmtModified}
+	</select>
+
+    <insert id="batchInsertFor17mon" parameterType="List">
+        insert into mobile_identity_number
+        (`phone_number`,`province_code`,`city_code`,`operators`, `type`)
+        values
+        <foreach item="item" collection="list" separator=",">
+			(#{item.phoneNumber},#{item.provinceCode},#{item.cityCode},#{item.operators},#{item.type})
+		</foreach>
+		on duplicate key update `gmt_modified`=now(), `province_code`=values(`province_code`), `city_code`=values(`city_code`), `operators`=values(`operators`), `type`=values(`type`)
+    </insert>
+
+    <update id="dropTable" parameterType="String">
+        DROP TABLE IF EXISTS `${tableName}`;
+    </update>
+
+    <update id="createTable">
+        CREATE TABLE `phone_number_17mon` (
+        `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `gmt_create` DATETIME DEFAULT NOW(),
+        `gmt_modified` DATETIME DEFAULT NOW(),
+        `phone_number` CHAR(7) DEFAULT NULL COMMENT '手机号',
+        `province_code` VARCHAR(30) DEFAULT NULL COMMENT '省份代码',
+        `city_code` VARCHAR(30) DEFAULT NULL COMMENT '市区代码',
+        `operators` VARCHAR(32) DEFAULT NULL COMMENT '运营商',
+        `type` VARCHAR(32) DEFAULT NULL COMMENT '手机号类型',
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+    </update>
+
+    <update id="createMobileIndex">
+        CREATE UNIQUE INDEX idx_mobile on phone_number_17mon(`phone_number`);
+    </update>
+
+    <update id="renameTable">
+        RENAME TABLE `phone_number_17mon` TO `mobile_identity_number`;
+    </update>
+</mapper>
