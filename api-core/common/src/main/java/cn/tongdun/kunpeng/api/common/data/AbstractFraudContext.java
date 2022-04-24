@@ -263,6 +263,11 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private transient PolicyResponse policyResponse;
 
 
+    /**
+     * 是否是试运行的调用，默认是false
+     */
+    private boolean tryRuleTag = false;
+
     /*************外部接口返回结果 start******************/
 
     /**
