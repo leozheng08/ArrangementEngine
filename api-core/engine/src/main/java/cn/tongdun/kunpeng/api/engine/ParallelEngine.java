@@ -119,6 +119,9 @@ public class ParallelEngine extends DecisionTool {
         long start = System.currentTimeMillis();
         PolicyResponse policyResponse = new PolicyResponse();
 
+        // 试运行的策略结果
+        PolicyResponse tryPolicyResponse = new PolicyResponse();
+
         ParallelSubPolicy parallelSubPolicy = (ParallelSubPolicy) decisionMode;
         String policyUuid = parallelSubPolicy.getPolicyUuid();
         Policy policy = policyCache.get(policyUuid);
@@ -130,6 +133,13 @@ public class ParallelEngine extends DecisionTool {
 
         policyResponse.setPolicyUuid(policy.getUuid());
         policyResponse.setPolicyName(policy.getName());
+
+        // 本次调用为试运行调用
+        if (context.isPilotRun()) {
+            tryPolicyResponse.setPolicyUuid(policy.getUuid());
+            tryPolicyResponse.setPolicyName(policy.getName());
+        }
+
         context.setPolicyVersion(policy.getVersion());
         List<SubPolicy> subPolicyList = subPolicyCache.getSubPolicyByPolicyUuid(policyUuid);
         //过滤没有规则的子策略
@@ -200,11 +210,25 @@ public class ParallelEngine extends DecisionTool {
             policyResponse.setCostTime(System.currentTimeMillis() - start);
             return policyResponse;
         }
+        fillPolicyResponse(policyResponse, subPolicyResponseList, start);
 
+        // 如果是试运行调用
+        if (context.isPilotRun()) {
+            // 填充试运行的PolicyResponse
+            fillTryPolicyResponse(tryPolicyResponse, subPolicyResponseList, start);
+            // 设置到上下文中
+            context.setTryPolicyResponse(tryPolicyResponse);
+        }
+
+        return policyResponse;
+    }
+
+    // 填充正式的PolicyResponse
+    public void fillPolicyResponse(PolicyResponse policyResponse, List<SubPolicyResponse> subPolicyResponseList, long start) {
         policyResponse.setSuccess(true);
         policyResponse.setSubPolicyResponses(subPolicyResponseList);
 
-        //取最坏策略结果
+        // 获取最坏的策略结果
         SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponseList);
         policyResponse.setFinalSubPolicyResponse(finalSubPolicyResponse);
 
@@ -212,7 +236,22 @@ public class ParallelEngine extends DecisionTool {
         policyResponse.setScore(finalSubPolicyResponse.getScore());
         policyResponse.setRiskType(finalSubPolicyResponse.getRiskType());
         policyResponse.setCostTime(System.currentTimeMillis() - start);
-        return policyResponse;
+    }
+
+    // 填充试运行的PolicyResponse
+    public void fillTryPolicyResponse(PolicyResponse policyResponse, List<SubPolicyResponse> subPolicyResponseList, long start) {
+        policyResponse.setSuccess(true);
+        policyResponse.setSubPolicyResponses(subPolicyResponseList);
+
+        // 获取最坏的策略结果
+        SubPolicyResponse finalSubPolicyResponse = createTryFinalSubPolicyResult(subPolicyResponseList);
+        policyResponse.setFinalSubPolicyResponse(finalSubPolicyResponse);
+
+        // 取子策略试运行的分数和结果
+        policyResponse.setDecision(finalSubPolicyResponse.getTryDecision());
+        policyResponse.setScore(finalSubPolicyResponse.getTryScore());
+        policyResponse.setRiskType(finalSubPolicyResponse.getRiskType());
+        policyResponse.setCostTime(System.currentTimeMillis() - start);
     }
 
 

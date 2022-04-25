@@ -262,11 +262,16 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private transient PolicyResponse policyResponse;
 
+    /**
+     * 策略试运行结果，信息较为完整，决策结果应答时会再从此对象选取部分输出到RiskResponse中
+     */
+    private transient PolicyResponse tryPolicyResponse;
+
 
     /**
      * 是否是试运行的调用，默认是false
      */
-    private boolean tryRuleTag = false;
+    private boolean pilotRun = false;
 
     /*************外部接口返回结果 start******************/
 

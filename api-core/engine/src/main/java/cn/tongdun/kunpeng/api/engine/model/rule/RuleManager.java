@@ -34,14 +34,18 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
             RuleResponse ruleResponse = new RuleResponse();
 
             Rule rule = ruleCache.get(uuid);
-            if (rule == null || rule.getEval() == null) {
+
+            // 试运行的规则不显示错误状态码
+            if ((rule == null || rule.getEval() == null) && !rule.isPilotRun()) {
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));
                 ruleResponse.setSuccess(false);
                 return ruleResponse;
             }
 
             RuleResult ruleResult = rule.getEval().eval(context);
-            if (null == ruleResult || ruleResult.getException() != null || ruleResult.getEvalResult() == null) {
+
+            // 试运行的规则不显示错误状态码
+            if ((null == ruleResult || ruleResult.getException() != null || ruleResult.getEvalResult() == null) && !rule.isPilotRun()) {
                 context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
                 context.removeFunctionDetail(uuid);
                 ruleResponse.setSuccess(false);
@@ -65,8 +69,11 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
                         ruleResponse.setScore(getWeight(rule, context));
                         break;
                     default:
-                        context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
-                        context.removeFunctionDetail(uuid);
+                        // 试运行的规则不显示错误状态码
+                        if (!rule.isPilotRun()) {
+                            context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
+                            context.removeFunctionDetail(uuid);
+                        }
                 }
                 ruleResponse.setCostTime(ruleResult.getCost());
                 ruleResponse.setSuccess(true);
@@ -76,6 +83,8 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
             ruleResponse.setName(rule.getName());
             ruleResponse.setUuid(rule.getUuid());
             ruleResponse.setParentUuid(rule.getParentUuid());
+            // 规则结果返回一个试运行标识
+            ruleResponse.setPilotRun(rule.isPilotRun());
 
             return ruleResponse;
         } catch (Exception e) {

@@ -69,6 +69,10 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
             subPolicyResponse.setPolicyMode(subPolicy.getPolicyMode());
             subPolicyResponse.setRiskType(subPolicy.getRiskType());
             subPolicyResponse.setSuccess(true);
+            /**
+             * 用于子策略结果作为左变量特殊规则的适配
+             * 试运行不需要注意这块
+             */
             context.set("policy_" + subPolicy.getUuid() + "_score", subPolicyResponse.getScore());
             context.set("policy_" + subPolicy.getUuid() + "_decision", subPolicyResponse.getDecision());
         } catch (Exception e) {
@@ -114,7 +118,17 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
             //执行此规则
             try {
                 RuleResponse ruleResponse = ruleManager.execute(ruleUuid, context);
-                subPolicyResponse.addRuleResponse(ruleResponse);
+
+                // 当前规则是一个正式规则
+                if (!ruleResponse.isPilotRun()) {
+                    subPolicyResponse.addRuleResponse(ruleResponse);
+                }
+
+                // 是否有试运行权限
+                if(context.isPilotRun()){
+                    subPolicyResponse.addTryRuleResponse(ruleResponse);
+                }
+
                 //该规则没有执行成功，则继续执行下一条
                 if (!ruleResponse.isSuccess()) {
                     continue;
