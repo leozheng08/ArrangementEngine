@@ -279,7 +279,7 @@ public class ParallelEngine extends DecisionTool {
                 continue;
             }
 
-            ruleCount += subPolicy.getRuleUuidList().size();
+            // ruleCount += subPolicy.getRuleUuidList().size();
             for (String ruleUuid : subPolicy.getRuleUuidList()) {
                 Rule rule = ruleCache.get(ruleUuid);
                 if (rule == null) {
@@ -287,8 +287,14 @@ public class ParallelEngine extends DecisionTool {
                     context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));
                     return false;
                 }
+                if(!rule.isPilotRun()){
+                    ruleCount++;
+                }
             }
         }
+        /**
+         * 如果当前规则只存在试运行的规则，则直接返回："40402""对应的策略下没有规则"
+         */
         if (ruleCount == 0) {
             logger.warn(TraceUtils.getFormatTrace() + "{},policyUuid:{}", ReasonCode.RULE_NOT_EXIST.toString(), policyUuid);
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_NOT_EXIST.getCode(), ReasonCode.RULE_NOT_EXIST.getDescription(), "决策引擎执行"));
