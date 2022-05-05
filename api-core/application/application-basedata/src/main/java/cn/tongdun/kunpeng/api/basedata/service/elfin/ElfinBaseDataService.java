@@ -49,27 +49,27 @@ public class ElfinBaseDataService {
 
     private GeoipEntity copyFromElfin(cn.fraudmetrix.elfin.biz.entity.GeoipEntity elfinGeoipEntity) {
         GeoipEntity geoipEntity = new GeoipEntity();
-        elfinGeoipEntity.setIsp(geoipEntity.getIsp());
-        elfinGeoipEntity.setCity(geoipEntity.getCity());
-        elfinGeoipEntity.setProvince(geoipEntity.getProvince());
-        elfinGeoipEntity.setAddress(geoipEntity.getAddress());
-        elfinGeoipEntity.setArea(geoipEntity.getArea());
-        elfinGeoipEntity.setAreaId(geoipEntity.getAreaId());
-        elfinGeoipEntity.setCityId(geoipEntity.getCityId());
-        elfinGeoipEntity.setCountryId(geoipEntity.getCountryId());
-        elfinGeoipEntity.setCountry(geoipEntity.getCountry());
-        elfinGeoipEntity.setDesc(geoipEntity.getDesc());
-        elfinGeoipEntity.setType(geoipEntity.getType());
-        elfinGeoipEntity.setProvinceId(geoipEntity.getProvinceId());
-        elfinGeoipEntity.setIspId(geoipEntity.getIspId());
-        elfinGeoipEntity.setLongitude(geoipEntity.getLongitude());
-        elfinGeoipEntity.setLatitude(geoipEntity.getLatitude());
-        elfinGeoipEntity.setLip(geoipEntity.getLip());
-        elfinGeoipEntity.setIp(geoipEntity.getIp());
-        elfinGeoipEntity.setExtra1(geoipEntity.getExtra1());
-        elfinGeoipEntity.setExtra2(geoipEntity.getExtra2());
-        elfinGeoipEntity.setCounty(geoipEntity.getCounty());
-        elfinGeoipEntity.setCountyId(geoipEntity.getCountyId());
+        geoipEntity.setIsp(elfinGeoipEntity.getIsp());
+        geoipEntity.setCity(elfinGeoipEntity.getCity());
+        geoipEntity.setProvince(elfinGeoipEntity.getProvince());
+        geoipEntity.setAddress(elfinGeoipEntity.getAddress());
+        geoipEntity.setArea(elfinGeoipEntity.getArea());
+        geoipEntity.setAreaId(elfinGeoipEntity.getAreaId());
+        geoipEntity.setCityId(elfinGeoipEntity.getCityId());
+        geoipEntity.setCountryId(elfinGeoipEntity.getCountryId());
+        geoipEntity.setCountry(elfinGeoipEntity.getCountry());
+        geoipEntity.setDesc(elfinGeoipEntity.getDesc());
+        geoipEntity.setType(elfinGeoipEntity.getType());
+        geoipEntity.setProvinceId(elfinGeoipEntity.getProvinceId());
+        geoipEntity.setIspId(elfinGeoipEntity.getIspId());
+        geoipEntity.setLongitude(elfinGeoipEntity.getLongitude());
+        geoipEntity.setLatitude(elfinGeoipEntity.getLatitude());
+        geoipEntity.setLip(elfinGeoipEntity.getLip());
+        geoipEntity.setIp(elfinGeoipEntity.getIp());
+        geoipEntity.setExtra1(elfinGeoipEntity.getExtra1());
+        geoipEntity.setExtra2(elfinGeoipEntity.getExtra2());
+        geoipEntity.setCounty(elfinGeoipEntity.getCounty());
+        geoipEntity.setCountyId(elfinGeoipEntity.getCountyId());
         return geoipEntity;
     }
 
