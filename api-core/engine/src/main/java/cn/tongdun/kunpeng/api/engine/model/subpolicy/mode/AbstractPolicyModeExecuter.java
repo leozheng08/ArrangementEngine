@@ -117,6 +117,11 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
             }
             //执行此规则
             try {
+                // 当前调用无试运行权限，试运行规则不执行
+                if(!context.isPilotRun() && rule.isPilotRun()){
+                    continue;
+                }
+
                 RuleResponse ruleResponse = ruleManager.execute(ruleUuid, context);
 
                 // 当前规则是一个正式规则
