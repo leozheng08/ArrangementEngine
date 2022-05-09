@@ -278,6 +278,11 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private boolean pilotRun = false;
 
+    /**
+     * 是否是试运行Activity
+     */
+    private boolean pilotRunActivity = false;
+
     /*************外部接口返回结果 start******************/
 
     /**
