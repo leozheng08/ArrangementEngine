@@ -46,7 +46,7 @@ public class WorstMatchModeExecuter extends AbstractPolicyModeExecuter {
 
         // 如果当前是试运行调用
         if (context.isPilotRun()) {
-            subPolicyResponse.setDecision(getDecisionResultType(subPolicyResponse.getTryHitRules()).getCode());
+            subPolicyResponse.setTryDecision(getDecisionResultType(subPolicyResponse.getTryHitRules()).getCode());
         }
     }
 

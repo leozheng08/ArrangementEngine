@@ -208,6 +208,11 @@ public class ParallelEngine extends DecisionTool {
             logger.info(TraceUtils.getFormatTrace() + "subPolicyResponseList.size():{} futures.size():{}", subPolicyResponseList.size(), futures.size());
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_TIMEOUT.getCode(), ReasonCode.RULE_ENGINE_TIMEOUT.getDescription(), "决策引擎执行"));
             policyResponse.setCostTime(System.currentTimeMillis() - start);
+            // 超时的情况下，试运行也需要进行添加，防止后面的NPE异常
+            if (context.isPilotRun()) {
+                tryPolicyResponse.setCostTime(System.currentTimeMillis() - start);
+                context.setTryPolicyResponse(tryPolicyResponse);
+            }
             return policyResponse;
         }
         fillPolicyResponse(policyResponse, subPolicyResponseList, start);
