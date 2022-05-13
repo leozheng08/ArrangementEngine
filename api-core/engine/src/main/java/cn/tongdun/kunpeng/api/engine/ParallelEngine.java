@@ -180,6 +180,10 @@ public class ParallelEngine extends DecisionTool {
 
         if (null == futures || futures.isEmpty()) {
             context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_ENGINE_ERROR.getCode(), ReasonCode.RULE_ENGINE_ERROR.getDescription(), "决策引擎执行"));
+            // 规则引擎运行异常并且有试运行调用权限，将试运行策略结果放至上下文，防止后续的NPE
+            if (context.isPilotRun()) {
+                context.setTryPolicyResponse(tryPolicyResponse);
+            }
             return policyResponse;
         }
         List<SubPolicyResponse> subPolicyResponseList = new ArrayList<>(futures.size());
