@@ -235,10 +235,13 @@ public class ParallelEngine extends DecisionTool {
     // 填充正式的PolicyResponse
     public void fillPolicyResponse(PolicyResponse policyResponse, List<SubPolicyResponse> subPolicyResponseList, long start) {
         policyResponse.setSuccess(true);
-        policyResponse.setSubPolicyResponses(subPolicyResponseList);
+
+        // 过滤掉只含有试运行的子策略结果
+        List<SubPolicyResponse> subPolicyResponses = getSubPolicyResponseList(subPolicyResponseList);
+        policyResponse.setSubPolicyResponses(subPolicyResponses);
 
         // 获取最坏的策略结果
-        SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponseList);
+        SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponses);
         policyResponse.setFinalSubPolicyResponse(finalSubPolicyResponse);
 
         policyResponse.setDecision(finalSubPolicyResponse.getDecision());
@@ -261,6 +264,17 @@ public class ParallelEngine extends DecisionTool {
         policyResponse.setScore(finalSubPolicyResponse.getTryScore());
         policyResponse.setRiskType(finalSubPolicyResponse.getRiskType());
         policyResponse.setCostTime(System.currentTimeMillis() - start);
+    }
+
+    // 当前的子策略结果只含试运行的话，需要去除该子策略结果
+    public List<SubPolicyResponse> getSubPolicyResponseList(List<SubPolicyResponse> subPolicyResponseList) {
+        List<SubPolicyResponse> responseList = new ArrayList<>();
+        for (SubPolicyResponse subPolicyResponse : subPolicyResponseList) {
+            if (subPolicyResponse.getRuleResponses().size() != 0) {
+                responseList.add(subPolicyResponse);
+            }
+        }
+        return responseList;
     }
 
 
@@ -296,7 +310,7 @@ public class ParallelEngine extends DecisionTool {
                     context.addSubReasonCode(new SubReasonCode(ReasonCode.RULE_LOAD_ERROR.getCode(), ReasonCode.RULE_LOAD_ERROR.getDescription(), "决策引擎执行"));
                     return false;
                 }
-                if(!rule.isPilotRun()){
+                if (!rule.isPilotRun()) {
                     ruleCount++;
                 }
             }
