@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-import cn.fraudmetrix.module.riskbase.object.BinInfoDO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
@@ -14,5 +13,4 @@ public interface BinInfoServiceExtPt extends IExtensionPoint {
 
     boolean getBinInfo(AbstractFraudContext context, IRiskResponse response, RiskRequest request);
 
-    BinInfoDO getBinInfo(String binCode);
 }

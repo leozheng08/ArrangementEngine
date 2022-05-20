@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <artifactId>api-core</artifactId>
-    <version>1.4.41-api</version>
+    <version>1.4.5-api</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -160,6 +160,12 @@
             <dependency>
                 <groupId>cn.tongdun.kunpeng-api</groupId>
                 <artifactId>application-field</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-riskbase</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.application.activity.ext;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.kunpeng.api.application.activity.common.ActitivyMsg;
 import cn.tongdun.kunpeng.api.application.activity.common.GeoipInfo;
 import cn.tongdun.kunpeng.api.application.activity.common.IActitivyMsg;

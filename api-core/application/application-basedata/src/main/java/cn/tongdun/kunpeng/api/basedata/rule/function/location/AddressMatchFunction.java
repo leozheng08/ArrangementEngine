@@ -1,9 +1,7 @@
 package cn.tongdun.kunpeng.api.basedata.rule.function.location;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
-import cn.fraudmetrix.module.riskbase.object.BinInfoDO;
+import cn.fraudmetrix.elfin.biz.entity.PhoneAttrEntity;
 import cn.fraudmetrix.module.riskbase.object.IdInfo;
-import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.exception.ParseException;
 import cn.fraudmetrix.module.tdrule.function.AbstractFunction;
@@ -12,13 +10,13 @@ import cn.fraudmetrix.module.tdrule.function.FunctionResult;
 import cn.fraudmetrix.module.tdrule.spring.SpringContextHolder;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
-import cn.tongdun.kunpeng.api.basedata.service.BinInfoServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.service.IdInfoServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.service.MobileInfoServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.util.AddressDisplayNameUtils;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.kunpeng.api.ruledetail.MatchAddressDetail;
 import cn.tongdun.tdframework.core.extension.ExtensionExecutor;
 import org.apache.commons.collections.CollectionUtils;
@@ -109,7 +107,7 @@ public class AddressMatchFunction extends AbstractFunction {
                 if (StringUtils.isBlank(trueIp)) {
                     return null;
                 }
-                geoInfo = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp,context));
+                geoInfo = extensionExecutor.execute(GeoIpServiceExtPt.class, context.getBizScenario(), extension -> extension.getIpInfo(trueIp, context));
             } else {
                 geoInfo = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, GeoipEntity.class);
             }
@@ -131,13 +129,13 @@ public class AddressMatchFunction extends AbstractFunction {
             // 手机位置
         } else if (BasedataConstant.MOBILE_ADDRESS.equalsIgnoreCase(address)) {
 
-            MobileInfoDO mobileInfo;
+            PhoneAttrEntity mobileInfo;
             String mobileInfoStr = (String) context.get("accountMobileArea");
             if (StringUtils.isBlank(mobileInfoStr)) {
                 mobileInfoStr = (String) context.get("accountMobile");
             }
             final String mobileStr = mobileInfoStr;
-            mobileInfo = extensionExecutor.execute(MobileInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getMobileInfo(mobileStr));
+            mobileInfo = extensionExecutor.execute(MobileInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getMobileInfo(mobileStr, context));
             if (null == mobileInfo) {
                 return null;
             }
@@ -178,14 +176,6 @@ public class AddressMatchFunction extends AbstractFunction {
                     String city = idInfo.getCity();
                     return StringUtils.isBlank(city) ? null : city.endsWith("市") ? city : city + "市";
             }
-            // BIN卡发卡地
-        } else if (BasedataConstant.BIN_ADDRESS.equalsIgnoreCase(address)) {
-            BinInfoDO binInfo = extensionExecutor.execute(BinInfoServiceExtPt.class, context.getBizScenario(), extension -> extension.getBinInfo((String) context.get("ccBin")));
-            if (null == binInfo) {
-                return null;
-            }
-            return null == binInfo || !"country".equals(lowCaseScope) ? null : binInfo.getCountry();
-            // 账单地址
         } else if (BasedataConstant.BILL_ADDRESS.equalsIgnoreCase(lowCaseAddress)) {
             switch (lowCaseScope) {
                 case "country":

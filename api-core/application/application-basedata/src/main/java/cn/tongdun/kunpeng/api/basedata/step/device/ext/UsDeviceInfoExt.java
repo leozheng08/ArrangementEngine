@@ -1,15 +1,14 @@
 package cn.tongdun.kunpeng.api.basedata.step.device.ext;
 
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.fraudmetrix.forseti.fp.dubbo.DeviceInfoQuery;
 import cn.fraudmetrix.forseti.fp.model.BaseResult;
 import cn.fraudmetrix.forseti.fp.model.DeviceResp;
 import cn.fraudmetrix.forseti.fp.model.QueryParams;
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.kunpeng.api.basedata.constant.FpReasonCodeEnum;
 import cn.tongdun.kunpeng.api.basedata.constant.RespDetailTypeEnum;
 import cn.tongdun.kunpeng.api.basedata.service.GeoIpServiceExtPt;
 import cn.tongdun.kunpeng.api.basedata.util.FpReasonUtils;
-import cn.tongdun.kunpeng.api.common.MetricsConstant;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
@@ -36,11 +35,12 @@ import java.util.Set;
 
 /**
  * 北美设备指纹获取实现
+ *
  * @author jie
  * @date 2021/1/20
  */
-@Extension(business = BizScenario.DEFAULT,tenant = "us",partner = BizScenario.DEFAULT)
-public class UsDeviceInfoExt implements DeviceInfoExtPt{
+@Extension(business = BizScenario.DEFAULT, tenant = "us", partner = BizScenario.DEFAULT)
+public class UsDeviceInfoExt implements DeviceInfoExtPt {
 
     private static final Logger logger = LoggerFactory.getLogger(UsDeviceInfoExt.class);
 
@@ -189,13 +189,13 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt{
             metrics.counter("kunpeng.api.dubbo.qps", tags);
             ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
             if (Objects.nonNull(checkoutToken)) {
-                baseResult = deviceInfoQuery.query("shopify","web",checkoutToken.toString());
+                baseResult = deviceInfoQuery.query("shopify", "web", checkoutToken.toString());
                 if (null == baseResult) {
                     logger.warn(TraceUtils.getFormatTrace() + "deviceInfoQuery.query result is null,checkoutToken:" + checkoutToken);
                     FpReasonUtils.put(result, FpReasonCodeEnum.NO_RESULT_ERROR);
                     return result;
                 }
-            }else {
+            } else {
                 baseResult = deviceInfoQuery.query(params);
             }
             timeContext.stop();

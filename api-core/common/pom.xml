@@ -6,8 +6,7 @@
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.4.41-api</version>
-
+        <version>1.4.5-api</version>
 
 
     </parent>
@@ -23,10 +22,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>cn.fraudmetrix</groupId>
-            <artifactId>module.riskbase</artifactId>
-        </dependency>
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>client</artifactId>
@@ -79,10 +74,13 @@
             <artifactId>protostuff-core</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>com.github.wnameless</groupId>
             <artifactId>json-flattener</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fraudmetrix</groupId>
+            <artifactId>elfin-biz-intf</artifactId>
         </dependency>
     </dependencies>
 

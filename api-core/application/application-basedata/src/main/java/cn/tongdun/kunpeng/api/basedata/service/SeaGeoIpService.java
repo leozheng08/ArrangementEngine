@@ -1,11 +1,11 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService;
 import cn.tongdun.evan.client.entity.AGeoipEntity;
 import cn.tongdun.evan.client.entity.AGeoipQueryDTO;
 import cn.tongdun.evan.client.lang.Result;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
@@ -17,15 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author: yuanhang
  * @date: 2021-03-08 16:47
  **/
 @Extension(tenant = "sea", business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
-public class SeaGeoIpService implements GeoIpServiceExtPt{
+public class SeaGeoIpService implements GeoIpServiceExtPt {
 
     private Logger logger = LoggerFactory.getLogger(SeaGeoIpService.class);
 
@@ -94,12 +91,5 @@ public class SeaGeoIpService implements GeoIpServiceExtPt{
         return oldGeoipEntity;
     }
 
-    /**
-     * evan 暂无batch接口
-     */
-    @Override
-    public Map<String, GeoipEntity> batchGetIpInfo(List<String> ipList) {
-        return null;
-    }
 
 }

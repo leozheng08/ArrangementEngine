@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties>
+        <property name="dialect" value="mysql"/>
+        <property name="pageSqlId" value=".*Page$"/>
+    </properties>
+    <!-- 设置别名 -->
+    <typeAliases>
+        <typeAlias alias="Timestamp" type="java.sql.Timestamp"/>
+        <typeAlias alias="DistrictDO" type="cn.fraudmetrix.module.riskbase.object.DistrictDO"/>
+        <typeAlias alias="MobileInfoDO" type="cn.fraudmetrix.module.riskbase.object.MobileInfoDO"/>
+    </typeAliases>
+</configuration>
