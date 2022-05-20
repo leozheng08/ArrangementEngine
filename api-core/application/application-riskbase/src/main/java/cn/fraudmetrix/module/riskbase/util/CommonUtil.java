@@ -176,27 +176,6 @@ public class CommonUtil {
         return sb.toString();
     }
 
-    public static String md5(String value) {
-        if (StringUtils.isBlank(value)) {
-            return null;
-        }
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.reset();
-            m.update(value.getBytes());
-            byte[] digest = m.digest();
-            BigInteger bigInt = new BigInteger(1, digest);
-            String hashtext = bigInt.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        } catch (NoSuchAlgorithmException e) {
-            logger.warn(e.getMessage(), e);
-        }
-        return null;
-    }
-
     public static Long parseLong(Object value) {
         if (null == value) {
             return null;
@@ -270,7 +249,9 @@ public class CommonUtil {
         } catch (DocumentException e) {
             logger.warn("---xml解析失败---", e.getMessage());
         }
-        if (null == document) return map;
+        if (null == document) {
+            return map;
+        }
         Element root = document.getRootElement();
         for (Iterator its = root.elementIterator(); its.hasNext(); ) {
             Element ele = (Element) its.next();

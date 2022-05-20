@@ -13,6 +13,7 @@ import cn.fraudmetrix.module.riskbase.object.DistrictDO;
 import cn.fraudmetrix.module.riskbase.service.intf.DistrictQueryService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -78,7 +79,9 @@ public class DistrictQueryServiceImpl implements DistrictQueryService {
 
     @Override
     public List<DistrictDO> getDistrictInfoFromMysql(List<Integer> type) {
-        if (type.isEmpty()) return Collections.emptyList();
+        if (CollectionUtils.isEmpty(type)) {
+            return Collections.emptyList();
+        }
         return districtDao.queryByType(type);
     }
 }
