@@ -67,7 +67,9 @@ public class RuleManager implements IExecutor<String, RuleResponse> {
                         ruleResponse.setHit(true);
                         ruleResponse.setDecision(rule.getDecision());
                         ruleResponse.setScore(getWeight(rule, context));
-                        break;
+                        if(!rule.isPilotRun()){
+                            break;
+                        }
                     default:
                         // 试运行的规则不显示错误状态码
                         if (!rule.isPilotRun()) {

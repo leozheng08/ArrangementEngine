@@ -118,7 +118,7 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
             //执行此规则
             try {
                 // 当前调用无试运行权限，试运行规则不执行
-                if(!context.isPilotRun() && rule.isPilotRun()){
+                if (!context.isPilotRun() && rule.isPilotRun()) {
                     continue;
                 }
 
@@ -130,7 +130,7 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
                 }
 
                 // 是否有试运行权限
-                if(context.isPilotRun()){
+                if (context.isPilotRun()) {
                     subPolicyResponse.addTryRuleResponse(ruleResponse);
                 }
 
@@ -139,7 +139,7 @@ public abstract class AbstractPolicyModeExecuter implements IExecutor<String, Su
                     continue;
                 }
                 //命中中断规则，则中断退出，不再运行后继规则
-                if (ruleResponse.isTerminate()) {
+                if (ruleResponse.isTerminate() && !ruleResponse.isPilotRun()) {
                     break;
                 }
                 if (ruleResponse.isHit()) {
