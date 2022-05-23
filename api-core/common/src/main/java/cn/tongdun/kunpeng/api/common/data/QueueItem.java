@@ -10,7 +10,6 @@ public class QueueItem implements Serializable {
     private AbstractFraudContext context;
     private RiskRequest request;
     private IRiskResponse response;
-    private boolean pilotRun = false;
 
     public QueueItem(){
     }
@@ -42,12 +41,5 @@ public class QueueItem implements Serializable {
 
     public void setRequest(RiskRequest request) {
         this.request = request;
-    }
-    public boolean isPilotRun() {
-        return pilotRun;
-    }
-
-    public void setPilotRun(boolean pilotRun) {
-        this.pilotRun = pilotRun;
     }
 }
