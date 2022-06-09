@@ -10,6 +10,5 @@
     <typeAliases>
         <typeAlias alias="Timestamp" type="java.sql.Timestamp"/>
         <typeAlias alias="DistrictDO" type="cn.fraudmetrix.module.riskbase.object.DistrictDO"/>
-        <typeAlias alias="MobileInfoDO" type="cn.fraudmetrix.module.riskbase.object.MobileInfoDO"/>
     </typeAliases>
 </configuration>

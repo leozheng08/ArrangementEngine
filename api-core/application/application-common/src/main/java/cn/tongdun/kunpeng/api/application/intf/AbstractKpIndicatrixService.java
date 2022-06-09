@@ -10,7 +10,6 @@ import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.api.engine.model.Indicatrix.PlatformIndexCache;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
-import cn.tongdun.kunpeng.share.json.JSON;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
@@ -77,10 +76,11 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
             // 临时通过LocalcachePeriod配置项做下开关
             if (ReasonCodeUtil.isTimeout(e)) {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_TIMEOUT, getApiTag());
+                logger.warn(TraceUtils.getFormatTrace() + "调用指标服务超时", e);
             } else {
                 ReasonCodeUtil.add(context, ReasonCode.INDICATRIX_QUERY_ERROR, getApiTag());
+                logger.error(TraceUtils.getFormatTrace() + "调用指标服务异常", e);
             }
-            logger.error(TraceUtils.getFormatTrace() + "Error occurred when {} indicatrix result for {}.", indicatrixRequest.getBizId(), JSON.toJSONString(indicatrixRequest), e);
         }
 
         // 3. 重试
@@ -211,7 +211,7 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         List<String> indicatrixs = policyIndicatrixItemCache.getList(context.getPolicyUuid());
 
         if (indicatrixs == null || indicatrixs.isEmpty()) {
-            logger.info(TraceUtils.getFormatTrace()+"策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
+            logger.info(TraceUtils.getFormatTrace() + "策略id:{}，没有从gaea缓存取到指标信息", context.getPolicyUuid());
             return null;
         }
 

@@ -157,12 +157,12 @@ public class RiskService implements IRiskService {
          * 按照合作方异常打点
          */
         if (Objects.nonNull(riskResponse.getReasonCode()) && Objects.nonNull(riskRequest.getPartnerCode())) {
+            //reasonCode特殊处理：如 404:没有对应的策略配置
             String[] tags = {
-                    METRICS_TAG_REASON_CODE, riskResponse.getReasonCode(),
+                    METRICS_TAG_REASON_CODE, riskResponse.getReasonCode().split(":")[0],
                     METRICS_TAG_PARTNER_CODE, riskRequest.getPartnerCode()
             };
             metrics.counter(METRICS_TAG_REASON_KEY, tags);
-            metrics.counter(METRICS_TAG_REASON_KEY, riskResponse.getReasonCode(), tags);
         }
 
         if (Objects.nonNull(riskResponse.getSubReasonCodes())) {
