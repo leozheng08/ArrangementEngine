@@ -69,10 +69,6 @@
           class="cn.fraudmetrix.module.riskbase.service.impl.DistrictQueryServiceImpl"
           init-method="init"/>
 
-    <bean id="mobileInfoQueryService"
-          class="cn.fraudmetrix.module.riskbase.service.impl.MobileInfoQueryServiceImpl"
-          init-method="init"/>
-
     <bean id="idInfoQueryService"
           class="cn.fraudmetrix.module.riskbase.service.impl.IdInfoQueryServiceImpl"
           init-method="init"/>
