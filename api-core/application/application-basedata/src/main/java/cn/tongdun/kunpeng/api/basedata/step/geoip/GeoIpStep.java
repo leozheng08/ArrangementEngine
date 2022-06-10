@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.basedata.step.geoip;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.kunpeng.api.application.step.IRiskStep;
 import cn.tongdun.kunpeng.api.application.step.Risk;
 import cn.tongdun.kunpeng.api.basedata.BasedataConstant;

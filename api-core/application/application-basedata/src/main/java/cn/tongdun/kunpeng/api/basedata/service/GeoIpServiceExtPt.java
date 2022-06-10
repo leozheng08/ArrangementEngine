@@ -1,11 +1,8 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: liuq
@@ -13,8 +10,6 @@ import java.util.Map;
  */
 public interface GeoIpServiceExtPt extends IExtensionPoint {
 
-    GeoipEntity getIpInfo(String ip,AbstractFraudContext context);
-
-    Map<String,GeoipEntity> batchGetIpInfo(List<String> ipList);
+    GeoipEntity getIpInfo(String ip, AbstractFraudContext context);
 
 }

@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
 import cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService;
 import cn.tongdun.evan.client.entity.AGeoipEntity;
 import cn.tongdun.evan.client.entity.AGeoipQueryDTO;
@@ -9,6 +8,7 @@ import cn.tongdun.gaea.dubbo.GpsQueryService;
 import cn.tongdun.gaea.factservice.domain.GpsInfoDTO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
 import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.json.JSON;
@@ -16,17 +16,11 @@ import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
-import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -60,13 +54,13 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
         geoipQueryDTO.setSeqId(context.getSeqId());
         try {
             String[] tags = {
-                    "dubbo_qps","paas.api.geoip"};
-            metrics.counter("kunpeng.api.dubbo.qps",tags);
-            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt",tags);
+                    "dubbo_qps", "paas.api.geoip"};
+            metrics.counter("kunpeng.api.dubbo.qps", tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
 
             String[] partnerTags = {
-                    "partner_code",context.getPartnerCode()};
-            ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt",partnerTags);
+                    "partner_code", context.getPartnerCode()};
+            ITimeContext timePartner = metrics.metricTimer("kunpeng.api.dubbo.partner.rt", partnerTags);
 
             result = aGeoipInfoQueryService.queryGeoipInfo(geoipQueryDTO);
             timeContext.stop();
@@ -118,14 +112,14 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
         }
         GeoipEntity geoipEntity = new GeoipEntity();
         try {
-            if (StringUtils.isNotEmpty(aGeoipEntity.getLngwgs())){
+            if (StringUtils.isNotEmpty(aGeoipEntity.getLngwgs())) {
                 geoipEntity.setLongitude(Float.parseFloat(aGeoipEntity.getLngwgs()));
             }
-            if (StringUtils.isNotEmpty(aGeoipEntity.getLatwgs())){
+            if (StringUtils.isNotEmpty(aGeoipEntity.getLatwgs())) {
                 geoipEntity.setLatitude(Float.parseFloat(aGeoipEntity.getLatwgs()));
             }
-        }catch (Exception e){
-            logger.error("UsGeoIpService fromDTO2EntityV2 error:" , e);
+        } catch (Exception e) {
+            logger.error("UsGeoIpService fromDTO2EntityV2 error:", e);
         }
         geoipEntity.setCountry(aGeoipEntity.getCountry());
         geoipEntity.setCity(aGeoipEntity.getCity());
@@ -178,30 +172,5 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
         geoipEntity.setType(gpsInfoDTO.getType());
 
         return geoipEntity;
-    }
-
-    @Override
-    public Map<String, GeoipEntity> batchGetIpInfo(List<String> ipList) {
-        if (CollectionUtils.isEmpty(ipList)) {
-            return Collections.emptyMap();
-        }
-        Map<String, GpsInfoDTO> gpsInfoDTOMap = null;
-        try {
-            gpsInfoDTOMap = gpsQueryService.batchQueryGps(ipList);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "UsGeoIpService gpsQueryService.batchQueryGps error,ipList:" + ipList.toString(), e);
-        }
-        if (MapUtils.isEmpty(gpsInfoDTOMap)) {
-            return Collections.emptyMap();
-        }
-        if (ipList.size() != gpsInfoDTOMap.size()) {
-            logger.info(TraceUtils.getFormatTrace() + "ipList:" + ipList.toString() + ",gpsInfoDTOMap keySet:" + gpsInfoDTOMap.keySet().toString());
-        }
-        Map<String, GeoipEntity> geoipEntityMap = Maps.newHashMap();
-
-        gpsInfoDTOMap.forEach((key, value) -> {
-            geoipEntityMap.put(key, fromDTO2Entity(value));
-        });
-        return geoipEntityMap;
     }
 }

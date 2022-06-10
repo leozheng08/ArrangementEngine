@@ -1,6 +1,7 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
+import cn.fraudmetrix.elfin.biz.entity.PhoneAttrEntity;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.tdframework.core.extension.IExtensionPoint;
 
 /**
@@ -9,5 +10,5 @@ import cn.tongdun.tdframework.core.extension.IExtensionPoint;
  */
 public interface MobileInfoServiceExtPt extends IExtensionPoint {
 
-    MobileInfoDO getMobileInfo(String phone);
+    PhoneAttrEntity getMobileInfo(String phone, AbstractFraudContext context);
 }

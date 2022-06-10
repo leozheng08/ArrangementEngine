@@ -1,6 +1,6 @@
 package cn.tongdun.kunpeng.api.common.data;
 
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
+import cn.fraudmetrix.elfin.biz.entity.PhoneAttrEntity;
 import cn.fraudmetrix.module.tdrule.context.ExecuteContext;
 import cn.fraudmetrix.module.tdrule.function.Function;
 import cn.fraudmetrix.module.tdrule.util.DetailCallable;
@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import lombok.Data;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -382,10 +383,37 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private transient boolean useNewAddressVelocityRule = false;
 
+
     /**
      * 信用分结果
      */
     private transient Map<String, Integer> tdScoreCardMap = new HashMap<>();
+
+
+    /**
+     * 地址匹配规则调用的手机画像服务，这里做个缓存，防止同一笔调用同一个手机调用多次evan服务
+     * key: mobile/mobilehead7 value:PhoneAttrEntity
+     */
+    private Map<String, PhoneAttrEntity> phoneAttrEntityMap = new ConcurrentHashMap<>();
+
+    public PhoneAttrEntity getPhoneAttrEntity(String mobile) {
+        if (MapUtils.isEmpty(phoneAttrEntityMap) || StringUtils.isBlank(mobile)) {
+            return null;
+        }
+        return phoneAttrEntityMap.get(mobile);
+    }
+
+    public void setPhoneAttrEntity(String mobile, PhoneAttrEntity phoneAttrEntity) {
+        phoneAttrEntityMap.put(mobile, phoneAttrEntity);
+    }
+
+    public Map<String, PhoneAttrEntity> getPhoneAttrEntityMap() {
+        return phoneAttrEntityMap;
+    }
+
+    public void setPhoneAttrEntityMap(Map<String, PhoneAttrEntity> phoneAttrEntityMap) {
+        this.phoneAttrEntityMap = phoneAttrEntityMap;
+    }
 
     public Map<String, Integer> getTdScoreCardMap() {
         return tdScoreCardMap;

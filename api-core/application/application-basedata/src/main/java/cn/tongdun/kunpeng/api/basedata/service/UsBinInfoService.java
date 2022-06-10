@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
-import cn.fraudmetrix.module.riskbase.object.BinInfoDO;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinTO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
@@ -20,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Date: 2020/5/29 2:43 下午
  */
 @Extension(tenant = "us", business = BizScenario.DEFAULT, partner = BizScenario.DEFAULT)
-public class UsBinInfoService implements BinInfoServiceExtPt{
+public class UsBinInfoService implements BinInfoServiceExtPt {
     private static final Logger logger = LoggerFactory.getLogger(UsBinInfoService.class);
 
     @Autowired
@@ -29,30 +28,24 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
     @Autowired
     private IMetrics metrics;
 
-
-    @Override
-    public BinInfoDO getBinInfo(String binCode){
-        return null;
-    }
-
     @Override
     public boolean getBinInfo(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
-        String cardBin = (String)context.get("cardBin");
+        String cardBin = (String) context.get("cardBin");
         if (StringUtils.isNotBlank(cardBin)) {
             CardBinTO cardBinTO = null;
             try {
                 cardBinTO = cardBinService.getCardBinInfoById(cardBin);
-            }catch (Exception e){
+            } catch (Exception e) {
                 logger.error("查询cardbin数据异常", e);
                 String[] tags = {
                         "sub_reason_code", ReasonCode.USBIN_ERROR_OTHER.getCode()};
-                metrics.counter("kunpeng.api.subReasonCode",tags);
+                metrics.counter("kunpeng.api.subReasonCode", tags);
             }
-            if(cardBinTO != null){
+            if (cardBinTO != null) {
                 setContext(context, cardBinTO);
                 request.getFieldValues().put("carBin_response", cardBinTO);
                 logger.info("查询到seqId={}, cardBin={}", context.getSeqId(), cardBinTO);
-            }else {
+            } else {
                 logger.warn("查询不到cardbin信息 seqId :{}", context.getSeqId());
             }
         }
@@ -62,8 +55,8 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
     /**
      * 将查询到的卡bin信息复制给上线文中的系统参数值
      *
-     * @param context       上下文
-     * @param cardBinTO     卡bin信息
+     * @param context   上下文
+     * @param cardBinTO 卡bin信息
      */
     private void setContext(AbstractFraudContext context, CardBinTO cardBinTO) {
         setValue(context, "cardBrand", cardBinTO.getCardBrand());
@@ -74,8 +67,8 @@ public class UsBinInfoService implements BinInfoServiceExtPt{
         setValue(context, "cardBinCountry", cardBinTO.getCountryName());
     }
 
-    private void setValue(AbstractFraudContext context, String key, Object value){
-        if(value != null){
+    private void setValue(AbstractFraudContext context, String key, Object value) {
+        if (value != null) {
             context.set(key, value);
         }
     }

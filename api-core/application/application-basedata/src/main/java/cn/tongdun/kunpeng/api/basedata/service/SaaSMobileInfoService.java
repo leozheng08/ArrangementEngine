@@ -2,8 +2,7 @@ package cn.tongdun.kunpeng.api.basedata.service;
 
 import cn.fraudmetrix.elfin.biz.entity.PhoneAttrEntity;
 import cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService;
-import cn.fraudmetrix.forseti.global.util.LogUtil;
-import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.tdframework.core.extension.Extension;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +24,7 @@ public class SaaSMobileInfoService implements MobileInfoServiceExtPt {
     private BaseDataQueryService baseDataQueryService;
 
     @Override
-    public MobileInfoDO getMobileInfo(String phone) {
+    public PhoneAttrEntity getMobileInfo(String phone, AbstractFraudContext context) {
         PhoneAttrEntity phoneAttrEntity = null;
         try {
             if (StringUtils.isBlank(phone)) {
@@ -35,7 +34,7 @@ public class SaaSMobileInfoService implements MobileInfoServiceExtPt {
 
             phoneAttrEntity = baseDataQueryService.getPhoneInfo(phone);
             if (null != phoneAttrEntity) {
-                return copyMobileInofProperties(phoneAttrEntity);
+                return phoneAttrEntity;
             }
         } catch (Exception e) {
             logger.warn("get phoneInfo of phone:{} from elfin error", phone, e);
@@ -44,18 +43,4 @@ public class SaaSMobileInfoService implements MobileInfoServiceExtPt {
         return null;
     }
 
-    private MobileInfoDO copyMobileInofProperties(PhoneAttrEntity phoneAttrEntity) {
-        MobileInfoDO mobileInfoDO = new MobileInfoDO();
-        mobileInfoDO.setCity(phoneAttrEntity.getCity());
-        mobileInfoDO.setProvince(phoneAttrEntity.getProvince());
-        mobileInfoDO.setPhoneNumber(phoneAttrEntity.getPhonePrefix());
-        if (StringUtils.isNoneBlank(phoneAttrEntity.getType())) {
-            try {
-                mobileInfoDO.setType(Integer.valueOf(phoneAttrEntity.getType()));
-            } catch (NumberFormatException e) {
-                logger.warn("get phoneInfo of phone:{} from elfin type parseInt error", phoneAttrEntity.getPhonePrefix(), e);
-            }
-        }
-        return mobileInfoDO;
-    }
 }

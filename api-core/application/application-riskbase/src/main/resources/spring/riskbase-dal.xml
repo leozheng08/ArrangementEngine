@@ -50,14 +50,6 @@
 
     </bean>
 
-    <bean id="proxyIpService" class="cn.fraudmetrix.module.riskbase.service.impl.ProxyIpServiceImpl" lazy-init="true"/>
-
-    <!-- 使用下方redisClientbean，直接申请shutter的redis，redis.proxyip.properties文件权限即可 -->
-    <bean id="proxyIpRedisClient" class="cn.fraudmetrix.module.riskbase.client.RedisClient" init-method="init" lazy-init="true">
-        <property name="masterServer" value="${redis.proxyip.master.server}"/>
-        <property name="slaveServer" value="${redis.proxyip.slave.server}"/>
-    </bean>
-
     <!-- ======================================================================== -->
     <!-- DAO定义 -->
     <!-- ======================================================================== -->
@@ -75,14 +67,10 @@
 
     <bean id="districtQueryService"
           class="cn.fraudmetrix.module.riskbase.service.impl.DistrictQueryServiceImpl"
-          init-method="init" />
+          init-method="init"/>
 
     <bean id="idInfoQueryService"
           class="cn.fraudmetrix.module.riskbase.service.impl.IdInfoQueryServiceImpl"
-          init-method="init" />
-
-    <bean id="binInfoQueryService"
-          class="cn.fraudmetrix.module.riskbase.service.impl.BinInfoQueryServiceImpl"
-          init-method="init" />
+          init-method="init"/>
 
 </beans>

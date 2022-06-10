@@ -163,6 +163,12 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.tongdun.kunpeng-api</groupId>
+                <artifactId>application-riskbase</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>

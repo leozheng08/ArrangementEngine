@@ -1,26 +1,20 @@
 package cn.tongdun.kunpeng.api.basedata.service.elfin;
 
-import cn.fraudmetrix.elfin.biz.entity.IdcEntity;
 import cn.fraudmetrix.elfin.biz.entity.PhoneAttrEntity;
-import cn.fraudmetrix.elfin.biz.entity.StationEntity;
 import cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService;
-import cn.fraudmetrix.module.riskbase.geoip.GeoipEntity;
-import cn.fraudmetrix.module.riskbase.object.MobileInfoDO;
+import cn.tongdun.kunpeng.api.basedata.BasedataConstant;
+import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
+import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
-import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * Created by coco on 17/12/26.
+ * 归属地查询
  */
 @Service
 public class ElfinBaseDataService {
@@ -29,213 +23,88 @@ public class ElfinBaseDataService {
     @Autowired
     private BaseDataQueryService baseDataQueryService;
 
-    // FIXME: 2/7/20 cache handle
-    private Map<String, GeoipEntity> geoipEntitycache = new ConcurrentHashMap<>();
-    private Map<String, PhoneAttrEntity> phoneAttrEntityCache = new ConcurrentHashMap<>();
-
-
-    public GeoipEntity getIpInfo(String ip) {
+    /**
+     * 获取ip归属地
+     */
+    public GeoipEntity getIpInfo(String ip, AbstractFraudContext context) {
         try {
             if (StringUtils.isBlank(ip)) {
-//                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get geoentity from elfin with params null");
                 return null;
             }
-            GeoipEntity riskbaseGeoipEntity = geoipEntitycache.get(ip);
-            if (riskbaseGeoipEntity != null) {
-                return riskbaseGeoipEntity;
+            //step1 从上下文取
+            GeoipEntity geoipEntity = context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_GEOIP_ENTITY, GeoipEntity.class);
+            if (geoipEntity != null && ip.equalsIgnoreCase(geoipEntity.getIp())) {
+                return geoipEntity;
             }
-
-            cn.fraudmetrix.elfin.biz.entity.GeoipEntity geoipEntity = baseDataQueryService.getIpInfo(ip);
-            if (geoipEntity != null) {
-                riskbaseGeoipEntity = copyGeoipEntityProperties(geoipEntity);
-                geoipEntitycache.put(ip, riskbaseGeoipEntity);
-                return riskbaseGeoipEntity;
+            //step2 调用elfin获取
+            cn.fraudmetrix.elfin.biz.entity.GeoipEntity elfinGeoipEntity = baseDataQueryService.getIpInfo(ip);
+            if (elfinGeoipEntity != null) {
+                return copyFromElfin(elfinGeoipEntity);
             }
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "ip query geoinfo failed ip {}", ip, e);
+            if (ReasonCodeUtil.isTimeout(e)) {
+                logger.warn(TraceUtils.getFormatTrace() + "调用ip归属地服务超时: {}", ip, e);
+            } else {
+                logger.error(TraceUtils.getFormatTrace() + "调用ip归属地服务异常: {}", ip, e);
+            }
         }
         return null;
     }
 
-    public Map<String, GeoipEntity> getIpInfos(List<String> ips) {
-        if (CollectionUtils.isEmpty(ips)) {
-//            logger.warn(TraceUtils.getFormatTrace() + "getIpInfos from elfin with params empty");
-            return Collections.emptyMap();
-        }
-
-        List<String> inCacheIpList = new ArrayList<>();
-        Map<String, GeoipEntity> inCacheMap = new HashMap<>();
-        List<String> notInCacheIpList = new ArrayList<>();
-
-        for (String ip : ips) {
-            GeoipEntity riskbaseGeoipEntity = geoipEntitycache.get(ip);
-            if (riskbaseGeoipEntity != null) {
-                inCacheIpList.add(ip);
-                inCacheMap.put(ip, riskbaseGeoipEntity);
-            } else {
-                notInCacheIpList.add(ip);
-            }
-        }
-
-        if (CollectionUtils.isEmpty(notInCacheIpList)) {
-            return inCacheMap;
-        }
-
-        final Map<String, GeoipEntity> finalResultMap = Maps.newHashMapWithExpectedSize(ips.size());
-        if (MapUtils.isNotEmpty(inCacheMap)) {
-            finalResultMap.putAll(inCacheMap);
-        }
-
-        Map<String, cn.fraudmetrix.elfin.biz.entity.GeoipEntity> ipInfos = null;
-        try {
-            ipInfos = baseDataQueryService.getIpInfos(notInCacheIpList);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "getIpInfos error, ipList={}", ips, e);
-            return finalResultMap;
-        }
-
-        if (MapUtils.isEmpty(ipInfos)) {
-            return finalResultMap;
-        }
-
-        Set<Map.Entry<String, cn.fraudmetrix.elfin.biz.entity.GeoipEntity>> entries = ipInfos.entrySet();
-        for (Map.Entry<String, cn.fraudmetrix.elfin.biz.entity.GeoipEntity> entry : entries) {
-            cn.fraudmetrix.elfin.biz.entity.GeoipEntity value = entry.getValue();
-            GeoipEntity geoipEntity = this.copyGeoipEntityProperties(value);
-            finalResultMap.put(entry.getKey(), geoipEntity);
-            geoipEntitycache.put(entry.getKey(), geoipEntity);
-        }
-
-        return finalResultMap;
+    private GeoipEntity copyFromElfin(cn.fraudmetrix.elfin.biz.entity.GeoipEntity elfinGeoipEntity) {
+        GeoipEntity geoipEntity = new GeoipEntity();
+        geoipEntity.setIsp(elfinGeoipEntity.getIsp());
+        geoipEntity.setCity(elfinGeoipEntity.getCity());
+        geoipEntity.setProvince(elfinGeoipEntity.getProvince());
+        geoipEntity.setAddress(elfinGeoipEntity.getAddress());
+        geoipEntity.setArea(elfinGeoipEntity.getArea());
+        geoipEntity.setAreaId(elfinGeoipEntity.getAreaId());
+        geoipEntity.setCityId(elfinGeoipEntity.getCityId());
+        geoipEntity.setCountryId(elfinGeoipEntity.getCountryId());
+        geoipEntity.setCountry(elfinGeoipEntity.getCountry());
+        geoipEntity.setDesc(elfinGeoipEntity.getDesc());
+        geoipEntity.setType(elfinGeoipEntity.getType());
+        geoipEntity.setProvinceId(elfinGeoipEntity.getProvinceId());
+        geoipEntity.setIspId(elfinGeoipEntity.getIspId());
+        geoipEntity.setLongitude(elfinGeoipEntity.getLongitude());
+        geoipEntity.setLatitude(elfinGeoipEntity.getLatitude());
+        geoipEntity.setLip(elfinGeoipEntity.getLip());
+        geoipEntity.setIp(elfinGeoipEntity.getIp());
+        geoipEntity.setExtra1(elfinGeoipEntity.getExtra1());
+        geoipEntity.setExtra2(elfinGeoipEntity.getExtra2());
+        geoipEntity.setCounty(elfinGeoipEntity.getCounty());
+        geoipEntity.setCountyId(elfinGeoipEntity.getCountyId());
+        return geoipEntity;
     }
 
-    public StationEntity getStationInfo(String ip) {
-        try {
-            if (StringUtils.isBlank(ip)) {
-//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get stationEngity from elfin with params null");
-                return null;
-            }
-            return baseDataQueryService.getStationInfo(ip);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "ip query stationinfo error ip {}", ip, e);
-            return null;
-        }
-    }
-
-    public boolean isStation(String ip) {
-        try {
-            if (StringUtils.isBlank(ip)) {
-//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get isStation from elfin with params null");
-                return false;
-            }
-            return baseDataQueryService.isStation(ip);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "ip check isstation error ip {}", ip, e);
-            return false;
-        }
-    }
-
-    public IdcEntity getIdcInfo(String ip) {
-        try {
-            if (StringUtils.isBlank(ip)) {
-//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get idcEntity from elfin with params null");
-                return null;
-            }
-            return baseDataQueryService.getIdcInfo(ip);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "ip query idcinfo error ip {}", ip, e);
-
-            return null;
-        }
-    }
-
-    public boolean isIdc(String ip) {
-        try {
-            if (StringUtils.isBlank(ip)) {
-//                logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get idc from elfin with params null");
-                return false;
-            }
-            return baseDataQueryService.isIdc(ip);
-        } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "ip check id idc error ip {}", ip, e);
-            return false;
-        }
-    }
-
-    public PhoneAttrEntity getPhoneInfo(String phone) {
+    /**
+     * 获取手机归属地
+     */
+    public PhoneAttrEntity getPhoneInfo(String phone, AbstractFraudContext context) {
         try {
             if (StringUtils.isBlank(phone)) {
-//                logger.info(TraceUtils.getFormatTrace()+"elfinBaseDateService get phoneInfo from elfin with params null");
                 return null;
             }
-
-            PhoneAttrEntity phoneAttrEntity = phoneAttrEntityCache.get(phone);
+            //step1 从上下文取
+            PhoneAttrEntity phoneAttrEntity = context.getPhoneAttrEntity(phone);
             if (phoneAttrEntity != null) {
                 return phoneAttrEntity;
             }
-
+            //step2 调用elfin获取
             phoneAttrEntity = baseDataQueryService.getPhoneInfo(phone);
             if (phoneAttrEntity != null) {
-                phoneAttrEntityCache.put(phone, phoneAttrEntity);
+                context.setPhoneAttrEntity(phone, phoneAttrEntity);
                 return phoneAttrEntity;
             }
-            return null;
         } catch (Exception e) {
-            logger.error(TraceUtils.getFormatTrace() + "phone query detailinfo error phone {}", phone, e);
-            return null;
-        }
-    }
-
-    public MobileInfoDO getMobileInfo(String phone) {
-        if (StringUtils.isBlank(phone)) {
-//            logger.info(TraceUtils.getFormatTrace() + "elfinBaseDateService get phoneInfo from elfin with params null");
-            return null;
-        }
-        PhoneAttrEntity phoneAttrEntity = getPhoneInfo(phone);
-        if (phoneAttrEntity != null) {
-            return copyMobileInofProperties(phoneAttrEntity);
+            if (ReasonCodeUtil.isTimeout(e)) {
+                logger.warn(TraceUtils.getFormatTrace() + "调用手机归属地服务超时: {}", phone, e);
+            } else {
+                logger.error(TraceUtils.getFormatTrace() + "调用手机归属地服务异常: {}", phone, e);
+            }
         }
         return null;
     }
 
-    private GeoipEntity copyGeoipEntityProperties(cn.fraudmetrix.elfin.biz.entity.GeoipEntity geoipEntity) {
-        //springbeanutils反射有性能问题
-        GeoipEntity oldGeoipEntity = new GeoipEntity();
-        oldGeoipEntity.setIsp(geoipEntity.getIsp());
-        oldGeoipEntity.setCity(geoipEntity.getCity());
-        oldGeoipEntity.setProvince(geoipEntity.getProvince());
-        oldGeoipEntity.setAddress(geoipEntity.getAddress());
-        oldGeoipEntity.setArea(geoipEntity.getArea());
-        oldGeoipEntity.setAreaId(geoipEntity.getAreaId());
-        oldGeoipEntity.setCityId(geoipEntity.getCityId());
-        oldGeoipEntity.setCountryId(geoipEntity.getCountryId());
-        oldGeoipEntity.setCountry(geoipEntity.getCountry());
-        oldGeoipEntity.setDesc(geoipEntity.getDesc());
-        oldGeoipEntity.setType(geoipEntity.getType());
-        oldGeoipEntity.setProvinceId(geoipEntity.getProvinceId());
-        oldGeoipEntity.setIspId(geoipEntity.getIspId());
-        oldGeoipEntity.setLongitude(geoipEntity.getLongitude());
-        oldGeoipEntity.setLatitude(geoipEntity.getLatitude());
-        oldGeoipEntity.setLip(geoipEntity.getLip());
-        oldGeoipEntity.setIp(geoipEntity.getIp());
-        oldGeoipEntity.setExtra1(geoipEntity.getExtra1());
-        oldGeoipEntity.setExtra2(geoipEntity.getExtra2());
-        oldGeoipEntity.setCounty(geoipEntity.getCounty());
-        oldGeoipEntity.setCountyId(geoipEntity.getCountyId());
-        return oldGeoipEntity;
-    }
 
-    private MobileInfoDO copyMobileInofProperties(PhoneAttrEntity phoneAttrEntity) {
-        MobileInfoDO mobileInfoDO = new MobileInfoDO();
-        mobileInfoDO.setCity(phoneAttrEntity.getCity());
-        mobileInfoDO.setProvince(phoneAttrEntity.getProvince());
-        mobileInfoDO.setPhoneNumber(phoneAttrEntity.getPhonePrefix());
-        if (StringUtils.isNoneBlank(phoneAttrEntity.getType())) {
-            try {
-                mobileInfoDO.setType(Integer.valueOf(phoneAttrEntity.getType()));
-            } catch (NumberFormatException e) {
-            }
-        }
-        return mobileInfoDO;
-    }
 }
