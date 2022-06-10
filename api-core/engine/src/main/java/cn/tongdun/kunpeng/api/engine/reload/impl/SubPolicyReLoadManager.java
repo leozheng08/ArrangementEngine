@@ -3,8 +3,10 @@ package cn.tongdun.kunpeng.api.engine.reload.impl;
 import cn.tongdun.kunpeng.api.engine.cache.BatchRemoteCallDataCache;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataBuilderFactory;
 import cn.tongdun.kunpeng.api.engine.convertor.batch.BatchRemoteCallDataManager;
+import cn.tongdun.kunpeng.api.engine.convertor.impl.RuleConvertor;
 import cn.tongdun.kunpeng.api.engine.convertor.impl.SubPolicyConvertor;
 import cn.tongdun.kunpeng.api.engine.dto.SubPolicyDTO;
+import cn.tongdun.kunpeng.api.engine.model.rule.IRuleRepository;
 import cn.tongdun.kunpeng.api.engine.model.rule.Rule;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.api.engine.model.subpolicy.ISubPolicyRepository;
@@ -39,6 +41,9 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     private ISubPolicyRepository subPolicyRepository;
 
     @Autowired
+    private IRuleRepository ruleRepository;
+
+    @Autowired
     private SubPolicyCache subPolicyCache;
 
     @Autowired
@@ -59,6 +64,9 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     @Autowired
     private BatchRemoteCallDataCache batchRemoteCallDataCache;
 
+    @Autowired
+    private RuleConvertor ruleConvertor;
+
     @PostConstruct
     public void init() {
         reloadFactory.register(SubPolicyEventDO.class, this);
@@ -77,6 +85,38 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
     @Override
     public boolean activate(SubPolicyEventDO eventDO) {
         return addOrUpdate(eventDO);
+    }
+
+
+    @Override
+    public boolean imported(SubPolicyEventDO eventDO) {
+        String uuid = eventDO.getUuid();
+        logger.debug(TraceUtils.getFormatTrace() + "SubPolicy reload start, uuid:{}", uuid);
+        try {
+            List<RuleDTO> ruleDOList = ruleRepository.queryFullBySubPolicyUuid(uuid);
+            // 这里的RuleDTO都是开启的
+            for (RuleDTO ruleDTO : ruleDOList) {
+                Rule newRule = ruleConvertor.convert(ruleDTO);
+                ruleCache.put(ruleDTO.getUuid(), newRule);
+                //处理需要批量远程调用的数据
+                this.addBatchRemoteCallDataToCache(ruleDTO.getPolicyUuid(), ruleCache.getSubPolicyUuidByRuleUuid(uuid), ruleDTO);
+
+            }
+            Long timestamp = eventDO.getGmtModify().getTime();
+            SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
+            //缓存中的数据是相同版本或更新的，则不刷新
+            if (timestamp != null && oldSubPolicy != null && timestampCompare(oldSubPolicy.getModifiedVersion(), timestamp) >= 0) {
+                logger.debug(TraceUtils.getFormatTrace() + "SubPolicy reload localCache is newest, ignore uuid:{}", uuid);
+                return true;
+            }
+
+            reloadByUuid(uuid);
+        } catch (Exception e) {
+            logger.error(TraceUtils.getFormatTrace() + "SubPolicy reload failed, uuid:{}", uuid, e);
+            return false;
+        }
+        logger.debug(TraceUtils.getFormatTrace() + "SubPolicy reload success, uuid:{}", uuid);
+        return true;
     }
 
 
@@ -207,6 +247,23 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
                         batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * 添加/更新批量调用数据到cache
+     *
+     * @param policyUuid
+     * @param subPolicyUuid
+     * @param ruleDTO
+     */
+    private void addBatchRemoteCallDataToCache(String policyUuid, String subPolicyUuid, RuleDTO ruleDTO) {
+        Map<String, List<Object>> batchdatas = BatchRemoteCallDataManager.buildData(policyUuid, subPolicyUuid, ruleDTO);
+        if (!CollectionUtils.isEmpty(batchdatas)) {
+            Set<Map.Entry<String, List<Object>>> entries = batchdatas.entrySet();
+            for (Map.Entry<String, List<Object>> entry : entries) {
+                batchRemoteCallDataCache.addOrUpdate(policyUuid, entry.getKey(), ruleDTO.getUuid(), entry.getValue());
             }
         }
     }
