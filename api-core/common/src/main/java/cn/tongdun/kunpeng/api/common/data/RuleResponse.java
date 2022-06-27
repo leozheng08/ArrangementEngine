@@ -15,4 +15,5 @@ public class RuleResponse extends Response {
     private String name;
     private String parentUuid;
     private boolean terminate;
+    private boolean pilotRun = false;
 }
