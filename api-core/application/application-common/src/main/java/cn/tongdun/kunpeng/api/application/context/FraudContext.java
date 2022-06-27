@@ -12,6 +12,8 @@ public class FraudContext extends AbstractFraudContext {
 
     private String status;
 
+    private String tryStatus;
+
     private long riskStartTime;
 
 }

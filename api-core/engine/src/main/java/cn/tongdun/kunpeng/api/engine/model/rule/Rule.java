@@ -28,7 +28,7 @@ public class Rule extends VersionedEntity {
     //决策结果
     private String decision;
     private Integer displayOrder;
-    private Boolean pilotRun;
+    private boolean pilotRun = false;
     private String template;
     /**
      * 规则引擎的可执行对象

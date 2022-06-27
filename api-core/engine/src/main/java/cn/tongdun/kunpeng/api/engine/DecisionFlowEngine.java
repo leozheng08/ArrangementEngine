@@ -45,6 +45,9 @@ public class DecisionFlowEngine extends DecisionTool {
         long start = System.currentTimeMillis();
         PolicyResponse policyResponse = new PolicyResponse();
 
+        // 试运行的策略结果
+        PolicyResponse tryPolicyResponse = new PolicyResponse();
+
         Policy policy = policyCache.get(context.getPolicyUuid());
 
         GraphResult graphResult = decisionFlow.getGraph().execute(context);
@@ -63,22 +66,67 @@ public class DecisionFlowEngine extends DecisionTool {
             }
         }
 
-        policyResponse.setSubPolicyResponses(subPolicyResponseList);
 
 
         policyResponse.setPolicyUuid(policy.getUuid());
         policyResponse.setPolicyName(policy.getName());
+
+        // 是否有试运行权限
+        if(context.isPilotRun()){
+            tryPolicyResponse.setPolicyUuid(policy.getUuid());
+            tryPolicyResponse.setPolicyName(policy.getName());
+        }
+
         context.setPolicyVersion(policy.getVersion());
-        //取最坏策略结果
+
+        //填充正式的PolicyResponse
+        fillPolicyResponse(policyResponse, subPolicyResponseList, start);
+
+        if (context.isPilotRun()) {
+            fillTryPolicyResponse(tryPolicyResponse, subPolicyResponseList, start);
+            context.setTryPolicyResponse(tryPolicyResponse);
+        }
+
+        return policyResponse;
+    }
+
+
+    // 填充正式的PolicyResponse
+    public void fillPolicyResponse(PolicyResponse policyResponse, List<SubPolicyResponse> subPolicyResponseList, long start) {
+        policyResponse.setSuccess(true);
+        policyResponse.setSubPolicyResponses(subPolicyResponseList);
+
+        // 获取最坏的策略结果
         SubPolicyResponse finalSubPolicyResponse = createFinalSubPolicyResult(subPolicyResponseList);
+
         if (Objects.nonNull(finalSubPolicyResponse)) {
             policyResponse.setDecision(finalSubPolicyResponse.getDecision());
             policyResponse.setScore(finalSubPolicyResponse.getScore());
         }else {
             policyResponse.setDecision(decisionResultTypeCache.getDefaultType().getCode());
         }
+
+        policyResponse.setRiskType(finalSubPolicyResponse.getRiskType());
         policyResponse.setCostTime(System.currentTimeMillis() - start);
-        policyResponse.setSuccess(true);
-        return policyResponse;
     }
+
+    // 填充试运行的PolicyResponse
+    public void fillTryPolicyResponse(PolicyResponse policyResponse, List<SubPolicyResponse> subPolicyResponseList, long start) {
+        policyResponse.setSuccess(true);
+        policyResponse.setSubPolicyResponses(subPolicyResponseList);
+
+        // 获取最坏的策略结果
+        SubPolicyResponse finalSubPolicyResponse = createTryFinalSubPolicyResult(subPolicyResponseList);
+
+        if (Objects.nonNull(finalSubPolicyResponse)) {
+            policyResponse.setDecision(finalSubPolicyResponse.getTryDecision());
+            policyResponse.setScore(finalSubPolicyResponse.getTryScore());
+        }else {
+            policyResponse.setDecision(decisionResultTypeCache.getDefaultType().getCode());
+        }
+
+        policyResponse.setRiskType(finalSubPolicyResponse.getRiskType());
+        policyResponse.setCostTime(System.currentTimeMillis() - start);
+    }
+
 }
