@@ -42,9 +42,17 @@ public class WorstMatchModeExecuter extends AbstractPolicyModeExecuter {
             //命中规则后的处理逻辑,false表示不中断继续执行后继规则
             return false;
         });
+        subPolicyResponse.setDecision(getDecisionResultType(subPolicyResponse.getHitRules()).getCode());
 
+        // 如果当前是试运行调用
+        if (context.isPilotRun()) {
+            subPolicyResponse.setTryDecision(getDecisionResultType(subPolicyResponse.getTryHitRules()).getCode());
+        }
+    }
+
+
+    public DecisionResultType getDecisionResultType(List<RuleResponse> hitRuleList) {
         //取得最坏决策结果
-        List<RuleResponse> hitRuleList = subPolicyResponse.getHitRules();
         DecisionResultType decisionResult = decisionResultTypeCache.getDefaultType();
         for (RuleResponse hitRule : hitRuleList) {
             //根据DecisionResultType的order顺序，Pass、Review、Reject顺序为1、2、3, 序号越大，为最坏结果
@@ -55,8 +63,7 @@ public class WorstMatchModeExecuter extends AbstractPolicyModeExecuter {
                 }
             }
         }
-
-        subPolicyResponse.setDecision(decisionResult.getCode());
+        return decisionResult;
     }
 
 }

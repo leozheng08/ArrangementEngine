@@ -139,6 +139,12 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         rule.setBizType(ruleDTO.getBizType());
         rule.setBizUuid(ruleDTO.getBizUuid());
         rule.setGmtModify(ruleDTO.getGmtModify());
+        // 添加试运行标识
+        if ("TRY".equalsIgnoreCase(ruleDTO.getRuleType())) {
+            rule.setPilotRun(true);
+        } else {
+            rule.setPilotRun(false);
+        }
         return rule;
     }
 
@@ -194,7 +200,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
             List<FunctionParam> paramList = JSON.parseArray(elementDTO.getParams(), FunctionParam.class);
             functionDesc.setParamList(paramList);
             functionDescList.add(functionDesc);
-            functionDesc.putExtProperty(RuleConstant.FUNC_DESC_PARAMS_ALL,"true");
+            functionDesc.putExtProperty(RuleConstant.FUNC_DESC_PARAMS_ALL, "true");
 
             left.setValue(String.valueOf(num));
             left.setFieldType(FieldTypeEnum.FUNC);
@@ -261,29 +267,29 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         }
 
         //equals与notEquals支持数组迭代方式
-        if(!"equals".equals(op) && !"notEquals".equals(op)){
+        if (!"equals".equals(op) && !"notEquals".equals(op)) {
             return op;
         }
 
-        if(StringUtils.isBlank(elementDTO.getParams())) {
+        if (StringUtils.isBlank(elementDTO.getParams())) {
             return op;
         }
 
         List<FunctionParam> paramList = JSON.parseArray(elementDTO.getParams(), FunctionParam.class);
-        if(paramList == null || paramList.isEmpty()) {
+        if (paramList == null || paramList.isEmpty()) {
             return op;
         }
         //当iterateType=any ，op=equals 操作符转为 arrayAnyEquals
         //当iterateType=any ，op=notEquals 操作符转为 arrayAnyNotEquals
         //当iterateType=all ，op=equals 操作符转为 arrayAllEquals
         //当iterateType=all ，op=notEquals 操作符转为 arrayAllNotEquals
-        for(FunctionParam param : paramList) {
-            if(!"iterateType".equalsIgnoreCase(param.getName())){
+        for (FunctionParam param : paramList) {
+            if (!"iterateType".equalsIgnoreCase(param.getName())) {
                 continue;
             }
-            if(IterateType.ALL.name().equalsIgnoreCase(param.getValue())){
+            if (IterateType.ALL.name().equalsIgnoreCase(param.getValue())) {
                 op = "arrayAll" + KunpengStringUtils.upperCaseFirstChar(op);
-            } else if(IterateType.ANY.name().equalsIgnoreCase(param.getValue())){
+            } else if (IterateType.ANY.name().equalsIgnoreCase(param.getValue())) {
                 op = "arrayAny" + KunpengStringUtils.upperCaseFirstChar(op);
             }
 //            break;

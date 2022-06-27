@@ -24,8 +24,8 @@ public class WeightedPolicyModeExecuter extends AbstractPolicyModeExecuter {
     private static Logger logger = LoggerFactory.getLogger(WeightedPolicyModeExecuter.class);
 
     @PostConstruct
-    public void init(){
-        policyModeCache.put(PolicyMode.Weighted,this);
+    public void init() {
+        policyModeCache.put(PolicyMode.Weighted, this);
     }
 
     /**
@@ -45,22 +45,47 @@ public class WeightedPolicyModeExecuter extends AbstractPolicyModeExecuter {
 
         //取得权重分数之和
         List<RuleResponse> hitRuleList = subPolicyResponse.getHitRules();
+
         int score = 0;
         for (RuleResponse hitRule : hitRuleList) {
             score += hitRule.getScore();
         }
 
-        List<DecisionResultThreshold>  decisionResultTypeList = subPolicy.getRiskThresholds();
+        List<DecisionResultThreshold> decisionResultTypeList = subPolicy.getRiskThresholds();
+        // 正式规则决策
+        DecisionResultType decisionResult = getDecisionResultType(decisionResultTypeList, score);
+        subPolicyResponse.setDecision(decisionResult.getCode());
+        subPolicyResponse.setScore(score);
+
+        // 是否有试运行权限
+        if (context.isPilotRun()) {
+            //取得权重分数之和
+            List<RuleResponse> hitTryRuleList = subPolicyResponse.getTryHitRules();
+            int tryScore = 0;
+            for (RuleResponse hitRule : hitTryRuleList) {
+                tryScore += hitRule.getScore();
+            }
+
+            // 试运行和正式的决策
+            DecisionResultType decisionTryResult = getDecisionResultType(decisionResultTypeList, tryScore);
+
+            // 试运行的决策结果
+            subPolicyResponse.setTryDecision(decisionTryResult.getCode());
+            subPolicyResponse.setTryScore(tryScore);
+        }
+    }
+
+    public DecisionResultType getDecisionResultType(List<DecisionResultThreshold> decisionResultTypeList, int score) {
         DecisionResultType decisionResult = null;
-        if(decisionResultTypeList != null && !decisionResultTypeList.isEmpty()) {
+        if (decisionResultTypeList != null && !decisionResultTypeList.isEmpty()) {
             int count = 0;
             int size = decisionResultTypeList.size();
             for (DecisionResultThreshold threshold : decisionResultTypeList) {
-                if(count == 0 && score < threshold.getEndThreshold()){
+                if (count == 0 && score < threshold.getEndThreshold()) {
                     decisionResult = threshold.getDecisionResultType();
                     break;
                 }
-                if(count == size-1 && score > threshold.getStartThreshold()){
+                if (count == size - 1 && score > threshold.getStartThreshold()) {
                     decisionResult = threshold.getDecisionResultType();
                     break;
                 }
@@ -71,11 +96,9 @@ public class WeightedPolicyModeExecuter extends AbstractPolicyModeExecuter {
                 count++;
             }
         }
-        if(decisionResult == null){
+        if (decisionResult == null) {
             decisionResult = decisionResultTypeCache.getDefaultType();
         }
-
-        subPolicyResponse.setDecision(decisionResult.getCode());
-        subPolicyResponse.setScore(score);
+        return decisionResult;
     }
 }

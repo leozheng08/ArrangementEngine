@@ -7,6 +7,7 @@ import cn.fraudmetrix.module.tdrule.util.DetailCallable;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.common.util.KunpengStringUtils;
 import cn.tongdun.kunpeng.client.data.IOutputField;
+import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.client.data.impl.underline.OutputField;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
@@ -263,6 +264,25 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
      */
     private transient PolicyResponse policyResponse;
 
+    /**
+     * 策略试运行结果，信息较为完整，决策结果应答时会再从此对象选取部分输出到RiskResponse中
+     */
+    private transient PolicyResponse tryPolicyResponse;
+
+    /**
+     * 试运行RiskResponse
+     */
+    private IRiskResponse tryRiskResponse;
+
+    /**
+     * 是否是试运行的调用，默认是false
+     */
+    private boolean pilotRun = false;
+
+    /**
+     * 是否是试运行Activity
+     */
+    private boolean pilotRunActivity = false;
 
     /*************外部接口返回结果 start******************/
 

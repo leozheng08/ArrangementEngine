@@ -52,4 +52,32 @@ public abstract class DecisionTool implements IExecutor<AbstractDecisionMode, Po
 
         return subPolicyResponseList.get(0);
     }
+
+    protected SubPolicyResponse createTryFinalSubPolicyResult(List<SubPolicyResponse> subPolicyResponseList) {
+        if(subPolicyResponseList == null || subPolicyResponseList.isEmpty()){
+            return null;
+        }
+
+        //决策结果按高风险排前, 如果风险一样，则按子策略的分数倒排
+        Collections.sort(subPolicyResponseList, new Comparator<SubPolicyResponse>() {
+            @Override
+            public int compare(SubPolicyResponse action1, SubPolicyResponse action2) {
+
+                DecisionResultType decisionResultTyp1 = decisionResultTypeCache.get(action1.getTryDecision());
+                DecisionResultType decisionResultTyp2 = decisionResultTypeCache.get(action2.getTryDecision());
+
+                int compareValue = 0;
+                if(decisionResultTyp1 != null && decisionResultTyp2 != null){
+                    compareValue = decisionResultTyp2.compareTo(decisionResultTyp1);
+                    if(compareValue != 0){
+                        return compareValue;
+                    }
+                }
+
+                return compareValue = action2.getTryScore() - action1.getTryScore();
+            }
+        });
+
+        return subPolicyResponseList.get(0);
+    }
 }
