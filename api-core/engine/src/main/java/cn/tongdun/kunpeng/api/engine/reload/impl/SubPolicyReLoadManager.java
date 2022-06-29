@@ -129,6 +129,15 @@ public class SubPolicyReLoadManager implements IReload<SubPolicyEventDO> {
         String uuid = eventDO.getUuid();
         logger.debug(TraceUtils.getFormatTrace() + "SubPolicy reload start, uuid:{}", uuid);
         try {
+            // 这里的RuleDTO都是开启的
+            List<RuleDTO> ruleDOList = ruleRepository.queryFullBySubPolicyUuid(uuid);
+            for (RuleDTO ruleDTO : ruleDOList) {
+                Rule newRule = ruleConvertor.convert(ruleDTO);
+                ruleCache.put(ruleDTO.getUuid(), newRule);
+                //处理需要批量远程调用的数据
+                this.addBatchRemoteCallDataToCache(ruleDTO.getPolicyUuid(), ruleCache.getSubPolicyUuidByRuleUuid(uuid), ruleDTO);
+
+            }
             Long timestamp = eventDO.getGmtModify().getTime();
             SubPolicy oldSubPolicy = subPolicyCache.get(uuid);
             //缓存中的数据是相同版本或更新的，则不刷新
