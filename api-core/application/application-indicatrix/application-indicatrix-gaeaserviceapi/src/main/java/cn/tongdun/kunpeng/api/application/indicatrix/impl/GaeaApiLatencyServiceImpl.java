@@ -1,6 +1,5 @@
 package cn.tongdun.kunpeng.api.application.indicatrix.impl;
 
-import cn.tongdun.gaea.api.client.IndicatrixApi;
 import cn.tongdun.gaea.client.common.IndicatrixParam;
 import cn.tongdun.gaea.client.common.IndicatrixResult;
 import cn.tongdun.gaea.client.common.base.Result;
@@ -8,6 +7,7 @@ import cn.tongdun.kunpeng.api.application.pojo.IndicatrixApiResult;
 import cn.tongdun.kunpeng.api.application.pojo.IndicatrixRequest;
 import cn.tongdun.kunpeng.api.common.data.PlatformIndexData;
 import cn.tongdun.kunpeng.api.engine.model.dictionary.DictionaryManager;
+import cn.tongdun.shenwei.gateway.client.IndicatrixApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
