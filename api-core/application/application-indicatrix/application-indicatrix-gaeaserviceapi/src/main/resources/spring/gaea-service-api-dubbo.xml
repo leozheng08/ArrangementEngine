@@ -7,9 +7,9 @@
 						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
        default-autowire="byName">
 
-    <dubbo:reference id="indicatrixApi" interface="cn.tongdun.gaea.api.client.IndicatrixApi" group="${gaea.api.dubbo.antifraud.group}"
-                     version="${gaea.api.client.dubbo.version}" retries="0" timeout="${gaea.api.client.dubbo.timeout}" connections="2" >
-        <dubbo:parameter key="threadname" value="Dubbo-gaea-service-api-"/>
+    <dubbo:reference id="indicatrixApi" interface="cn.tongdun.shenwei.gateway.client.IndicatrixApi" group="${shenwei.gateway.dubbo.antifraud.group}"
+                     version="${shenwei.gateway.client.dubbo.version}" retries="0" timeout="${shenwei.gateway.client.dubbo.timeout}" connections="2" >
+        <dubbo:parameter key="threadname" value="Dubbo-shenwei-gateway"/>
         <dubbo:parameter key="threadpool" value="cached"/>
         <dubbo:parameter key="corethreads" value="2" />
         <dubbo:parameter key="threads" value="10" />
