@@ -8,31 +8,23 @@
        default-autowire="byName">
 
     <dubbo:reference id="deviceInfoQuery" interface="cn.fraudmetrix.forseti.fp.dubbo.DeviceInfoQuery"
-                     version="${device.info.dubbo.version}" retries="0" timeout="${device.info.dubbo.timeout}" connections="2" check="false" >
+                     version="${device.info.dubbo.version}" retries="0" timeout="${device.info.dubbo.timeout}"
+                     connections="2" check="false">
         <dubbo:parameter key="threadname" value="Dubbo-DeviceInfo-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
-        <dubbo:parameter key="corethreads" value="2" />
-        <dubbo:parameter key="threads" value="10" />
-        <dubbo:parameter key="alive" value="600000" />
+        <dubbo:parameter key="corethreads" value="2"/>
+        <dubbo:parameter key="threads" value="10"/>
+        <dubbo:parameter key="alive" value="600000"/>
     </dubbo:reference>
-
-    <dubbo:reference id="gpsQueryService" interface="cn.tongdun.gaea.dubbo.GpsQueryService"
-                     version="${gps.query.dubbo.version}" retries="0" timeout="${gps.query.dubbo.timeout}" check="false" connections="2" >
-        <dubbo:parameter key="threadname" value="Gps-query-"/>
-        <dubbo:parameter key="threadpool" value="cached"/>
-        <dubbo:parameter key="corethreads" value="1" />
-        <dubbo:parameter key="threads" value="10" />
-        <dubbo:parameter key="alive" value="600000" />
-    </dubbo:reference>
-
 
     <dubbo:reference id="aGeoipInfoQueryService" interface="cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService"
-                     version="${geoip.dubbo.version}" retries="2" timeout="${geoip.dubbo.timeout}" check="false" connections="2" >
+                     version="${geoip.dubbo.version}" retries="2" timeout="${geoip.dubbo.timeout}" check="false"
+                     connections="2">
         <dubbo:parameter key="threadname" value="aGeo-query-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
-        <dubbo:parameter key="corethreads" value="1" />
-        <dubbo:parameter key="threads" value="10" />
-        <dubbo:parameter key="alive" value="600000" />
+        <dubbo:parameter key="corethreads" value="1"/>
+        <dubbo:parameter key="threads" value="10"/>
+        <dubbo:parameter key="alive" value="600000"/>
     </dubbo:reference>
 
     <dubbo:reference id="baseDataQueryService" interface="cn.fraudmetrix.elfin.biz.intf.BaseDataQueryService"
@@ -41,9 +33,9 @@
                      retries="${elfin.dubbo.retries}" connections="2" check="false">
         <dubbo:parameter key="threadname" value="Dubbo-elfin-"/>
         <dubbo:parameter key="threadpool" value="cached"/>
-        <dubbo:parameter key="corethreads" value="1" />
-        <dubbo:parameter key="threads" value="25" />
-        <dubbo:parameter key="alive" value="600000" />
+        <dubbo:parameter key="corethreads" value="1"/>
+        <dubbo:parameter key="threads" value="25"/>
+        <dubbo:parameter key="alive" value="600000"/>
     </dubbo:reference>
 
     <dubbo:reference id="validateTokenService" interface="cn.fraudmetrix.sphinx.client.service.ValidateTokenService"
