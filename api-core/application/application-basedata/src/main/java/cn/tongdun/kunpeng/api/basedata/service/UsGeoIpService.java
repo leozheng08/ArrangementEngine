@@ -4,8 +4,6 @@ import cn.tongdun.evan.client.dubbo.AGeoipInfoQueryService;
 import cn.tongdun.evan.client.entity.AGeoipEntity;
 import cn.tongdun.evan.client.entity.AGeoipQueryDTO;
 import cn.tongdun.evan.client.lang.Result;
-import cn.tongdun.gaea.dubbo.GpsQueryService;
-import cn.tongdun.gaea.factservice.domain.GpsInfoDTO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
@@ -32,8 +30,6 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
 
     private static final Logger logger = LoggerFactory.getLogger(UsGeoIpService.class);
 
-    @Autowired
-    private GpsQueryService gpsQueryService;
     @Autowired
     private AGeoipInfoQueryService aGeoipInfoQueryService;
 
@@ -144,33 +140,4 @@ public class UsGeoIpService implements GeoIpServiceExtPt {
         return geoipEntity;
     }
 
-    private GeoipEntity fromDTO2Entity(GpsInfoDTO gpsInfoDTO) {
-        if (null == gpsInfoDTO) {
-            return null;
-        }
-        GeoipEntity geoipEntity = new GeoipEntity();
-        geoipEntity.setLongitude((float) gpsInfoDTO.getLongitude());
-        geoipEntity.setLatitude((float) gpsInfoDTO.getLatitude());
-        geoipEntity.setCountry(gpsInfoDTO.getCountry());
-        geoipEntity.setCity(gpsInfoDTO.getCity());
-        geoipEntity.setAddress(gpsInfoDTO.getAddress());
-        geoipEntity.setArea(gpsInfoDTO.getArea());
-        geoipEntity.setAreaId(gpsInfoDTO.getAreaId());
-        geoipEntity.setCityId(gpsInfoDTO.getCityId());
-        geoipEntity.setCountryId(gpsInfoDTO.getCountryId());
-        geoipEntity.setCounty(gpsInfoDTO.getCounty());
-        geoipEntity.setCountyId(gpsInfoDTO.getCountyId());
-        geoipEntity.setDesc(gpsInfoDTO.getDesc());
-        geoipEntity.setExtra1(gpsInfoDTO.getExtra1());
-        geoipEntity.setExtra2(gpsInfoDTO.getExtra2());
-        geoipEntity.setIp(gpsInfoDTO.getIp());
-        geoipEntity.setIsp(gpsInfoDTO.getIsp());
-        geoipEntity.setIspId(gpsInfoDTO.getIspId());
-        geoipEntity.setLip(gpsInfoDTO.getLip());
-        geoipEntity.setProvince(gpsInfoDTO.getProvince());
-        geoipEntity.setProvinceId(gpsInfoDTO.getProvinceId());
-        geoipEntity.setType(gpsInfoDTO.getType());
-
-        return geoipEntity;
-    }
 }
