@@ -6,7 +6,7 @@
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.4.9-api-SNAPSHOT</version>
+        <version>1.4.9-api-tmp1</version>
 
 
 
@@ -16,7 +16,7 @@
     <artifactId>rule-detail</artifactId>
     <packaging>jar</packaging>
     <name>rule-detail</name>
-    <version>1.4.9-api-SNAPSHOT</version>
+    <version>1.4.9-api-tmp1</version>
 
 
     <dependencies>
