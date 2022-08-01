@@ -101,4 +101,4 @@ v1.4.41(2022-04-07)
 - DictionaryManager字典缓存修改，初始化加载
 
 v1.4.5(2022-08-03)
-- 1.shenwei-gateway替换gaea-api依赖：jar依赖，接口，版本号
+- 1.shenwei-gateway和gaea-api依赖临时共存，通过配置项选择指标dubbo接口：jar依赖，接口，版本号

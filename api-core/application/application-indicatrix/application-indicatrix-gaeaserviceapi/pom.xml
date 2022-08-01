@@ -30,10 +30,13 @@
         <dependency>
             <groupId>cn.tongdun.gaea</groupId>
             <artifactId>gaea-api-client</artifactId>
+            <version>3.2.7</version>
         </dependency>
+
         <dependency>
             <groupId>cn.tongdun.shenwei-gateway</groupId>
             <artifactId>client</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
     </dependencies>
