@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class AdminApplicationLoadManager implements ILoad {
     @Autowired
     IAdminApplicationRepository adminApplicationRepository;
 
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
 
     @PostConstruct
     public void init() {
