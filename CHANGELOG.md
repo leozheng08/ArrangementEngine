@@ -100,6 +100,6 @@ v1.4.4(2022-04-02)
 v1.4.41(2022-04-07)
 - DictionaryManager字典缓存修改，初始化加载
 
-v1.4.92-api(2022-08-01)
+v1.4.92(2022-08-01)
 - 规则变更通知改动（国内、海外）
 - wiki:http://wiki.tongdun.me/pages/viewpage.action?pageId=46243669
