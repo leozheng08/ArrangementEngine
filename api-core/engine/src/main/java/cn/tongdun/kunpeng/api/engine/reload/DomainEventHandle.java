@@ -157,6 +157,14 @@ public class DomainEventHandle {
                 if (!reLoadManager.switchDecisionMode(list.get(0))) {
                     return false;
                 }
+            } else if (domainEvent.getEventType().toUpperCase().endsWith(DomainEventTypeEnum.IMPORT.name())) {
+                List list = domainEvent.getData();
+                if (list == null || list.isEmpty()) {
+                    return true;
+                }
+                if (!reLoadManager.imported(list.get(0))) {
+                    return false;
+                }
             } else {
                 if (!reLoadManager.update(domainEvent.getData())) {
                     return false;

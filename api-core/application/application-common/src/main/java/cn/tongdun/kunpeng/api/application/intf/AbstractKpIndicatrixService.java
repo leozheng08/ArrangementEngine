@@ -186,6 +186,15 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
 
         build(context, systemFieldMap, gaeaContext);
         build(context, extendFieldMap, gaeaContext);
+
+        gaeaContext.remove("location");
+        if (context.getGeoipEntity() != null) {
+            String city = context.getGeoipEntity().getCity();
+            if (StringUtils.isNotBlank(city)) {
+                gaeaContext.put("location", city);
+            }
+        }
+        
         return gaeaContext;
     }
 
