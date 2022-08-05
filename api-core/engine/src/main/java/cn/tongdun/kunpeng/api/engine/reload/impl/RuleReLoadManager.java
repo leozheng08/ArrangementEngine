@@ -320,14 +320,15 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
                         logger.error("防御性日志，如果大量出现，需要检查代码：subPolicyUuid = {},policyUuid = {}", subPolicyUuid, policyUuid);
                     }
                 }
+                // 刷新子策略下规则的执行顺序
+                subPolicyReLoadManager.reloadByUuid(cacheRule.getBizUuid());
             }
 
+            // 规则缓存后续删除，保证子策略规则的缓存大于规则缓存
             Rule rule = ruleCache.remove(eventDO.getUuid());
             if (rule == null) {
                 return true;
             }
-            //刷新子策略下规则的执行顺序
-            subPolicyReLoadManager.reloadByUuid(rule.getBizUuid());
         } catch (Exception e) {
             logger.error(TraceUtils.getFormatTrace() + "Rule remove failed, uuid:{}", eventDO.getUuid(), e);
             return false;
