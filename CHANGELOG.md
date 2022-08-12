@@ -104,5 +104,5 @@ v1.4.92(2022-08-01)
 - 规则变更通知改动（国内、海外）
 - wiki:http://wiki.tongdun.me/pages/viewpage.action?pageId=46243669
 
-v1.4.93(2022-08-12)
+v1.4.94(2022-08-12)
 - ReasonCode新增邮箱模型相关状态码
