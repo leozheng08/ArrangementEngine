@@ -8,7 +8,7 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 延时队列
+ * 延时任务
  * @author hls
  * @version 1.0
  * @date 2022/8/9 7:11 下午
@@ -18,7 +18,12 @@ public class ChallengerTask implements Delayed {
     //延迟时间
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private long time;
+
+    /**
+     * 任务的名称
+     */
     private String name;
+
     /**
      * 当前的入参
      */

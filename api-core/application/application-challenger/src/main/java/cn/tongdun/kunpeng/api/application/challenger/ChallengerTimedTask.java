@@ -50,12 +50,12 @@ public class ChallengerTimedTask {
                 TimeUnit.MINUTES,
                 10,
                 "challengerExecute");
-
+        // 定时任务每10秒执行一次，拉取延时队列的任务，抛给线程池执行
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
-                    // 一次性拉取100条数据
+                    // 拉取任务
                     List<ChallengerTask> challengerTaskList = delayQueueCache.getChallengerTaskList();
                     logger.info("当前拉取的条数={}", challengerTaskList.size());
                     for (ChallengerTask challengerTask : challengerTaskList) {
