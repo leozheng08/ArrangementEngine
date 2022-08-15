@@ -58,6 +58,9 @@ public class ChallengerCopyStep implements IRiskStep {
     @Autowired
     private IRiskService riskService;
 
+    @Autowired
+    private DelayQueueCache delayQueueCache;
+
     /**
      * ruleExecute 线程池
      */
@@ -141,18 +144,7 @@ public class ChallengerCopyStep implements IRiskStep {
                         Policy policy = policyCache.get(config.getVersionUuid());
                         if (Objects.nonNull(policy)) {
                             requestData.setPolicyVersion(policy.getVersion());
-                            executeThreadPool.submit(new Callable<Boolean>() {
-                                @Override
-                                public Boolean call() {
-                                    try {
-                                        riskService.riskService(requestData, Risk.NAME);
-                                        return true;
-                                    } catch (Exception e) {
-                                        logger.error(" executeThreadPool.submit execute 执行异常:{}", e);
-                                        return true;
-                                    }
-                                }
-                            });
+                            delayQueueCache.put(new ChallengerTask("challenger", 1, TimeUnit.MILLISECONDS, requestData));
                         }
                     }
 
