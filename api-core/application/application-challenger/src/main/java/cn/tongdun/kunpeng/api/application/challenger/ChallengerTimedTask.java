@@ -48,9 +48,9 @@ public class ChallengerTimedTask {
                 128,
                 30L,
                 TimeUnit.MINUTES,
-                10,
+                100,
                 "challengerExecute");
-        // 定时任务每10秒执行一次，拉取延时队列的任务，抛给线程池执行
+        // 定时任务每3秒执行一次，拉取延时队列的任务，抛给线程池执行
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -76,6 +76,6 @@ public class ChallengerTimedTask {
                     logger.error(TraceUtils.getFormatTrace() + "定时刷新挑战者异常", e);
                 }
             }
-        }, 10, 10, TimeUnit.SECONDS);
+        }, 10, 3, TimeUnit.SECONDS);
     }
 }
