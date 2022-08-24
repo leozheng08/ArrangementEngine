@@ -56,10 +56,18 @@
         <evan-client.version>1.0.4</evan-client.version>
         <logback-classic-version>1.2.9</logback-classic-version>
         <dom4j.version>1.6.1</dom4j.version>
+        <watch-log.version>1.0.2</watch-log.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <artifactId>watch-log-spring-boot-starter</artifactId>
+                <groupId>cn.tongdun</groupId>
+                <version>${watch-log.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>cn.tongdun</groupId>
                 <artifactId>tdframework-core</artifactId>
@@ -92,7 +100,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.74</version>
+                <version>1.2.83</version>
             </dependency>
 
             <!-- 设备指纹 fp -->
