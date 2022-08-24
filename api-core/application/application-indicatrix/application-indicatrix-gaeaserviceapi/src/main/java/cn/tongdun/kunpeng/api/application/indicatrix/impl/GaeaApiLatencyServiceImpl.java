@@ -25,9 +25,9 @@ public class GaeaApiLatencyServiceImpl extends AbstractGaeaApiKpIndicatrixServic
     @Value("${indicatrix.source.type:gaea}")
     private String indicatrixSourceType;
     @Autowired
-    private cn.tongdun.shenwei.gateway.client.IndicatrixApi indicatrixApiGaea;
+    private cn.tongdun.shenwei.gateway.client.IndicatrixApi indicatrixApiShenwei;
     @Autowired
-    private cn.tongdun.gaea.api.client.IndicatrixApi indicatrixApiShenwei;
+    private cn.tongdun.gaea.api.client.IndicatrixApi indicatrixApiGaea;
 
     @Autowired
     private DictionaryManager dictionaryManager;
