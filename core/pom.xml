@@ -39,6 +39,11 @@
     <dependencies>
 
         <dependency>
+            <artifactId>watch-log-spring-boot-starter</artifactId>
+            <groupId>cn.tongdun</groupId>
+        </dependency>
+
+        <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>starter-saas</artifactId>
             <version>${project.version}</version>
