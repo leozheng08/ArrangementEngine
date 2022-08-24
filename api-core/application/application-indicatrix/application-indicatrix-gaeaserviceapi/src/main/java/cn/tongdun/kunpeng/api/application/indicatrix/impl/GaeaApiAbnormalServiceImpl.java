@@ -23,9 +23,9 @@ public class GaeaApiAbnormalServiceImpl extends AbstractGaeaApiKpIndicatrixServi
     @Value("${indicatrix.source.type:gaea}")
     private String indicatrixSourceType;
     @Autowired
-    private cn.tongdun.shenwei.gateway.client.IndicatrixApi indicatrixApiGaea;
+    private cn.tongdun.shenwei.gateway.client.IndicatrixApi indicatrixApiShenwei;
     @Autowired
-    private cn.tongdun.gaea.api.client.IndicatrixApi indicatrixApiShenwei;
+    private cn.tongdun.gaea.api.client.IndicatrixApi indicatrixApiGaea;
 
     @Override
     public IndicatrixApiResult<List<PlatformIndexData>> calculateByIds(IndicatrixRequest indicatrixRequest) {
