@@ -17,4 +17,5 @@
             </map>
         </property>
     </bean>
+    <bean id="cardBinService" class="cn.fraudmetrix.creditcloud.dubbo.CardBinService"/>
 </beans>
