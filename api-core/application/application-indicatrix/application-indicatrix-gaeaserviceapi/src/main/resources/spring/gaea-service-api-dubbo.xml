@@ -6,10 +6,19 @@
                         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
        default-autowire="byName">
+    <dubbo:reference id="indicatrixApiShenwei" interface="cn.tongdun.shenwei.gateway.client.IndicatrixApi" group="${shenwei.gateway.dubbo.antifraud.group}"
+                     version="${shenwei.gateway.client.dubbo.version}" retries="0" timeout="${shenwei.gateway.client.dubbo.timeout}" connections="2" >
+        <dubbo:parameter key="threadname" value="Dubbo-shenwei-gateway"/>
+        <dubbo:parameter key="threadpool" value="cached"/>
+        <dubbo:parameter key="corethreads" value="2" />
+        <dubbo:parameter key="threads" value="10" />
+        <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
 
-    <dubbo:reference id="indicatrixApi" interface="cn.tongdun.gaea.api.client.IndicatrixApi" group="${gaea.api.dubbo.antifraud.group}"
+<!--     TODO 在指标拆分阶段暂存现象，根据配置，选择指标提供方是shenwei还是gaea,待指标流量都切到shenwei了，这里路由到gaea的逻辑可以直接删除了-->
+    <dubbo:reference id="indicatrixApiGaea" interface="cn.tongdun.gaea.api.client.IndicatrixApi" group="${gaea.api.dubbo.antifraud.group}"
                      version="${gaea.api.client.dubbo.version}" retries="0" timeout="${gaea.api.client.dubbo.timeout}" connections="2" >
-        <dubbo:parameter key="threadname" value="Dubbo-gaea-service-api-"/>
+        <dubbo:parameter key="threadname" value="Dubbo-gaea-api"/>
         <dubbo:parameter key="threadpool" value="cached"/>
         <dubbo:parameter key="corethreads" value="2" />
         <dubbo:parameter key="threads" value="10" />
