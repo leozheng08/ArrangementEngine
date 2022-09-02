@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.4.94-api</version>
+        <version>1.5.2-api</version>
 
 
 
@@ -63,11 +63,6 @@
         <dependency>
             <groupId>cn.fraudmetrix</groupId>
             <artifactId>elfin-biz-intf</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.tongdun.gaea</groupId>
-            <artifactId>gaea-factservice-client</artifactId>
         </dependency>
 
         <dependency>

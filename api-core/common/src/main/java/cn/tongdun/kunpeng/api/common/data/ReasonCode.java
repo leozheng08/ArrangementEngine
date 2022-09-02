@@ -144,6 +144,9 @@ public enum ReasonCode {
     MAIL_MODEL_TIMEOUT_ERROR("50749", "邮箱模型服务调用超时"),
     MAIL_MODEL_RANDOM_TIMEOUT_ERROR("50751", "邮件模型随机率服务超时"),
 
+    ALADDIN_BAWLLIST_TIMEOUT("50753","aladdin黑白名单调用超时"),
+    ALADDIN_BAWLLIST_ERROR("50754","aladdin黑白名单调用出错"),
+
 
     RULE_ENGINE_TIMEOUT("50601", "规则引擎运行超时"),
     RULE_ENGINE_ERROR("50602", "规则引擎运行异常"),
