@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.4.94-api</version>
+        <version>1.5.2-api</version>
 
 
 
@@ -42,6 +42,12 @@
                 <groupId>cn.tongdun.gaea</groupId>
                 <artifactId>gaea-api-client</artifactId>
                 <version>3.2.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.tongdun.shenwei-gateway</groupId>
+                <artifactId>client</artifactId>
+                <version>1.0.1</version>
             </dependency>
 
             <dependency>
