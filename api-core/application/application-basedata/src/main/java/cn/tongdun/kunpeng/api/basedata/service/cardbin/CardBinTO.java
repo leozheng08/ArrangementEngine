@@ -4,10 +4,6 @@ import java.io.Serializable;
 
 public class CardBinTO implements Serializable {
     private static final long serialVersionUID = -3154659039726598474L;
-    /**
-     * BIN码
-     */
-    private Long bin;
 
     /**
      * 品牌
@@ -15,9 +11,14 @@ public class CardBinTO implements Serializable {
     private String cardBrand;
 
     /**
-     * 颁发机构
+     * 卡分类
      */
-    private String issuingOrg;
+    private String cardCategory;
+
+    /**
+     * BIN码
+     */
+    private Long bin;
 
     /**
      * 卡类型，如借记卡，信用卡等
@@ -25,14 +26,9 @@ public class CardBinTO implements Serializable {
     private String cardType;
 
     /**
-     * 卡分类
+     * 国家名称
      */
-    private String cardCategory;
-
-    /**
-     * 国家ISO名称
-     */
-    private String isoName;
+    private String countryName;
 
     /**
      * ISO A2
@@ -45,19 +41,29 @@ public class CardBinTO implements Serializable {
     private String isoA3;
 
     /**
+     * 国家ISO名称
+     */
+    private String isoName;
+
+    /**
      * ISO代码
      */
     private Integer isoNumber;
 
     /**
-     * 颁发机构网
+     * 颁发机构
      */
-    private String issuingOrgWeb;
+    private String issuingOrg;
 
     /**
      * 颁发机构联系方式
      */
     private String issuingOrgPhone;
+
+    /**
+     * 颁发机构网
+     */
+    private String issuingOrgWeb;
 
     /**
      * PAN长度
@@ -73,11 +79,6 @@ public class CardBinTO implements Serializable {
      * regulated (Y) or unregulated (N) BIN
      */
     private String regulated;
-
-    /**
-     * 国家名称
-     */
-    private String countryName;
 
     public Long getBin() {
         return bin;

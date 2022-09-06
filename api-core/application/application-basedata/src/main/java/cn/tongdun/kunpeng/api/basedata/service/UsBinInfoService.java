@@ -59,12 +59,23 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
      * @param cardBinTO 卡bin信息
      */
     private void setContext(AbstractFraudContext context, CardBinTO cardBinTO) {
+        // TODO 1、字段名用新的还是老的 2、字段补齐
         setValue(context, "cardBrand", cardBinTO.getCardBrand());
-        setValue(context, "cardType", cardBinTO.getCardType());
         setValue(context, "cardCategory", cardBinTO.getCardCategory());
-        setValue(context, "isoa2", cardBinTO.getIsoA2());
+        setValue(context,"bin",cardBinTO.getBin());
+        setValue(context, "cardType", cardBinTO.getCardType());
+        // TODO: 两个cardBinCountry?
         setValue(context, "cardBINCountry", cardBinTO.getCountryName());
         setValue(context, "cardBinCountry", cardBinTO.getCountryName());
+        setValue(context, "isoa2", cardBinTO.getIsoA2());
+        setValue(context, "isoa3", cardBinTO.getIsoA3());
+        setValue(context, "isoName", cardBinTO.getIsoName());
+        setValue(context, "issuingOrg", cardBinTO.getIssuingOrg());
+        setValue(context, "issuingOrgPhone", cardBinTO.getIssuingOrgPhone());
+        setValue(context, "issuingOrgWeb", cardBinTO.getIssuingOrgWeb());
+        setValue(context, "panLength", cardBinTO.getPanLength());
+        setValue(context, "purposeFlag", cardBinTO.getPurposeFlag());
+        setValue(context,"regulated",cardBinTO.getRegulated());
     }
 
     private void setValue(AbstractFraudContext context, String key, Object value) {

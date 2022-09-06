@@ -2,7 +2,9 @@ package cn.tongdun.kunpeng.api.basedata.service.cardbin;
 
 import cn.fraudmetrix.creditcloud.api.APIResult;
 import cn.fraudmetrix.creditcloud.entity.CardBinEntity;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.kv.IHashKVRepository;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,14 +51,52 @@ public class CardBinServiceImpl implements CardBinService {
     CardbinConfig cardbinConfig;
 
     @Autowired
-    cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinService;
+    cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinDubboService;
 
-    private CardBinTO getCardBinInfoFromRedis(String id) {
-        boolean maxPathMatch = true;
-        APIResult<CardBinEntity> apiResult = cardBinService.queryByBin(id, maxPathMatch);
+    /**
+     * 根据银行卡或者卡bin查询卡bin信息
+     *
+     * @param id 银行卡或者卡bin
+     * @return 卡bin信息
+     */
+    @Override
+    public CardBinTO getCardBinInfoById(String id) {
+        return getCardBinInfo(id);
+    }
+
+    private CardBinTO getCardBinInfo(String id) {
+        try{
+            boolean maxPathMatch = true;
+            APIResult<CardBinEntity> apiResult = cardBinDubboService.queryByBin(id, maxPathMatch);
+            if(apiResult != null && apiResult.getData() != null){
+                return copyFromCardBin(apiResult.getData());
+            }
+        }catch (Exception e){
+            if (ReasonCodeUtil.isTimeout(e)) {
+                logger.warn(TraceUtils.getFormatTrace() + "调用CardBin服务超时: {}", id, e);
+            } else {
+                logger.error(TraceUtils.getFormatTrace() + "调用CardBin服务异常: {}", id, e);
+            }
+        }
+        return null;
+    }
+
+    private CardBinTO copyFromCardBin(CardBinEntity cardBinEntity){
         CardBinTO cardBinTo = new CardBinTO();
-        cardBinTo.setBin(Long.valueOf(apiResult.getData().getCardNumber()));
-        //TODO 返回结果字段需要补齐
+        cardBinTo.setCardBrand(cardBinEntity.getCardBrand());
+        cardBinTo.setCardCategory(cardBinEntity.getCardCategory());
+        cardBinTo.setBin(Long.valueOf(cardBinEntity.getCardNumber()));
+        cardBinTo.setCardType(cardBinEntity.getCardType());
+        cardBinTo.setCountryName(cardBinEntity.getCnName());
+        cardBinTo.setIsoA2(cardBinEntity.getIsoA2());
+        cardBinTo.setIsoA3(cardBinEntity.getIsoA3());
+        cardBinTo.setIsoName(cardBinEntity.getIsoName());
+        cardBinTo.setIssuingOrg(cardBinEntity.getIssuingOrg());
+        cardBinTo.setIssuingOrgPhone(cardBinEntity.getIssuingOrgPhone());
+        cardBinTo.setIssuingOrgWeb(cardBinEntity.getIssuingOrgWeb());
+        cardBinTo.setPanLength(Integer.valueOf(cardBinEntity.getPanLength()));
+        cardBinTo.setPurposeFlag(cardBinEntity.getPurposeFlag());
+        cardBinTo.setRegulated(cardBinEntity.getRegulated());
         return cardBinTo;
     }
 
@@ -155,18 +195,6 @@ public class CardBinServiceImpl implements CardBinService {
     //        return null;
     //    }
     //}
-
-    /**
-     * is
-     * 根据银行卡或者卡bin查询卡bin信息
-     *
-     * @param id 银行卡或者卡bin
-     * @return 卡bin信息
-     */
-    @Override
-    public CardBinTO getCardBinInfoById(String id) {
-        return getCardBinInfoFromRedis(id);
-    }
 
     @Override
     public Map<String, Object> getRawCardBinInfo(String id) {
