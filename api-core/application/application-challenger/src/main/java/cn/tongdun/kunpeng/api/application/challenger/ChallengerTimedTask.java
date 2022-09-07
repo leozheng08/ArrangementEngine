@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -57,7 +58,6 @@ public class ChallengerTimedTask {
                 try {
                     // 拉取任务
                     List<ChallengerTask> challengerTaskList = delayQueueCache.getChallengerTaskList();
-                    logger.info("当前拉取的条数={}", challengerTaskList.size());
                     for (ChallengerTask challengerTask : challengerTaskList) {
                         executeThreadPool.submit(new Callable<Boolean>() {
                             @Override

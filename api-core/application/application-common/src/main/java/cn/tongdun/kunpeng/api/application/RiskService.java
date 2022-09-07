@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -72,6 +73,12 @@ public class RiskService implements IRiskService {
 
     @Override
     public IRiskResponse riskService(RiskRequest riskRequest, String bizName) {
+        if(riskRequest != null && riskRequest.getFieldValues() != null && riskRequest.getFieldValues().get("originalSeqId") != null){
+            logger.info("我是挑战者任务，我要开始执行了，time={}, seq={}", new Date().toString(), riskRequest.getSeqId());
+        }else{
+            logger.info("我是冠军任务，我要开始执行了，time={}, seq={}", new Date().toString(), riskRequest.getSeqId());
+        }
+
         metrics.counter(METRICS_API_RISK_SERVICE_QPS_KEY);
 
 
