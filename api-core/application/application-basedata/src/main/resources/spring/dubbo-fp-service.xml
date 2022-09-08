@@ -59,7 +59,7 @@
             <dubbo:parameter key="threadname" value="Dubbo-cardBin-"/>
             <dubbo:parameter key="threadpool" value="cached"/>
             <dubbo:parameter key="corethreads" value="1" />
-            <dubbo:parameter key="threads" value="25" />
+            <dubbo:parameter key="threads" value="10" />
             <dubbo:parameter key="alive" value="600000" />
     </dubbo:reference>
 </beans>

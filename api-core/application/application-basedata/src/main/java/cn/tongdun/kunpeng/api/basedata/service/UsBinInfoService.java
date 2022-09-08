@@ -36,10 +36,10 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
     @Autowired
     cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinDubboService;
 
-    @Value("${cardBinInfoDubboSwitch}")
-    private String cardBinInfoDubboSwitch;
+    @Autowired
+    private LucDynamicConfig lucDynamicConfig;
 
-    private static final String TRUE = "true";
+    private static final String TRUE = "1";
 
     @Override
     public boolean getBinInfo(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
@@ -47,7 +47,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
         if (StringUtils.isNotBlank(cardBin)) {
             CardBinTO cardBinTO = null;
             try {
-                if(StringUtils.equalsIgnoreCase(cardBinInfoDubboSwitch,TRUE)){
+                if(StringUtils.equalsIgnoreCase(lucDynamicConfig.getCardBinInfoDubboSwitch(),TRUE)){
                     cardBinTO = getCardBinInfoFromDubbo(cardBin);
                 }else{
                     cardBinTO = cardBinService.getCardBinInfoById(cardBin);
@@ -73,7 +73,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
         try{
             boolean maxPathMatch = true;
             APIResult<CardBinEntity> apiResult = cardBinDubboService.queryByBin(id, maxPathMatch);
-            if(apiResult != null && apiResult.getData() != null){
+            if(apiResult != null && apiResult.getSuccess()&& apiResult.getData() != null){
                 return copyFromCardBin(apiResult.getData());
             }
         }catch (Exception e){
@@ -112,12 +112,10 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
      * @param cardBinTO 卡bin信息
      */
     private void setContext(AbstractFraudContext context, CardBinTO cardBinTO) {
-        // TODO 1、字段名用新的还是老的 2、字段补齐
         setValue(context, "cardBrand", cardBinTO.getCardBrand());
         setValue(context, "cardCategory", cardBinTO.getCardCategory());
         setValue(context,"bin",cardBinTO.getBin());
         setValue(context, "cardType", cardBinTO.getCardType());
-        // TODO: 两个cardBinCountry?
         setValue(context, "cardBINCountry", cardBinTO.getCountryName());
         setValue(context, "cardBinCountry", cardBinTO.getCountryName());
         setValue(context, "isoa2", cardBinTO.getIsoA2());
