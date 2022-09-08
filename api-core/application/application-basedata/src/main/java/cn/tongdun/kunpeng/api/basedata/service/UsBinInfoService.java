@@ -1,18 +1,23 @@
 package cn.tongdun.kunpeng.api.basedata.service;
 
+import cn.fraudmetrix.creditcloud.api.APIResult;
+import cn.fraudmetrix.creditcloud.entity.CardBinEntity;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinService;
 import cn.tongdun.kunpeng.api.basedata.service.cardbin.CardBinTO;
 import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.common.data.BizScenario;
 import cn.tongdun.kunpeng.api.common.data.ReasonCode;
+import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.client.data.RiskRequest;
+import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @Author: liuq
@@ -28,13 +33,25 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
     @Autowired
     private IMetrics metrics;
 
+    @Autowired
+    cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinDubboService;
+
+    @Value("${cardBinInfoDubboSwitch}")
+    private String cardBinInfoDubboSwitch;
+
+    private static final String TRUE = "true";
+
     @Override
     public boolean getBinInfo(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
         String cardBin = (String) context.get("cardBin");
         if (StringUtils.isNotBlank(cardBin)) {
             CardBinTO cardBinTO = null;
             try {
-                cardBinTO = cardBinService.getCardBinInfoById(cardBin);
+                if(StringUtils.equalsIgnoreCase(cardBinInfoDubboSwitch,TRUE)){
+                    cardBinTO = getCardBinInfoFromDubbo(cardBin);
+                }else{
+                    cardBinTO = cardBinService.getCardBinInfoById(cardBin);
+                }
             } catch (Exception e) {
                 logger.error("查询cardbin数据异常", e);
                 String[] tags = {
@@ -50,6 +67,42 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
             }
         }
         return true;
+    }
+
+    private CardBinTO getCardBinInfoFromDubbo(String id) {
+        try{
+            boolean maxPathMatch = true;
+            APIResult<CardBinEntity> apiResult = cardBinDubboService.queryByBin(id, maxPathMatch);
+            if(apiResult != null && apiResult.getData() != null){
+                return copyFromCardBin(apiResult.getData());
+            }
+        }catch (Exception e){
+            if (ReasonCodeUtil.isTimeout(e)) {
+                logger.warn(TraceUtils.getFormatTrace() + "调用CardBin Dubbo服务超时: {}", id, e);
+            } else {
+                logger.error(TraceUtils.getFormatTrace() + "调用CardBin Dubbo服务异常: {}", id, e);
+            }
+        }
+        return null;
+    }
+
+    private CardBinTO copyFromCardBin(CardBinEntity cardBinEntity){
+        CardBinTO cardBinTo = new CardBinTO();
+        cardBinTo.setCardBrand(cardBinEntity.getCardBrand());
+        cardBinTo.setCardCategory(cardBinEntity.getCardCategory());
+        cardBinTo.setBin(Long.valueOf(cardBinEntity.getCardNumber()));
+        cardBinTo.setCardType(cardBinEntity.getCardType());
+        cardBinTo.setCountryName(cardBinEntity.getCnName());
+        cardBinTo.setIsoA2(cardBinEntity.getIsoA2());
+        cardBinTo.setIsoA3(cardBinEntity.getIsoA3());
+        cardBinTo.setIsoName(cardBinEntity.getIsoName());
+        cardBinTo.setIssuingOrg(cardBinEntity.getIssuingOrg());
+        cardBinTo.setIssuingOrgPhone(cardBinEntity.getIssuingOrgPhone());
+        cardBinTo.setIssuingOrgWeb(cardBinEntity.getIssuingOrgWeb());
+        cardBinTo.setPanLength(Integer.valueOf(cardBinEntity.getPanLength()));
+        cardBinTo.setPurposeFlag(cardBinEntity.getPurposeFlag());
+        cardBinTo.setRegulated(cardBinEntity.getRegulated());
+        return cardBinTo;
     }
 
     /**

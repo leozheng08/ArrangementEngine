@@ -1,10 +1,6 @@
 package cn.tongdun.kunpeng.api.basedata.service.cardbin;
 
-import cn.fraudmetrix.creditcloud.api.APIResult;
-import cn.fraudmetrix.creditcloud.entity.CardBinEntity;
-import cn.tongdun.kunpeng.api.common.util.ReasonCodeUtil;
 import cn.tongdun.kunpeng.share.kv.IHashKVRepository;
-import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +46,6 @@ public class CardBinServiceImpl implements CardBinService {
     @Autowired
     CardbinConfig cardbinConfig;
 
-    @Autowired
-    cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinDubboService;
-
     /**
      * 根据银行卡或者卡bin查询卡bin信息
      *
@@ -61,140 +54,104 @@ public class CardBinServiceImpl implements CardBinService {
      */
     @Override
     public CardBinTO getCardBinInfoById(String id) {
-        return getCardBinInfo(id);
+        return getCardBinInfoFromRedis(id);
     }
 
-    private CardBinTO getCardBinInfo(String id) {
-        try{
-            boolean maxPathMatch = true;
-            APIResult<CardBinEntity> apiResult = cardBinDubboService.queryByBin(id, maxPathMatch);
-            if(apiResult != null && apiResult.getData() != null){
-                return copyFromCardBin(apiResult.getData());
+    private CardBinTO getCardBinInfoFromRedis(String id) {
+        // 入参校验: 校验卡号或者卡bin
+        if (!checkCardBinAll(id)) {
+            logger.error("输入参数校验失败：id=[{}]", id);
+            return null;
+        }
+        String ns = cardbinConfig.getNameSpace();
+        String value = null;
+        String cardBin = id;
+        // 目前卡号全是16位，如果不足16位，则认为传入的是卡bin
+        boolean isCardNum = id.length() == CARD_PAN_LENGTH;
+        if (isCardNum) {
+            for (int len = CARD_BIN_MAX_LENGTH; len >= CARD_BIN_MIN_LENGTH; len--) {
+                cardBin = id.substring(0, len);
+                value = redisHashKVRepository.hget(ns, cardBin);
+                if (StringUtils.isNotEmpty(value)) {
+                    break;
+                }
             }
-        }catch (Exception e){
-            if (ReasonCodeUtil.isTimeout(e)) {
-                logger.warn(TraceUtils.getFormatTrace() + "调用CardBin服务超时: {}", id, e);
-            } else {
-                logger.error(TraceUtils.getFormatTrace() + "调用CardBin服务异常: {}", id, e);
+        } else {
+            value = redisHashKVRepository.hget(ns, cardBin);
+            //8位卡bin查不到再查下前6位
+            if (null == value && id.length() == 8) {
+                cardBin = id.substring(0, 6);
+                value = redisHashKVRepository.hget(ns, cardBin);
             }
         }
-        return null;
-    }
+        if (value != null) {
+            String[] columns = value.split(SEMICOLON);
+            CardBinTO cardBinTO = new CardBinTO();
 
-    private CardBinTO copyFromCardBin(CardBinEntity cardBinEntity){
-        CardBinTO cardBinTo = new CardBinTO();
-        cardBinTo.setCardBrand(cardBinEntity.getCardBrand());
-        cardBinTo.setCardCategory(cardBinEntity.getCardCategory());
-        cardBinTo.setBin(Long.valueOf(cardBinEntity.getCardNumber()));
-        cardBinTo.setCardType(cardBinEntity.getCardType());
-        cardBinTo.setCountryName(cardBinEntity.getCnName());
-        cardBinTo.setIsoA2(cardBinEntity.getIsoA2());
-        cardBinTo.setIsoA3(cardBinEntity.getIsoA3());
-        cardBinTo.setIsoName(cardBinEntity.getIsoName());
-        cardBinTo.setIssuingOrg(cardBinEntity.getIssuingOrg());
-        cardBinTo.setIssuingOrgPhone(cardBinEntity.getIssuingOrgPhone());
-        cardBinTo.setIssuingOrgWeb(cardBinEntity.getIssuingOrgWeb());
-        cardBinTo.setPanLength(Integer.valueOf(cardBinEntity.getPanLength()));
-        cardBinTo.setPurposeFlag(cardBinEntity.getPurposeFlag());
-        cardBinTo.setRegulated(cardBinEntity.getRegulated());
-        return cardBinTo;
-    }
+            if (!columns[0].equals("")) {
+                cardBinTO.setBin(Long.parseLong(columns[0]));
+            }
+            if (!columns[1].equals("")) {
+                cardBinTO.setCardBrand(columns[1]);
+            }
 
-    //private CardBinTO getCardBinInfoFromRedis(String id) {
-    //    // 入参校验: 校验卡号或者卡bin
-    //    if (!checkCardBinAll(id)) {
-    //        logger.error("输入参数校验失败：id=[{}]", id);
-    //        return null;
-    //    }
-    //    String ns = cardbinConfig.getNameSpace();
-    //    String value = null;
-    //    String cardBin = id;
-    //    // 目前卡号全是16位，如果不足16位，则认为传入的是卡bin
-    //    boolean isCardNum = id.length() == CARD_PAN_LENGTH;
-    //    if (isCardNum) {
-    //        for (int len = CARD_BIN_MAX_LENGTH; len >= CARD_BIN_MIN_LENGTH; len--) {
-    //            cardBin = id.substring(0, len);
-    //            value = redisHashKVRepository.hget(ns, cardBin);
-    //            if (StringUtils.isNotEmpty(value)) {
-    //                break;
-    //            }
-    //        }
-    //    } else {
-    //        value = redisHashKVRepository.hget(ns, cardBin);
-    //        //8位卡bin查不到再查下前6位
-    //        if (null == value && id.length() == 8) {
-    //            cardBin = id.substring(0, 6);
-    //            value = redisHashKVRepository.hget(ns, cardBin);
-    //        }
-    //    }
-    //    if (value != null) {
-    //        String[] columns = value.split(SEMICOLON);
-    //        CardBinTO cardBinTO = new CardBinTO();
-    //
-    //        if (!columns[0].equals("")) {
-    //            cardBinTO.setBin(Long.parseLong(columns[0]));
-    //        }
-    //        if (!columns[1].equals("")) {
-    //            cardBinTO.setCardBrand(columns[1]);
-    //        }
-    //
-    //        if (!columns[2].equals("")) {
-    //            cardBinTO.setIssuingOrg(columns[2]);
-    //        }
-    //
-    //        if (!columns[3].equals("")) {
-    //            cardBinTO.setCardType(columns[3]);
-    //        }
-    //
-    //        if (!columns[4].equals("")) {
-    //            cardBinTO.setCardCategory(columns[4]);
-    //        }
-    //
-    //        if (!columns[5].equals("")) {
-    //            cardBinTO.setIsoName(columns[5]);
-    //        }
-    //
-    //        if (!columns[6].equals("")) {
-    //            cardBinTO.setIsoA2(columns[6]);
-    //        }
-    //
-    //        if (!columns[7].equals("")) {
-    //            cardBinTO.setIsoA3(columns[7]);
-    //        }
-    //
-    //        if (!columns[8].equals("")) {
-    //            cardBinTO.setIsoNumber(Integer.parseInt(columns[8]));
-    //        }
-    //
-    //        if (!columns[9].equals("")) {
-    //            cardBinTO.setIssuingOrgWeb(columns[9]);
-    //        }
-    //
-    //        if (!columns[10].equals("")) {
-    //            cardBinTO.setIssuingOrgPhone(columns[10]);
-    //        }
-    //
-    //        if (!columns[11].equals("")) {
-    //            cardBinTO.setPanLength(Integer.parseInt(columns[11]));
-    //        }
-    //
-    //        if (!columns[12].equals("")) {
-    //            cardBinTO.setPurposeFlag(columns[12]);
-    //        }
-    //
-    //        if (!columns[13].equals("")) {
-    //            cardBinTO.setRegulated(columns[13]);
-    //        }
-    //
-    //        if (!columns[14].equals("")) {
-    //            cardBinTO.setCountryName(columns[14]);
-    //        }
-    //
-    //        return cardBinTO;
-    //    } else {
-    //        return null;
-    //    }
-    //}
+            if (!columns[2].equals("")) {
+                cardBinTO.setIssuingOrg(columns[2]);
+            }
+
+            if (!columns[3].equals("")) {
+                cardBinTO.setCardType(columns[3]);
+            }
+
+            if (!columns[4].equals("")) {
+                cardBinTO.setCardCategory(columns[4]);
+            }
+
+            if (!columns[5].equals("")) {
+                cardBinTO.setIsoName(columns[5]);
+            }
+
+            if (!columns[6].equals("")) {
+                cardBinTO.setIsoA2(columns[6]);
+            }
+
+            if (!columns[7].equals("")) {
+                cardBinTO.setIsoA3(columns[7]);
+            }
+
+            if (!columns[8].equals("")) {
+                cardBinTO.setIsoNumber(Integer.parseInt(columns[8]));
+            }
+
+            if (!columns[9].equals("")) {
+                cardBinTO.setIssuingOrgWeb(columns[9]);
+            }
+
+            if (!columns[10].equals("")) {
+                cardBinTO.setIssuingOrgPhone(columns[10]);
+            }
+
+            if (!columns[11].equals("")) {
+                cardBinTO.setPanLength(Integer.parseInt(columns[11]));
+            }
+
+            if (!columns[12].equals("")) {
+                cardBinTO.setPurposeFlag(columns[12]);
+            }
+
+            if (!columns[13].equals("")) {
+                cardBinTO.setRegulated(columns[13]);
+            }
+
+            if (!columns[14].equals("")) {
+                cardBinTO.setCountryName(columns[14]);
+            }
+
+            return cardBinTO;
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public Map<String, Object> getRawCardBinInfo(String id) {
