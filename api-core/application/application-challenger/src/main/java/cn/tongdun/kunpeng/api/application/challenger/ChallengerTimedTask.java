@@ -49,7 +49,7 @@ public class ChallengerTimedTask {
                 128,
                 30L,
                 TimeUnit.MINUTES,
-                100,
+                50,
                 "challengerExecute");
         // 定时任务每3秒执行一次，拉取延时队列的任务，抛给线程池执行
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
