@@ -15,6 +15,7 @@ import cn.tongdun.tdframework.core.metrics.IMetrics;
 import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import lombok.val;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static cn.tongdun.kunpeng.api.common.MetricsConstant.*;
 
@@ -194,14 +196,27 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
                 gaeaContext.put("location", city);
             }
         }
-        
+
         return gaeaContext;
     }
 
     protected void build(AbstractFraudContext context, Map<String, IFieldDefinition> systemFieldMap, Map<String, Object> gaeaContext) {
+
+        ConcurrentHashMap<String, String> encryptionFields = context.getEncryptionFields();
+
         if (null != systemFieldMap && !systemFieldMap.isEmpty()) {
             systemFieldMap.forEach((k, v) -> {
-                Object fieldValue = context.get(k);
+                Object fieldValue = null;
+                if (encryptionFields.containsKey(k)) {
+                    String fieldValues = encryptionFields.get(k);
+                    if (fieldValues.indexOf("##") != -1) {
+                        fieldValue = fieldValues.substring(fieldValues.indexOf("##") + 2);
+                    } else {
+                        fieldValue = fieldValues;
+                    }
+                } else {
+                    fieldValue = context.get(k);
+                }
                 if (null != fieldValue) {
                     gaeaContext.put(k, fieldValue);
                 }
