@@ -13,11 +13,11 @@ import cn.tongdun.kunpeng.client.data.RiskRequest;
 import cn.tongdun.kunpeng.share.utils.TraceUtils;
 import cn.tongdun.tdframework.core.extension.Extension;
 import cn.tongdun.tdframework.core.metrics.IMetrics;
+import cn.tongdun.tdframework.core.metrics.ITimeContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @Author: liuq
@@ -71,8 +71,13 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
 
     private CardBinTO getCardBinInfoFromDubbo(String id) {
         try{
+            String[] tags = {
+                    "dubbo_qps", "creditcloud.dubbo.CardBinService"};
+            metrics.counter("kunpeng.api.dubbo.qps", tags);
+            ITimeContext timeContext = metrics.metricTimer("kunpeng.api.dubbo.rt", tags);
             boolean maxPathMatch = true;
             APIResult<CardBinEntity> apiResult = cardBinDubboService.queryByBin(id, maxPathMatch);
+            timeContext.stop();
             if(apiResult != null && apiResult.getSuccess()&& apiResult.getData() != null){
                 return copyFromCardBin(apiResult.getData());
             }
