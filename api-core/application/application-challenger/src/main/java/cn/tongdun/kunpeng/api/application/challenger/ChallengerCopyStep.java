@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -58,6 +59,9 @@ public class ChallengerCopyStep implements IRiskStep {
     @Autowired
     private IRiskService riskService;
 
+    @Autowired
+    private DelayQueueCache delayQueueCache;
+
     /**
      * ruleExecute 线程池
      */
@@ -65,6 +69,9 @@ public class ChallengerCopyStep implements IRiskStep {
 
     @Autowired
     private ThreadService threadService;
+
+    @Value("${challenger.delay.time}")
+    private int challengerDelayTime = 1;
 
     @PostConstruct
     public void init() {
@@ -141,18 +148,7 @@ public class ChallengerCopyStep implements IRiskStep {
                         Policy policy = policyCache.get(config.getVersionUuid());
                         if (Objects.nonNull(policy)) {
                             requestData.setPolicyVersion(policy.getVersion());
-                            executeThreadPool.submit(new Callable<Boolean>() {
-                                @Override
-                                public Boolean call() {
-                                    try {
-                                        riskService.riskService(requestData, Risk.NAME);
-                                        return true;
-                                    } catch (Exception e) {
-                                        logger.error(" executeThreadPool.submit execute 执行异常:{}", e);
-                                        return true;
-                                    }
-                                }
-                            });
+                            delayQueueCache.put(new ChallengerTask("challenger", challengerDelayTime, TimeUnit.MILLISECONDS, requestData));
                         }
                     }
 
