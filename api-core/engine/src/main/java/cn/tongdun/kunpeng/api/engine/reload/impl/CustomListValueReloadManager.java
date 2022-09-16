@@ -56,6 +56,11 @@ public class CustomListValueReloadManager implements IReload<CustomListValueEven
         return addOrUpdate(eventDO);
     }
 
+    @Override
+    public boolean imported(CustomListValueEventDO eventDO) {
+        return addOrUpdate(eventDO);
+    }
+
 
     /**
      * 更新事件类型
