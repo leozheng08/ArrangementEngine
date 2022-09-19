@@ -36,7 +36,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
     @Autowired
     cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinDubboService;
 
-    @Autowired
+    @Autowired(required = false)
     private LucDynamicConfig lucDynamicConfig;
 
     private static final String TRUE = "1";
