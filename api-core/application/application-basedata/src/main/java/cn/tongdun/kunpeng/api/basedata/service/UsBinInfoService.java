@@ -30,13 +30,13 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
     @Autowired
     private CardBinService cardBinService;
 
-    @Autowired(required = false)
+    @Autowired
     private IMetrics metrics;
 
     @Autowired
     cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinDubboService;
 
-    @Autowired
+    @Autowired(required = false)
     private LucDynamicConfig lucDynamicConfig;
 
     private static final String TRUE = "1";
