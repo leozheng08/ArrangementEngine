@@ -5,12 +5,12 @@
     <parent>
         <artifactId>admin-application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.5.54-api</version>
+        <version>1.5.55-api</version>
 
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>admin-application-ignore</artifactId>
-    <version>1.5.54-api</version>
+    <version>1.5.55-api</version>
 
     <dependencies>
         <dependency>
