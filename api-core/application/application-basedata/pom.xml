@@ -6,7 +6,7 @@
         <artifactId>application</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
 
-        <version>1.5.4-api</version>
+        <version>1.5.42-api</version>
 
 
 
@@ -75,7 +75,11 @@
             <artifactId>horde-client</artifactId>
             <version>1.0.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>cn.tongdun.client</groupId>
+            <artifactId>fast-crossborder-client</artifactId>
+            <version>1.0.3</version>
+        </dependency>
     </dependencies>
 
 </project>

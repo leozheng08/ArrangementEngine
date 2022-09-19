@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -47,7 +46,18 @@ public class CardBinServiceImpl implements CardBinService {
     @Autowired
     CardbinConfig cardbinConfig;
 
-    private CardBinTO getCardBinInfoFromRedis(String id){
+    /**
+     * 根据银行卡或者卡bin查询卡bin信息
+     *
+     * @param id 银行卡或者卡bin
+     * @return 卡bin信息
+     */
+    @Override
+    public CardBinTO getCardBinInfoById(String id) {
+        return getCardBinInfoFromRedis(id);
+    }
+
+    private CardBinTO getCardBinInfoFromRedis(String id) {
         // 入参校验: 校验卡号或者卡bin
         if (!checkCardBinAll(id)) {
             logger.error("输入参数校验失败：id=[{}]", id);
@@ -62,19 +72,19 @@ public class CardBinServiceImpl implements CardBinService {
             for (int len = CARD_BIN_MAX_LENGTH; len >= CARD_BIN_MIN_LENGTH; len--) {
                 cardBin = id.substring(0, len);
                 value = redisHashKVRepository.hget(ns, cardBin);
-                if (StringUtils.isNotEmpty(value)){
+                if (StringUtils.isNotEmpty(value)) {
                     break;
                 }
             }
-        }else {
+        } else {
             value = redisHashKVRepository.hget(ns, cardBin);
             //8位卡bin查不到再查下前6位
-            if(null == value && id.length() == 8){
+            if (null == value && id.length() == 8) {
                 cardBin = id.substring(0, 6);
                 value = redisHashKVRepository.hget(ns, cardBin);
             }
         }
-        if(value != null){
+        if (value != null) {
             String[] columns = value.split(SEMICOLON);
             CardBinTO cardBinTO = new CardBinTO();
 
@@ -138,20 +148,9 @@ public class CardBinServiceImpl implements CardBinService {
             }
 
             return cardBinTO;
-        }else {
+        } else {
             return null;
         }
-    }
-
-    /**is
-     * 根据银行卡或者卡bin查询卡bin信息
-     *
-     * @param id    银行卡或者卡bin
-     * @return      卡bin信息
-     */
-    @Override
-    public CardBinTO getCardBinInfoById(String id) {
-        return getCardBinInfoFromRedis(id);
     }
 
     @Override
@@ -184,15 +183,15 @@ public class CardBinServiceImpl implements CardBinService {
             for (int len = CARD_BIN_MAX_LENGTH; len >= CARD_BIN_MIN_LENGTH; len--) {
                 cardBin = id.substring(0, len);
                 value = redisHashKVRepository.hget(ns, cardBin);
-                if (StringUtils.isNotEmpty(value)){
+                if (StringUtils.isNotEmpty(value)) {
                     break;
                 }
             }
-        }else {
+        } else {
             value = redisHashKVRepository.hget(ns, cardBin);
         }
         resultMap.put("value", value);
-        if(value != null){
+        if (value != null) {
             String[] columns = value.split(SEMICOLON);
             CardBinTO cardBinTO = new CardBinTO();
 
@@ -255,7 +254,7 @@ public class CardBinServiceImpl implements CardBinService {
                 cardBinTO.setCountryName(columns[14]);
             }
             resultMap.put("cardBinTO", cardBinTO);
-        }else {
+        } else {
             resultMap.put("cardBinTO", null);
         }
         return resultMap;
