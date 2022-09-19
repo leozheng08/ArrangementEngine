@@ -18,6 +18,14 @@ public class Risk {
     @Phase(parallel = true, timeOut = 210, poolSize = 100, order = 2000)
     public final static String BASIC_DATA = "baseData";
 
+    /**
+     * 阿拉丁黑白名单 此phase会根据入参判断是否调用黑白名单，入参依赖于basicData的结果，所以必须在其之后
+     * 同时 如果命中了直接跳到output阶段，不执行GROOVY、RULE_DATA、RUN_ENGINE
+     * 同时 命中了阿拉丁名单也要流量上报 但BILLING_INCREASE不能声明为required = true，需要在ALADDIN_BLACK_WHITE_LIST内部调用流量上报的service
+     */
+    @Phase(parallel = false, order = 2100)
+    public final static String ALADDIN_BLACK_WHITE_LIST = "aladdinBlackWhiteList";
+
     @Phase(parallel = true, timeOut = 200, poolSize = 100, order = 3000)
     public final static String GROOVY = "groovy";
 
