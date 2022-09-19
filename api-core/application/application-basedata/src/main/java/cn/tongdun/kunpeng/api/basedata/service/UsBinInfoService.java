@@ -48,7 +48,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
             CardBinTO cardBinTO = null;
             try {
                 if(StringUtils.equalsIgnoreCase(lucDynamicConfig.getCardBinInfoDubboSwitch(),TRUE)){
-                    cardBinTO = getCardBinInfoFromDubbo(cardBin);
+                    cardBinTO = getCardBinInfoFromDubbo(context,cardBin);
                 }else{
                     cardBinTO = cardBinService.getCardBinInfoById(cardBin);
                 }
@@ -63,13 +63,13 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
                 request.getFieldValues().put("carBin_response", cardBinTO);
                 logger.info("查询到seqId={}, cardBin={}", context.getSeqId(), cardBinTO);
             } else {
-                logger.warn("查询不到cardbin信息 seqId :{}", context.getSeqId());
+                logger.warn("查询不到cardbin信息 seqId :{}, cardBin={}", context.getSeqId(),cardBin);
             }
         }
         return true;
     }
 
-    private CardBinTO getCardBinInfoFromDubbo(String id) {
+    private CardBinTO getCardBinInfoFromDubbo(AbstractFraudContext contex,String id) {
         try{
             String[] tags = {
                     "dubbo_qps", "creditcloud.dubbo.CardBinService"};
@@ -83,9 +83,9 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
             }
         }catch (Exception e){
             if (ReasonCodeUtil.isTimeout(e)) {
-                logger.warn(TraceUtils.getFormatTrace() + "调用CardBin Dubbo服务超时: {}", id, e);
+                logger.error(TraceUtils.getFormatTrace() + "调用CardBin Dubbo服务超时: {}, seqId: {}", id, e,contex.getSeqId());
             } else {
-                logger.error(TraceUtils.getFormatTrace() + "调用CardBin Dubbo服务异常: {}", id, e);
+                logger.error(TraceUtils.getFormatTrace() + "调用CardBin Dubbo服务异常: {}, seqId: {}", id, e,contex.getSeqId());
             }
         }
         return null;
