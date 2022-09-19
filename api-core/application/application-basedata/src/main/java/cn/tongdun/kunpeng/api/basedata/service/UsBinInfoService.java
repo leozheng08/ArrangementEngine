@@ -30,7 +30,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
     @Autowired
     private CardBinService cardBinService;
 
-    @Autowired
+    @Autowired(required = false)
     private IMetrics metrics;
 
     @Autowired
