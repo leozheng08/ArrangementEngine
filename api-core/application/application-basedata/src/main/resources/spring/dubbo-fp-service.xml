@@ -43,4 +43,15 @@
                      timeout="${sphinx.dubbo.timeout}"
                      retries="0" stub="${ValidateTokenService.stub}">
     </dubbo:reference>
+
+    <dubbo:reference id="cardBinDubboService" interface="cn.fraudmetrix.creditcloud.dubbo.CardBinService"
+                      version="${cardbin.dubbo.version}"
+                      timeout="${cardbin.dubbo.timeout}"
+                      retries="2" check="false" connections="2">
+            <dubbo:parameter key="threadname" value="Dubbo-cardBin-"/>
+            <dubbo:parameter key="threadpool" value="cached"/>
+            <dubbo:parameter key="corethreads" value="1" />
+            <dubbo:parameter key="threads" value="10" />
+            <dubbo:parameter key="alive" value="600000" />
+    </dubbo:reference>
 </beans>
