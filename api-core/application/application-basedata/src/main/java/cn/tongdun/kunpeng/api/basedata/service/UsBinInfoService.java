@@ -33,7 +33,7 @@ public class UsBinInfoService implements BinInfoServiceExtPt {
     @Autowired
     private IMetrics metrics;
 
-    @Autowired
+    @Autowired(required = false)
     cn.fraudmetrix.creditcloud.dubbo.CardBinService cardBinDubboService;
 
     @Autowired(required = false)

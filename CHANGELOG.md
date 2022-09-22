@@ -126,3 +126,7 @@ V1.5.54(2022-09-19)
 - cardbin.dubbo.version=1.0.0
   cardbin.dubbo.timeout=100
 - 但是该情况是不合理的，后续将该配置放到业务层中
+
+V1.5.55(2022-09-19)
+- 北美cardbin接口改造为dubbo接口
+- 删除V1.5.54中平台层的cardbin dubbo.xml中的配置；其他业务层引入时无需再加dubbo配置
