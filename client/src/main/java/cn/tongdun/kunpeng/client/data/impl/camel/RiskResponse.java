@@ -52,6 +52,17 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @JsonIgnore
     private boolean isContainApplicationId;
 
+    //场景化中，所有命中规则的标签合集（去重）
+    private List<String> businessTag;
+
+    public List<String> getBusinessTag() {
+        return businessTag;
+    }
+
+    public void setBusinessTag(List<String> businessTag) {
+        this.businessTag = businessTag;
+    }
+
     @Override
     public Integer getFinalScore() {
         return finalScore;
@@ -154,15 +165,16 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     /**
      * 输出为json
+     *
      * @return
      */
     @Override
-    public String toJsonString(){
+    public String toJsonString() {
         return JSON.toJSONString(this);
     }
 
     @Override
-    public IRiskResponseFactory getFactory(){
+    public IRiskResponseFactory getFactory() {
         return factory;
     }
 
@@ -197,7 +209,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
 
-    public void setFactory(IRiskResponseFactory factory){
+    public void setFactory(IRiskResponseFactory factory) {
         this.factory = factory;
     }
 

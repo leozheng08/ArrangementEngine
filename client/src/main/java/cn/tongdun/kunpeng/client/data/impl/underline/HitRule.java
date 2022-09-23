@@ -2,6 +2,8 @@ package cn.tongdun.kunpeng.client.data.impl.underline;
 
 import cn.tongdun.kunpeng.client.data.IHitRule;
 
+import java.util.List;
+
 /**
  * @Author: liang.chen
  * @Date: 2019/12/13 下午4:44
@@ -94,6 +96,16 @@ public class HitRule implements IHitRule {
 
     @Override
     public void setDealType(String dealType) {
+
+    }
+
+    @Override
+    public List<String> getBusinessTag() {
+        return null;
+    }
+
+    @Override
+    public void setBusinessTag(List<String> BusinessTag) {
 
     }
 

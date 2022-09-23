@@ -393,6 +393,16 @@ public class USRiskResponse implements IRiskResponse {
 
     }
 
+    @Override
+    public List<String> getBusinessTag() {
+        return null;
+    }
+
+    @Override
+    public void setBusinessTag(List<String> businessTag) {
+
+    }
+
     public String getRiskType() {
         return riskType;
     }

@@ -23,12 +23,15 @@ public enum DictionaryEnum {
 
     PartnerVelocityDims("合作方Velocity主属性配置"),
 
-    SubReasonCodeCacheData("三方状态码配置");
+    SubReasonCodeCacheData("三方状态码配置"),
+
+    ruleBusinessTag("规则标签配置");
 
 
     private String desc;
-    DictionaryEnum(String desc){
-        this.desc=desc;
+
+    DictionaryEnum(String desc) {
+        this.desc = desc;
     }
 
     public String getDesc() {
