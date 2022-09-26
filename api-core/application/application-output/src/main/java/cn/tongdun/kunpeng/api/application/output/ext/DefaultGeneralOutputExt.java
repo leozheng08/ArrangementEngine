@@ -105,11 +105,13 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             response.setCustomPolicyResult(external);
 
         }
-        FraudContext fraudContext = (FraudContext) context;
-        response.setSpendTime(Long.valueOf(System.currentTimeMillis() - fraudContext.getRiskStartTime()).intValue());
 
         //处理场景化策略调用的规则标签
         setBusinessTag(request.getEventId(), response);
+
+        FraudContext fraudContext = (FraudContext) context;
+        response.setSpendTime(Long.valueOf(System.currentTimeMillis() - fraudContext.getRiskStartTime()).intValue());
+
         return true;
     }
 
