@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.ruledetail.UseVpnDetail;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class IosUseVpnFunction extends AbstractFunction {
@@ -35,11 +36,18 @@ public class IosUseVpnFunction extends AbstractFunction {
             return new FunctionResult(false);
         }
         else {
+            /**
+             * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
+             */
+            Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
+            boolean result = fpAbnormalTags.contains("VPN_DETECTED");
+
             Object vpnIp = deviceInfo.get("vpnIp");
-            if (vpnIp != null && StringUtils.isNotBlank(vpnIp.toString())) {
+
+            if (result) {
                 DetailCallable detailCallable = ()->{
                     UseVpnDetail useVpnDetail = new UseVpnDetail();
-                    useVpnDetail.setVpnIp(vpnIp.toString());
+                    useVpnDetail.setVpnIp(vpnIp != null ? vpnIp.toString() : null);
                     useVpnDetail.setConditionUuid(this.conditionUuid);
                     useVpnDetail.setRuleUuid(this.ruleUuid);
                     useVpnDetail.setDescription(this.description);
