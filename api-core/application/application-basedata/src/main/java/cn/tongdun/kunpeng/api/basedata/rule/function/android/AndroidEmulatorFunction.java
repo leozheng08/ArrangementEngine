@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,9 +111,11 @@ public class AndroidEmulatorFunction extends AbstractFunction {
             deviceInfo.put("isEmulator", emulatorScore / 200D > 0.5);
         }
 
-        Object isAndroidEmulator = deviceInfo.get("isEmulator");
-        boolean result = Boolean.TRUE.equals(isAndroidEmulator);
-
+        /**
+         * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
+         */
+        Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
+        boolean result = fpAbnormalTags.contains("ANDROID_EMULATOR");
 
         DetailCallable detailCallable = null;
         if (result && null != deviceInfo.get("emulatorType")) {

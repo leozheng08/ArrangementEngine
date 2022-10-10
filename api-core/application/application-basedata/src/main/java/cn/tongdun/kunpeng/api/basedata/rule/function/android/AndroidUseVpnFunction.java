@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.ruledetail.UseVpnDetail;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class AndroidUseVpnFunction extends AbstractFunction {
@@ -30,16 +31,22 @@ public class AndroidUseVpnFunction extends AbstractFunction {
     public FunctionResult run(ExecuteContext executeContext) {
         FraudContext context = (FraudContext) executeContext;
 
-        boolean ret = false;
+        boolean result = false;
         DetailCallable detailCallable = null;
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
-            ret = false;
+            result = false;
         }
         else {
+            /**
+             * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
+             */
+            Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
+            result = fpAbnormalTags.contains("VPN_DETECTED");
+
             Object isUseVpn = deviceInfo.get("vpnIp");
-            if (isUseVpn != null && StringUtils.isNotBlank(isUseVpn.toString())) {
-                ret = true;
+
+            if (result) {
                 detailCallable = ()->{
                     UseVpnDetail useVpnDetail = new UseVpnDetail();
                     useVpnDetail.setVpnIp(isUseVpn.toString());
@@ -49,11 +56,8 @@ public class AndroidUseVpnFunction extends AbstractFunction {
                     return useVpnDetail;
                 };
             }
-            else {
-                ret = false;
-            }
         }
-        return new FunctionResult(ret, detailCallable);
+        return new FunctionResult(result, detailCallable);
     }
 
 
