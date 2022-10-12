@@ -145,6 +145,7 @@ public abstract class AbstractRuleBuilder implements RuleBuilder {
         } else {
             rule.setPilotRun(false);
         }
+        rule.setBusinessTag(ruleDTO.getBusinessTag());
         return rule;
     }
 

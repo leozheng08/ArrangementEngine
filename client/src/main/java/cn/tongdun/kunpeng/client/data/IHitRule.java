@@ -11,27 +11,27 @@ public interface IHitRule extends Serializable {
 
     String getId();
 
-    void setId(String id) ;
+    void setId(String id);
 
-    String getUuid() ;
+    String getUuid();
 
-    void setUuid(String uuid) ;
+    void setUuid(String uuid);
 
-    String getName() ;
+    String getName();
 
-    void setName(String name) ;
+    void setName(String name);
 
-    String getDecision() ;
+    String getDecision();
 
-    void setDecision(String decision) ;
+    void setDecision(String decision);
 
-    Integer getScore() ;
+    Integer getScore();
 
-    void setScore(Integer score) ;
+    void setScore(Integer score);
 
-    String getParentUuid() ;
+    String getParentUuid();
 
-    void setParentUuid(String parentUuid) ;
+    void setParentUuid(String parentUuid);
 
     String getEnName();
 
@@ -40,5 +40,10 @@ public interface IHitRule extends Serializable {
     String getDealType();
 
     void setDealType(String dealType);
+
+    List<String> getBusinessTag();
+
+    void setBusinessTag(List<String> BusinessTag);
+
 
 }

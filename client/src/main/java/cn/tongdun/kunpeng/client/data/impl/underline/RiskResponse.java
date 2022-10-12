@@ -80,7 +80,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     // 纯数据输出-指标
     @JsonProperty("output_indicatrixes")
-    private Map<String, Double>       output_indicatrixes;
+    private Map<String, Double> output_indicatrixes;
 
     @JsonIgnore
     private transient IRiskResponseFactory factory;
@@ -164,6 +164,16 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     @Override
     public void setRuleTestDetails(List<RuleDetail> ruleTestDetails) {
+
+    }
+
+    @Override
+    public List<String> getBusinessTag() {
+        return null;
+    }
+
+    @Override
+    public void setBusinessTag(List<String> businessTag) {
 
     }
 
@@ -299,6 +309,7 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     /**
      * 输出为json
+     *
      * @return
      */
     @Override

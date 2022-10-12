@@ -84,8 +84,13 @@ public class RuleDTO extends CommonDTO {
     private WeightedRiskConfigDTO weightedRiskConfigDTO;
 
 
-
     private List<RuleConditionElementDTO> ruleConditionElements;
     private List<RuleActionElementDTO> ruleActionElements;
+
+
+    /**
+     * 规则标签，多个以逗号隔开
+     */
+    private String businessTag;
 
 }

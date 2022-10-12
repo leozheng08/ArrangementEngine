@@ -7,11 +7,16 @@ import cn.fraudmetrix.forseti.fp.model.constant.Mini;
 import cn.fraudmetrix.forseti.fp.model.constant.Web;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.data.*;
+import cn.tongdun.kunpeng.api.engine.constant.SceneEventIdEnum;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
+import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
 import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.tdframework.core.extension.Extension;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +34,9 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
 
     @Autowired
     private DecisionResultTypeCache decisionResultTypeCache;
+
+    @Autowired
+    private RuleCache ruleCache;
 
     @Override
     public boolean generalOutput(AbstractFraudContext context, IRiskResponse response, RiskRequest request) {
@@ -97,8 +105,13 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
             response.setCustomPolicyResult(external);
 
         }
+
+        //处理场景化策略调用的规则标签
+        setBusinessTag(request.getEventId(), response);
+
         FraudContext fraudContext = (FraudContext) context;
         response.setSpendTime(Long.valueOf(System.currentTimeMillis() - fraudContext.getRiskStartTime()).intValue());
+
         return true;
     }
 
@@ -161,4 +174,38 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
         }
         return result;
     }
+
+
+    /**
+     * 场景化策略调用需要返回规则标签
+     *
+     * @param eventId  事件标识
+     * @param response 决策结果
+     */
+    private void setBusinessTag(String eventId, IRiskResponse response) {
+        boolean isScenePolicy = SceneEventIdEnum.isScenePolicy(eventId);
+        if (!isScenePolicy) {
+            return;
+        }
+        if (CollectionUtils.isEmpty(response.getSubPolicys())) {
+            return;
+        }
+        Set<String> businessTagSet = Sets.newHashSet();
+        response.getSubPolicys().forEach(subPolicy -> {
+            if (CollectionUtils.isEmpty(subPolicy.getHitRules())) {
+                return;
+            }
+            subPolicy.getHitRules().forEach(hitRule -> {
+                String businessTag = ruleCache.get(hitRule.getUuid()).getBusinessTag();
+                if (StringUtils.isBlank(businessTag)) {
+                    return;
+                }
+                hitRule.setBusinessTag(Lists.newArrayList(businessTag.split(",")));
+                businessTagSet.addAll(hitRule.getBusinessTag());
+            });
+        });
+        response.setBusinessTag(Lists.newArrayList(businessTagSet));
+
+    }
+
 }

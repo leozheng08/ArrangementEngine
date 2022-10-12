@@ -14,6 +14,7 @@ public interface IRiskResponse extends IApiResponse {
 
     /**
      * 输出为json
+     *
      * @return
      */
     String toJsonString();
@@ -22,38 +23,41 @@ public interface IRiskResponse extends IApiResponse {
 
     void setSubReasonCodes(String subReasonCodes);
 
-    Integer getFinalScore() ;
+    Integer getFinalScore();
 
-    void setFinalScore(Integer finalScore) ;
+    void setFinalScore(Integer finalScore);
 
-    String getFinalDecision() ;
+    String getFinalDecision();
 
-    void setFinalDecision(String finalDecision) ;
+    void setFinalDecision(String finalDecision);
 
-    String getPolicyName() ;
+    String getPolicyName();
 
-    void setPolicyName(String policyName) ;
+    void setPolicyName(String policyName);
 
-    String getSeqId() ;
+    String getSeqId();
 
-    void setSeqId(String seqId) ;
-    Integer getSpendTime() ;
+    void setSeqId(String seqId);
 
-    void setSpendTime(Integer spendTime) ;
+    Integer getSpendTime();
 
-    List<ISubPolicyResult> getSubPolicys() ;
+    void setSpendTime(Integer spendTime);
 
-    void setSubPolicys(List<ISubPolicyResult> subPolicys) ;
+    List<ISubPolicyResult> getSubPolicys();
+
+    void setSubPolicys(List<ISubPolicyResult> subPolicys);
 
 //    List<IHitRule> getHitRules() ;
 //
 //    void setHitRules(List<IHitRule> hitRules) ;
 
-    List<RuleDetail> getRuleDetails() ;
-    void setRuleDetails(List<RuleDetail> ruleDetail) ;
+    List<RuleDetail> getRuleDetails();
+
+    void setRuleDetails(List<RuleDetail> ruleDetail);
 
     List<IOutputField> getOutputFields();
-    void setOutputFields(List<IOutputField> outputFields) ;
+
+    void setOutputFields(List<IOutputField> outputFields);
 
 
     IRiskResponseFactory getFactory();
@@ -157,4 +161,8 @@ public interface IRiskResponse extends IApiResponse {
     List<RuleDetail> getRuleTestDetails();
 
     void setRuleTestDetails(List<RuleDetail> ruleTestDetails);
+
+    List<String> getBusinessTag();
+
+    void setBusinessTag(List<String> businessTag);
 }
