@@ -2,6 +2,8 @@ package cn.tongdun.kunpeng.client.data.impl.us;
 
 import cn.tongdun.kunpeng.client.data.IHitRule;
 
+import java.util.List;
+
 
 /**
  * @author: yuanhang
@@ -101,5 +103,15 @@ public class USHitRule implements IHitRule {
     @Override
     public void setDealType(String dealType) {
         this.dealType = dealType;
+    }
+
+    @Override
+    public List<String> getBusinessTag() {
+        return null;
+    }
+
+    @Override
+    public void setBusinessTag(List<String> BusinessTag) {
+
     }
 }
