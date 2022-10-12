@@ -6,7 +6,7 @@
     <groupId>cn.tongdun.kunpeng-api</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>client</artifactId>
-    <version>1.5.56-api-angle-SNAPSHOT</version>
+    <version>1.5.56-api</version>
 
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>

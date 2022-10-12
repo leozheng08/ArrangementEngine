@@ -8,7 +8,7 @@
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
     <name>core</name>
-    <version>1.5.56-api-angle-SNAPSHOT</version>
+    <version>1.5.56-api</version>
 
 
     <properties>

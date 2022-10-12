@@ -6,7 +6,7 @@
     <parent>
         <artifactId>api-core</artifactId>
         <groupId>cn.tongdun.kunpeng-api</groupId>
-        <version>1.5.56-api-angle-SNAPSHOT</version>
+        <version>1.5.56-api</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -290,7 +290,7 @@
         <dependency>
             <groupId>cn.tongdun.kunpeng-api</groupId>
             <artifactId>evidence</artifactId>
-            <version>1.5.56-api-angle-SNAPSHOT</version>
+            <version>1.5.56-api</version>
             <scope>compile</scope>
         </dependency>
         <!-- test end -->
