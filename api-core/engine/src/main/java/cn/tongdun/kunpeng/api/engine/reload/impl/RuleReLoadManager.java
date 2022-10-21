@@ -263,7 +263,8 @@ public class RuleReLoadManager implements IReload<RuleEventDO> {
 
                 //如果失效则删除缓存
                 if (ruleDTO == null || CommonStatusEnum.CLOSE.getCode() == ruleDTO.getStatus()) {
-                    return remove(eventDO);
+                    remove(eventDO);
+                    continue;
                 }
 
                 Rule newRule = ruleConvertor.convert(ruleDTO);
