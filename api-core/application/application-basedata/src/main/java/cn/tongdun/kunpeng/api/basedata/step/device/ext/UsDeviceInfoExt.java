@@ -104,6 +104,10 @@ public class UsDeviceInfoExt implements DeviceInfoExtPt {
         if (deviceIdObj != null) {
             context.set("deviceId", deviceIdObj.toString());
         }
+        Object appOsObj = deviceMap.get("appOs");
+        if (appOsObj != null) {
+            context.set("appOs", appOsObj.toString());
+        }
         //处理真实IP
         dealWithTrueIp(context, deviceMap);
 
