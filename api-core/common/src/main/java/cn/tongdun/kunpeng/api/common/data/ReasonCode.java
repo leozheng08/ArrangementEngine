@@ -182,6 +182,8 @@ public enum ReasonCode {
     GEOIP_PERNISSION_ERROR("50763", "查询geoip-us权限不足"),
     GEOIP_SERRVER_ERROR("50764", "查询geoip-us内部服务错误"),
 
+    MERAK_CALL_ERROR("50765", "新关键词服务调用出错"),
+
     ;
 
     private String code;
