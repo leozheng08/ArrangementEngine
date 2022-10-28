@@ -333,6 +333,11 @@ public abstract class AbstractFraudContext implements Serializable, ExecuteConte
     private List<Object> keywordResultModels = new ArrayList<>();
 
     /**
+     * 新关键词匹配结果
+     */
+    private List<Object> keywordNewResultModels = new ArrayList<>();
+
+    /**
      * 邮箱模型规则执行结果
      * key:mail,value:result
      */
