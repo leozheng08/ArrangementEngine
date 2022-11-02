@@ -40,6 +40,12 @@ public class AndroidUseHttpFunction extends AbstractFunction {
              * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
              */
             Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
+
+            // 防止空指针异常
+            if(fpAbnormalTags == null){
+                return new FunctionResult(false);
+            }
+
             result = fpAbnormalTags.contains("PROXY_DETECTED");
 
             Object isUseHttpProxy = deviceInfo.get("proxyStr");
