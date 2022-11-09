@@ -9,6 +9,7 @@ import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.ruledetail.IOSJailBreakDetail;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class IosJailBreakFunction extends AbstractFunction {
@@ -34,9 +35,20 @@ public class IosJailBreakFunction extends AbstractFunction {
             return new FunctionResult(false);
         }
         else {
-            Object jailBreak = deviceInfo.get("jailbreak");
+            /**
+             * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
+             */
+            Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
+
+            // 防止空指针异常
+            if(fpAbnormalTags == null){
+                return new FunctionResult(false);
+            }
+
+            boolean result = fpAbnormalTags.contains("JAIL_BREAK");
+
             String appType = context.getAppType();
-            if ("ios".equalsIgnoreCase(appType) && "1".equals(jailBreak)) {
+            if ("ios".equalsIgnoreCase(appType) && result) {
                 DetailCallable detailCallable = ()->{
                     IOSJailBreakDetail iosJailBreakDetail = new IOSJailBreakDetail();
                     iosJailBreakDetail.setConditionUuid(this.getConditionUuid());

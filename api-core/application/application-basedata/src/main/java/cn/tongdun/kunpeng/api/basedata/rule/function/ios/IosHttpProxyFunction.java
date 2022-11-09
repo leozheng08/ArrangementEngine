@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.data.AbstractFraudContext;
 import cn.tongdun.kunpeng.api.ruledetail.IOSUseHttpProxyDetail;
 import cn.tongdun.kunpeng.api.ruledetail.UseHttpProxyDetail;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class IosHttpProxyFunction extends AbstractFunction {
@@ -34,14 +35,27 @@ public class IosHttpProxyFunction extends AbstractFunction {
             return new FunctionResult(false);
         }
         else {
+            /**
+             * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
+             */
+            Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
+
+            // 防止空指针异常
+            if(fpAbnormalTags == null){
+                return new FunctionResult(false);
+            }
+
+            boolean result = fpAbnormalTags.contains("PROXY_DETECTED");
+
             Object proxyType = deviceInfo.get("proxyType");
-            if (proxyType != null && !"none".equalsIgnoreCase(proxyType.toString())) {
+
+            if (result) {
                 DetailCallable detailCallable = () -> {
                     UseHttpProxyDetail useHttpProxyDetail = new UseHttpProxyDetail();
                     useHttpProxyDetail.setConditionUuid(this.getConditionUuid());
                     useHttpProxyDetail.setRuleUuid(this.getRuleUuid());
                     useHttpProxyDetail.setDescription(this.getDescription());
-                    useHttpProxyDetail.setProxyType(proxyType.toString());
+                    useHttpProxyDetail.setProxyType(proxyType != null ? proxyType.toString() : null);
                     return useHttpProxyDetail;
                 };
                 return new FunctionResult(true, detailCallable);

@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.ruledetail.UseHttpProxyDetail;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class AndroidUseHttpFunction extends AbstractFunction {
@@ -34,20 +35,26 @@ public class AndroidUseHttpFunction extends AbstractFunction {
         Map<String, Object> deviceInfo = context.getDeviceInfo();
         if (deviceInfo == null) {
             result = false;
-        }
-        else {
+        } else {
+            /**
+             * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
+             */
+            Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
+
+            // 防止空指针异常
+            if(fpAbnormalTags == null){
+                return new FunctionResult(false);
+            }
+
+            result = fpAbnormalTags.contains("PROXY_DETECTED");
+
             Object isUseHttpProxy = deviceInfo.get("proxyStr");
             Object isUseHttpProxyNew = deviceInfo.get("proxyInfo");
-            if (isUseHttpProxy != null && StringUtils.isNotBlank(isUseHttpProxy.toString())) {
-                result = true;
+
+            if (isUseHttpProxy != null && StringUtils.isNotBlank(isUseHttpProxy.toString()) && result) {
                 detailCallable = genDetailCallable(isUseHttpProxy.toString());
-            }
-            else if (isUseHttpProxyNew != null && StringUtils.isNotBlank(isUseHttpProxyNew.toString())) {
-                result = true;
+            } else if (isUseHttpProxyNew != null && StringUtils.isNotBlank(isUseHttpProxyNew.toString()) && result) {
                 detailCallable = genDetailCallable(isUseHttpProxyNew.toString());
-            }
-            else {
-                result = false;
             }
         }
 
