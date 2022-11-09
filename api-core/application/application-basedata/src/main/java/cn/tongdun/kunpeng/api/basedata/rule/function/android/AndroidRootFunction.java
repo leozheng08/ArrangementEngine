@@ -10,6 +10,7 @@ import cn.tongdun.kunpeng.api.common.Constant;
 import cn.tongdun.kunpeng.api.ruledetail.AndroidRootDetail;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class AndroidRootFunction extends AbstractFunction {
@@ -33,13 +34,19 @@ public class AndroidRootFunction extends AbstractFunction {
         if (deviceInfo == null) {
             return new FunctionResult(false);
         }
+        /**
+         * 设备指纹类规则模版优化：详见：http://wiki.tongdun.me/pages/viewpage.action?pageId=46454996
+         */
+        Collection<String> fpAbnormalTags = (Collection<String>) deviceInfo.get("abnormalTags");
 
-        Object isRoot = deviceInfo.get("isRoot");
-        Object isRootNew = deviceInfo.get("root");
-        if (isRoot != null && StringUtils.equalsIgnoreCase(isRoot.toString(), "true")) {
-            return new FunctionResult(true, detailCallable());
+        // 防止空指针异常
+        if(fpAbnormalTags == null){
+            return new FunctionResult(false);
         }
-        if (isRootNew != null && Boolean.TRUE.equals(isRootNew)) {
+
+        boolean result = fpAbnormalTags.contains("ROOT");
+
+        if (result) {
             return new FunctionResult(true, detailCallable());
         }
 
