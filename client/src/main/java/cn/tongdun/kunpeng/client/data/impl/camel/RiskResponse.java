@@ -304,6 +304,16 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     }
 
     @Override
+    public Map<String, Object> getCs_detail() {
+        return null;
+    }
+
+    @Override
+    public void setCs_detail(Map<String, Object> cs_detail) {
+
+    }
+
+    @Override
     public Map<String, Object> getHitRuleDetailV3Info() {
         return null;
     }
