@@ -31,7 +31,7 @@
         <ddd.version>1.0.6</ddd.version>
         <tdrule.version>1.0.8-tmp</tdrule.version>
         <tdflow.version>1.0.2</tdflow.version>
-        <kunpeng-share.version>1.5.2</kunpeng-share.version>
+        <kunpeng-share.version>1.5.22</kunpeng-share.version>
         <common.arch.version>2.1.1</common.arch.version>
         <module.kafka.version>3.2.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
