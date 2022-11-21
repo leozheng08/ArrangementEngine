@@ -35,7 +35,7 @@
         <common.arch.version>2.1.1</common.arch.version>
         <module.kafka.version>3.2.0</module.kafka.version>
         <module.metrics.version>2.1.8</module.metrics.version>
-        <fp.version>3.6.2</fp.version>
+        <fp.version>3.4.0</fp.version>
         <evan-client.version>1.0.3</evan-client.version>
         <lz4.version>1.7.1</lz4.version>
 
