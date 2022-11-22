@@ -5,6 +5,7 @@ import cn.tongdun.kunpeng.client.data.*;
 import cn.tongdun.kunpeng.share.json.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,11 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     //场景化中，所有命中规则的标签合集（去重）
     private List<String> businessTag;
+
+    /**
+     * 拓展详情
+     */
+    private Map<String, Object> cs_detail;
 
     public List<String> getBusinessTag() {
         return businessTag;
@@ -305,12 +311,12 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     @Override
     public Map<String, Object> getCs_detail() {
-        return null;
+        return cs_detail;
     }
 
     @Override
     public void setCs_detail(Map<String, Object> cs_detail) {
-
+        this.cs_detail = cs_detail;
     }
 
     @Override

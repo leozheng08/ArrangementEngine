@@ -85,6 +85,12 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
     @JsonIgnore
     private transient IRiskResponseFactory factory;
 
+    /**
+     * 拓展详情
+     */
+    @JsonProperty("cs_detail")
+    private Map<String, Object> cs_detail;
+
 
     @Override
     public Integer getFinalScore() {
@@ -444,12 +450,12 @@ public class RiskResponse extends ApiResponse implements IRiskResponse {
 
     @Override
     public Map<String, Object> getCs_detail() {
-        return null;
+        return cs_detail;
     }
 
     @Override
     public void setCs_detail(Map<String, Object> cs_detail) {
-
+        this.cs_detail = cs_detail;
     }
 
     @Override

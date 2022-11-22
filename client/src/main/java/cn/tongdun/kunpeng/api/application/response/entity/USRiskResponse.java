@@ -96,7 +96,6 @@ public class USRiskResponse implements IRiskResponse {
     /**
      * 拓展详情
      */
-    @JsonIgnore
     private Map<String, Object> cs_detail;
 
     @Override
