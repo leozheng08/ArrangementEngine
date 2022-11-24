@@ -240,6 +240,11 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         }
 
         Map<String, Object> activityParam = getGaeaFields(context);
+        // 如果是挑战者的复制流量，设置一个标示，让指标的"统计包含当前调用"条件不生效，指标那边对应要处理才会生效
+        if (isChallengerCopyFlow(context)){
+            activityParam.put("isChallengerCopy", true);
+            logger.info("{} isChallengerCopy", TraceUtils.getFormatTrace());
+        }
 
         Set<Long> indicatrixsParam = Sets.newHashSet();
         for (String key : indicatrixs) {
@@ -274,6 +279,17 @@ public abstract class AbstractKpIndicatrixService<R> implements KpIndicatrixServ
         indicatrixRequest.setNeedDetail(true);
 
         return indicatrixRequest;
+    }
+
+    /**
+     * 是否为冠军挑战者的复制流量
+     * @param context
+     * @return
+     */
+    private boolean isChallengerCopyFlow(AbstractFraudContext context){
+        // 塞值的地方在ChallengerCopyStep : requestData.getFieldValues().put("challengerType", "copy")
+        String copy = (String) context.getRiskRequest().getFieldValues().get("challengerType");
+        return "copy".equals(copy);
     }
 
     /**
