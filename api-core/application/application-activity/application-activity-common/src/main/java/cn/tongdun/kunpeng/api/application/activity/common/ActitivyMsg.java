@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.application.activity.common;
 
+import cn.fraudmetrix.alliance.intf.entity.MobilPhoneRuleObj;
+import cn.fraudmetrix.horde.biz.entity.IpReputationRulesObj;
 import cn.tongdun.kunpeng.api.common.data.SubReasonCode;
 import cn.tongdun.kunpeng.client.data.IRiskResponse;
 import cn.tongdun.kunpeng.share.json.JSON;
@@ -40,8 +42,14 @@ public class ActitivyMsg implements IActitivyMsg {
      * 设备指纹信息
      */
     private Map<String, Object> deviceInfo;
-
-
+    /**
+     * ip画像的结果
+     */
+    private IpReputationRulesObj ipReputationRules;
+    /**
+     * 手机画像的结果
+     */
+    private MobilPhoneRuleObj mobilePhoneRule;
     /**
      * 消息的key
      * @return

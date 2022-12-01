@@ -7,7 +7,7 @@ import cn.fraudmetrix.forseti.fp.model.constant.Mini;
 import cn.fraudmetrix.forseti.fp.model.constant.Web;
 import cn.tongdun.kunpeng.api.application.context.FraudContext;
 import cn.tongdun.kunpeng.api.common.data.*;
-import cn.tongdun.kunpeng.api.engine.constant.SceneEventIdEnum;
+import cn.tongdun.kunpeng.api.engine.constant.SceneEventTypeEnum;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultType;
 import cn.tongdun.kunpeng.api.engine.model.decisionresult.DecisionResultTypeCache;
 import cn.tongdun.kunpeng.api.engine.model.rule.RuleCache;
@@ -107,7 +107,7 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
         }
 
         //处理场景化策略调用的规则标签
-        setBusinessTag(request.getEventId(), response);
+        setBusinessTag(context.getEventType(), response);
 
         FraudContext fraudContext = (FraudContext) context;
         response.setSpendTime(Long.valueOf(System.currentTimeMillis() - fraudContext.getRiskStartTime()).intValue());
@@ -179,11 +179,11 @@ public class DefaultGeneralOutputExt implements IGeneralOutputExtPt {
     /**
      * 场景化策略调用需要返回规则标签
      *
-     * @param eventId  事件标识
-     * @param response 决策结果
+     * @param eventType 事件类型
+     * @param response  决策结果
      */
-    private void setBusinessTag(String eventId, IRiskResponse response) {
-        boolean isScenePolicy = SceneEventIdEnum.isScenePolicy(eventId);
+    private void setBusinessTag(String eventType, IRiskResponse response) {
+        boolean isScenePolicy = SceneEventTypeEnum.isScenePolicy(eventType);
         if (!isScenePolicy) {
             return;
         }

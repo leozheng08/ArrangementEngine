@@ -93,6 +93,11 @@ public class USRiskResponse implements IRiskResponse {
     @JsonIgnore
     private boolean isContainApplicationId;
 
+    /**
+     * 拓展详情
+     */
+    private Map<String, Object> cs_detail;
+
     @Override
     public String toJsonString() {
         return JSON.toJSONString(this);
@@ -335,6 +340,16 @@ public class USRiskResponse implements IRiskResponse {
     @Override
     public void setHitRuleDetailInfo(Map<String, Object> map) {
 
+    }
+
+    @Override
+    public Map<String, Object> getCs_detail() {
+        return cs_detail;
+    }
+
+    @Override
+    public void setCs_detail(Map<String, Object> cs_detail) {
+        this.cs_detail = cs_detail;
     }
 
     @Override

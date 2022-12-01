@@ -1,5 +1,7 @@
 package cn.tongdun.kunpeng.api.application.activity.ext;
 
+import cn.fraudmetrix.alliance.intf.entity.MobilPhoneRuleObj;
+import cn.fraudmetrix.horde.biz.entity.IpReputationRulesObj;
 import cn.tongdun.kunpeng.api.common.data.GeoipEntity;
 import cn.tongdun.kunpeng.api.application.activity.common.ActitivyMsg;
 import cn.tongdun.kunpeng.api.application.activity.common.GeoipInfo;
@@ -50,6 +52,9 @@ public class GenerateActivityExt implements IGenerateActivityExtPt {
         actitivy.setResponse(queueItem.getResponse());
         actitivy.setSubReasonCodes(context.getSubReasonCodes());
         actitivy.setGeoipEntity(getGeoIpInfo(queueItem.getContext()));
+
+        actitivy.setIpReputationRules(context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_IP_REPUTATION, IpReputationRulesObj.class));
+        actitivy.setMobilePhoneRule(context.getExternalReturnObj(BasedataConstant.EXTERNAL_OBJ_MOBILE_PHONE, MobilPhoneRuleObj.class));
 
         Map deviceInfo = context.getDeviceInfo();
         //详情使用，复制一份出来，避免输出到客户响应中（这里是异步执行的，有可能会影响到response中的deviceInfo）

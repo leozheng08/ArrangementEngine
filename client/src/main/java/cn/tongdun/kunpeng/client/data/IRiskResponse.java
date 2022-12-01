@@ -110,6 +110,10 @@ public interface IRiskResponse extends IApiResponse {
 
     void setHitRuleDetailInfo(Map<String, Object> hitRuleDetailInfo);
 
+    Map<String, Object> getCs_detail();
+
+    void setCs_detail(Map<String, Object> cs_detail);
+
     Map<String, Object> getHitRuleDetailV3Info();
 
     void setHitRuleDetailV3Info(Map<String, Object> hitRuleDetailV3Info);
