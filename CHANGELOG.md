@@ -149,3 +149,8 @@ v1.5.64(2022-11-02)
 
 v1.5.66(2022-11-16)
 - kunpeng-share版本升级
+
+v1.5.67(v1.5.68 2022-11-30) 
+- context新增os、browser字段
+- response新增cs_detail
+- 判断是否场景化请求逻辑由eventId更新为eventType判断
